@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 6.1.1 (Python 3.9.16 on win32)" generated="20230906 19:18:41.435" rpa="false" schemaversion="4">
+<suite id="s1" name="Tests" source="c:\Users\RistomattiRinne\OneDrive - codemen.fi\Desktop\Robo\testsuites\tests.robot">
+<test id="s1-t1" name="Verify H1 Text On The Site" line="7">
+<kw name="Log To Console" library="BuiltIn">
+<arg>toimii</arg>
+<doc>Logs the given message to the console.</doc>
+<status status="PASS" starttime="20230906 19:18:43.022" endtime="20230906 19:18:43.023"/>
+</kw>
+<status status="PASS" starttime="20230906 19:18:43.018" endtime="20230906 19:18:43.024"/>
+</test>
+<status status="PASS" starttime="20230906 19:18:41.445" endtime="20230906 19:18:43.035"/>
+</suite>
+<statistics>
+<total>
+<stat pass="1" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="1" fail="0" skip="0" id="s1" name="Tests">Tests</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>

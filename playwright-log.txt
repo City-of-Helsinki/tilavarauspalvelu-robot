@@ -1,0 +1,27 @@
+{"level":30,"time":"2023-09-06T16:18:42.513Z","pid":11048,"hostname":"MP2D3J8Z","msg":"Listening on 55487"}
+{"level":30,"time":"2023-09-06T16:18:43.016Z","pid":11048,"hostname":"MP2D3J8Z","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2023-09-06T16:18:43.016Z","pid":11048,"hostname":"MP2D3J8Z","msg":"End of node method getBrowserCatalog"}
+{"level":30,"time":"2023-09-06T16:18:43.020Z","pid":11048,"hostname":"MP2D3J8Z","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2023-09-06T16:18:43.020Z","pid":11048,"hostname":"MP2D3J8Z","msg":"End of node method getBrowserCatalog"}
+================= Original suppressed error =================
+Error: Browser has been closed.
+    at PlaywrightState.getActiveBrowser (c:\ProgramData\robocorp\ht\9d3d29b_b1f3c24_91bb43ea\lib\site-packages\Browser\wrapper\index.js:9385:15)
+    at PlaywrightServer.getActiveBrowser (c:\ProgramData\robocorp\ht\9d3d29b_b1f3c24_91bb43ea\lib\site-packages\Browser\wrapper\index.js:9904:59)
+    at PlaywrightServer.setTimeout (c:\ProgramData\robocorp\ht\9d3d29b_b1f3c24_91bb43ea\lib\site-packages\Browser\wrapper\index.js:10150:57)
+    at handleUnary (c:\ProgramData\robocorp\ht\9d3d29b_b1f3c24_91bb43ea\lib\site-packages\Browser\wrapper\node_modules\@grpc\grpc-js\build\src\server.js:833:17)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+=============================================================
+{"level":30,"time":"2023-09-06T16:18:43.031Z","pid":11048,"hostname":"MP2D3J8Z","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2023-09-06T16:18:43.031Z","pid":11048,"hostname":"MP2D3J8Z","msg":"End of node method getBrowserCatalog"}
+================= Original suppressed error =================
+Error: Browser has been closed.
+    at PlaywrightState.getActiveBrowser (c:\ProgramData\robocorp\ht\9d3d29b_b1f3c24_91bb43ea\lib\site-packages\Browser\wrapper\index.js:9385:15)
+    at PlaywrightServer.getActiveBrowser (c:\ProgramData\robocorp\ht\9d3d29b_b1f3c24_91bb43ea\lib\site-packages\Browser\wrapper\index.js:9904:59)
+    at PlaywrightServer.setTimeout (c:\ProgramData\robocorp\ht\9d3d29b_b1f3c24_91bb43ea\lib\site-packages\Browser\wrapper\index.js:10150:57)
+    at handleUnary (c:\ProgramData\robocorp\ht\9d3d29b_b1f3c24_91bb43ea\lib\site-packages\Browser\wrapper\node_modules\@grpc\grpc-js\build\src\server.js:833:17)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+=============================================================
+{"level":30,"time":"2023-09-06T16:18:43.041Z","pid":11048,"hostname":"MP2D3J8Z","msg":"Start of node method getBrowserCatalog"}
+{"level":30,"time":"2023-09-06T16:18:43.041Z","pid":11048,"hostname":"MP2D3J8Z","msg":"End of node method getBrowserCatalog"}
+{"level":30,"time":"2023-09-06T16:18:45.088Z","pid":11048,"hostname":"MP2D3J8Z","msg":"Start of node method closeAllBrowsers"}
+{"level":30,"time":"2023-09-06T16:18:45.089Z","pid":11048,"hostname":"MP2D3J8Z","msg":"End of node method closeAllBrowsers"}

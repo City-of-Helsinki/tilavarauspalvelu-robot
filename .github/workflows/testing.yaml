@@ -1,0 +1,35 @@
+on: [push, pull_request]
+
+jobs:
+  robot_test:
+    runs-on: ubuntu-latest
+    name: Run Robot Framework Tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Robot Framework
+        uses: joonvena/robotframework-docker-action@v1.0
+        with:
+          robot_tests_dir: TestSuites
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v1
+        with:
+          name: reports
+          path: reports
+
+  generate_report:
+    if: always()
+    needs: [robot_test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download reports
+        uses: actions/download-artifact@v1
+        with:
+          name: reports
+      - name: Send report to commit
+        uses: joonvena/robotframework-reporter-action@v2.1
+        with:
+          gh_access_token: ${{ secrets.GITHUB_TOKEN }}
+          only_summary: true

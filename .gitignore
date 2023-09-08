@@ -15,3 +15,7 @@ temp/
 testrun/*
 .~lock*
 *.pkl
+.vscode/
+robot.code-workspace
+robocop-report/
+Results/

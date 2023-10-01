@@ -19,3 +19,9 @@ testrun/*
 robot.code-workspace
 robocop-report/
 Results/
+playwright-log.txt
+browser
+interactive_console_output.xml
+log.html
+output.xml
+report.html

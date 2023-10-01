@@ -6,23 +6,22 @@ Documentation       A resource file with variables.
 ###
 # DEV ENVIROMENTS #
 ###
-${URL_TEST}                 https://tilavaraus.test.hel.ninja/
-${URL_STAGE}                https://tilavaraus.stage.hel.ninja/
-${URL_PROD}                 https://tilavaraus.hel.fi/
-###
+${URL_TEST}                         https://tilavaraus.test.hel.ninja/
+${URL_STAGE}                        https://tilavaraus.stage.hel.ninja/
+${URL_PROD}                         https://tilavaraus.hel.fi/
+# uuskirjautumisdummy    https://example-ui.dev.hel.ninja/
+
+# Elements
+${MENU_ELEMENT_MOBILE}              NavigationUserMenuUserCard
+${TIME_OF_SECOND_FREE_SLOT}         ${EMPTY}
 
 ###
-# USERS #
-###
-${DELAY}                    0
-${VALID_USER_EMAIL}         anna-liisa.sallinen@vrk.fi
-${VALID_USER_HETU}          010675-9981
-${VALID_USER_PASSWORD}      eiolevielä
-${INVALID_USER}             in.valid@q-factory.fi
-${INVALID_PASSWORD}         invalid12345
-${INVALID_USER_HETU}        123321-1211
+# UNITS
+##
+${ALLWAYS_FREE_UNIT}                Maksuton Mankeli (Automaatiotestit ÄLÄ POISTA)
 
 ###
-# Landing page
-###
-${EXPECTED_H1_TEXT}         Varaa tiloja ja laitteita
+# RESERVATION UNIT
+##
+${QUICK_RESERVATION_DURATION}       1:00
+${TIME_OF_QUICK_RESERVATION}        ${EMPTY}

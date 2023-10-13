@@ -9,7 +9,6 @@ Resource    ../User/reservation_unit_booking_details.robot
 Resource    ../User/reservation_unit_reservation_receipt.robot
 Resource    ../User/reservation_lownav.robot
 Resource    ../User/singlebooking.robot
-Library     Dialogs
 
 
 *** Keywords ***

@@ -1,13 +1,41 @@
 *** Settings ***
 Documentation       A resource file with keywords.
 
-Resource            ../PO/User/reservation_unit.robot
-Resource            ../PO/User/reservation_unit.robot
+Resource            ../PO/User/quick_reservation.robot
+Resource            ../PO/User/quick_reservation.robot
 Resource            variables.robot
+Resource            texts_FI.robot
 Library             Browser
 
 
 *** Keywords ***
+Find and click element with text
+    [Arguments]    ${element_with_text}    ${wanted_text}
+    ${elements_with_text}=    Get Elements    ${element_with_text}
+    FOR    ${element}    IN    @{elements_with_text}
+        ${el_text}=    Get Text    ${element}
+        Log    ${el_text}
+        IF    "${el_text}" == "${wanted_text}"
+            Click    ${element}
+            Log    Element with text "${wanted_text}" clicked.
+            BREAK
+        END
+    END
+
+Normalize string
+    [Arguments]    ${string}
+    log    '${string}'
+    ${normalize_string}=    Evaluate JavaScript
+    ...    ${None}
+    ...    function() {
+    ...    return arguments[0].replace(/\xa0/g, ' ');
+    ...    }
+    ...    arg=${string}
+
+    ${normalized_string}=    Set variable    ${normalize_string}
+    Set Suite Variable    ${normalized_string}
+    log    '${normalized_string}'
+
 Click element by role with text
     [Arguments]    ${Element}    ${Text}
     Log    ${Element}

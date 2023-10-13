@@ -1,6 +1,5 @@
 *** Settings ***
 Library     Browser
-Library     Dialogs
 
 
 *** Keywords ***

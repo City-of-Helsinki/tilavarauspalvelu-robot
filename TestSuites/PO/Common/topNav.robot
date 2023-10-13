@@ -2,7 +2,6 @@
 Documentation       A resource file with top navigation keywords.
 
 Library             Browser
-Library             Dialogs
 Resource            ../../Resources/custom_keywords.robot
 Resource            ../../Resources/variables.robot
 Resource            ../../Resources/users.robot
@@ -22,7 +21,7 @@ Check dropdown menu has user info
 
 Navigate to single booking page
     [Arguments]    ${single_booking_button_text}
-    # tänne id
+    # DEVNOTE add datatest id
     ${singlebookingbutton}=    Get Element By    text    ${single_booking_button_text}
     Click    ${singlebookingbutton}
 
@@ -34,7 +33,7 @@ Click navigation menu mobile
     Click    css=button[aria-label="Menu"]
 
 Check menu has user info mobile
-    # DEV NOTE
+    # DEVNOTE
     # Korjataan myöhemmin mobiili selectorit. Nyt löytyy 4 kpl kumpaakin
     [Arguments]    ${Expected_name}    ${Expected_email}
     Click navigation menu mobile
@@ -48,8 +47,7 @@ Check menu has user info mobile
 
 Navigate to single booking page mobile
     #    [Arguments]    ${single_booking_button_text}
-    # tänne id
-    # miksi katoaa klikin jälkeen. miksi pitää 2 x klikata
+    # DEVNOTE. Add datatest id here. and why dual clicks needed here
     # Click navigation menu mobile
     Click    css=button[aria-label="Menu"]
     Sleep    1s

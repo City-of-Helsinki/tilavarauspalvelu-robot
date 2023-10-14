@@ -9,6 +9,7 @@ Select the second free slot
     # DEVNOTE
     # This keyword/test cannot be run after 23.00
     # Example -> Su 1.10.2023 klo 23:45-0:45, 1 t != La 30.9.2023 klo 23:45-su 1.10.20230:45, 1 t
+    Sleep    2s
     ${all_free_quick_timeslots}=    Get Elements    [data-testid="quick-reservation-slot"]
     ${TIME_OF_SECOND_FREE_SLOT}=    Get Text    ${all_free_quick_timeslots}[1]
     Log    ${TIME_OF_SECOND_FREE_SLOT}

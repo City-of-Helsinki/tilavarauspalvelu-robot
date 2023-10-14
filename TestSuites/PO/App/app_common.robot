@@ -43,7 +43,8 @@ User logs in with suomi_fi
 
 User logs in with suomi_fi mobile
     topNav.Click navigation menu mobile
-    topNav.Click login    ${LOGIN_TEXT}
+    # topNav.Click login    ${LOGIN_TEXT}
+    topNav.Click login mobile
     login.Login Suomi_fi mobile    ${BASIC_USER_MALE_HETU}
     user_landingpage.Checks the user landing page H1    ${USER_LANDING_PAGE_H1_TEXT}
     Sleep    3s

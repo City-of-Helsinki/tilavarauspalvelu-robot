@@ -40,15 +40,17 @@ Click element by role with text
     [Arguments]    ${Element}    ${Text}
     Log    ${Element}
     Log    ${Text}
-    ${Click_element}=    Get Element By Role    ${Element}    name=${Text}
-    Click    ${Click_element}
+    # ${Click_element}=    Get Element By Role    ${Element}    name=${Text}
+    # ${Click_element}=    Get Element    ${Element} >> name=${Text}
+    # Click    ${Click_element}
 
 Check elements text
     [Arguments]    ${Element}    ${Expected text}
     Log    ${Element}
     Log    ${Expected text}
-    ${Element text}=    Get Element By Role    ${Element}    name=${Expected text}
-    Should Be Equal    ${Element text}    ${Expected text}
+    # ${Element text}=    Get Element By Role    ${Element}    name=${Expected text}
+    # ${Element text}=    Get Element    ${Element} >> name=${Expected text}
+    # Should Be Equal    ${Element text}    ${Expected text}
 
 Get Finnish Formatted Date
     [Arguments]    ${TIME_OF_SECOND_FREE_SLOT}

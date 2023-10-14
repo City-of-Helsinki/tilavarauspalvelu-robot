@@ -10,7 +10,9 @@ Resource            ../../Resources/users.robot
 *** Keywords ***
 Click login
     [Arguments]    ${Login_text}
-    Custom_keywords.Click element by role with text    button    ${Login_text}
+    # Custom_keywords.Click element by role with text    button    ${Login_text}
+    # DEVNOTE add datatest id
+    Click    css=.NavigationUser-module_user__4HdTn
 
 Check dropdown menu has user info
     [Arguments]    ${name}
@@ -20,17 +22,20 @@ Check dropdown menu has user info
     Should Be Equal    ${Topnav_Login_Button_Text}    ${name}
 
 Navigate to single booking page
-    [Arguments]    ${single_booking_button_text}
+    # [Arguments]    ${single_booking_button_text}
     # DEVNOTE add datatest id
-    ${singlebookingbutton}=    Get Element By    text    ${single_booking_button_text}
-    Click    ${singlebookingbutton}
-
+    # ${singlebookingbutton}=    Get Element By    text    ${single_booking_button_text}
+    # Click    ${singlebookingbutton}
+    Click    data-testid=navigation__reservationUnitSearch
 ###
 # MOBILE UI
 ###
 
 Click navigation menu mobile
     Click    css=button[aria-label="Menu"]
+
+Click login mobile
+    Click    id=hds-mobile-menu >> css=.NavigationUser-module_user__4HdTn
 
 Check menu has user info mobile
     # DEVNOTE

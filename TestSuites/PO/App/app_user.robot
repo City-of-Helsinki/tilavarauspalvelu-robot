@@ -13,7 +13,8 @@ Resource    ../User/singlebooking.robot
 
 *** Keywords ***
 User navigates to single booking page
-    topNav.Navigate to single booking page    ${SINGLEBOOKING_BUTTON_TEXT}
+#    topNav.Navigate to single booking page    ${SINGLEBOOKING_BUTTON_TEXT}
+    topNav.Navigate to single booking page
 
 User uses search to find right unit
     [Arguments]    ${nameoftheunit}

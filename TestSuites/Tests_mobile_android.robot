@@ -5,6 +5,7 @@ Resource            ${CURDIR}/PO/App/app_common.robot
 Resource            ${CURDIR}/PO/App/app_user.robot
 
 Test Setup          User opens android chrome to landing Page
+Test Teardown       Run Keyword If Test Failed    Take Screenshot
 
 
 *** Test Cases ***

@@ -23,7 +23,7 @@ User uses search to find right unit
 
 User selects the time with quick reservation
     quick_reservation.Select duration    ${QUICK_RESERVATION_DURATION}
-    quick_reservation.Click the second free slot
+    quick_reservation.Select the second free slot
 
 User fills the reservation info
     reservation_unit_reserver_info.Enter first name    ${BASIC_USER_MALE_FIRSTNAME}
@@ -84,4 +84,4 @@ User uses search to find right unit mobile
 
 User selects the time with quick reservation mobile
     quick_reservation.Select duration mobile    ${QUICK_RESERVATION_DURATION}
-    quick_reservation.Click the second free slot mobile
+    quick_reservation.Select the second free slot mobile

@@ -8,7 +8,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Robot Framework
-        uses: joonvena/robotframework-docker-action@v1.0
+        #uses: joonvena/robotframework-docker-action@v1.0
+        uses: VarausTest/robotframework-docker-action
         with:
           robot_tests_dir: TestSuites
           robot_options: --nostatusrc

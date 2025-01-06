@@ -25,3 +25,11 @@ interactive_console_output.xml
 log.html
 output.xml
 report.html
+.pabotsuitenames
+#mail
+client_secret.json
+mail_config.yaml
+generate_tokens.py
+token_manager.py
+mail.robot
+Tests_mail.robot

@@ -2,24 +2,54 @@
 # INFO ABOUT MOBILE DEVICES
 # https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json
 Library     Browser
+Resource    variables.robot
+# DEVNOTE viewport=${None} for laptop UI
 
 
 *** Variables ***
-${BROWSER}=     chromium
+${BROWSER}=             chromium
+${BROWSER_FOR_MAIL}=    firefox
+${LOCALE}=              en-US
 
 
 *** Keywords ***
 Set up chromium desktop browser and open url
-    [Arguments]    ${input_URL}
-    New Browser    ${BROWSER}    headless=False
-    New Context    viewport={'width': 1920, 'height': 1080}
+    [Arguments]    ${input_URL}    ${DOWNLOAD_DIR}
+    New Browser    ${BROWSER}    headless=false    downloadsPath=${DOWNLOAD_DIR}
+    New Context
+    ...    viewport={'width': 1920, 'height': 1080}
+    ...    acceptDownloads=True
+    ...    locale=${LOCALE}
+    ...    timezoneId=Europe/Helsinki
+    ...    ignoreHTTPSErrors=true
     New Page    ${input_URL}
 
-Set up iphone 13 and open url
+    Set Browser Timeout    30s
+
+Set up firefox desktop browser and open url
+    [Arguments]    ${input_URL}    ${DOWNLOAD_DIR}
+    New Browser    ${BROWSER_FOR_MAIL}    headless=false    downloadsPath=${DOWNLOAD_DIR}
+    New Context
+    ...    viewport={'width': 1920, 'height': 1080}
+    ...    acceptDownloads=True
+    ...    locale=${LOCALE}
+    ...    timezoneId=Europe/Helsinki
+    ...    ignoreHTTPSErrors=false
+    ...    javaScriptEnabled=True
+    New Page    ${input_URL}
+
+    Set Browser Timeout    30s
+
+Set up iphone 14 and open url
     [Arguments]    ${input_URL}
-    ${iphone}=    Get Device    iPhone 13
-    New Browser    headless=False    browser=Webkit
-    New context    &{iphone}    isMobile=true
+    ${iphone}=    Get Device    iPhone 14
+
+    # Open the browser
+    New Browser    browser=webkit    headless=false
+
+    # Create a new context with the iPhone 14 device configuration and ignore HTTPS errors
+    New Context    &{iphone}    isMobile=true    locale=${LOCALE}    ignoreHTTPSErrors=true
+
     New Page    ${input_URL}
     ${viewport}=    Get Viewport Size    # returns { "width": 390, "height": 664 }
     # Validate the width
@@ -27,14 +57,23 @@ Set up iphone 13 and open url
     # Validate the height
     Should Be Equal As Integers    ${viewport["height"]}    664    msg=The viewport height is not as expected.
 
+    Set Browser Timeout    30s
+
 Set up android pixel 5 and open url
     [Arguments]    ${input_URL}
     ${pixel}=    Get Device    Pixel 5
-    New Browser    headless=False    browser=Chromium
-    New context    &{pixel}    isMobile=true
+
+    # Open the browser
+    New Browser    headless=false    browser=Chromium
+
+    # Create a new context with the iPhone 14 device configuration and ignore HTTPS errors
+    New context    &{pixel}    isMobile=true    locale=${LOCALE}
+
     New Page    ${input_URL}
     ${viewport}=    Get Viewport Size    # returns { "width": 393, "height": 727 }
     # Validate the width
     Should Be Equal As Integers    ${viewport["width"]}    393    msg=The viewport width is not as expected.
     # Validate the height
     Should Be Equal As Integers    ${viewport["height"]}    727    msg=The viewport height is not as expected.
+
+    Set Browser Timeout    30s

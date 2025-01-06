@@ -11,7 +11,7 @@ Library     Browser
 
 Type the name of the booking
     [Arguments]    ${name_of_the_booking}
-    type text    id=name    ${name_of_the_booking}
+    Type Text    id=name    ${name_of_the_booking}
 
 Select the purpose of the booking
     [Arguments]    ${purpose}
@@ -21,23 +21,22 @@ Select the purpose of the booking
 
 Select the number of participants
     [Arguments]    ${number_of_persons}
-    type text    id=numPersons    ${number_of_persons}
+    Type Text    id=numPersons    ${number_of_persons}
 
 Type the description of the booking
     [Arguments]    ${description_txt}
-    type text    id=description    ${description_txt}
+    Type Text    id=description    ${description_txt}
 
-Click the apply for free of charge
+Click to apply for a free booking
     Click    id=applyingForFreeOfCharge
 
 Type justification for free of charge
     [Arguments]    ${reason}
     Type Text    id=freeOfChargeReason    ${reason}
 
-###
-# NONPROFIT
-###
-
-###
-# BUSINESS
-###
+Click and select AgeGroup Button
+    [Arguments]    ${age_group}
+    Wait For Elements State    id=ageGroup-toggle-button    visible
+    Click    id=ageGroup-toggle-button
+    Sleep    1s
+    custom_keywords.Find and click element with text    li    ${age_group}

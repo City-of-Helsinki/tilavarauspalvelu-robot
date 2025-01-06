@@ -7,19 +7,19 @@ Library     Browser
 *** Keywords ***
 Enter first name
     [Arguments]    ${firstname}
-    Type Text    css=#reserveeFirstName    ${firstname}
+    Type Text    id=reserveeFirstName    ${firstname}
 
 Enter last name
     [Arguments]    ${lastname}
-    Type Text    css=#reserveeLastName    ${lastname}
+    Type Text    id=reserveeLastName    ${lastname}
 
 Enter email
     [Arguments]    ${email}
-    Type Text    css=#reserveeEmail    ${email}
+    Type Text    id=reserveeEmail    ${email}
 
 Enter phone number
     [Arguments]    ${phonenumber}
-    Type Text    css=#reserveePhone    ${phonenumber}
+    Type Text    id=reserveePhone    ${phonenumber}
 
 Select home city
     [Arguments]    ${homecity}

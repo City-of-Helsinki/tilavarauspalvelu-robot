@@ -1,30 +1,145 @@
 *** Settings ***
 Documentation       A resource file with variables.
 
+Library             Browser
+# TODO add examples to EMPTY
+
 
 *** Variables ***
 ###
-# DEV ENVIROMENTS #
+# DEV ENVIRONMENTS
 ###
-${URL_TEST}                                 https://tilavaraus.test.hel.ninja/
-${URL_STAGE}                                https://tilavaraus.stage.hel.ninja/
-${URL_PROD}                                 https://tilavaraus.hel.fi/
-# uuskirjautumisdummy    https://example-ui.dev.hel.ninja/
+${URL_TEST}                                             https://tilavaraus.test.hel.ninja/
+${URL_STAGE}                                            https://tilavaraus.stage.hel.ninja/
+${URL_PROD}                                             https://tilavaraus.hel.fi/
+${URL_ADMIN}                                            https://tilavaraus.test.hel.ninja/kasittely
+${URL_MAIL}                                             https://www.google.com/intl/fi/gmail/about/
 
-# Elements
-${TIME_OF_SECOND_FREE_SLOT}                 ${EMPTY}
+# System
+${DOWNLOAD_DIR}                                         ${CURDIR}${/}downloads
+
+###
+#
+###
+
+###
+# CALENDAR
+###
+
+# Calendar ICS info
+${DOWNLOAD_ICS_FILE}                                    ${CURDIR}${/}downloads/reservation_calendar.ics
+${ICS_TEXT}                                             ${EMPTY}
+${START_TIME_FROM_ICS}                                  ${EMPTY}
+${END_TIME_FROM_ICS}                                    ${EMPTY}
+${ICS_TEXT_FROM_FILE}                                   ${EMPTY}
+
+###
+#
+###
 
 ###
 # UNITS
 ##
-${ALLWAYS_FREE_UNIT}                        Maksuton Mankeli (AUTOMAATIOTESTI ÄLÄ POISTA)
-${ALLWAYS_FREE_UNIT_REQUIRES_HANDLING}      Aina käsiteltävä kellarikerros (AUTOMAATIOTESTI ÄLÄ POISTA)
+${ALWAYS_FREE_UNIT}                                     Maksuton Mankeli (AUTOMAATIOTESTI ÄLÄ POISTA)
+${ALWAYS_FREE_UNIT_WITH_UNIT_LOCATION}                  Maksuton Mankeli (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
+
+${UNIT_REQUIRES_ALWAYS_HANDLING}                        Aina käsiteltävä kellarikerros (AUTOMAATIOTESTI ÄLÄ POISTA)
+${UNIT_REQUIRES_ALWAYS_HANDLING_WITH_UNIT_LOCATION}     Aina käsiteltävä kellarikerros (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
+
+${FREE_UNIT_NO_CANCEL}                                  Perumiskelvoton parveke, maksuton (AUTOMAATIOTESTI ÄLÄ POISTA)
+${FREE_UNIT_NO_CANCEL_WITH_UNIT_LOCATION}               Perumiskelvoton parveke, maksuton (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
+
+${ALWAYS_PAID_UNIT}                                     Aina maksullinen Aitio (AUTOMAATIOTESTI ÄLÄ POISTA)
+${ALWAYS_PAID_UNIT_WITH_UNIT_LOCATION}                  Aina maksullinen Aitio (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
+${ALWAYS_PAID_UNIT_SUBVENTED}                           Alennuskelpoinen aula (AUTOMAATIOTESTI ÄLÄ POISTA)
+${ALWAYS_PAID_UNIT_SUBVENTED_WITH_UNIT_LOCATION}        Alennuskelpoinen aula (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
+
+${UNAVAILABLE_UNIT}                                     Aina varattu yksikkö (AUTOMAATIOTESTI ÄLÄ POISTA)
+
+${UNIT_LOCATION}                                        Harakka, piilokoju
 
 ###
-# RESERVATION UNIT
+# RESERVATIONS INFO
 ##
-${QUICK_RESERVATION_DURATION}               1:00
-${TIME_OF_QUICK_RESERVATION}                ${EMPTY}
-${RESERVATION_INDIVIDUAL}                   css=[for="INDIVIDUAL"]
-${RESERVATION_NONPROFIT}                    css=[for="NONPROFIT"]
-${RESERVATION_BUSINESS}                     css=[for="BUSINESS"]
+
+${QUICK_RESERVATION_DURATION}                           60 min
+${TIME_OF_QUICK_RESERVATION_FREE_SLOT}                  ${EMPTY}
+${TIME_OF_QUICK_RESERVATION}                            ${EMPTY}
+${TIME_OF_QUICK_RESERVATION_MINUS_T}                    ${EMPTY}
+${TIME_OF_QUICK_RESERVATION_MODIFIED}                   ${EMPTY}
+${TIME_OF_RESERVATION_FOR_MAIL_TEST}                    ${EMPTY}
+${TIME_OF_QUICK_RESERVATION_MINUS_T_MODIFIED}           ${EMPTY}
+${ADMIN_MODIFIES_TIME_OF_INFO_CARD}                     ${EMPTY}
+${ADMIN_MODIFIES_TIME_OF_INFO_CARD_MINUS_T}             ${EMPTY}
+${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}                   ${EMPTY}
+${FORMATTED_ICS_START}                                  ${EMPTY}
+${FORMATTED_ICS_END}                                    ${EMPTY}
+${FORMATTED_RESERVATION_TIME}                           ${EMPTY}
+
+# This is formatted with keyword, Formats info of subvented reservation to admin side
+${RESERVATION_TAGLINE}                                  ${EMPTY}    # Ke 10.4.2024 klo 17:15-18:15, 1 t Alennuskelpoinen aula, Caisa
+
+# Admin side
+${MODIFIED_DATE_SUBVENTED_RESERVATION}                  ${EMPTY}
+${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}        ${EMPTY}
+${MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION}          ${EMPTY}
+
+# These are used in - Admin creates all types of reservations and verifies no unavailable reservations exist
+${UNAVAILABLE_RESERVATION_DATE}                         ${EMPTY}
+${UNAVAILABLE_RESERVATION_HOUR_STARTTIME}               ${EMPTY}
+${UNAVAILABLE_RESERVATION_HOUR_ENDTIME}                 ${EMPTY}
+
+${BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED}              ${EMPTY}
+${BOOKING_NUM_ONLY}                                     ${EMPTY}
+
+###
+#
+###
+
+###
+# RESERVATIONS TYPE INFO
+###
+
+${RESERVATION_INDIVIDUAL}                               css=[for="INDIVIDUAL"]
+${RESERVATION_NONPROFIT}                                css=[for="NONPROFIT"]
+${RESERVATION_BUSINESS}                                 css=[for="BUSINESS"]
+
+###
+#
+###
+
+###
+# BOOKINGS LIST
+##
+
+${RESERVATION_CARD}                                     [data-testid="reservation-card__container"]
+${RESERVATION_CARDNAME}                                 [data-testid="reservation-card__name"]
+
+###
+#
+###
+
+###
+# PAGES
+##
+${PAGE1}                                                ${EMPTY}
+
+###
+#
+###
+
+###
+# MAIL
+###
+
+# DEVNOTE If True, skips email verification during automated tests.
+# This is set in the end of test --> User can make paid single booking
+${MAIL_TEST_TRIGGER}                                    True
+
+${FORMATTED_STARTTIME}                                  ${EMPTY}    # Alkamisaika: ${day}.${month}.${year} klo ${start_time}
+${FORMATTED_ENDTIME}                                    ${EMPTY}    # Päättymisaika: ${day}.${month}.${year} klo ${end_time}
+${DOWNLOAD_TERMS_OF_USE_FILE}                           ${CURDIR}${/}downloads/asiointipalvelun-ehdot.pdf
+
+###
+#
+###

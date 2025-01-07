@@ -21,7 +21,7 @@ Select the free slot and submits
 
     # Get all available slots
     ${all_free_quick_timeslots}=    Browser.Get Elements
-    ...    [class*="slide-visible"] >> [data-testid="quick-reservation-slot"]
+    ...    [class*="slide-visible"] >> [data-testid="quick-reservation__slot"]
 
     # Get the total number of slots
     ${total_slots}=    Get Length    ${all_free_quick_timeslots}
@@ -46,8 +46,11 @@ Select the free slot and submits
 Select duration
     [Arguments]    ${duration}
     Log    ${duration}
-    Wait For Elements State    id=quick-reservation >> id=duration-toggle-button    visible
-    Click    id=quick-reservation >> id=duration-toggle-button
+    # devnote fix real selector here
+    # Wait For Elements State    id=quick-reservation >> id=duration-toggle-button    visible
+    # Click    id=quick-reservation >> id=duration-toggle-button
+    # Wait For Elements State    id=quick-reservation >> id=hds-select-92-main-button    visible
+    Click    id=quick-reservation >> css=.Select-module_selectAndListContainer__vSJEv
     Click    [role="option"] >> '${duration}'
 
 Click more available slots
@@ -69,7 +72,7 @@ Check the price of quick reservation
     [Arguments]    ${price_with_text}
     ${reservation_price}=    Get text    [data-testid="reservation__reservation-info-card__price"]
     ${normalized_string}=    custom_keywords.Remove non-breaking space    ${reservation_price}
-    Log    ${price_with_text}
+    Log    expected price string ${price_with_text}
     Should Be Equal    ${normalized_string}    ${price_with_text}
 
 Get booking number
@@ -87,7 +90,7 @@ Check booking number
     Should Be Equal    ${quick_booking_num}    ${booking_number}
 
 Confirms date picker opens from quick reservation
-    Wait For Elements State    id=quick-reservation-date    visible
+    Wait For Elements State    id=quick-reservation__date    visible
     Click    id=quick-reservation >> [aria-label="Valitse päivämäärä"]
 
     # Waiting for the animation
@@ -101,7 +104,7 @@ Confirms date picker opens from quick reservation
     Click    id=quick-reservation >> [data-testid="selectButton"]
 
 Get the value from date input
-    ${value}=    Browser.Get Attribute    id=quick-reservation-date    value
+    ${value}=    Browser.Get Attribute    id=quick-reservation__date    value
     Log    The value of the quick reservation date is: ${value}
     RETURN    ${value}
 

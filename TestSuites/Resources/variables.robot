@@ -9,15 +9,15 @@ Library             Browser
 ###
 # DEV ENVIRONMENTS
 ###
-${URL_TEST}                                             https://tilavaraus.test.hel.ninja/
-${URL_STAGE}                                            https://tilavaraus.stage.hel.ninja/
+${URL_TEST}                                             https://varaamo.test.hel.ninja/
+${URL_STAGE}                                            https://varaamo.test.hel.ninja/kasittely
 ${URL_PROD}                                             https://tilavaraus.hel.fi/
 ${URL_ADMIN}                                            https://tilavaraus.test.hel.ninja/kasittely
 ${URL_MAIL}                                             https://www.google.com/intl/fi/gmail/about/
 
 # System
 ${DOWNLOAD_DIR}                                         ${CURDIR}${/}downloads
-
+${EMAIL_FILE_PATH}                                      ${CURDIR}${/}downloads${/}cleaned_emails.json
 ###
 #
 ###
@@ -27,7 +27,7 @@ ${DOWNLOAD_DIR}                                         ${CURDIR}${/}downloads
 ###
 
 # Calendar ICS info
-${DOWNLOAD_ICS_FILE}                                    ${CURDIR}${/}downloads/reservation_calendar.ics
+${DOWNLOAD_ICS_FILE}                                    ${CURDIR}${/}downloads
 ${ICS_TEXT}                                             ${EMPTY}
 ${START_TIME_FROM_ICS}                                  ${EMPTY}
 ${END_TIME_FROM_ICS}                                    ${EMPTY}
@@ -74,7 +74,7 @@ ${ADMIN_MODIFIES_TIME_OF_INFO_CARD_MINUS_T}             ${EMPTY}
 ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}                   ${EMPTY}
 ${FORMATTED_ICS_START}                                  ${EMPTY}
 ${FORMATTED_ICS_END}                                    ${EMPTY}
-${FORMATTED_RESERVATION_TIME}                           ${EMPTY}
+${RESERVATION_TIME_EMAIL_RECEIPT}                       ${EMPTY}
 
 # This is formatted with keyword, Formats info of subvented reservation to admin side
 ${RESERVATION_TAGLINE}                                  ${EMPTY}    # Ke 10.4.2024 klo 17:15-18:15, 1 t Alennuskelpoinen aula, Caisa
@@ -91,6 +91,7 @@ ${UNAVAILABLE_RESERVATION_HOUR_ENDTIME}                 ${EMPTY}
 
 ${BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED}              ${EMPTY}
 ${BOOKING_NUM_ONLY}                                     ${EMPTY}
+${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}                  ${EMPTY}
 
 ###
 #
@@ -100,9 +101,9 @@ ${BOOKING_NUM_ONLY}                                     ${EMPTY}
 # RESERVATIONS TYPE INFO
 ###
 
-${RESERVATION_INDIVIDUAL}                               css=[for="INDIVIDUAL"]
-${RESERVATION_NONPROFIT}                                css=[for="NONPROFIT"]
-${RESERVATION_BUSINESS}                                 css=[for="BUSINESS"]
+${RESERVATION_INDIVIDUAL}                               id=reserveeType__individual
+${RESERVATION_NONPROFIT}                                id=reserveeType__nonprofit
+${RESERVATION_BUSINESS}                                 id=reserveeType__business
 
 ###
 #
@@ -136,9 +137,11 @@ ${PAGE1}                                                ${EMPTY}
 # This is set in the end of test --> User can make paid single booking
 ${MAIL_TEST_TRIGGER}                                    True
 
-${FORMATTED_STARTTIME}                                  ${EMPTY}    # Alkamisaika: ${day}.${month}.${year} klo ${start_time}
-${FORMATTED_ENDTIME}                                    ${EMPTY}    # Päättymisaika: ${day}.${month}.${year} klo ${end_time}
+${ATTACHMENT_FILENAME}                                  asiointipalvelun-ehdot.pdf
+${FORMATTED_STARTTIME_EMAIL}                            ${EMPTY}    # Alkamisaika: ${day}.${month}.${year} klo ${start_time}
+${FORMATTED_ENDTIME_EMAIL}                              ${EMPTY}    # Päättymisaika: ${day}.${month}.${year} klo ${end_time}
 ${DOWNLOAD_TERMS_OF_USE_FILE}                           ${CURDIR}${/}downloads/asiointipalvelun-ehdot.pdf
+${EXPECTED_ATTACHMENT_STATUS}                           ${True}
 
 ###
 #

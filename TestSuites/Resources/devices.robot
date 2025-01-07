@@ -2,20 +2,21 @@
 # INFO ABOUT MOBILE DEVICES
 # https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json
 Library     Browser
+Library     Dialogs
 Resource    variables.robot
 # DEVNOTE viewport=${None} for laptop UI
 
 
 *** Variables ***
-${BROWSER}=             chromium
-${BROWSER_FOR_MAIL}=    firefox
-${LOCALE}=              en-US
+${BROWSER}              chromium
+${BROWSER_FOR_MAIL}     firefox
+${LOCALE}               en-US
 
 
 *** Keywords ***
 Set up chromium desktop browser and open url
     [Arguments]    ${input_URL}    ${DOWNLOAD_DIR}
-    New Browser    ${BROWSER}    headless=false    downloadsPath=${DOWNLOAD_DIR}
+    New Browser    ${BROWSER}    headless=true    downloadsPath=${DOWNLOAD_DIR}
     New Context
     ...    viewport={'width': 1920, 'height': 1080}
     ...    acceptDownloads=True
@@ -28,7 +29,7 @@ Set up chromium desktop browser and open url
 
 Set up firefox desktop browser and open url
     [Arguments]    ${input_URL}    ${DOWNLOAD_DIR}
-    New Browser    ${BROWSER_FOR_MAIL}    headless=false    downloadsPath=${DOWNLOAD_DIR}
+    New Browser    ${BROWSER_FOR_MAIL}    headless=true    downloadsPath=${DOWNLOAD_DIR}
     New Context
     ...    viewport={'width': 1920, 'height': 1080}
     ...    acceptDownloads=True
@@ -45,18 +46,19 @@ Set up iphone 14 and open url
     ${iphone}=    Get Device    iPhone 14
 
     # Open the browser
-    New Browser    browser=webkit    headless=false
+    New Browser    browser=webkit    headless=true
 
     # Create a new context with the iPhone 14 device configuration and ignore HTTPS errors
-    New Context    &{iphone}    isMobile=true    locale=${LOCALE}    ignoreHTTPSErrors=true
+    New Context    &{iphone}    isMobile=true    locale=${LOCALE}    ignoreHTTPSErrors=true    deviceScaleFactor=1
 
     New Page    ${input_URL}
-    ${viewport}=    Get Viewport Size    # returns { "width": 390, "height": 664 }
-    # Validate the width
-    Should Be Equal As Integers    ${viewport["width"]}    390    msg=The viewport width is not as expected.
-    # Validate the height
-    Should Be Equal As Integers    ${viewport["height"]}    664    msg=The viewport height is not as expected.
+    Wait For Load State    domcontentloaded    timeout=7s
 
+    ${viewport}=    Get Viewport Size    # should return { "width": 390, "height": 664 }
+    # Validate the width
+    Should Be Equal As Integers    ${viewport["width"]}    390
+    # Validate the height
+    Should Be Equal As Integers    ${viewport["height"]}    664
     Set Browser Timeout    30s
 
 Set up android pixel 5 and open url
@@ -64,9 +66,9 @@ Set up android pixel 5 and open url
     ${pixel}=    Get Device    Pixel 5
 
     # Open the browser
-    New Browser    headless=false    browser=Chromium
+    New Browser    headless=true    browser=Chromium
 
-    # Create a new context with the iPhone 14 device configuration and ignore HTTPS errors
+    # Create a new context with the Pixel 5 device configuration
     New context    &{pixel}    isMobile=true    locale=${LOCALE}
 
     New Page    ${input_URL}

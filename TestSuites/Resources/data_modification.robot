@@ -121,13 +121,13 @@ Formats reservation time to start and end time
     ${end_time}=    Strip String    ${end_time}
 
     # Construct the formatted start and end times
-    Set Suite Variable    ${FORMATTED_STARTTIME}    Alkamisaika: ${day}.${month}.${year} klo ${start_time}
-    Set Suite Variable    ${FORMATTED_ENDTIME}    Päättymisaika: ${day}.${month}.${year} klo ${end_time}
+    Set Suite Variable    ${FORMATTED_STARTTIME_EMAIL}    Alkamisaika: ${day}.${month}.${year} klo ${start_time}
+    Set Suite Variable    ${FORMATTED_ENDTIME_EMAIL}    Päättymisaika: ${day}.${month}.${year} klo ${end_time}
 
-    Log    ${FORMATTED_STARTTIME}
-    Log    ${FORMATTED_ENDTIME}
+    Log    ${FORMATTED_STARTTIME_EMAIL}
+    Log    ${FORMATTED_ENDTIME_EMAIL}
 
-Format reservation time for mail
+Format reservation time for email receipt
     [Documentation]    This keyword reformats a reservation time string from the format
     ...    "Pe 1.11.2024 klo 11:00–12:00" to "Pe 1.11.2024 11:00-12:00".
     ...    It removes the word "klo" and replaces the en dash (–) with a hyphen (-),
@@ -137,13 +137,13 @@ Format reservation time for mail
     ...    Formatting reservation time from '${time_of_the_reservation}' to remove 'klo' and replace en dash with hyphen.
 
     # Remove 'klo ' and replace the en dash with a hyphen
-    ${formatted_reservation_time}=    Evaluate
+    ${reservation_time_email_receipt}=    Evaluate
     ...    '''${time_of_the_reservation}'''.replace('klo ', '').replace('–', '-')
 
     # Log the formatted result
-    Log    Formatted reservation time: ${formatted_reservation_time}
+    Log    Formatted reservation time: ${reservation_time_email_receipt}
 
-    Set Suite Variable    ${FORMATTED_RESERVATION_TIME}    ${formatted_reservation_time}
+    Set Suite Variable    ${RESERVATION_TIME_EMAIL_RECEIPT}    ${reservation_time_email_receipt}
 
 Set info card duration time info
     [Documentation]    Format the Finnish date and time into the desired format

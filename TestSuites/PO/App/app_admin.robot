@@ -5,6 +5,7 @@ Resource    ../Admin/admin_mainmenu.robot
 Resource    ../Admin/admin_my_units.robot
 Resource    ../../Resources/data_modification.robot
 Resource    ../App/app_common.robot
+Library     Browser
 
 
 *** Keywords ***
@@ -96,7 +97,7 @@ Admin tries to make reserevation that is unavailable
 
 Admin navigates to reservations by units and checks reserevation info
     # TODO lets fix this to better keyword
-    ${ByUnitsElement}=    Get Element    css=[role="tablist"] >> span:text-is("${RESERVATIONS_BY_UNITS_FI}")
+    ${ByUnitsElement}=    Browser.Get Element    css=[role="tablist"] >> span:text-is("${RESERVATIONS_BY_UNITS_FI}")
     Click    ${ByUnitsElement}
     admin_reservations.Admin selects reservation unit    ${ALWAYS_FREE_UNIT}
     admin_reservations.Admin finds reservation and clicks it    ${CALENDAR_EVENT_NAME}
@@ -124,7 +125,7 @@ Admin makes reservation for behalf
     Set Suite Variable    ${UNAVAILABLE_RESERVATION_HOUR_ENDTIME}    ${end_hour}
 
     admin_reservations.Admin enters reservation time and type of reservation
-    ...    [for="BEHALF"]
+    ...    [for=BEHALF]
     ...    ${UNAVAILABLE_RESERVATION_HOUR_STARTTIME}
     ...    ${UNAVAILABLE_RESERVATION_HOUR_ENDTIME}
     ...    ${UNAVAILABLE_RESERVATION_DATE}
@@ -142,7 +143,7 @@ Admin makes reservation for closed
     Set Suite Variable    ${UNAVAILABLE_RESERVATION_HOUR_ENDTIME}    ${end_hour}
 
     admin_reservations.Admin enters reservation time and type of reservation
-    ...    [for="BLOCKED"]
+    ...    [for=BLOCKED]
     ...    ${UNAVAILABLE_RESERVATION_HOUR_STARTTIME}
     ...    ${UNAVAILABLE_RESERVATION_HOUR_ENDTIME}
     ...    ${UNAVAILABLE_RESERVATION_DATE}

@@ -165,7 +165,10 @@ Admin checks reservation status
     custom_keywords.Check elements text    [data-testid="reservation_title_section__reservation_state"]    ${status}
 
 Admin saves reservation number
-    custom_keywords.Find and click element with text    css=.label    Varauksen tiedot
+    # DEVNOTE fix better selector than span
+    # custom_keywords.Find and click element with text    css=.label    Varauksen tiedot
+    Click    id=reservation__reservation-details-heading
+    # custom_keywords.Find and click element with text    button >> span    Varauksen tiedot
     Wait For Elements State    [data-testid="reservation__info--Varaustunnus"]    visible
     ${reservation_number}=    Get Text    [data-testid="reservation__info--Varaustunnus"]
     Set Suite Variable    ${RESERVATION_NUMBER_ADMINSIDE}    ${reservation_number}
@@ -188,10 +191,10 @@ Admin selects reservation unit
 
 Admin selects reason for rejection
     [Arguments]    ${reason_of_rejection}
-    Wait For Elements State    id=denyReason-toggle-button    visible
-    Click    id=denyReason-toggle-button
+    Wait For Elements State    id=denyReason-main-button    visible
+    Click    id=denyReason-main-button
     Sleep    1s
-    custom_keywords.Find and click element with text    id=denyReason-menu >> li    ${reason_of_rejection}
+    custom_keywords.Find and click element with text    id=denyReason-list >> li    ${reason_of_rejection}
 
 Admin checks reason for subvention in dialog
     custom_keywords.Find text from elements or fail    id=info-dialog >> p    ${JUSTIFICATION_FOR_SUBVENTION}
@@ -216,9 +219,9 @@ Admin fills reservation details behalf
 
     Type Text    [name="reserveeFirstName"]    ${ADMIN_BEHALF_FIRSTNAME_FI}
     Sleep    500ms
-    Type Text    [id="reserveeLastName"]    ${ADMIN_BEHALF_LASTNAME_FI}
+    Type Text    [name="reserveeLastName"]    ${ADMIN_BEHALF_LASTNAME_FI}
     Sleep    500ms
-    Type Text    [id="reserveeEmail"]    ${ADMIN_ALL_MALE_EMAIL}
+    Type Text    [name="reserveeEmail"]    ${ADMIN_ALL_MALE_EMAIL}
     Sleep    500ms
     Type Text    [name="reserveePhone"]    ${ADMIN_BEHALF_PHONE_FI}
 
@@ -237,7 +240,7 @@ Admin enters reservation time and type of reservation
 #
     Type Text    id=ReservationDialog.endTime-minutes    00
 #
-    Type Text    id=reservationDialog.date    ${date}
+    Type Text    id=controlled-date-input__date    ${date}
 
 ###
 # Reservation calendar
@@ -247,9 +250,9 @@ Admin opens calendar and changes reservation time
     [Documentation]    This keyword opens the reservation calendar and changes the reservation time.
     ...    It uses the keyword 'Admin enters reservation time and type of reservation' to set the new time.
 
-    Click    id=reservation-calendar-heading
+    Click    id=reservation__calendar-heading
     custom_keywords.Find and click element with text
-    ...    id=reservation-calendar-content >> button
+    ...    id=reservation__calendar-content >> button
     ...    ${CALENDAR_CHANGE_TIME_FI}
 
     # Call the keyword and capture the returned values
@@ -272,8 +275,7 @@ Admin opens calendar and changes reservation time
     Type Text    id=ReservationDialog.endTime-hours    ${MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION}
     Type Text    id=ReservationDialog.endTime-minutes    00
 
-    Type Text    id=reservationDialog.date    ${MODIFIED_DATE_SUBVENTED_RESERVATION}
-
+    Type Text    id=controlled-date-input__date    ${MODIFIED_DATE_SUBVENTED_RESERVATION}
     Sleep    1s
     Wait For Elements State    [type="submit"]    enabled    message= Check that the modified time is available?
     Click    [type="submit"]

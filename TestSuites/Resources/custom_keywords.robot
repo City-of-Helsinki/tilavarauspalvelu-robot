@@ -22,6 +22,7 @@ Find and click element with text
 
     FOR    ${element}    IN    @{elements_with_text}
         ${el_text}=    Get Text    ${element}
+        ${el_text}=    Strip String    ${el_text}    # Remove leading and trailing whitespaces for webkit
         Log    element is: ${element}
         Log    Text found in element: ${el_text}
 
@@ -341,90 +342,4 @@ Extract Start And End Time From ICS File
 
 ###
 # Calendar extraction
-###
-
-###
-# Mail UI
-###
-# TODO these are wip. The mail ui part maybe deleted in future
-
-# Click mail with title
-#    [Arguments]    ${partial_text}
-#
-#    # Select the last tbody directly
-#    ${last_tbody}=    Browser.Get Element    css=tbody >> nth=-1
-#
-#    # Find all <tr> elements in the last <tbody>
-#    ${tr_elements}=    Browser.Get Elements    ${last_tbody} >> css=tr
-#    ${tr_count}=    Evaluate    len(${tr_elements})
-#    Log    Found ${tr_count} <tr> elements inside the last <tbody>.
-#
-#    # Initialize a flag to track if the element is found
-#    ${clicked}=    Set Variable    False
-#
-#    # Loop through each <tr> and find matching <span> elements with the partial text
-#    FOR    ${tr}    IN    @{tr_elements}
-#    ${spans}=    Browser.Get Elements    ${tr} >> css=span
-#    FOR    ${span}    IN    @{spans}
-#    ${text}=    Browser.Get Text    ${span}
-#    ${clean_text}=    custom_keywords.Remove non-breaking space    ${text}
-#
-#    # Log the clean_text for troubleshooting
-#    Log    Cleaned Text: ${clean_text}
-#
-#    # Check if the clean_text contains the partial text
-#    ${is_match}=    Evaluate    '${partial_text}' in '''${clean_text}'''
-#
-#    # For logs
-#    IF    ${is_match}    Log    Found match: ${clean_text}
-#
-#    # Force click using JavaScript if match is found and set `${clicked}` to `True`
-#    IF    ${is_match}
-#    Evaluate JavaScript    ${span}    (element) => element.click()
-#    ${clicked}=    Set Variable    True
-#    Log    Clicked set to: ${clicked}
-#    BREAK
-#    END
-#    END
-#    IF    ${clicked}    BREAK
-#    END
-#    Log    clicked value: ${clicked}
-#
-#    # Log if no match was found
-#    IF    not ${clicked}
-#    Fail    No element with text "${partial_text}" was found to click.
-#    END
-#
-# Get text content from mail
-#    [Arguments]    ${unit_name}
-#    ${result}=    Evaluate JavaScript
-#    ...    ${None}
-#    ...    function() {
-#    ...    let matchingTbody = null;
-#    ...    const tbodies = document.querySelectorAll("tbody");
-#    ...
-#    ...    tbodies.forEach(tbody => {
-#    ...    if (tbody.textContent.includes(arguments[0])) {
-#    ...    matchingTbody = tbody;
-#    ...    }
-#    ...    });
-#    ...
-#    ...    let elementTexts = [];
-#    ...    if (matchingTbody) {
-#    ...    const elements = matchingTbody.querySelectorAll("td, span, p, b");
-#    ...    elements.forEach(element => {
-#    ...    elementTexts.push(element.textContent.trim());
-#    ...    });
-#    ...    } else {
-#    ...    console.log("No matching tbody found with the specified text.");
-#    ...    }
-#    ...    return elementTexts;
-#    ...    }
-#    ...    arg=${UNIT_NAME}
-#
-#    Log    ${result}
-#    RETURN    ${result}
-
-###
-#
 ###

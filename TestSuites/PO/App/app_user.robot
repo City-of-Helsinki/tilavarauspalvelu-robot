@@ -3,6 +3,7 @@ Resource    ../../Resources/variables.robot
 Resource    ../../Resources/texts_FI.robot
 Resource    ../Common/topNav.robot
 Resource    ../Common/checkout.robot
+Resource    ../Common/popups.robot
 Resource    ../../Resources/custom_keywords.robot
 Resource    ../../Resources/data_modification.robot
 Resource    ../User/reservation_calendar.robot
@@ -68,7 +69,7 @@ User uses search to find right unit
 
     # Waiting results to load
     Sleep    1s
-    Wait For Load State    domcontentloaded    timeout=7s
+    Wait For Load State    Load    timeout=10s
 
     custom_keywords.Find and click element with text
     ...    [data-testid="list-with-pagination__list--container"] >> [data-testid="card__heading"]
@@ -192,7 +193,9 @@ User checks unit that is always handled details are right
     quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
     reservation_unit_reservation_receipt.Click the checkbox generic terms
+    #
     reservation_lownav.Click submit button continue
+    #
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
     quick_reservation.Get booking number
@@ -279,7 +282,7 @@ User cancel booking in reservations and checks it got cancelled
     mybookings.Select reason for cancellation    ${REASON_FOR_CANCELLATION}
     mybookings.Click cancel button
     #
-    mybookings.Check my bookings h1    ${MYBOOKINGS_STATUS_CANCELED}
+    mybookings.Check reservation status    ${IN_RESERVATIONS_STATUS_CANCELED}
     quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
 
 User modifies booking and verifies the changes
@@ -314,6 +317,8 @@ User modifies booking and verifies the changes
     Log    ${TIME_OF_QUICK_RESERVATION_MINUS_T_MODIFIED}
     Sleep    1s
 
+    Log    If the continue button is not enabled, verify that the reservation time was actually modified
+    Wait For Elements State    [data-testid="reservation__button--continue"]    enabled    timeout=3s
     reservation_calendar.Click continue button
 
 User checks cancelled booking is found
@@ -343,6 +348,7 @@ User can see upcoming booking in list and clicks it
     mybookings.Check unitname and reservation time and click show
     ...    ${unitname}
     ...    ${reservationtime}
+    Wait For Load State    domcontentloaded    timeout=7s
 
 User can see upcoming noncancelable booking in list and clicks it
     [Arguments]    ${unitname}    ${reservationtime}
@@ -499,10 +505,15 @@ User saves file and formats booking time to ICS
     [Arguments]    ${file_path}
     Sleep    1s
 
+    # Ensure the directory exists
+    Create Directory    ${file_path}
+    Sleep    1s
+    Directory Should Exist    ${file_path}
+
     custom_keywords.Convert booking time to ICS format    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
     # Create a promise that waits for the download to complete, using the specified file path
-    ${download_promise}=    Promise To Wait For Download    saveAs=${file_path}    wait_for_finished=True
+    ${download_promise}=    Promise To Wait For Download    wait_for_finished=True
 
     # Saves the calendar file
     Click    [data-testid="reservation__confirmation--button__calendar-url"]
@@ -514,7 +525,7 @@ User saves file and formats booking time to ICS
     File Should Exist    ${file_obj}[saveAs]
 
     # Retrieves text content from the downloaded file and sets it as a suite variable
-    ${content}=    Get File    ${file_path}
+    ${content}=    Get File    ${file_obj}[saveAs]
     ${ICS_TEXT}=    Set Variable    ${content}
     Set Suite Variable    ${ICS_TEXT_FROM_FILE}    ${ICS_TEXT}
 

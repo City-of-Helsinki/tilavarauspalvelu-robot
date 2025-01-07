@@ -175,10 +175,15 @@ ${RESERVATION_STATUS_DIALOG}                                        Palauta käs
 ###
 
 ${CONFIRMATION_AND_RECEIPT_TEXT_IN_MAIL}                            Tilausvahvistus ja kuitti
-${CONFIRMATION_TEXT_IN_MAIL}                                        Kiitos varauksestasi Varaamossa
+${CONFIRMATION_TEXT_IN_MAIL}                                        Olet tehnyt uuden varauksen.
 ${CANCELLATION_TEXT_IN_MAIL}                                        Varauksesi on peruttu
 ${CANCELLATION_AND_REFUND_TEXT_IN_MAIL}                             Vahvistus ja kuitti maksun palautuksesta
 
 ###
 #
 ###
+
+###
+# COOKIES
+###
+${COOKIETEXT}                                                       Hyväksy vain välttämättömät evästeet

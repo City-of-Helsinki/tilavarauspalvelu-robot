@@ -50,8 +50,8 @@ User logs in with suomi_fi
 
     # Confirms we are on the landing page
     user_landingpage.Check the user landing page h1    ${USER_LANDING_PAGE_H1_TEXT}
-    popups.User accepts cookies if dialog is visible
-    # Sleep    2s
+    popups.User accepts cookies if dialog is visible    ${COOKIETEXT}
+
     Log    Enable dropdown menu has user info when the profile bug is fixed and name info is no longer empty
 
     # Confirms the user info is present
@@ -97,7 +97,7 @@ User logs in with suomi_fi mobile
 
     # Confirms the login was success
     user_landingpage.Check the user landing page h1    ${USER_LANDING_PAGE_H1_TEXT}
-    popups.User accepts cookies if dialog is visible
+    popups.User accepts cookies if dialog is visible    ${COOKIETEXT}
 
     # Sleep    3s
     # TODO enable these steps when the dropdown has user info again

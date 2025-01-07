@@ -15,7 +15,7 @@ Click login
 
 Click login admin side
     Wait For Elements State    h1    visible
-    ${LoginElement}=    Get Element    button >> span:text-is("${LOGIN_TEXT_ADMIN}")
+    ${LoginElement}=    Browser.Get Element    button >> span:text-is("${LOGIN_TEXT_ADMIN}")
     Click    ${LoginElement}
 
 Click logout
@@ -49,11 +49,11 @@ Check dropdown menu has user info
 Navigate to single booking page
     Click    header >> [href="/search"] >> span:text-is("${SINGLEBOOKING_FI}")
     Sleep    200ms
-    Wait For Load State    domcontentloaded    timeout=7s
+    Wait For Load State    Load    timeout=7s
 
 Navigate to my bookings
     Click    header >> [href="/reservations"] >> span:text-is("${MYBOOKINGS_FI}")
-    Sleep    200ms
+    Sleep    1s
     Wait For Load State    domcontentloaded    timeout=5s
 
     # Confirms page is loaded

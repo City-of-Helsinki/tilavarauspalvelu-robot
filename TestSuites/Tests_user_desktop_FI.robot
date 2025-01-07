@@ -3,9 +3,9 @@ Documentation       Desktop browser tests
 
 Resource            ${CURDIR}/PO/App/app_common.robot
 Resource            ${CURDIR}/PO/App/app_user.robot
-Resource            ${CURDIR}/PO/App/mail.robot
 Resource            ${CURDIR}/Resources/variables.robot
 Resource            ${CURDIR}/Resources/texts_FI.robot
+Resource            ${CURDIR}/PO/App/mail.robot
 
 Test Setup          User opens desktop browser to landing page
 Test Teardown       Run Keyword If Test Failed    Take Screenshot
@@ -182,51 +182,15 @@ User can make free single booking and check info from downloaded calendar file
     ...    ${ALWAYS_FREE_UNIT_WITH_UNIT_LOCATION}
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
-# TODO this mail test is not working with gmail UI now. Lets fix it later
-# Check emails from reservations
-#    [Documentation]    This will skip the test if test - User can make paid single booking didnt set 'MAIL_TEST_TRIGGER' to False.
-#    ...    'NUMBER_OF_RESERVATION_FOR_MAIL_TEST' and 'TIME_OF_RESERVATION_FOR_MAIL_TEST' are set in test --> 'User can make paid single booking'
-#    ...
-#    ...    Keyword: "Get text content from mail" gets the latest email for paid reservation so "User can make paid single booking"
-#    ...    MUST be run after "User can make paid single booking with interrupted checkout".
-#    ...    If not, the keyword gets text from mail that is the latest.
-#    Set Global Variable    ${MAIL_TEST_TRIGGER}    False
-#
-#    Skip If    ${MAIL_TEST_TRIGGER}
-#
-#    # Closes the chrome browser from Test setup phase
-#    Close Browser
-#
-#    app_common.User opens desktop browser to mail
-#    mail.User logs in to mail
-#    Sleep    5s
-#    mail.User searches reservation    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
-#
-#    # checks mail for reservation confirmation and receipt
-#    mail.User checks mail for reservation
-#    ...    ${ALWAYS_PAID_UNIT}
-#    ...    ${CONFIRMATION_TEXT_IN_MAIL}
-#    ...    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
-#    ...    ${TIME_OF_RESERVATION_FOR_MAIL_TEST}
-#    Go Back
-#    # checks mail for reservation CANCELLATION
-#    mail.User checks mail for reservation
-#    ...    ${ALWAYS_PAID_UNIT}
-#    ...    ${CANCELLATION_TEXT_IN_MAIL}
-#    ...    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
-#    ...    ${TIME_OF_RESERVATION_FOR_MAIL_TEST}
-#    Go Back
-#    # checks mail for reservation confirmation
-#    mail.User checks mail for receipt and reservation
-#    ...    ${ALWAYS_PAID_UNIT}
-#    ...    ${CONFIRMATION_AND_RECEIPT_TEXT_IN_MAIL}
-#    ...    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
-#    ...    ${TIME_OF_RESERVATION_FOR_MAIL_TEST}
-#    mail.User downloads and confirms that mail file exist    ${DOWNLOAD_TERMS_OF_USE_FILE}
-#    Go Back
-#    # checks mail for reservation CANCELLATION
-#    mail.User checks mail for receipt and reservation
-#    ...    ${ALWAYS_PAID_UNIT}
-#    ...    ${CANCELLATION_AND_REFUND_TEXT_IN_MAIL}
-#    ...    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
-#    ...    ${TIME_OF_RESERVATION_FOR_MAIL_TEST}
+Check emails from reservations
+    [Documentation]    If test - User can make paid single booking didnt set 'MAIL_TEST_TRIGGER' value to False this test is skipped.
+    ...    Default value true skips this test
+    ...    'NUMBER_OF_RESERVATION_FOR_MAIL_TEST' and 'TIME_OF_RESERVATION_FOR_MAIL_TEST' are set in test --> 'User can make paid single booking'
+    Skip If    ${MAIL_TEST_TRIGGER}
+
+    mail.Check emails from reservations
+    mail.Format reservation time for email texts and receipts    ${TIME_OF_RESERVATION_FOR_MAIL_TEST}
+    mail.Verify reservation confirmation email
+    mail.Verify reservation cancellation email
+    mail.Verify refund email for paid reservation
+    mail.Verify payment receipt email

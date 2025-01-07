@@ -1,9 +1,7 @@
 import locale
 import re
 from itertools import zip_longest
-
 from robot.api import logger  # Import Robot Framework's logger
-
 
 
 def get_finnish_day(date_time):
@@ -15,7 +13,7 @@ def get_finnish_day(date_time):
     try:
         locale.setlocale(locale.LC_TIME, 'fi_FI.UTF-8')
     except locale.Error as e:
-        logger.warning(f"Locale setting failed: {e}")
+        logger.warn(f"Locale setting failed: {e}")
         return None
     
     # Return the abbreviated day of the week in Finnish
@@ -37,12 +35,12 @@ def log_differences(elementsText, expectedText, verbose=True, name1="elementsTex
     """
     # Check if inputs are strings
     if not isinstance(elementsText, str) or not isinstance(expectedText, str):
-        logger.warning("Both inputs must be strings.")
+        logger.warn("Both inputs must be strings.")
         return []
     
     # Check if both strings are empty
     if not elementsText and not expectedText:
-        logger.warning("Both strings are empty. Nothing to compare.")
+        logger.warn("Both strings are empty. Nothing to compare.")
         return []
     
     differences = []

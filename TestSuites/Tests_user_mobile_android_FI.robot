@@ -4,6 +4,7 @@ Documentation       Android chrome tests
 Resource            ${CURDIR}/PO/App/app_common.robot
 Resource            ${CURDIR}/PO/App/app_user.robot
 Resource            ${CURDIR}/PO/Common/popups.robot
+Resource            ${CURDIR}/Resources/texts_FI.robot
 
 Test Setup          User opens android chrome to landing page
 Test Teardown       Run Keyword If Test Failed    Take Screenshot
@@ -48,7 +49,7 @@ User can make paid single booking mobile
     app_user.User checks info in paid checkout and confirms booking
     app_user.User checks the paid reservation info is right after checkout
     topNav.Navigate to my bookings mobile
-    popups.User accepts cookies if dialog is visible
+    popups.User accepts cookies if dialog is visible    ${COOKIETEXT}
     app_user.User can see upcoming booking in list and clicks it
     ...    ${ALWAYS_PAID_UNIT_WITH_UNIT_LOCATION}
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
@@ -82,7 +83,7 @@ User can make paid single booking with interrupted checkout mobile
     app_user.User checks info in paid checkout and confirms booking
     app_user.User checks the paid reservation info is right after checkout
     topNav.Navigate to my bookings mobile
-    popups.User accepts cookies if dialog is visible
+    popups.User accepts cookies if dialog is visible    ${COOKIETEXT}
     app_user.User can see upcoming booking in list and clicks it
     ...    ${ALWAYS_PAID_UNIT_WITH_UNIT_LOCATION}
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
@@ -98,7 +99,7 @@ User can make paid single booking with interrupted checkout mobile
     ...    ${ALWAYS_PAID_UNIT_WITH_UNIT_LOCATION}
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
- User can make single booking that requires handling mobile
+User can make single booking that requires handling mobile
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
     app_user.User uses search to find right unit    ${UNIT_REQUIRES_ALWAYS_HANDLING}

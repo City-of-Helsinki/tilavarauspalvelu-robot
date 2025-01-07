@@ -32,6 +32,7 @@ Click advanced search if search not visible
 
     IF    not ${search_visible}
         Log    Search input is not visible. Clicking advanced search
+        # Tää ei klikkaa oikeasti
         Wait For Elements State    [data-testid="show-all__toggle-button"]    visible
         Click    [data-testid="show-all__toggle-button"]
         # Wait for animation

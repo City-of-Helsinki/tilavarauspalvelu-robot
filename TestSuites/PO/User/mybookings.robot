@@ -18,20 +18,25 @@ User cancel booking
     Click    data-testid=reservation-detail__button--cancel
 
 Click reason for cancellation
-    Wait For Elements State    data-testid=reservation-detail__button--cancel    visible
-    Click    id=reason-toggle-button
+    # Wait For Elements State    data-testid=reservation-detail__button--cancel    visible
+    # Click    id=reason-toggle-button
+    Wait For Elements State    id=reservation-cancel__reason-label
+    Click    id=reservation-cancel__reason-main-button
     Sleep    1s
 
 Select reason for cancellation
     [Arguments]    ${reason}
-    Wait For Elements State    id=reason-item-0    visible
+    # Wait For Elements State    id=reason-item-0    visible
+    Wait For Elements State    id=reservation-cancel__reason-option-2    visible
     custom_keywords.Find and click element with text    li    ${reason}
 
 Click cancel button
     Sleep    1s
     Wait For Elements State    [data-testid="reservation-cancel__button--cancel"]    enabled
     Click    [data-testid="reservation-cancel__button--cancel"]
-    Sleep    1s
+    # Wait for reservation status to change
+    Sleep    2s
+    Wait For Load State    domcontentloaded    timeout=7s
 
 Check cancel button is not found in reservations
     Sleep    1s
@@ -54,7 +59,7 @@ User click change time
     Click    data-testid=reservation-detail__button--edit
 
 User click reservation calendar toggle button
-    Click    data-testid=reservation-unit__reservation-controls--toggle-button
+    Click    [data-testid="calendar-controls__toggle-button"]
 
 ###
 # Reservations page

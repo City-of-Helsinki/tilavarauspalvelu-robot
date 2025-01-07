@@ -8,9 +8,9 @@ Library     Dialogs
 Login Suomi_fi
     [Arguments]    ${input_hetu}
     Sleep    1s
-    Wait For Elements State    id=social-suomi_fi    visible
+    Wait For Elements State    id=social-suomi_fi    visible    timeout=10s
     Click    id=social-suomi_fi
-    Wait For Elements State    id=li_fakevetuma2    visible
+    Wait For Elements State    id=li_fakevetuma2    visible    timeout=10s
     Click    css=#li_fakevetuma2
     Type Text    css=#hetu_input    ${input_hetu}
     Click    css=#tunnistaudu
@@ -18,9 +18,9 @@ Login Suomi_fi
 
 Login Suomi_fi mobile
     [Arguments]    ${input_hetu}
-    Wait For Elements State    id=social-suomi_fi    visible
+    Wait For Elements State    id=social-suomi_fi    visible    timeout=10s
     Click    id=social-suomi_fi
-    Wait For Elements State    id=li_fakevetuma2    visible
+    Wait For Elements State    id=li_fakevetuma2    visible    timeout=10s
     Click    nav >> id=li_fakevetuma2
     Sleep    1s
     Type Text    css=#hetu_input    ${input_hetu}

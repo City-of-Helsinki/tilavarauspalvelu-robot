@@ -51,7 +51,6 @@ robot.yaml
 # === Mail related Files ===
 .env
 client_secret.json
-generate_tokens.py
 Tests_mail.robot
 
 # === Other Directories ===

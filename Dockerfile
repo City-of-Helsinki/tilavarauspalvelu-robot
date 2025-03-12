@@ -60,12 +60,12 @@ USER pwuser
 RUN python3 -m venv /home/pwuser/.venv && \
     /home/pwuser/.venv/bin/pip install --no-cache-dir --upgrade pip wheel && \
     /home/pwuser/.venv/bin/pip install --no-cache-dir --upgrade \
-        robotframework==7.2 \
-        robotframework-browser==19.3.0 \
-        python-dotenv==1.0.1 \
-        google-auth==2.38.0 \
-        google-auth-oauthlib==1.2.1 \
-        beautifulsoup4==4.13.3
+    robotframework==7.2 \
+    robotframework-browser==19.3.0 \
+    python-dotenv==1.0.1 \
+    google-auth==2.38.0 \
+    google-auth-oauthlib==1.2.1 \
+    beautifulsoup4==4.13.3
 
 # Initialize Browser library
 RUN python3 -m Browser.entry init --skip-browsers
@@ -77,4 +77,4 @@ VOLUME ${ROBOT_REPORTS_DIR}
 WORKDIR ${ROBOT_WORK_DIR}
 
 # Default command to run Robot Framework tests
-CMD ["robot", "--outputdir", "/opt/robotframework/reports", "/opt/robotframework/tests"]
+CMD ["robot", "--outputdir", "/opt/robotframework/reports", "--nostatusrc", "/opt/robotframework/tests"]

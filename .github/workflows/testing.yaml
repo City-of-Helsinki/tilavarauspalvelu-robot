@@ -24,6 +24,12 @@ jobs:
       - name: Build Docker Image
         run: docker build --no-cache -t robotframework-tests .
 
+      # Ensure the Reports directory has the correct permissions
+      - name: Set Permissions for Reports Directory
+        run: |
+          mkdir -p "${{ github.workspace }}/Reports"
+          chmod 777 "${{ github.workspace }}/Reports"
+
       # 3. Run the Docker container to execute your Robot Framework tests.
       #    Mount the "TestSuites" folder to /opt/robotframework/tests 
       #    and the "Reports" folder to /opt/robotframework/reports.

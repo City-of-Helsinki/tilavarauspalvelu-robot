@@ -186,7 +186,7 @@ Check emails from reservations
     [Documentation]    If test - User can make paid single booking didnt set 'MAIL_TEST_TRIGGER' value to False this test is skipped.
     ...    Default value true skips this test
     ...    'NUMBER_OF_RESERVATION_FOR_MAIL_TEST' and 'TIME_OF_RESERVATION_FOR_MAIL_TEST' are set in test --> 'User can make paid single booking'
-    # Skip If    ${MAIL_TEST_TRIGGER}
+    Skip If    ${MAIL_TEST_TRIGGER}
 
     mail.Check emails from reservations
     mail.Format reservation time for email texts and receipts    ${TIME_OF_RESERVATION_FOR_MAIL_TEST}

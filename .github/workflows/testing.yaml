@@ -1,4 +1,4 @@
-name: Varaamo tests
+name: Varaamo Robot Framework Tests
 
 on:
   push:
@@ -6,6 +6,19 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Select which test suite to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - All
+          - Tests_user_desktop_FI
+          - Tests_user_mobile_iphone_FI
+          - Tests_user_mobile_android_FI
+          - Tests_users_with_admin_desktop
+          - Tests_admin_desktop_FI
 
 jobs:
   test:
@@ -35,8 +48,24 @@ jobs:
       #    and the "Reports" folder to /opt/robotframework/reports.
       #    Using the '--nostatusrc' flag to ignore failed runs
 
-      - name: Run Robot Framework Tests in Docker
+      - name: Run Selected Test Suite
         run: |
+          TEST_SUITE=""
+          if [ "${{ github.event.inputs.test_suite }}" == "Tests_user_desktop_FI" ]; then
+            TEST_SUITE="/opt/robotframework/tests/Tests_user_desktop_FI.robot"
+          elif [ "${{ github.event.inputs.test_suite }}" == "Tests_user_mobile_iphone_FI" ]; then
+            TEST_SUITE="/opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot"
+          elif [ "${{ github.event.inputs.test_suite }}" == "Tests_user_mobile_android_FI" ]; then
+            TEST_SUITE="/opt/robotframework/tests/Tests_user_mobile_android_FI.robot"
+          elif [ "${{ github.event.inputs.test_suite }}" == "Tests_users_with_admin_desktop" ]; then
+            TEST_SUITE="/opt/robotframework/tests/Tests_users_with_admin_desktop.robot"
+          elif [ "${{ github.event.inputs.test_suite }}" == "Tests_admin_desktop_FI" ]; then
+            TEST_SUITE="/opt/robotframework/tests/Tests_admin_desktop_FI.robot"
+          elif [ "${{ github.event.inputs.test_suite }}" == "All" ] || [ -z "${{ github.event.inputs.test_suite }}" ]; then
+            # Run all tests if "all" is selected or if running via push/PR (no input)
+            TEST_SUITE="/opt/robotframework/tests"
+          fi
+
           docker run --rm \
             -e ACCESS_TOKEN \
             -e REFRESH_TOKEN \
@@ -44,7 +73,8 @@ jobs:
             -e CLIENT_SECRET \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
-            robotframework-tests robot --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_desktop_FI.robot
+            robotframework-tests robot --outputdir /opt/robotframework/reports --nostatusrc $TEST_SUITE
+            
       # 4. Upload the generated test reports as artifacts.
       - name: Upload Test Artifacts
         uses: actions/upload-artifact@v4

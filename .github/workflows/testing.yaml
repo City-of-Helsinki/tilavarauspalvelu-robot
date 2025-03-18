@@ -10,7 +10,7 @@ on:
       test_suite:
         description: 'Select which test suite to run'
         required: true
-        default: 'all'
+        default: 'All'
         type: choice
         options:
           - All

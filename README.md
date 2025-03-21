@@ -10,6 +10,7 @@ This repository contains automated test suites for the Varaamo booking system us
 
 ## Local Setup
 
+1. Clone the repository and navigate to the project directory
 
 2. Build the Docker image:
    ```
@@ -24,17 +25,17 @@ To run an entire test suite, use the following command pattern:
 
 **Windows (CMD):**
 ```
-docker run --rm -v "%cd%\TestSuites:/opt/robotframework/tests" -v "%cd%\Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests/SUITE_NAME.robot
+docker run --rm -v "%cd%\TestSuites:/opt/robotframework/tests" -v "%cd%\Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
 ```
 
 **Windows (PowerShell):**
 ```
-docker run --rm -v "${PWD}\TestSuites:/opt/robotframework/tests" -v "${PWD}\Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests/SUITE_NAME.robot
+docker run --rm -v "${PWD}\TestSuites:/opt/robotframework/tests" -v "${PWD}\Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
 ```
 
 **Linux/Mac:**
 ```
-docker run --rm -v "$(pwd)/TestSuites:/opt/robotframework/tests" -v "$(pwd)/Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests/SUITE_NAME.robot
+docker run --rm -v "$(pwd)/TestSuites:/opt/robotframework/tests" -v "$(pwd)/Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
 ```
 
 Available test suites:

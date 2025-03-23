@@ -201,6 +201,9 @@ Validate reservations are not for today or later
 Check unitname and reservation time and click show
     [Documentation]    This keyword verifies if a reservation card with a specified unit name and reservation time is present in the list,
     ...    and clicks the "Show" button on the matching card if found.
+    ...    If multiple matches exist, selects the last matching card.
+    ...    This behavior is used to handle double matching canceled reservations
+    ...    because we cannot clear backend data between test runs.
     [Arguments]    ${unitname}    ${reservation_time}
 
     Log
@@ -215,10 +218,11 @@ Check unitname and reservation time and click show
     ${count}=    Get Length    ${containers}
     Log    Found ${count} reservation card containers.
 
-    # Initialize a flag to track if a match is found
+    # Initialize variables to track the last match
     ${match_found}=    Set Variable    False
+    ${last_match_index}=    Set Variable    -1
 
-    # Loop through each reservation card container to find a match.
+    # Loop through each reservation card container to find matches
     FOR    ${index}    IN RANGE    0    ${count}
         ${name_element}=    Browser.Get Element    ${containers[${index}]} >> [data-testid="reservation-card__name"]
         ${name_text}=    Get Text    ${name_element}
@@ -236,15 +240,19 @@ Check unitname and reservation time and click show
         # Check if both unit name and reservation time match the target values.
         IF    '${name_text}' == '${unitname}'
             IF    '${time_text}' == '${reservation_time}'
-                Click Show Button    ${containers[${index}]}
+                # Instead of immediately clicking and breaking, store this as the last match
                 ${match_found}=    Set Variable    True
-                BREAK
+                ${last_match_index}=    Set Variable    ${index}
+                Log    Found matching reservation at index ${index}, continuing to look for more matches
             END
         END
     END
 
-    # If no match was found after iterating through all cards, fail the test
-    IF    ${match_found} == False
+    # After checking all containers, click the last matching one if any match was found
+    IF    ${match_found} == True
+        Log    Clicking the last matching reservation at index ${last_match_index}
+        Click Show Button    ${containers[${last_match_index}]}
+    ELSE
         Fail    No match found for unit name: ${unitname} and reservation time: ${reservation_time}
     END
 

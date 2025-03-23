@@ -12,11 +12,11 @@ Admin searches reservation with id number and clicks it from name
     [Arguments]    ${booking_number}    ${user_fullname}
     Wait For Elements State    id=search    visible
     Type Text    id=search    ${booking_number}
-    Sleep    1s
+    Sleep    500ms
     custom_keywords.Check elements text    [data-testid="pk-0"]    ${booking_number}
     custom_keywords.Find and click element with text    [data-testid="reservee_name-0"] >> a    ${user_fullname}
-    Sleep    1s
-    Wait For Load State    domcontentloaded    timeout=7s
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
 
 Admin searches reservation with id number and checks the status
     [Arguments]    ${booking_number}    ${reservation_status}
@@ -176,7 +176,8 @@ Admin saves reservation number
 Admin clicks button in reservation page
     [Arguments]    ${button_data_id}
     Click    ${button_data_id}
-    Wait For Load State    domcontentloaded    timeout=7s
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
 
 Admin selects reservation unit
     [Arguments]    ${by_unit}
@@ -255,6 +256,9 @@ Admin opens calendar and changes reservation time
     ...    id=reservation__calendar-content >> button
     ...    ${CALENDAR_CHANGE_TIME_FI}
 
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
+
     # Call the keyword and capture the returned values
     ${date_plus_x_days}    ${start_hour}    ${end_hour}=    data_modification.Get modified date and time
 
@@ -280,6 +284,7 @@ Admin opens calendar and changes reservation time
     Wait For Elements State    [type="submit"]    enabled    message= Check that the modified time is available?
     Click    [type="submit"]
     Sleep    1s
+    Wait For Load State    load    timeout=15s
 
 Admin finds reservation and clicks it
     [Arguments]    ${reservation_name}

@@ -14,7 +14,6 @@ Library     Browser
 ###
 
 Admin checks the info and sets reservation free and approves it
-    Sleep    3s
     admin_reservations.Admin checks reservation h1    ${BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED}
     admin_reservations.Admin checks reservation title tagline    ${RESERVATION_TAGLINE}
     admin_reservations.Admin checks reservation info before handling

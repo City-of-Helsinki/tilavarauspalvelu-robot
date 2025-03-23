@@ -54,21 +54,23 @@ In order summary get booking number from product list
 
 Check the info in checkout
     Sleep    1s
-    Wait For Load State    domcontentloaded    timeout=7s
+    Wait For Load State    load    timeout=15s
     Allow all cookies
-    Sleep    5s
+    Sleep    1s
+    Wait For Load State    load    timeout=15s
     Select payment method OP
-    Sleep    2s
+    Sleep    1s
     Click submit
-    Sleep    2s
+    Sleep    1s
+    Wait For Load State    load    timeout=15s
     Check user details in checkout
     Check product list has all the info
     In order summary get booking number from product list
     Click accept terms
-    Sleep    2s
-    Click submit
     Sleep    1s
-    Wait For Load State    domcontentloaded    timeout=10s
+    Click submit
+    Sleep    2s
+    Wait For Load State    load    timeout=15s
 
 Interrupted checkout
     [Arguments]    ${input_URL}
@@ -76,4 +78,4 @@ Interrupted checkout
     Allow all cookies
     Sleep    1s
     Go To    ${input_URL}
-    Wait For Load State    domcontentloaded    timeout=7s
+    Wait For Load State    load    timeout=15s

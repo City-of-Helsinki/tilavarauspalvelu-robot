@@ -46,8 +46,6 @@ User opens desktop browser to mail
 User logs in with suomi_fi
     topNav.Click login
     login.Login Suomi_fi    ${BASIC_USER_MALE_HETU}
-    Wait For Load State    domcontentloaded    timeout=7s
-
     # Confirms we are on the landing page
     user_landingpage.Check the user landing page h1    ${USER_LANDING_PAGE_H1_TEXT}
     popups.User accepts cookies if dialog is visible    ${COOKIETEXT}
@@ -64,7 +62,7 @@ User goes to landing Page
 User logs out
     topNav.Click user menu
     topNav.Click logout
-    Sleep    2s
+    Sleep    1s
 
 User confirms log out
     topNav.Click login
@@ -120,6 +118,7 @@ Admin opens desktop browser to landing page
 
 Admin goes to landing Page
     Go To    ${URL_ADMIN}
+    Wait For Load State    load    timeout=15s
     admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT}
 
 Admin logs in with suomi_fi

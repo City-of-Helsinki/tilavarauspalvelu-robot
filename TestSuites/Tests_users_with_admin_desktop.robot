@@ -19,8 +19,10 @@ User creates and Admin accepts single booking that requires handling
     app_user.User uses search to find right unit    ${ALWAYS_PAID_UNIT_SUBVENTED}
     app_user.User selects the time with quick reservation
     app_user.User fills subvented booking details as individual    ${JUSTIFICATION_FOR_SUBVENTION}
-    app_user.User checks the paid reservation info is right and submits
-    quick_reservation.Get booking number
+    # app_user.User checks the paid reservation info is right and submits
+    app_user.User checks the subvented reservation info is right and submits
+    app_user.User checks the subvented reservation info is right after submitting
+#
     topNav.Navigate to my bookings
     app_user.User can see upcoming booking in list and clicks it
     ...    ${ALWAYS_PAID_UNIT_SUBVENTED_WITH_UNIT_LOCATION}

@@ -22,11 +22,13 @@ Click logout
     Sleep    1s
     Wait For Elements State    css=[aria-label="Kirjaudu ulos"]    visible
     Click    css=[aria-label="Kirjaudu ulos"]
+    Wait For Load State    load    timeout=15s
 
 Click logout admin side
     Sleep    1s
     Wait For Elements State    css=[aria-label="signout"]    visible
     Click    css=[aria-label="signout"]
+    Wait For Load State    load    timeout=15s
 
 Click user menu
     Wait For Elements State    id=user-menu    visible

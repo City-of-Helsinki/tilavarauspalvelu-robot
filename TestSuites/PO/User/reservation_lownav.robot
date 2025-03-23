@@ -9,5 +9,5 @@ Click submit button continue
     # TODO wait for enabled here
     Wait For Elements State    [data-testid="reservation__button--continue"]    enabled
     Click    [data-testid="reservation__button--continue"]
-    Sleep    1s
-    Wait For Load State    Load    timeout=7s
+    Sleep    2s
+    Wait For Load State    Load    timeout=15s

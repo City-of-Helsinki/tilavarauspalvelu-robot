@@ -78,7 +78,7 @@ ${JUSTIFICATION_FOR_SUBVENTION}                                     Haluan alenn
 ${HOME_CITY}                                                        Helsinki
 ${SINGLEBOOKING_NUMBER_OF_PERSONS}                                  1
 ${AGEGROUP_OF_PERSONS}                                              18 - 24
-${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}            Hinta: 0 - 40,00 € (sis. alv 25,5%)
+${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}            Hinta: 40,00 € (sis. alv 25,5%)
 ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}                                Hinta: 40,00 € (sis. alv 25,5%)
 ${SINGLEBOOKING_SUBVENTED_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}       Hinta: 0 - 30,00 € (sis. alv 25,5%)
 ${ALWAYS_REQUESTED_UNIT_PAID_PRICE_VAT_INCL}                        Hinta: 40,00 € (sis. alv 25,5%)

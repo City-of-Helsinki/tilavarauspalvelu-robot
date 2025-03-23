@@ -27,6 +27,11 @@ Select the free slot and submits
     ${total_slots}=    Get Length    ${all_free_quick_timeslots}
     Log    Total available slots: ${total_slots}
 
+    # Check if there are any available slots
+    IF    ${total_slots} == 0
+        Fail    No free available slots in quick reservation slots
+    END
+
     # Generate a random index between 0 and the number of slots - 1
     ${random_index}=    Evaluate    random.randint(0, ${total_slots} - 1)    random
     Log    Randomly selected slot index: ${random_index}
@@ -70,6 +75,9 @@ Check the quick reservation time
 
 Check the price of quick reservation
     [Arguments]    ${price_with_text}
+    # TODO Add more robust way to check the final price is loaded
+    # Otherwise can getHinta: 40,00 € (sis. alv 25,5%) != Hinta: 0 - 40,00 € (sis. alv 25,5%)
+    Sleep    3s    # this sleeps ensures the final price is loaded
     ${reservation_price}=    Get text    [data-testid="reservation__reservation-info-card__price"]
     ${normalized_string}=    custom_keywords.Remove non-breaking space    ${reservation_price}
     Log    expected price string ${price_with_text}

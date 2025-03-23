@@ -37,6 +37,7 @@ User navigates to my bookings
 
 User accepts payment to checkout
     Log    This clicks approve button from notification banner
+    Sleep    1.5s    # Wait for banner to load
     user_landingpage.Approve interrupted payment
 
 ###
@@ -223,6 +224,22 @@ User checks the paid reservation info is right and submits
     #
     reservation_lownav.Click submit button continue
 
+User checks the subvented reservation info is right and submits
+    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Click the checkbox accepted terms
+    reservation_unit_reservation_receipt.Click the checkbox generic terms
+    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    quick_reservation.Check the price of quick reservation
+    ...    ${SINGLEBOOKING_SUBVENTED_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
+    #
+    reservation_lownav.Click submit button continue
+
+User checks the subvented reservation info is right after submitting
+    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    quick_reservation.Check the price of quick reservation
+    ...    ${SINGLEBOOKING_SUBVENTED_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
+    quick_reservation.Get booking number
+
 User checks the paid reservation that requires handling info is right and submits
     reservation_unit_reservation_receipt.Check users reservation info
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
@@ -348,7 +365,7 @@ User can see upcoming booking in list and clicks it
     mybookings.Check unitname and reservation time and click show
     ...    ${unitname}
     ...    ${reservationtime}
-    Wait For Load State    domcontentloaded    timeout=7s
+    Wait For Load State    load    timeout=15s
 
 User can see upcoming noncancelable booking in list and clicks it
     [Arguments]    ${unitname}    ${reservationtime}

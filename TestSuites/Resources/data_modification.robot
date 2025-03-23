@@ -166,6 +166,10 @@ Set info card duration time info
     # Combine date and time into a single datetime string
     ${date_time_string}=    Catenate    SEPARATOR=    ${formatted_date} ${formatted_time}
 
+    # Strip any extra whitespace or hidden characters from the datetime string
+    ${date_time_string}=    Strip String    ${date_time_string}
+    Log    Formatted datetime string: ${date_time_string}
+
     # Convert string to datetime object
     ${date_time}=    Convert Date    ${date_time_string}    result_format=datetime    date_format=%d-%m-%Y %H:%M
 

@@ -16,6 +16,7 @@ Type the name of the booking
 Select the purpose of the booking
     [Arguments]    ${purpose}
     Click    id=reservation-form-field__purpose-main-button
+    Sleep    1s    # wait for dropdown to load
     Wait For Elements State    id=reservation-form-field__purpose-option-2    visible
     custom_keywords.Find and click element with text    li    ${purpose}
 
@@ -38,5 +39,6 @@ Click and select AgeGroup Button
     [Arguments]    ${age_group}
     Wait For Elements State    id=reservation-form-field__ageGroup-main-button    visible
     Click    id=reservation-form-field__ageGroup-main-button
-    Sleep    1s
+    Sleep    1s    # wait for dropdown to load
     custom_keywords.Find and click element with text    li    ${age_group}
+    Sleep    1s

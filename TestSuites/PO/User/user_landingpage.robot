@@ -25,5 +25,5 @@ Check the interrupted payment notification
 Approve interrupted payment
     Log    Clicking on the first button if previous test runs have failed and there are multiple banners/buttons
     Click    [data-testid="reservation-notification__button--checkout"] >> nth=0
-    Sleep    500ms    # Wait for animation
+    Sleep    3s    # Wait for loading
     Wait For Load State    load    timeout=15s

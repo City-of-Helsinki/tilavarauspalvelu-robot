@@ -305,15 +305,14 @@ User cancel booking in reservations and checks it got cancelled
 
 User modifies booking and verifies the changes
     mybookings.User click change time
-
     # This opens calendar controls
-    # change this to    reservation_calendar
+    # TODO change this to reservation_calendar
     mybookings.User click reservation calendar toggle button
+
+    reservation_calendar.Select duration calendar    ${QUICK_RESERVATION_DURATION}
 
     # This sets ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
     reservation_calendar.Click and store free reservation time
-
-    reservation_calendar.Select duration calendar    ${QUICK_RESERVATION_DURATION}
 
     ${date_value_from_calendar}=    reservation_calendar.Get current date from datepicker
 

@@ -16,7 +16,9 @@ Login Suomi_fi
     Wait For Load State    load    timeout=15s
     Type Text    css=#hetu_input    ${input_hetu}
     Click    css=#tunnistaudu
+    Sleep    1s
     Click    css=#continue-button
+    Sleep    1s
     Wait For Load State    load    timeout=15s
 
 Login Suomi_fi mobile
@@ -30,5 +32,7 @@ Login Suomi_fi mobile
     Wait For Load State    load    timeout=15s
     Type Text    css=#hetu_input    ${input_hetu}
     Click    css=#tunnistaudu
+    Sleep    1s
     Click    css=#continue-button
+    Sleep    1s
     Wait For Load State    load    timeout=15s

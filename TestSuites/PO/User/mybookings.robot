@@ -57,12 +57,12 @@ Check cancel button is not found in reservations
 User click change time
     Wait For Elements State    data-testid=reservation-detail__button--edit    visible
     Click    data-testid=reservation-detail__button--edit
-    Sleep    500ms
+    Sleep    1s    # Wait for animation
     Wait For Load State    load    timeout=15s
 
 User click reservation calendar toggle button
     Click    [data-testid="calendar-controls__toggle-button"]
-    Sleep    500ms    # Wait for animation
+    Sleep    1s    # Wait for animation
     Wait For Load State    load    timeout=15s
 
 ###

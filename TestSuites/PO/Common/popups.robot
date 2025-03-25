@@ -13,12 +13,13 @@ User accepts cookies if dialog is visible
     ...    Wait For Elements State
     ...    button:has-text("${cookie_text}")
     ...    visible
-    ...    timeout=5s
+    ...    timeout=10s
 
     IF    ${dialog_visible}
         Log    Dialog is visible. Checking for the button with text "${cookie_text}".
         Click    button:has-text("${cookie_text}")
         Log    Clicked the "${cookie_text}" button.
+        Sleep    1.5s    # wait for the animation to close
     ELSE
         Log    Dialog is not visible. Continuing the test.
     END

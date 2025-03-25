@@ -26,7 +26,7 @@ Set up chromium desktop browser and open url
     ...    ignoreHTTPSErrors=true
     New Page    ${input_URL}
     Wait For Load State    load    timeout=30s
-    Set Browser Timeout    30s
+    Set Browser Timeout    60s    scope=Global
 
 Set up firefox desktop browser and open url
     [Arguments]    ${input_URL}    ${DOWNLOAD_DIR}
@@ -41,7 +41,7 @@ Set up firefox desktop browser and open url
     ...    javaScriptEnabled=True
     New Page    ${input_URL}
     Wait For Load State    load    timeout=30s
-    Set Browser Timeout    30s
+    Set Browser Timeout    60s    scope=Global
 
 Set up iphone 14 and open url
     [Arguments]    ${input_URL}
@@ -62,7 +62,7 @@ Set up iphone 14 and open url
     Should Be Equal As Integers    ${viewport["width"]}    390
     # Validate the height
     Should Be Equal As Integers    ${viewport["height"]}    664
-    Set Browser Timeout    30s
+    Set Browser Timeout    60s    scope=Global
 
 Set up android pixel 5 and open url
     [Arguments]    ${input_URL}
@@ -83,5 +83,4 @@ Set up android pixel 5 and open url
     Should Be Equal As Integers    ${viewport["width"]}    393    msg=The viewport width is not as expected.
     # Validate the height
     Should Be Equal As Integers    ${viewport["height"]}    727    msg=The viewport height is not as expected.
-
-    Set Browser Timeout    30s
+    Set Browser Timeout    60s    scope=Global

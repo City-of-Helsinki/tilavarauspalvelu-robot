@@ -41,12 +41,14 @@ Admin checks reservation title tagline
 Admin checks reservation user info
     # TODO get better ids here
     custom_keywords.Find and click element with text    css=.label    Tilan käyttäjän tiedot
+    Sleep    500ms
     custom_keywords.Check elements text    [data-testid="reservation__info--Sukunimi"]    ${ADMIN_BEHALF_LASTNAME_FI}
     custom_keywords.Check elements text    [data-testid="reservation__info--Etunimi"]    ${ADMIN_BEHALF_FIRSTNAME_FI}
 
 Admin checks reservation maker info
     # TODO get better ids here
     custom_keywords.Find and click element with text    css=.label    Varauksen tekijä
+    Sleep    500ms
     custom_keywords.Check elements text
     ...    [data-testid="reservation__info--Varauksen tekijä"]
     ...    ${ADMIN_ALL_MALE_FULLNAME}
@@ -166,9 +168,8 @@ Admin checks reservation status
 
 Admin saves reservation number
     # DEVNOTE fix better selector than span
-    # custom_keywords.Find and click element with text    css=.label    Varauksen tiedot
     Click    id=reservation__reservation-details-heading
-    # custom_keywords.Find and click element with text    button >> span    Varauksen tiedot
+    Sleep    500ms
     Wait For Elements State    [data-testid="reservation__info--Varaustunnus"]    visible
     ${reservation_number}=    Get Text    [data-testid="reservation__info--Varaustunnus"]
     Set Suite Variable    ${RESERVATION_NUMBER_ADMINSIDE}    ${reservation_number}
@@ -184,7 +185,10 @@ Admin selects reservation unit
     Wait For Elements State    id=reservation-unit-toggle-button    visible
     Click    id=reservation-unit-toggle-button
     Sleep    1s
+    Wait For Load State    load    timeout=15s
     custom_keywords.Find and click element with text    id=reservation-unit-menu >> li    ${by_unit}
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
 
 ###
 # Dialog window
@@ -203,6 +207,7 @@ Admin checks reason for subvention in dialog
 Admin clicks set reservation to free
     Wait For Elements State    id=clearPrice    visible
     Click    id=clearPrice
+    Sleep    500ms
     ${value}=    Get Attribute    id=approvalPrice    value
     Should Be Equal    ${value}    0
 
@@ -234,13 +239,13 @@ Admin enters reservation time and type of reservation
     Click    ${type_of_reservation}
 
     Type Text    id=ReservationDialog.startTime-hours    ${startTime-hours}
-#
+    Sleep    500ms
     Type Text    id=ReservationDialog.startTime-minutes    00
-#
+    Sleep    500ms
     Type Text    id=ReservationDialog.endTime-hours    ${endTime-hours}
-#
+    Sleep    500ms
     Type Text    id=ReservationDialog.endTime-minutes    00
-#
+    Sleep    500ms
     Type Text    id=controlled-date-input__date    ${date}
 
 ###
@@ -252,6 +257,7 @@ Admin opens calendar and changes reservation time
     ...    It uses the keyword 'Admin enters reservation time and type of reservation' to set the new time.
 
     Click    id=reservation__calendar-heading
+    Sleep    500ms
     custom_keywords.Find and click element with text
     ...    id=reservation__calendar-content >> button
     ...    ${CALENDAR_CHANGE_TIME_FI}
@@ -274,11 +280,13 @@ Admin opens calendar and changes reservation time
 
     # TODO, Admin enters reservation time and type of reservation could be used here
     Type Text    id=ReservationDialog.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
+    Sleep    500ms
     Type Text    id=ReservationDialog.startTime-minutes    00
-
+    Sleep    500ms
     Type Text    id=ReservationDialog.endTime-hours    ${MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION}
+    Sleep    500ms
     Type Text    id=ReservationDialog.endTime-minutes    00
-
+    Sleep    500ms
     Type Text    id=controlled-date-input__date    ${MODIFIED_DATE_SUBVENTED_RESERVATION}
     Sleep    1s
     Wait For Elements State    [type="submit"]    enabled    message= Check that the modified time is available?
@@ -292,3 +300,5 @@ Admin finds reservation and clicks it
     custom_keywords.Find and click element with exact text using JS
     ...    [role="button"] >> css=.rbc-event-content
     ...    ${reservation_name}
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s

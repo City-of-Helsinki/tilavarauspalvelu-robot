@@ -91,6 +91,7 @@ User selects the time with quick reservation
 
     # This sets ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
     quick_reservation.Select the free slot and submits
+    Wait For Load State    load    timeout=15s
     Log    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
 
     ${formatted_date}    ${formatted_date_minus_t}=    data_modification.Set info card duration time info
@@ -309,9 +310,6 @@ User modifies booking and verifies the changes
     # change this to    reservation_calendar
     mybookings.User click reservation calendar toggle button
 
-    # Wait for animation
-    Sleep    1s
-
     # This sets ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
     reservation_calendar.Click and store free reservation time
 
@@ -332,7 +330,6 @@ User modifies booking and verifies the changes
     # Log    ${returned_formatted_values}
     Log    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
     Log    ${TIME_OF_QUICK_RESERVATION_MINUS_T_MODIFIED}
-    Sleep    1s
 
     Log    If the continue button is not enabled, verify that the reservation time was actually modified
     Wait For Elements State    [data-testid="reservation__button--continue"]    enabled    timeout=3s

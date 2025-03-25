@@ -9,16 +9,15 @@ Admin searches own unit and clicks it
     Sleep    1s
     Wait For Elements State    id=search    visible
     Type Text    id=search    ${units_location}
-    Sleep    2s
+    Sleep    2s    # Wait for the search results to load
     custom_keywords.Find and click element with text    td >> a    ${units_location}
-    Sleep    2s
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
 
 Admin clicks calendar open in own units
     [Arguments]    ${unit_name}
     # This locates the row in the calendar with the title="${unit_name}".
     # It then selects the 26th div within that row's container and clicks it.
-
-    Sleep    2s
 
     Log    If a wrong unit is opened, check that the DOM order has not changed
 

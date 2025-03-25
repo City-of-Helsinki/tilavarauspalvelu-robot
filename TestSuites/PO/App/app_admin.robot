@@ -21,9 +21,13 @@ Admin checks the info and sets reservation free and approves it
     ...    ${PURPOSE_OF_THE_BOOKING}    ${SINGLEBOOKING_DESCRIPTION}
     ...    ${SINGLEBOOKING_NUMBER_OF_PERSONS}    ${SINGLEBOOKING_SUBVENTED_ADMIN_SIDE_AGE_GROUP}
     admin_reservations.Admin clicks button in reservation page    [data-testid="approval-buttons__approve-button"]
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
     admin_reservations.Admin checks reason for subvention in dialog
     admin_reservations.Admin clicks set reservation to free
     admin_reservations.Admin clicks button in reservation page    [data-testid="approval-dialog__accept-button"]
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
     admin_reservations.Admin checks reservation info after handling
     ...    ${SINGLEBOOKING_NO_PAYMENT_ADMIN_SIDE}    ${MYBOOKINGS_STATUS_CONFIRMED}
     ...    ${PURPOSE_OF_THE_BOOKING}    ${SINGLEBOOKING_DESCRIPTION}
@@ -110,6 +114,7 @@ Admin rejects reservation and checks the status
     Sleep    1s
     Click    [data-testid="deny-dialog__deny-button"]
     Sleep    2s
+    Wait For Load State    load    timeout=15s
     admin_reservations.Admin checks reservation status    ${MYBOOKINGS_STATUS_REJECTED}
 
 Admin makes reservation for behalf
@@ -131,7 +136,8 @@ Admin makes reservation for behalf
     admin_reservations.Admin fills reservation details behalf    # this keyword generates the info for checking calendar content
     admin_reservations.Admin clicks button in reservation page
     ...    [data-testid="CreateReservationModal__accept-reservation"]
-    Sleep    2s
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
 
 Admin makes reservation for closed
     # Call the keyword and capture the returned values
@@ -148,7 +154,8 @@ Admin makes reservation for closed
     ...    ${UNAVAILABLE_RESERVATION_DATE}
     admin_reservations.Admin clicks button in reservation page
     ...    [data-testid="CreateReservationModal__accept-reservation"]
-    Sleep    2s
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
 
 Admin makes reservation for staff
     # Call the keyword and capture the returned values
@@ -165,7 +172,8 @@ Admin makes reservation for staff
     ...    ${UNAVAILABLE_RESERVATION_DATE}
     admin_reservations.Admin clicks button in reservation page
     ...    [data-testid="CreateReservationModal__accept-reservation"]
-    Sleep    2s
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
 
 Admin attempts to make an unavailable reservation
     admin_reservations.Admin enters reservation time and type of reservation
@@ -177,3 +185,5 @@ Admin attempts to make an unavailable reservation
     ...    [data-testid="CreateReservationModal__collision-warning"] >> [class*="Notification-module_body__"]
     ...    ${RESERVATION_TIME_NOT_FREE}
     Click    data-testid=CreateReservationModal__cancel-reservation
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s

@@ -145,3 +145,4 @@ Switch to new tab from current page
     Set Suite Variable    ${PAGE1}    ${page1}
     Log    ${PAGE1}
     Switch Page    NEW
+    Wait For Load State    load    timeout=15s

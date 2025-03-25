@@ -56,10 +56,13 @@ Select duration
     # Click    id=quick-reservation >> id=duration-toggle-button
     # Wait For Elements State    id=quick-reservation >> id=hds-select-92-main-button    visible
     Click    id=quick-reservation >> css=.Select-module_selectAndListContainer__vSJEv
+    Sleep    500ms
     Click    [role="option"] >> '${duration}'
+    Wait For Load State    Load    timeout=15s
 
 Click more available slots
     Click    [data-testid="quick-reservation-next-available-time"]
+    Sleep    500ms
 
 Check the quick reservation time
     [Documentation]    This keyword/test cannot be run overnight. For now varaamo cannot handle overnight reservations.
@@ -78,6 +81,7 @@ Check the price of quick reservation
     # TODO Add more robust way to check the final price is loaded
     # Otherwise can getHinta: 40,00 € (sis. alv 25,5%) != Hinta: 0 - 40,00 € (sis. alv 25,5%)
     Sleep    3s    # this sleeps ensures the final price is loaded
+    Wait For Load State    load    timeout=10s
     ${reservation_price}=    Get text    [data-testid="reservation__reservation-info-card__price"]
     ${normalized_string}=    custom_keywords.Remove non-breaking space    ${reservation_price}
     Log    expected price string ${price_with_text}
@@ -125,4 +129,6 @@ Select duration mobile
     [Arguments]    ${duration}
     Wait For Elements State    id=mobile-quick-reservation-duration-toggle-button    visible
     Click    id=mobile-quick-reservation-duration-toggle-button
+    Sleep    500ms
     Click    [role="option"] >> '${duration}'
+    Wait For Load State    Load    timeout=15s

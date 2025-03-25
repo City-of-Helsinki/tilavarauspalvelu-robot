@@ -12,6 +12,7 @@ Resource            ../User/mybookings.robot
 Click login
     Wait For Elements State    id=login    visible
     Click    id=login
+    Sleep    500ms
 
 Click login admin side
     Wait For Elements State    h1    visible
@@ -51,12 +52,12 @@ Check dropdown menu has user info
 Navigate to single booking page
     Click    header >> [href="/search"] >> span:text-is("${SINGLEBOOKING_FI}")
     Sleep    200ms
-    Wait For Load State    Load    timeout=7s
+    Wait For Load State    Load    timeout=15s
 
 Navigate to my bookings
     Click    header >> [href="/reservations"] >> span:text-is("${MYBOOKINGS_FI}")
     Sleep    1s
-    Wait For Load State    domcontentloaded    timeout=5s
+    Wait For Load State    load    timeout=15s
 
     # Confirms page is loaded
     mybookings.Check my bookings h1    ${MYBOOKINGS_FI}
@@ -81,14 +82,17 @@ Click close navigation menu mobile
 Click login mobile
     Wait For Elements State    id=login    visible
     Click    id=login
+    Wait For Load State    load    timeout=15s
 
 Click logout mobile
     Wait For Elements State    css=[aria-label="Kirjaudu ulos"]    visible
     Click    css=[aria-label="Kirjaudu ulos"]
+    Wait For Load State    load    timeout=15s
 
 Click tablist scroll button to right mobile
     Wait For Elements State    [class*=Tabs-module_scrollButton__]    visible
     Click    [class*=Tabs-module_scrollButton__] >> [aria-label="angle-right"]
+    Wait For Load State    load    timeout=15s
 
 # Check menu has user info mobile
     # DEVNOTE Commented out. Waiting for fixes for the test environment from another team

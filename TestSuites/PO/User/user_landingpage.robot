@@ -23,5 +23,7 @@ Check the interrupted payment notification
     Should Be Equal    ${PAYMENT_NOTIFICATION_TITLE}    ${banner_title}
 
 Approve interrupted payment
-    Click    [data-testid="reservation-notification__button--checkout"]
-    Wait For Load State    domcontentloaded    timeout=7s
+    Log    Clicking on the first button if previous test runs have failed and there are multiple banners/buttons
+    Click    [data-testid="reservation-notification__button--checkout"] >> nth=0
+    Sleep    500ms    # Wait for animation
+    Wait For Load State    load    timeout=15s

@@ -61,7 +61,7 @@ Check the info in checkout
     Select payment method OP
     Sleep    1s
     Click submit
-    Sleep    1s
+    Sleep    3s
     Wait For Load State    load    timeout=15s
     Check user details in checkout
     Check product list has all the info
@@ -69,7 +69,7 @@ Check the info in checkout
     Click accept terms
     Sleep    1s
     Click submit
-    Sleep    2s
+    Sleep    3s
     Wait For Load State    load    timeout=15s
 
 Interrupted checkout

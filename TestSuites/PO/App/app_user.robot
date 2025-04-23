@@ -129,8 +129,8 @@ User fills the reservation info for unit with payment
     reservation_unit_reserver_info.Enter last name    ${BASIC_USER_MALE_LASTNAME}
     reservation_unit_reserver_info.Enter email    ${BASIC_USER_MALE_EMAIL}
     reservation_unit_reserver_info.Enter phone number    ${BASIC_USER_MALE_PHONE}
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     reservation_unit_reserver_info.Select home city    ${HOME_CITY}
+    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     #
     reservation_lownav.Click submit button continue
 
@@ -185,6 +185,25 @@ User fills info for unit that is always handled as individual
     reservation_unit_reserver_info.Enter last name    ${BASIC_USER_MALE_LASTNAME}
     reservation_unit_reserver_info.Enter email    ${BASIC_USER_MALE_EMAIL}
     reservation_unit_reserver_info.Enter phone number    ${BASIC_USER_MALE_PHONE}
+    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    #
+    reservation_lownav.Click submit button continue
+
+User fills booking details as individual for reservation with access code
+    # Checks that "jatka" button has been loaded
+    Wait For Elements State    [data-testid="reservation__button--continue"]    visible
+    #
+    reservation_unit_booking_details.Type the name of the booking    ${SINGLEBOOKING_NAME}
+    reservation_unit_booking_details.Select the purpose of the booking    ${PURPOSE_OF_THE_BOOKING}
+    reservation_unit_booking_details.Select the number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    reservation_unit_booking_details.Click and select AgeGroup Button    ${AGEGROUP_OF_PERSONS}
+    reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
+    reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
+    reservation_unit_reserver_info.Enter first name    ${BASIC_USER_MALE_FIRSTNAME}
+    reservation_unit_reserver_info.Enter last name    ${BASIC_USER_MALE_LASTNAME}
+    reservation_unit_reserver_info.Enter email    ${BASIC_USER_MALE_EMAIL}
+    reservation_unit_reserver_info.Enter phone number    ${BASIC_USER_MALE_PHONE}
+    reservation_unit_reserver_info.Select home city    ${HOME_CITY}
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     #
     reservation_lownav.Click submit button continue
@@ -268,6 +287,18 @@ User checks the reservation info is right
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     reservation_unit_reservation_receipt.Check the reservation status message    ${RESERVATION_STATUS_MSG_FI}
     quick_reservation.Get booking number
+
+User checks the reservation info is right with access code
+    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Click the checkbox accepted terms
+    reservation_unit_reservation_receipt.Click the checkbox generic terms
+    #
+    reservation_lownav.Click submit button continue
+    # TODO Let's split these checks by different pages and move submit to a higher level
+    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_reservation_receipt.Check the reservation status message    ${RESERVATION_STATUS_MSG_FI}
+    quick_reservation.Get booking number
+    quick_reservation.Get access code
 
 User checks the noncancelable reservation info is right
     reservation_unit_reservation_receipt.Check users reservation info
@@ -436,6 +467,22 @@ User checks booking info in reservations
     mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
     mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
     mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
+
+User checks booking info in reservations with access code
+    [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}    ${access_code}
+
+    Wait For Elements State    [data-testid="reservation__name"]    visible
+    #
+    quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
+    quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
+    quick_reservation.Check the price of quick reservation    ${booking_price}
+
+    mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
+    mybookings.Check reservation status    ${booking_status}
+    mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
+    mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
+    mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
+    mybookings.Check reservation access code    ${access_code}
 
 User checks booking info in reservations with all reservation info
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}

@@ -101,6 +101,20 @@ Check booking number
     Log    quick_booking_num: ${quick_booking_num}, booking_number: ${booking_number}
     Should Be Equal    ${quick_booking_num}    ${booking_number}
 
+Get access code
+    Wait For Elements State    [data-testid="reservation__reservation-info-card__accessType"]    visible
+    ${access_code}=    Get text    [data-testid="reservation__reservation-info-card__accessType"]
+    Set Suite Variable    ${ACCESS_CODE}    ${access_code}
+    Log    ${ACCESS_CODE}
+
+Check access code
+    # TODO Change here real selector
+    [Arguments]    ${access_code}
+    Wait For Elements State   [data-testid="reservation__reservation-info-card__accessType"]    visible
+    ${quick_access_code}=    Get text    [data-testid="reservation__reservation-info-card__accessType"]
+    Log    access code: ${quick_access_code}, access code should be: ${access_code}
+    Should Be Equal    ${quick_access_code}    ${access_code}
+
 Confirms date picker opens from quick reservation
     Wait For Elements State    id=quick-reservation__date    visible
     Click    id=quick-reservation >> [aria-label="Valitse päivämäärä"]

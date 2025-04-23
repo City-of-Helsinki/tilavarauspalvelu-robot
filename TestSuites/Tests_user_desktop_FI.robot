@@ -36,7 +36,7 @@ User can make free single booking and modifies it
     app_user.User modifies booking and verifies the changes
     app_user.User checks the modified reservation info is right
 
-    Log    User modifies reservation
+    Log    User cancels reservation
     app_user.User cancel booking in reservations and checks it got cancelled
     topNav.Navigate to my bookings
     app_user.User checks cancelled booking is found
@@ -156,6 +156,30 @@ User can make subvented single booking that requires handling
     ...    ${MYBOOKINGS_STATUS_PROCESSED}
     ...    ${SINGLEBOOKING_SUBVENTED_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
     ...    ${TIME_OF_QUICK_RESERVATION}
+
+User can make reservation with access code
+    app_common.User logs in with suomi_fi
+    Log    User creates reservation
+    app_user.User navigates to single booking page
+    app_user.User uses search to find right unit    ${UNIT_WITH_ACCESS_CODE}
+    app_user.User selects the time with quick reservation
+    app_user.User fills booking details as individual for reservation with access code
+    app_user.User checks the reservation info is right with access code   # TODO add submit here in the middle
+    #
+    topNav.Navigate to my bookings
+    app_user.User can see upcoming booking in list and clicks it
+    ...    ${UNIT_WITH_ACCESS_CODE_WITH_UNIT_LOCATION}
+    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
+    app_user.User cancel booking in reservations and checks it got cancelled
+    topNav.Navigate to my bookings
+    app_user.User checks cancelled booking is found
+    ...    ${UNIT_WITH_ACCESS_CODE_WITH_UNIT_LOCATION}
+    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
+    app_user.User checks booking info in reservations with access code
+    ...    ${IN_RESERVATIONS_STATUS_CANCELED}
+    ...    ${SINGLEBOOKING_NO_PAYMENT}
+    ...    ${TIME_OF_QUICK_RESERVATION}
+    ...    ${ACCESS_CODE_TXT_BY_CODE}
 
 User checks that there are not current dates in the past bookings
     app_common.User logs in with suomi_fi

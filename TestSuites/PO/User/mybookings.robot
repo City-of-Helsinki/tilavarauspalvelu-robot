@@ -129,6 +129,12 @@ Check reservation age group
     ...    [data-testid="reservation__ageGroup"]
     ...    ${age_group}
 
+Check reservation access code
+    [Arguments]    ${access_code}
+    custom_keywords.Check elements text
+    ...    [data-testid="reservation__reservation-info-card__accessType"]
+    ...    ${access_code}
+
 ###
 # Tablist
 ###

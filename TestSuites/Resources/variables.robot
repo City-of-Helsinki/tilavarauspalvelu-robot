@@ -46,6 +46,9 @@ ${ALWAYS_FREE_UNIT_WITH_UNIT_LOCATION}                  Maksuton Mankeli (AUTOMA
 ${UNIT_REQUIRES_ALWAYS_HANDLING}                        Aina käsiteltävä kellarikerros (AUTOMAATIOTESTI ÄLÄ POISTA)
 ${UNIT_REQUIRES_ALWAYS_HANDLING_WITH_UNIT_LOCATION}     Aina käsiteltävä kellarikerros (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
 
+${UNIT_WITH_ACCESS_CODE}                                Ovikoodi maksuton käsiteltävä (AUTOMAATIOTESTI ÄLÄ POISTA)
+${UNIT_WITH_ACCESS_CODE_WITH_UNIT_LOCATION}             Ovikoodi maksuton käsiteltävä (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
+
 ${FREE_UNIT_NO_CANCEL}                                  Perumiskelvoton parveke, maksuton (AUTOMAATIOTESTI ÄLÄ POISTA)
 ${FREE_UNIT_NO_CANCEL_WITH_UNIT_LOCATION}               Perumiskelvoton parveke, maksuton (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
 

@@ -11,12 +11,12 @@ Test Teardown       Run Keyword If Test Failed    Take Screenshot
 
 
 *** Test Cases ***
- User logs in and out with suomi_fi mobile
+User logs in and out with suomi_fi mobile
     app_common.User logs in with suomi_fi mobile
     app_common.User logs out mobile
     app_common.User confirms log out mobile
 
- User can make a free single booking and modifies it mobile
+User can make a free single booking and modifies it mobile
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
     app_user.User uses search to find right unit    ${ALWAYS_FREE_UNIT}

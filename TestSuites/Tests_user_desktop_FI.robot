@@ -164,7 +164,7 @@ User can make reservation with access code
     app_user.User uses search to find right unit    ${UNIT_WITH_ACCESS_CODE}
     app_user.User selects the time with quick reservation
     app_user.User fills booking details as individual for reservation with access code
-    app_user.User checks the reservation info is right with access code   # TODO add submit here in the middle
+    app_user.User checks the reservation info is right with access code    # TODO add submit here in the middle
     #
     topNav.Navigate to my bookings
     app_user.User can see upcoming booking in list and clicks it
@@ -180,6 +180,25 @@ User can make reservation with access code
     ...    ${SINGLEBOOKING_NO_PAYMENT}
     ...    ${TIME_OF_QUICK_RESERVATION}
     ...    ${ACCESS_CODE_TXT_BY_CODE}
+
+User checks that reserved time is not available anymore
+    app_common.User logs in with suomi_fi
+    app_user.User navigates to single booking page
+    app_user.User uses search to find right unit    ${UNAVAILABLE_UNIT}
+    app_user.User selects the time with quick reservation
+    app_user.User fills the reservation info for always free unit
+    app_user.User checks the reservation info is right
+    app_user.User navigates to single booking page
+    pause execution
+    app_user.User uses search to find right unit    ${UNAVAILABLE_UNIT}
+    app_user.User checks that quick reservation does not have reserved time    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
+    topNav.Navigate to my bookings
+    app_user.User can see upcoming booking in list and clicks it
+    ...    ${UNAVAILABLE_UNIT_WITH_UNIT_LOCATION}
+    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
+    Log    User cancels reservation
+    app_user.User cancel booking in reservations and checks it got cancelled
+    Log    No further checks are needed here
 
 User checks that there are not current dates in the past bookings
     app_common.User logs in with suomi_fi

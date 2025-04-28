@@ -43,9 +43,7 @@ Select the free slot and submits
     # Click the randomly selected slot
     Click    ${all_free_quick_timeslots}[${random_index}]
 
-    Set Suite Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}
-
-    # Submits selected time
+    Set Suite Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}    # Submits selected time
     Click    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
 Select duration
@@ -110,7 +108,7 @@ Get access code
 Check access code
     # TODO Change here real selector
     [Arguments]    ${access_code}
-    Wait For Elements State   [data-testid="reservation__reservation-info-card__accessType"]    visible
+    Wait For Elements State    [data-testid="reservation__reservation-info-card__accessType"]    visible
     ${quick_access_code}=    Get text    [data-testid="reservation__reservation-info-card__accessType"]
     Log    access code: ${quick_access_code}, access code should be: ${access_code}
     Should Be Equal    ${quick_access_code}    ${access_code}
@@ -146,3 +144,29 @@ Select duration mobile
     Sleep    500ms
     Click    [role="option"] >> '${duration}'
     Wait For Load State    Load    timeout=15s
+
+Verify time slot not available
+    [Documentation]    Verifies that the specified time slot is not available in the list of free slots.
+    [Arguments]    ${time_to_check}
+
+    # Get all visible slots
+    ${elements}=    Browser.Get Elements
+    ...    [class*="slider-list"] >> [data-testid="quick-reservation__slot"]
+
+    # If no slots are found, fail the test
+    ${count}=    Get Length    ${elements}
+    IF    ${count} == 0
+        Fail    No slots found at all. Cannot verify exclusion of ${time_to_check}
+    END
+
+    # Extract texts
+    ${slot_texts}=    Create List
+    FOR    ${el}    IN    @{elements}
+        ${t}=    Get Text    ${el}
+        Append To List    ${slot_texts}    ${t}
+    END
+    Log    Available slots: ${slot_texts}
+
+    # Assert the unwanted time is not in the list
+    List Should Not Contain Value    ${slot_texts}    ${time_to_check}
+    Log    Slot '${time_to_check}' is not available, as expected.

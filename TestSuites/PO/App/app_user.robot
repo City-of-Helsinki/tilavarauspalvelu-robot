@@ -91,6 +91,7 @@ User selects the time with quick reservation
 
     # This sets ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
     quick_reservation.Select the free slot and submits
+
     Wait For Load State    load    timeout=15s
     Log    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
 
@@ -103,6 +104,11 @@ User selects the time with quick reservation
 
     Log    ${TIME_OF_QUICK_RESERVATION}
     Log    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
+
+User checks that quick reservation does not have reserved time
+    [Arguments]    ${reservationtime}
+    Wait For Load State    load    timeout=15s
+    quick_reservation.Verify time slot not available    ${reservationtime}
 
 User fills the reservation info for always free unit
     # Checks that "jatka" button has been loaded

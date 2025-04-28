@@ -44,18 +44,18 @@ Click close navigation menu
 Check dropdown menu has user info
     [Arguments]    ${name}
     # DEVNOTE Enable this when the profile bug no longer empties the name info
-    ${Topnav_Login_Button_Text}=    Get Text    id=user-menu >> span:text-is("${name}")
+    ${Topnav_Login_Button_Text}=    Get Text    id=user-menu:text-is("${name}")
     Log    ${Topnav_Login_Button_Text}
     Log    ${name}
     Should Be Equal    ${Topnav_Login_Button_Text}    ${name}
 
 Navigate to single booking page
-    Click    header >> [href="/search"] >> span:text-is("${SINGLEBOOKING_FI}")
+    Click    header >> [href="/search"]:text-is("${SINGLEBOOKING_FI}")
     Sleep    200ms
     Wait For Load State    Load    timeout=15s
 
 Navigate to my bookings
-    Click    header >> [href="/reservations"] >> span:text-is("${MYBOOKINGS_FI}")
+    Click    header >> [href="/reservations"]:text-is("${MYBOOKINGS_FI}")
     Sleep    1s
     Wait For Load State    load    timeout=15s
 

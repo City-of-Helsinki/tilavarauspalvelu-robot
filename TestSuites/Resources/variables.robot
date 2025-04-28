@@ -58,6 +58,7 @@ ${ALWAYS_PAID_UNIT_SUBVENTED}                           Alennuskelpoinen aula (A
 ${ALWAYS_PAID_UNIT_SUBVENTED_WITH_UNIT_LOCATION}        Alennuskelpoinen aula (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
 
 ${UNAVAILABLE_UNIT}                                     Aina varattu yksikkö (AUTOMAATIOTESTI ÄLÄ POISTA)
+${UNAVAILABLE_UNIT_WITH_UNIT_LOCATION}                  Aina varattu yksikkö (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
 
 ${UNIT_LOCATION}                                        Harakka, piilokoju
 

@@ -124,7 +124,8 @@ Admin goes to landing Page
 Admin logs in with suomi_fi
     topNav.Click login admin side
     login.Login Suomi_fi    ${ADMIN_ALL_MALE_HETU}
-    Wait For Elements State    id=user-menu    visible
+    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT}
+    # Wait For Elements State    id=user-menu    visible
     # TODO enable these steps when the dropdown has user info again
     # admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN}
     # Sleep    3s

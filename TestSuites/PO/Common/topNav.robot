@@ -67,16 +67,12 @@ Navigate to my bookings
 ###
 
 Click navigation menu mobile
-    Click    css=button[aria-label="Menu"]
+    Wait For Elements State    id=Menu    visible
+    Click    id=Menu
     Sleep    1s
 
 Click user menu mobile
     Click    id=user-menu
-    Sleep    1s
-
-Click close navigation menu mobile
-    Wait For Elements State    id=Menu    visible
-    Click    id=Menu
     Sleep    1s
 
 Click login mobile

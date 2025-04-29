@@ -13,6 +13,7 @@ Test Teardown       Run Keyword If Test Failed    Take Screenshot
 
 *** Test Cases ***
 User logs in and out with suomi_fi
+    [Tags]    smoke
     app_common.User logs in with suomi_fi
     app_common.User logs out
     app_common.User confirms log out

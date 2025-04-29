@@ -189,7 +189,6 @@ User checks that reserved time is not available anymore
     app_user.User fills the reservation info for always free unit
     app_user.User checks the reservation info is right
     app_user.User navigates to single booking page
-    pause execution
     app_user.User uses search to find right unit    ${UNAVAILABLE_UNIT}
     app_user.User checks that quick reservation does not have reserved time    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
     topNav.Navigate to my bookings

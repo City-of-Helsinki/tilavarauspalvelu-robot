@@ -13,6 +13,7 @@ Test Teardown       Run Keyword If Test Failed    Take Screenshot
 
 *** Test Cases ***
 Admin logs in with suomi_fi
+    [Tags]    smoke
     app_common.Admin logs in with suomi_fi
     app_common.Admin logs out
 

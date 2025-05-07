@@ -110,6 +110,20 @@ User checks that quick reservation does not have reserved time
     Wait For Load State    load    timeout=15s
     quick_reservation.Verify time slot not available    ${reservationtime}
 
+User checks that reservation calendar does not have reserved time slot available
+    [Documentation]    This keyword uses data_modification.Convert finnish short day to english and
+    ...    data_modification.Compute reservation timeslot to set variables
+
+    Log    This keyword sets the variable '${ENGLISH_DAY}'
+    data_modification.Convert finnish short day to english    ${TIME_OF_QUICK_RESERVATION}
+
+    Log    This keyword sets the variable '${CALENDAR_TIMESLOT}'
+    data_modification.Compute reservation time slot
+    ...    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
+    ...    ${QUICK_RESERVATION_DURATION}
+
+    custom_keywords.Verify reservation slot exists    ${CALENDAR_TIMESLOT}    ${ENGLISH_DAY}
+
 User fills the reservation info for always free unit
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible

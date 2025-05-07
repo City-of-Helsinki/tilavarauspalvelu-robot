@@ -192,6 +192,7 @@ User checks that reserved time is not available anymore
     app_user.User navigates to single booking page
     app_user.User uses search to find right unit    ${UNAVAILABLE_UNIT}
     app_user.User checks that quick reservation does not have reserved time    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
+    app_user.User checks that reservation calendar does not have reserved time slot available
     topNav.Navigate to my bookings
     app_user.User can see upcoming booking in list and clicks it
     ...    ${UNAVAILABLE_UNIT_WITH_UNIT_LOCATION}

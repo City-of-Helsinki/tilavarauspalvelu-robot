@@ -32,7 +32,9 @@ ${ICS_TEXT}                                             ${EMPTY}
 ${START_TIME_FROM_ICS}                                  ${EMPTY}
 ${END_TIME_FROM_ICS}                                    ${EMPTY}
 ${ICS_TEXT_FROM_FILE}                                   ${EMPTY}
-
+#
+${ENGLISH_DAY}                                          ${EMPTY}    # Monday
+${CALENDAR_TIMESLOT}                                    ${EMPTY}    # 17:30-18:30
 ###
 #
 ###

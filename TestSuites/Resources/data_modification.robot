@@ -61,6 +61,111 @@ Formats calendar event content
     Log    Generated string: ${result}
     RETURN    ${result}
 
+Convert finnish short day to english
+    [Documentation]    Converts Finnish short weekday (e.g. "Su") from a datetime string into full English name.
+    [Arguments]    ${finnish_datetime}
+    Log    Finnish datetime: ${finnish_datetime}
+
+    # 1: Extract the Finnish short day (first token before the first space)
+    # e.g. ['Su','4.5.2025','klo','02:15–02:45,','30','min']
+    ${parts}=    Split String    ${finnish_datetime}    ${SPACE}
+
+    # 2: Take the first token as the short day. e.g. 'Su'
+    ${short_day}=    Get From List    ${parts}    0
+
+    # 3: Lowercase the short day e.g. 'Su' --> 'su'
+    ${cleaned_shortday}=    Convert To Lowercase    ${short_day}
+
+    Log    Normalized key ➔ ${cleaned_shortday}
+
+    # 4: Define parallel lists of Finnish abbreviations and English full names
+    ${fi_days}=    Create List    ma    ti    ke    to    pe    la    su
+    ${en_days}=    Create List    Monday    Tuesday    Wednesday    Thursday    Friday    Saturday    Sunday
+
+    # 5: Look up the index of the Finnish short day
+    ${idx}=    Get Index From List    ${fi_days}    ${cleaned_shortday}
+    Should Be True    ${idx} >= 0    msg=Unknown Finnish day abbreviation "${cleaned_shortday}"
+
+    # 6: Use the same index to fetch the English full name
+    ${english_day}=    Get From List    ${en_days}    ${idx}
+
+    Set Suite Variable    ${ENGLISH_DAY}    ${english_day}
+
+Compute reservation time slot
+    [Documentation]    Given a start time (HH:MM) and duration (e.g. "60 min"), formats to "HH:MM-HH:MM".
+    ...    Durations over 90 min (like '1t 45min') are not supported.
+    [Arguments]
+    ...    ${reservation_start_time}    # e.g. "17:30"
+    ...    ${duration}    # e.g. "60 min"
+
+    Log    Reservation start time: ${reservation_start_time}
+    Log    Duration: ${duration}
+
+    # 1: Validate start time (H:MM or HH:MM without leading zeros, minutes 00–59)
+    Should Match Regexp
+    ...    ${reservation_start_time}
+    ...    ^(?:[1-9]|1[0-9]|2[0-3]):[0-5][0-9]$
+    ...    msg=Start time must be "H:MM" or "HH:MM" without leading zeros and valid minutes
+
+    # 2: Validate duration "<digits> min"
+    Should Match Regexp
+    ...    ${duration}
+    ...    ^\\d+\\s*min$
+    ...    msg=Duration must be like "60 min". Durations over 90 min (like '1t 45min') are not supported.
+
+    # 3: Split the start time into hour and minute components
+    ${start_parts}=    Split String    ${reservation_start_time}    :
+    ${start_hour}=    Get From List    ${start_parts}    0    # e.g. "17"
+    ${start_min}=    Get From List    ${start_parts}    1    # e.g. "30"
+    Log    Parsed start: ${start_hour}h ${start_min}m
+
+    # 4: Build a time interval string for the start (e.g. "17 hours 30 minutes")
+    ${start_interval}=    Catenate    SEPARATOR=${SPACE}
+    ...    ${start_hour} hours    ${start_min} minutes
+    Log    Start interval ➔ ${start_interval}
+
+    # 5: Normalize duration to full words (e.g. "60 min" → "60 minutes")
+    ${parts}=    Split String    ${duration}    min
+    ${num_str}=    Get From List    ${parts}    0
+    ${num_str}=    Replace String    ${num_str}    ${SPACE}    ${EMPTY}
+    ${duration_str}=    Catenate    SEPARATOR=${SPACE}    ${num_str}    minutes
+    Log    Normalized duration ➔ ${duration_str}
+
+    # 6: Add start interval and duration to get raw end time "HH:MM:SS"
+    ${end_timer}=    Add Time To Time
+    ...    ${start_interval}    ${duration_str}
+    ...    result_format=timer    exclude_millis=True
+    Log    Raw timer end ➔ ${end_timer}
+
+    # 7: Extract hour and minute from timer string
+    ${end_parts}=    Split String    ${end_timer}    :
+    ${end_hour}=    Get From List    ${end_parts}    0    # e.g. "18"
+    ${end_min}=    Get From List    ${end_parts}    1    # e.g. "30"
+    Log    Computed end: ${end_hour}h ${end_min}m
+
+    # 8: Remove leading zero from end_hour
+    ${end_hour}=    Convert To Integer    ${end_hour}
+    Log    End hour without leading zero ➔ ${end_hour}
+
+    # 9: Ensure end time didn’t wrap past midnight
+    ${start_h_int}=    Convert To Integer    ${start_hour}
+    ${end_h_int}=    Convert To Integer    ${end_hour}
+
+    # a) Must not exceed 23
+    Should Be True    ${end_h_int} <= 23
+    ...    msg=End hour ${end_h_int} past midnight not supported
+    # b) Must not be before the start
+    Should Be True    ${end_h_int} >= ${start_h_int}
+    ...    msg=End hour ${end_h_int} is before start hour ${start_h_int}
+
+    # 10: Combine into final slot
+    ${end_time}=    Catenate    SEPARATOR=:    ${end_hour}    ${end_min}
+    ${full_slot}=    Catenate    SEPARATOR=-    ${reservation_start_time}    ${end_time}
+    Log    Final reservation slot ➔ ${full_slot}
+
+    # 11: Expose for suite use
+    Set Suite Variable    ${CALENDAR_TIMESLOT}    ${full_slot}
+
 Get modified date and time
     [Documentation]    Advances the current date by 1–15 days and adjusts start/end hours by random offsets between 1 and 5.
 

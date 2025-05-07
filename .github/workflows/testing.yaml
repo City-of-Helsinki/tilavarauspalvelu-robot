@@ -62,7 +62,7 @@ jobs:
               /opt/robotframework/tests/Tests_admin_desktop_FI.robot
 
   test:
-    name: ✅ Full/Tested Suite
+    name: ✅ Full Test Suite
     needs: smoke-tests
     if: >
       (github.event.inputs.test_suite == 'All' && needs.smoke-tests.result == 'success')

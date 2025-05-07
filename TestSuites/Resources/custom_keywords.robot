@@ -279,7 +279,6 @@ Check elements text
 
 ###
 # Calendar extraction
-# Format time of the booking to ICS
 ###
 
 Convert booking time to ICS format
@@ -297,11 +296,6 @@ Convert booking time to ICS format
     Log    ICS End Time: ${ics_end}
     Set Suite Variable    ${FORMATTED_START_TO_ICS}    ${ics_start}
     Set Suite Variable    ${FORMATTED_END_TO_ICS}    ${ics_end}
-
-###
-# Calendar extraction
-# Extract time from downloaded file
-###
 
 Extract Start And End Time From ICS File
     [Arguments]    ${text_from_ics_file}
@@ -339,6 +333,48 @@ Extract Start And End Time From ICS File
     # Log the variables for confirmation
     Log    Start datetime: ${START_TIME_FROM_ICS}
     Log    End datetime: ${END_TIME_FROM_ICS}
+
+Verify reservation slot exists
+    [Documentation]    Checks that a given weekday’s column in the calendar contains
+    ...    an event label exactly matching the specified time.
+    [Arguments]    ${TIME_TO_CHECK}    ${DAY_TO_CHECK}
+
+    # normalize search key
+    ${normTime}=    Replace String    ${TIME_TO_CHECK}    –    -
+    ${normTime}=    Replace String    ${normTime}    —    -
+    ${normTime}=    Replace String    ${normTime}    ${SPACE}    ${EMPTY}
+    Log    Normalized search ➔ ${normTime}
+
+    # pick correct column index
+    ${days}=    Create List    Monday    Tuesday    Wednesday    Thursday    Friday    Saturday    Sunday
+    ${dayIdx}=    Get Index From List    ${days}    ${DAY_TO_CHECK}
+    Should Be True    ${dayIdx} >= 0    msg=Day "${DAY_TO_CHECK}" not found
+    Log    Checking column index ${dayIdx + 2}
+
+    ${labels}=    Browser.Get Elements
+    ...    css=.rbc-time-column:nth-child(${dayIdx + 2}) .rbc-events-container .rbc-event-label
+    ${count}=    Get Length    ${labels}
+    Log    Found ${count} label(s) on ${DAY_TO_CHECK}
+    Should Be True    ${count} > 0    msg=No reservation labels found. There should be at least one ${DAY_TO_CHECK}
+
+    # initialize found so it always exists
+    Set Test Variable    ${found}    ${False}
+
+    FOR    ${lbl}    IN    @{labels}
+        ${txt}=    Get Text    ${lbl}
+        ${txt}=    Replace String    ${txt}    –    -
+        ${txt}=    Replace String    ${txt}    —    -
+        ${txt}=    Replace String    ${txt}    ${SPACE}    ${EMPTY}
+        Log    Normalized label ➔ ${txt}
+        IF    '${txt}' == '${normTime}'
+            Set Test Variable    ${found}    ${True}
+            Log    Match found!
+            BREAK
+        END
+    END
+
+    Log    Final result: ${found}
+    Should Be True    ${found}    msg=Reservation not found for ${DAY_TO_CHECK} at ${TIME_TO_CHECK}
 
 ###
 # Calendar extraction

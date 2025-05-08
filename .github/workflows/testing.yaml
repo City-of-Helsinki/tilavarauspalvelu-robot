@@ -1,14 +1,6 @@
 name: Varaamo Robot Framework Tests
 
 on:
-  push:
-    branches:
-      - main
-
-  pull_request:
-    branches:
-      - main
-
   workflow_dispatch:
     inputs:
       test_suite:
@@ -61,14 +53,18 @@ jobs:
               /opt/robotframework/tests/Tests_user_desktop_FI.robot \
               /opt/robotframework/tests/Tests_admin_desktop_FI.robot
 
-  test:
+      - name: Upload Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ github.job }}
+          path: Reports/
+
+  full-via-smoke:
     name: ✅ Full Test Suite
     needs: smoke-tests
-    if: >
-      (github.event.inputs.test_suite == 'All' && needs.smoke-tests.result == 'success')
-      ||
-      (github.event.inputs.test_suite != 'All' && github.event.inputs.test_suite != 'Smoke')
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.test_suite == 'All' && needs.smoke-tests.result == 'success' }}
     env:
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
@@ -76,6 +72,66 @@ jobs:
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: Determine test suite
+        id: determine-test-suite
+        run: |
+          # Only "All" ever reaches here
+          SUITE_PATH="/opt/robotframework/tests"
+          echo "suite_path=$SUITE_PATH" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image
+        run: docker build --no-cache -t robotframework-tests .
+
+      - name: Prepare reports folder
+        run: |
+          mkdir -p "${{ github.workspace }}/Reports"
+          chmod 777 "${{ github.workspace }}/Reports"
+
+      - name: Run Full Suite
+        run: |
+          docker run --rm \
+            -e ACCESS_TOKEN \
+            -e REFRESH_TOKEN \
+            -e CLIENT_ID \
+            -e CLIENT_SECRET \
+            -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
+            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            robotframework-tests robot \
+              --outputdir /opt/robotframework/reports \
+              --nostatusrc \
+              ${{ steps.determine-test-suite.outputs.suite_path }}
+
+      - name: Upload Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ github.job }}
+          path: Reports/
+
+  full-direct:
+    name: ✅ Full Test Suite (direct)
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.test_suite != 'All' && github.event.inputs.test_suite != 'Smoke' }}
+    env:
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+      CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Determine test suite
+        id: determine-test-suite
+        run: |
+          case "${{ github.event.inputs.test_suite }}" in
+            Tests_user_desktop_FI)          SUITE_PATH="/opt/robotframework/tests/Tests_user_desktop_FI.robot" ;;
+            Tests_user_mobile_iphone_FI)    SUITE_PATH="/opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" ;;
+            Tests_user_mobile_android_FI)   SUITE_PATH="/opt/robotframework/tests/Tests_user_mobile_android_FI.robot" ;;
+            Tests_users_with_admin_desktop) SUITE_PATH="/opt/robotframework/tests/Tests_users_with_admin_desktop.robot" ;;
+            Tests_admin_desktop_FI)         SUITE_PATH="/opt/robotframework/tests/Tests_admin_desktop_FI.robot" ;;
+          esac
+          echo "suite_path=$SUITE_PATH" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
         run: docker build --no-cache -t robotframework-tests .
@@ -87,16 +143,6 @@ jobs:
 
       - name: Run Selected Test Suite
         run: |
-          TEST_SUITE=""
-          case "${{ github.event.inputs.test_suite }}" in
-            Tests_user_desktop_FI)          TEST_SUITE="/opt/robotframework/tests/Tests_user_desktop_FI.robot" ;;
-            Tests_user_mobile_iphone_FI)    TEST_SUITE="/opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" ;;
-            Tests_user_mobile_android_FI)   TEST_SUITE="/opt/robotframework/tests/Tests_user_mobile_android_FI.robot" ;;
-            Tests_users_with_admin_desktop) TEST_SUITE="/opt/robotframework/tests/Tests_users_with_admin_desktop.robot" ;;
-            Tests_admin_desktop_FI)         TEST_SUITE="/opt/robotframework/tests/Tests_admin_desktop_FI.robot" ;;
-            All|"")                         TEST_SUITE="/opt/robotframework/tests" ;;
-          esac
-
           docker run --rm \
             -e ACCESS_TOKEN \
             -e REFRESH_TOKEN \
@@ -107,10 +153,11 @@ jobs:
             robotframework-tests robot \
               --outputdir /opt/robotframework/reports \
               --nostatusrc \
-              $TEST_SUITE
+              ${{ steps.determine-test-suite.outputs.suite_path }}
 
       - name: Upload Test Artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
+          name: test-reports-${{ github.job }}
           path: Reports/

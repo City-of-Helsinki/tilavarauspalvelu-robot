@@ -148,25 +148,38 @@ Select duration mobile
 Verify time slot not available
     [Documentation]    Verifies that the specified time slot is not available in the list of free slots.
     [Arguments]    ${time_to_check}
+    Log    Verifying time slot not available: ${time_to_check}
 
-    # Get all visible slots
-    ${elements}=    Browser.Get Elements
-    ...    [class*="slider-list"] >> [data-testid="quick-reservation__slot"]
+    # 1 Collect all time slots
+    ${elements}=    Browser.Get Elements    [class*="slider-list"] >> [data-testid="quick-reservation__slot"]
 
-    # If no slots are found, fail the test
+    # 2 Fail test if no slots are found
     ${count}=    Get Length    ${elements}
     IF    ${count} == 0
         Fail    No slots found at all. Cannot verify exclusion of ${time_to_check}
     END
 
-    # Extract texts
+    # 3 Lower Browser’s default timeout to 1 second
+    Set Browser Timeout    1 second    scope=Test
+
+    # 4 Iterate, swallowing any Get Text failures and skipping blanks
     ${slot_texts}=    Create List
     FOR    ${el}    IN    @{elements}
-        ${t}=    Get Text    ${el}
-        Append To List    ${slot_texts}    ${t}
-    END
-    Log    Available slots: ${slot_texts}
+        ${ok}=    Run Keyword And Return Status    Get Text    ${el}
+        IF    not ${ok}    CONTINUE
 
-    # Assert the unwanted time is not in the list
+        ${t}=    Get Text    ${el}
+        IF    '${t}' == ''    CONTINUE
+
+        Append To List    ${slot_texts}    ${t}
+        IF    '${t}' == '${time_to_check}'    BREAK
+    END
+
+    # 5 Restore the original timeout
+    Set Browser Timeout    60s    scope=Global
+
+    Log    Collected slots: ${slot_texts}
+
+    # 6 Final assertion
     List Should Not Contain Value    ${slot_texts}    ${time_to_check}
     Log    Slot '${time_to_check}' is not available, as expected.

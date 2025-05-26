@@ -1,18 +1,16 @@
 *** Settings ***
-Resource    ../../Resources/custom_keywords.robot
 Resource    ../Admin/admin_reservations.robot
-Resource    ../Admin/admin_mainmenu.robot
+Resource    ../Admin/admin_navigation_menu.robot
 Resource    ../Admin/admin_my_units.robot
-Resource    ../../Resources/data_modification.robot
+Resource    ../Admin/admin_notifications_create_page.robot
+Resource    ../Admin/admin_notifications.robot
 Resource    ../App/app_common.robot
+Resource    ../../Resources/data_modification.robot
+Resource    ../../Resources/custom_keywords.robot
 Library     Browser
 
 
 *** Keywords ***
-###
-# Front page
-###
-
 Admin checks the info and sets reservation free and approves it
     admin_reservations.Admin checks reservation h1    ${BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED}
     admin_reservations.Admin checks reservation title tagline    ${RESERVATION_TAGLINE}
@@ -90,7 +88,7 @@ Admin edits reservation time
 
 Admin navigates to own units and selects unit
     [Arguments]    ${unit_name}
-    admin_mainmenu.Admin navigates to my units
+    admin_navigation_menu.Admin navigates to my units
     admin_my_units.Admin searches own unit and clicks it    ${UNIT_LOCATION}
     admin_my_units.Admin clicks calendar open in own units    ${unit_name}
 
@@ -187,3 +185,105 @@ Admin attempts to make an unavailable reservation
     Click    data-testid=CreateReservationModal__cancel-reservation
     Sleep    500ms
     Wait For Load State    load    timeout=15s
+
+###
+# Notifications
+###
+
+Admin creates normal notification for user and admin side
+    admin_notifications.Admin clicks create notification button
+    #
+    admin_notifications_create_page.Admin selects validity period to immediately
+    #
+    ${date_plus_60_days}=    data_modification.Get date plus 60 days
+    Set Suite Variable    ${NOTIFICATION_ACTIVE_UNTIL}    ${date_plus_60_days}
+    #
+    admin_notifications_create_page.Admin selects notification active until
+    ...    ${NOTIFICATION_ACTIVE_UNTIL}
+    #
+    # if the notification name exist already we cannot publish the notification
+    ${randomvalue}=    data_modification.Generate random letter and number
+    Set Suite Variable
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NAME}
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NORMAL} ${randomvalue}
+    admin_notifications_create_page.Admin fills notification name
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NAME}
+    #
+    admin_notifications_create_page.Admin selects type of notification    ${NOTIFICATION_BANNER_MESSAGE_NORMAL}
+    #
+    admin_notifications_create_page.Admin selects target group all
+    #
+
+    ${randomvalue}=    data_modification.Generate random letter and number
+    Set Suite Variable
+    ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NORMAL} ${randomvalue}
+    #
+    admin_notifications_create_page.Admin fills notification text fi    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
+    #
+    admin_notifications_create_page.Admin publishes notification
+
+Admin creates warning notification for user and admin side
+    admin_notifications.Admin clicks create notification button
+    #
+    admin_notifications_create_page.Admin selects validity period to immediately
+    #
+    ${date_plus_60_days}=    data_modification.Get date plus 60 days
+    Set Suite Variable    ${NOTIFICATION_ACTIVE_UNTIL}    ${date_plus_60_days}
+    #
+    admin_notifications_create_page.Admin selects notification active until
+    ...    ${NOTIFICATION_ACTIVE_UNTIL}
+    #
+    # if the notification name exist already we cannot publish the notification
+    ${randomvalue}=    data_modification.Generate random letter and number
+    Set Suite Variable
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NAME_WARNING}
+    ...    ${NOTIFICATION_BANNER_MESSAGE_WARNING} ${randomvalue}
+    admin_notifications_create_page.Admin fills notification name
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NAME_WARNING}
+    #
+    admin_notifications_create_page.Admin selects type of notification    ${NOTIFICATION_BANNER_MESSAGE_WARNING}
+    #
+    admin_notifications_create_page.Admin selects target group all
+    #
+    ${randomvalue}=    data_modification.Generate random letter and number
+    Set Suite Variable
+    ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
+    ...    ${NOTIFICATION_BANNER_MESSAGE_WARNING} ${randomvalue}
+    #
+    admin_notifications_create_page.Admin fills notification text fi    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
+    #
+    admin_notifications_create_page.Admin publishes notification
+
+Admin creates error notification for user and admin side
+    admin_notifications.Admin clicks create notification button
+    #
+    admin_notifications_create_page.Admin selects validity period to immediately
+    #
+    ${date_plus_60_days}=    data_modification.Get date plus 60 days
+    Set Suite Variable    ${NOTIFICATION_ACTIVE_UNTIL}    ${date_plus_60_days}
+    #
+    admin_notifications_create_page.Admin selects notification active until
+    ...    ${NOTIFICATION_ACTIVE_UNTIL}
+    #
+    # if the notification name exist already we cannot publish the notification
+    ${randomvalue}=    data_modification.Generate random letter and number
+    Set Suite Variable
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NAME_ERROR}
+    ...    ${NOTIFICATION_BANNER_MESSAGE_ERROR} ${randomvalue}
+    admin_notifications_create_page.Admin fills notification name
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NAME_ERROR}
+    #
+    admin_notifications_create_page.Admin selects type of notification    ${NOTIFICATION_BANNER_MESSAGE_ERROR}
+    #
+    admin_notifications_create_page.Admin selects target group all
+    #
+
+    ${randomvalue}=    data_modification.Generate random letter and number
+    Set Suite Variable
+    ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
+    ...    ${NOTIFICATION_BANNER_MESSAGE_ERROR} ${randomvalue}
+    #
+    admin_notifications_create_page.Admin fills notification text fi    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
+    #
+    admin_notifications_create_page.Admin publishes notification

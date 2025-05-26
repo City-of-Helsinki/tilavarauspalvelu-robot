@@ -56,7 +56,7 @@ Select duration
     Click    id=quick-reservation >> css=.Select-module_selectAndListContainer__vSJEv
     Sleep    500ms
     Click    [role="option"] >> '${duration}'
-    Wait For Load State    Load    timeout=15s
+    Wait For Load State    load    timeout=15s
 
 Click more available slots
     Click    [data-testid="quick-reservation-next-available-time"]
@@ -143,7 +143,7 @@ Select duration mobile
     Click    id=mobile-quick-reservation-duration-toggle-button
     Sleep    500ms
     Click    [role="option"] >> '${duration}'
-    Wait For Load State    Load    timeout=15s
+    Wait For Load State    load    timeout=15s
 
 Verify time slot not available
     [Documentation]    Verifies that the specified time slot is not available in the list of free slots.

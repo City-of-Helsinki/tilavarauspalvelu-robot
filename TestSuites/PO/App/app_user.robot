@@ -70,7 +70,7 @@ User uses search to find right unit
 
     # Waiting results to load
     Sleep    1s
-    Wait For Load State    Load    timeout=10s
+    Wait For Load State    load    timeout=10s
 
     custom_keywords.Find and click element with text
     ...    [data-testid="list-with-pagination__list--container"] >> [data-testid="card__heading"]
@@ -108,6 +108,7 @@ User selects the time with quick reservation
 User checks that quick reservation does not have reserved time
     [Arguments]    ${reservationtime}
     Wait For Load State    load    timeout=15s
+    Log    ${reservationtime}
     quick_reservation.Verify time slot not available    ${reservationtime}
 
 User checks that reservation calendar does not have reserved time slot available

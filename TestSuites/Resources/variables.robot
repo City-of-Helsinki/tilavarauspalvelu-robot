@@ -127,10 +127,26 @@ ${RESERVATION_CARDNAME}                                 [data-testid="reservatio
 ###
 
 ###
+# NOTIFICATIONS
+###
+${NOTIFICATION_ACTIVE_UNTIL}                            ${EMPTY}    # 12.2.2024
+${NOTIFICATION_TYPE_NORMAL}                             [class*="Notification-module_notification__"]
+${NOTIFICATION_TYPE_ERROR}                              [class*="Notification-module_error___"]
+${NOTIFICATION_TYPE_WARNING}                            [class*="Notification-module_alert__"]
+#
+${NOTIFICATION_BANNER_MESSAGE_NAME}                     ${EMPTY}    # Normaali (sininen) + random value h5
+${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}                  ${EMPTY}    # Normaali (sininen) + random value Z6
+
+###
+#
+###
+
+###
 # PAGES
 ##
 ${PAGE1}                                                ${EMPTY}
-
+${PAGE_ADMIN_SIDE}                                      ${EMPTY}
+${PAGE_USER_SIDE}                                       ${EMPTY}
 ###
 #
 ###

@@ -19,7 +19,7 @@ Login Suomi_fi
     Sleep    1s
     Click    css=#continue-button
     Sleep    1s
-    Wait For Load State    load    timeout=15s
+    Wait For Load State    networkidle    timeout=50s
 
 Login Suomi_fi mobile
     [Arguments]    ${input_hetu}

@@ -5,7 +5,7 @@ Resource            ${CURDIR}/PO/App/app_common.robot
 Resource            ${CURDIR}/PO/App/app_user.robot
 Resource            ${CURDIR}/PO/App/app_admin.robot
 Resource            ${CURDIR}/PO/Admin/admin_reservations.robot
-Resource            ${CURDIR}/PO/Admin/admin_mainmenu.robot
+Resource            ${CURDIR}/PO/Admin/admin_navigation_menu.robot
 
 Test Setup          Admin opens desktop browser to landing page
 Test Teardown       Run Keyword If Test Failed    Take Screenshot

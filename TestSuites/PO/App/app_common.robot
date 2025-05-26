@@ -3,12 +3,12 @@ Resource    ../../Resources/devices.robot
 Resource    ../../Resources/variables.robot
 Resource    ../../Resources/users.robot
 Resource    ../../Resources/texts_FI.robot
+Resource    ../../Resources/custom_keywords.robot
 Resource    ../User/user_landingpage.robot
 Resource    ../Admin/admin_landingpage.robot
 Resource    ../Common/topNav.robot
 Resource    ../Common/login.robot
 Resource    ../Common/popups.robot
-Resource    ../../Resources/custom_keywords.robot
 
 
 *** Keywords ***
@@ -56,7 +56,7 @@ User logs in with suomi_fi
     # TODO enable these steps when the dropdown has user info again
     # topNav.Check dropdown menu has user info    ${BASIC_USER_MALE_FULLNAME}
 
-User goes to landing Page
+User goes to landing page
     Go To    ${URL_TEST}
 
 User logs out
@@ -70,6 +70,17 @@ User confirms log out
 
     # Confirms the logout was success
     Wait For Elements State    id=social-suomi_fi    visible
+
+Verify notification banner message
+    [Arguments]    ${notification_banner_message}    ${notification_type}
+    Wait For Elements State    section${notification_type}    visible    timeout=10s
+
+    custom_keywords.Check elements text
+    ...    [data-testid="BannerNotificationList__Notitification"]
+    ...    ${notification_banner_message}
+
+Verify notification banner message is not visible
+    Wait For Elements State    [data-testid="BannerNotificationList__Notitification"]    hidden    timeout=2s
 
 ###
 # Mobile
@@ -114,17 +125,17 @@ User logs in with suomi_fi mobile
 Admin opens desktop browser to landing page
     # Default is chrome
     devices.Set up chromium desktop browser and open url    ${URL_ADMIN}    ${DOWNLOAD_DIR}
-    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT}
+    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_NOT_LOGGED_IN}
 
-Admin goes to landing Page
+Admin goes to landing page
     Go To    ${URL_ADMIN}
     Wait For Load State    load    timeout=15s
-    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT}
+    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_NOT_LOGGED_IN}
 
 Admin logs in with suomi_fi
     topNav.Click login admin side
     login.Login Suomi_fi    ${ADMIN_ALL_MALE_HETU}
-    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT}
+    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN}
     # Wait For Elements State    id=user-menu    visible
     # TODO enable these steps when the dropdown has user info again
     # admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN}
@@ -141,9 +152,37 @@ Admin logs out
 # END OF ADMIN TEST SET UP
 ###
 
+###
+# SWITCH PAGE
+###
+
 Switch to new tab from current page
     ${page1}=    Get Page Ids    ACTIVE    ACTIVE    ACTIVE
     Set Suite Variable    ${PAGE1}    ${page1}
     Log    ${PAGE1}
     Switch Page    NEW
     Wait For Load State    load    timeout=15s
+
+Open new window from admin side to user side and saves both windows
+    # Save the current page
+    ${all_pages_before}=    Get Page Ids
+    ${admin_id}=    Get From List    ${all_pages_before}    0
+    Set Suite Variable    ${PAGE_ADMIN_SIDE}    ${admin_id}
+    Log    Admin page handle is ${PAGE_ADMIN_SIDE}
+
+    # Open the user side page in a brand new tab
+    ${user_handle}=    New Page    ${URL_TEST}
+    Wait For Load State    load    timeout=15s
+
+    # Save the new page
+    Set Suite Variable    ${PAGE_USER_SIDE}    ${user_handle}
+    Log    User page handle is ${PAGE_USER_SIDE}
+
+Reload page
+    Reload
+    Sleep    500ms
+    Wait For Load State    networkidle    timeout=30s
+
+###
+# END OF SWITCH PAGE
+###

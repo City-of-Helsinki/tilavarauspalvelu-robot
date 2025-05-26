@@ -24,7 +24,7 @@ Click and store free reservation time
 
     # Wait for animation
     Sleep    2s
-    Wait For Load State    Load    timeout=15s
+    Wait For Load State    load    timeout=15s
 
     ${calendar_control_time_of_third_free_slot}=    Get Text    id=calendar-controls__time-option-2
     Set Suite Variable    ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}    ${calendar_control_time_of_third_free_slot}

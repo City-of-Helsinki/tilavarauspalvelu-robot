@@ -24,28 +24,33 @@ This repository contains automated test suites for the Varaamo booking system us
 To run an entire test suite, use the following command pattern:
 
 **Windows (CMD):**
+
 ```
 docker run --rm -v "%cd%\TestSuites:/opt/robotframework/tests" -v "%cd%\Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
 ```
 
 **Windows (PowerShell):**
+
 ```
 docker run --rm -v "${PWD}\TestSuites:/opt/robotframework/tests" -v "${PWD}\Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
 ```
 
 **Linux/Mac:**
+
 ```
 docker run --rm -v "$(pwd)/TestSuites:/opt/robotframework/tests" -v "$(pwd)/Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
 ```
 
 Available test suites:
+
 - `Tests_user_desktop_FI.robot` - Desktop browser tests
-- `Tests_user_mobile_iphone_FI.robot` - Mobile iPhone tests 
+- `Tests_user_mobile_iphone_FI.robot` - Mobile iPhone tests
 - `Tests_user_mobile_android_FI.robot` - Mobile Android tests
 - `Tests_users_with_admin_desktop.robot` - Combined user and admin tests
 - `Tests_admin_desktop_FI.robot` - Admin user tests
 
 Example:
+
 ```
 docker run --rm -v "%cd%\TestSuites:/opt/robotframework/tests" -v "%cd%\Reports:/opt/robotframework/reports" robotframework-tests robot --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
 ```
@@ -73,10 +78,12 @@ For failed tests, screenshots are automatically captured and included in the rep
 ## GitHub Actions
 
 This project includes GitHub Actions workflows that automatically run tests when:
+
 - Code is pushed to the main branch
 - Manually triggered via the GitHub Actions UI
 
 To manually run tests via GitHub Actions:
+
 1. Go to the "Actions" tab in your GitHub repository
 2. Select the "Varaamo Robot Framework Tests" workflow
 3. Click "Run workflow"
@@ -95,7 +102,9 @@ The workflow will execute the selected tests and make the reports available as d
 ├── TestSuites/                         # Test suite directory
 │   ├── PO/                             # Page Objects (PO) for separation of test logic and UI elements
 │   │   ├── Admin/                      # Admin interface page objects
-│   │   │   ├── admin_mainmenu.robot    # Navigation elements for admin interface
+│   │   │   ├── admin_navigation_menu.robot    # Navigation elements for admin interface
+│   │   │   ├── admin_notifications.robot      # Admin notification management UI
+│   │   │   ├── admin_notifications_create_page.robot # Admin notification creation/editing page
 │   │   │   └── admin_reservations.robot # Admin reservation management UI
 │   │   ├── App/                        # Application-specific page objects
 │   │   │   ├── app_admin.robot         # Admin actions and workflows

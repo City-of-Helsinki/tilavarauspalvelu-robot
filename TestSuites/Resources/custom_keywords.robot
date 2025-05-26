@@ -26,7 +26,7 @@ Find and click element with text
         Log    element is: ${element}
         Log    Text found in element: ${el_text}
 
-        IF    "${el_text}" == "${wanted_text}"
+        IF    $el_text == $wanted_text
             Click    ${element}
             Log    Element with text "${wanted_text}" clicked.
             ${found}=    Set Variable    True    # Set the flag to True since the element is found and clicked
@@ -269,7 +269,7 @@ Check elements text
     Log    Expected text: ${Expected text}
 
     # Wait until the element is visible on the page
-    Wait For Elements State    ${Element}    visible
+    Wait For Elements State    ${Element}    visible    timeout=10s
 
     # Retrieve the text content of the element
     ${Elements_text}=    Get Text    ${Element}

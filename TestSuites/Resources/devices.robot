@@ -3,6 +3,7 @@
 # https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json
 Library     Browser
 Library     Dialogs
+Library     DateTime
 Resource    variables.robot
 # DEVNOTE viewport=${None} for laptop UI
 
@@ -24,9 +25,12 @@ Set up chromium desktop browser and open url
     ...    locale=${LOCALE}
     ...    timezoneId=Europe/Helsinki
     ...    ignoreHTTPSErrors=true
+    ...    deviceScaleFactor=1
     New Page    ${input_URL}
-    Wait For Load State    load    timeout=30s
+    Sleep    500ms
+    Wait For Load State    networkidle    timeout=30s
     Set Browser Timeout    60s    scope=Global
+    Log current time
 
 Set up firefox desktop browser and open url
     [Arguments]    ${input_URL}    ${DOWNLOAD_DIR}
@@ -40,8 +44,10 @@ Set up firefox desktop browser and open url
     ...    ignoreHTTPSErrors=false
     ...    javaScriptEnabled=True
     New Page    ${input_URL}
+    Sleep    500ms
     Wait For Load State    load    timeout=30s
     Set Browser Timeout    60s    scope=Global
+    Log current time
 
 Set up iphone 14 and open url
     [Arguments]    ${input_URL}
@@ -55,6 +61,7 @@ Set up iphone 14 and open url
     New Context    &{iphone}    isMobile=true    locale=${LOCALE}    ignoreHTTPSErrors=true    deviceScaleFactor=1
 
     New Page    ${input_URL}
+    Sleep    500ms
     Wait For Load State    load    timeout=30s
 
     ${viewport}=    Get Viewport Size    # should return { "width": 390, "height": 664 }
@@ -63,6 +70,7 @@ Set up iphone 14 and open url
     # Validate the height
     Should Be Equal As Integers    ${viewport["height"]}    664
     Set Browser Timeout    60s    scope=Global
+    Log current time
 
 Set up android pixel 5 and open url
     [Arguments]    ${input_URL}
@@ -76,6 +84,7 @@ Set up android pixel 5 and open url
     New context    &{pixel}    isMobile=true    locale=${LOCALE}
 
     New Page    ${input_URL}
+    Sleep    500ms
     Wait For Load State    load    timeout=30s
 
     ${viewport}=    Get Viewport Size    # returns { "width": 393, "height": 727 }
@@ -84,3 +93,10 @@ Set up android pixel 5 and open url
     # Validate the height
     Should Be Equal As Integers    ${viewport["height"]}    727    msg=The viewport height is not as expected.
     Set Browser Timeout    60s    scope=Global
+    Log current time
+
+Log current time
+    # Log only current local time (HH:MM:SS)
+    ${now_ts}=    Get Current Date
+    ${current_time}=    Convert Date    ${now_ts}    result_format=%H:%M:%S
+    Log    Current local time: ${current_time}

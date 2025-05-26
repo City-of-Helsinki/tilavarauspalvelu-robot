@@ -1,5 +1,6 @@
 *** Settings ***
 Library     Browser
+Resource    ../App/app_common.robot
 
 
 *** Keywords ***
@@ -22,4 +23,30 @@ User accepts cookies if dialog is visible
         Sleep    1.5s    # wait for the animation to close
     ELSE
         Log    Dialog is not visible. Continuing the test.
+    END
+
+Close notification banner if visible
+    [Documentation]    Closes all notification banners by clicking close button
+    ...    and refreshing until no notifications are visible
+
+    ${attempt}=    Set Variable    1
+    WHILE    True    limit=5
+        # Check if notification exists
+        ${notifications_visible}=    Browser.Get Element Count
+        ...    [data-sentry-component="BannerNotificationsList"] >> [data-testid="BannerNotificationList__Notitification"]
+        Log    Attempt ${attempt}: Found ${notifications_visible} notifications
+
+        # Exit if no notifications
+        IF    ${notifications_visible} == 0
+            Log    No more notifications found. Continuing test.
+            BREAK
+        END
+
+        # Close notification and refresh
+        Click    [data-testid="BannerNotificationList__Notitification"] >> button[title="Sulje"] >> nth=0
+        Sleep    500ms
+        Log    Clicked close button on notification
+
+        app_common.Reload page
+        ${attempt}=    Evaluate    ${attempt} + 1
     END

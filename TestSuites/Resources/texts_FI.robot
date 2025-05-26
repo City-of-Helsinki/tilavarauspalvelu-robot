@@ -33,8 +33,9 @@ ${USER_LOGOUT_TEXT}                                                 You have bee
 # ADMIN LANDING PAGE
 ###
 
-${ADMIN_LANDING_PAGE_H1_TEXT}                                       Tilavarauskäsittely
-${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN}                             Tervetuloa, ${ADMIN_ALL_MALE_FIRSTNAME}
+${ADMIN_LANDING_PAGE_H1_TEXT_NOT_LOGGED_IN}                         Tilavarauskäsittely
+${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN}                             Tervetuloa!
+${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN_WITH_USER_INFO}              Tervetuloa, ${ADMIN_ALL_MALE_FIRSTNAME}
 ${LOGIN_TEXT_ADMIN}                                                 Kirjaudu sisään
 
 ###
@@ -46,6 +47,28 @@ ${LOGIN_TEXT_ADMIN}                                                 Kirjaudu sis
 ###
 
 ${PAYMENT_NOTIFICATION_BANNER_TITLE}                                Varauksesi odottaa maksua
+
+###
+#
+###
+
+###
+# NOTIFICATION BANNER
+###
+
+${NOTIFICATION_BANNER_MESSAGE_NORMAL}                               Normaali (sininen)
+${NOTIFICATION_BANNER_MESSAGE_ERROR}                                Poikkeus (punainen)
+${NOTIFICATION_BANNER_MESSAGE_WARNING}                              Varoitus (keltainen)
+
+###
+# NOTIFICATION BANNER TARGET GROUP
+###
+
+${NOTIFICATION_BANNER_TARGET_GROUP_ALL}                             Kaikki
+${NOTIFICATION_BANNER_TARGET_GROUP_ADMIN}                           Henkilökunta
+${NOTIFICATION_BANNER_TARGET_GROUP_USER}                            Asiakkaat
+#
+${DELETE_NOTIFICATION_BUTTON_TEXT}                                  Poista
 
 ###
 #

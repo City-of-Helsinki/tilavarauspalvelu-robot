@@ -70,7 +70,7 @@ Check the info in checkout
     Sleep    1s
     Click submit
     Sleep    3s
-    Wait For Load State    load    timeout=15s
+    Wait For Load State    networkidle    timeout=30s
 
 Interrupted checkout
     [Arguments]    ${input_URL}

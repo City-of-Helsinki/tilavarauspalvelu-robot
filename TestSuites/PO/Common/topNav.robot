@@ -52,7 +52,7 @@ Check dropdown menu has user info
 Navigate to single booking page
     Click    header >> [href="/search"]:text-is("${SINGLEBOOKING_FI}")
     Sleep    200ms
-    Wait For Load State    Load    timeout=15s
+    Wait For Load State    load    timeout=15s
 
 Navigate to my bookings
     Click    header >> [href="/reservations"]:text-is("${MYBOOKINGS_FI}")

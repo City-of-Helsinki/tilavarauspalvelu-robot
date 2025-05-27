@@ -18,146 +18,260 @@ on:
           - Tests_admin_desktop_FI
 
 jobs:
-  smoke-tests:
-    name: 🔥 Smoke Tests
+  test:
+    name: 🤖 Robot Framework Tests
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.test_suite == 'Smoke' || github.event.inputs.test_suite == 'All' }}
+    timeout-minutes: 60 # Prevent hanging tests
     env:
+      TZ: Europe/Helsinki # Ensure consistent timezone for tests
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Build Docker image
-        run: docker build --no-cache -t robotframework-tests .
+      # Set up Docker with caching support
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Prepare reports folder
-        run: |
-          mkdir -p "${{ github.workspace }}/Reports"
-          chmod 777 "${{ github.workspace }}/Reports"
-
-      - name: Run Smoke Tests
-        run: |
-          docker run --rm \
-            -e ACCESS_TOKEN \
-            -e REFRESH_TOKEN \
-            -e CLIENT_ID \
-            -e CLIENT_SECRET \
-            -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
-            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
-            robotframework-tests robot \
-              --outputdir /opt/robotframework/reports \
-              --include smoke \
-              /opt/robotframework/tests/Tests_user_desktop_FI.robot \
-              /opt/robotframework/tests/Tests_admin_desktop_FI.robot
-
-      - name: Upload Test Artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
+      # Build Docker image with GitHub Actions cache for faster builds
+      - name: Build and cache Docker image
+        uses: docker/build-push-action@v5
         with:
-          name: test-reports-${{ github.job }}
-          path: Reports/
+          context: .
+          load: true
+          tags: robotframework-tests:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-  full-via-smoke:
-    name: ✅ Full Test Suite
-    needs: smoke-tests
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.test_suite == 'All' && needs.smoke-tests.result == 'success' }}
-    env:
-      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-      CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Determine test suite
-        id: determine-test-suite
-        run: |
-          # Only "All" ever reaches here
-          SUITE_PATH="/opt/robotframework/tests"
-          echo "suite_path=$SUITE_PATH" >> $GITHUB_OUTPUT
-
-      - name: Build Docker image
-        run: docker build --no-cache -t robotframework-tests .
-
-      - name: Prepare reports folder
-        run: |
-          mkdir -p "${{ github.workspace }}/Reports"
-          chmod 777 "${{ github.workspace }}/Reports"
-
-      - name: Run Full Suite
-        run: |
-          docker run --rm \
-            -e ACCESS_TOKEN \
-            -e REFRESH_TOKEN \
-            -e CLIENT_ID \
-            -e CLIENT_SECRET \
-            -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
-            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
-            robotframework-tests robot \
-              --outputdir /opt/robotframework/reports \
-              --nostatusrc \
-              ${{ steps.determine-test-suite.outputs.suite_path }}
-
-      - name: Upload Test Artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports-${{ github.job }}
-          path: Reports/
-
-  full-direct:
-    name: ✅ Full Test Suite (direct)
-    runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.test_suite != 'All' && github.event.inputs.test_suite != 'Smoke' }}
-    env:
-      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-      CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Determine test suite
-        id: determine-test-suite
+      # Configure test arguments based on selected suite
+      - name: Determine test configuration
+        id: config
         run: |
           case "${{ github.event.inputs.test_suite }}" in
-            Tests_user_desktop_FI)          SUITE_PATH="/opt/robotframework/tests/Tests_user_desktop_FI.robot" ;;
-            Tests_user_mobile_iphone_FI)    SUITE_PATH="/opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" ;;
-            Tests_user_mobile_android_FI)   SUITE_PATH="/opt/robotframework/tests/Tests_user_mobile_android_FI.robot" ;;
-            Tests_users_with_admin_desktop) SUITE_PATH="/opt/robotframework/tests/Tests_users_with_admin_desktop.robot" ;;
-            Tests_admin_desktop_FI)         SUITE_PATH="/opt/robotframework/tests/Tests_admin_desktop_FI.robot" ;;
+            Smoke)
+              # Run only smoke tests from specific files
+              echo "suite_args=--outputdir /opt/robotframework/reports --include smoke /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+              echo "run_type=smoke_only" >> $GITHUB_OUTPUT
+              ;;
+            All)
+              # For "All": first run smoke tests, then full suite if smoke passes
+              echo "smoke_args=--outputdir /opt/robotframework/reports/smoke --include smoke /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+              echo "full_args=--outputdir /opt/robotframework/reports/full --nostatusrc /opt/robotframework/tests" >> $GITHUB_OUTPUT
+              echo "run_type=smoke_first" >> $GITHUB_OUTPUT
+              ;;
+            Tests_user_desktop_FI)
+              # Run specific desktop user tests
+              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_desktop_FI.robot" >> $GITHUB_OUTPUT
+              echo "run_type=single_suite" >> $GITHUB_OUTPUT
+              ;;
+            Tests_user_mobile_iphone_FI)
+              # Run iPhone mobile tests
+              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+              echo "run_type=single_suite" >> $GITHUB_OUTPUT
+              ;;
+            Tests_user_mobile_android_FI)
+              # Run Android mobile tests
+              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_android_FI.robot" >> $GITHUB_OUTPUT
+              echo "run_type=single_suite" >> $GITHUB_OUTPUT
+              ;;
+            Tests_users_with_admin_desktop)
+              # Run admin user tests
+              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_users_with_admin_desktop.robot" >> $GITHUB_OUTPUT
+              echo "run_type=single_suite" >> $GITHUB_OUTPUT
+              ;;
+            Tests_admin_desktop_FI)
+              # Run admin desktop tests
+              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+              echo "run_type=single_suite" >> $GITHUB_OUTPUT
+              ;;
           esac
-          echo "suite_path=$SUITE_PATH" >> $GITHUB_OUTPUT
 
-      - name: Build Docker image
-        run: docker build --no-cache -t robotframework-tests .
-
+      # Create reports directory with proper permissions
       - name: Prepare reports folder
         run: |
           mkdir -p "${{ github.workspace }}/Reports"
           chmod 777 "${{ github.workspace }}/Reports"
 
-      - name: Run Selected Test Suite
+      # Run smoke tests first (only for "All" option)
+      - name: Run Smoke Tests
+        id: smoke_tests
+        if: steps.config.outputs.run_type == 'smoke_first'
         run: |
           docker run --rm \
-            -e ACCESS_TOKEN \
-            -e REFRESH_TOKEN \
-            -e CLIENT_ID \
-            -e CLIENT_SECRET \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
-            robotframework-tests robot \
-              --outputdir /opt/robotframework/reports \
-              --nostatusrc \
-              ${{ steps.determine-test-suite.outputs.suite_path }}
+            robotframework-tests:latest robot \
+            ${{ steps.config.outputs.smoke_args }} || echo "SMOKE_FAILED=true" >> $GITHUB_ENV
 
-      - name: Upload Test Artifacts
-        if: always()
+      # Check smoke test results and provide clear messaging
+      - name: Evaluate Smoke Test Results
+        if: steps.config.outputs.run_type == 'smoke_first'
+        run: |
+          if [ "$SMOKE_FAILED" = "true" ]; then
+            echo "::error title=Smoke Tests Failed::❌ Smoke tests failed! Skipping full test suite"
+            echo "::warning title=Execution Stopped::Full test suite will not run due to smoke test failures."
+          else
+            echo "::notice title=Smoke Tests Passed::✅ Smoke tests passed! Proceeding to full test suite..."
+          fi
+
+      # Run full test suite only if smoke tests passed
+      - name: Run Full Test Suite
+        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_FAILED != 'true'
+        run: |
+          echo "::notice title=Starting Full Tests::🚀 Smoke tests passed! Now running complete test suite..."
+          docker run --rm \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e TZ=Europe/Helsinki \
+            -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
+            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            robotframework-tests:latest robot \
+            ${{ steps.config.outputs.full_args }}
+
+      # Run single test suites (for non-"All" options)
+      - name: Run Single Test Suite
+        if: steps.config.outputs.run_type != 'smoke_first'
+        run: |
+          docker run --rm \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e TZ=Europe/Helsinki \
+            -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
+            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            robotframework-tests:latest robot \
+            ${{ steps.config.outputs.suite_args }}
+
+      # Parse Robot Framework XML results and create GitHub summary
+      - name: Parse Test Results
+        if: always() # Run even if tests failed
+        run: |
+          python3 << 'EOF'
+          import xml.etree.ElementTree as ET
+          import os
+          import glob
+
+          def parse_robot_results():
+              # Find all Robot Framework output.xml files
+              output_files = glob.glob("Reports/**/output.xml", recursive=True)
+              
+              if not output_files:
+                  print("::warning title=No Results::No Robot Framework output.xml files found")
+                  return
+              
+              total_passed = 0
+              total_failed = 0
+              failed_tests = []
+              passed_tests = []
+              
+              # Check if we're in smoke-first mode and determine execution status
+              test_suite = os.environ.get('INPUT_TEST_SUITE', '')
+              smoke_failed = os.environ.get('SMOKE_FAILED', '') == 'true'
+              
+              # Parse each output.xml file
+              for output_file in output_files:
+                  try:
+                      tree = ET.parse(output_file)
+                      root = tree.getroot()
+                      
+                      # Extract individual test results
+                      for test in root.findall('.//test'):
+                          test_name = test.get('name', 'Unknown Test')
+                          status = test.find('status')
+                          
+                          if status is not None:
+                              if status.get('status') == 'PASS':
+                                  total_passed += 1
+                                  passed_tests.append(test_name)
+                              else:
+                                  total_failed += 1
+                                  error_msg = status.text or 'No error message'
+                                  failed_tests.append(f"{test_name}: {error_msg}")
+                  
+                  except Exception as e:
+                      print(f"::warning title=Parse Error::Could not parse {output_file}: {e}")
+              
+              # Create GitHub Actions summary with test results
+              summary = f"## 🤖 Test Results Summary\n\n"
+              
+              # Add execution mode information
+              if test_suite == 'All':
+                  if total_failed > 0:
+                      summary += "🛑 **SMOKE TESTS FAILED** - Full test suite was **NOT EXECUTED** to save time\n\n"
+                      summary += "📋 **Next Steps**: Review the failing smoke tests below, then re-run the workflow to execute the complete test suite.\n\n"
+                  else:
+                      summary += "✅ **SMOKE TESTS PASSED** - Full test suite was executed successfully\n\n"
+              
+              summary += f"- ✅ **Passed**: {total_passed}\n"
+              summary += f"- ❌ **Failed**: {total_failed}\n"
+              summary += f"- 📊 **Total**: {total_passed + total_failed}\n\n"
+              
+              # Show failed tests (limit to 10 for readability)
+              if failed_tests:
+                  if test_suite == 'All':
+                      summary += "### 🚨 Failed Smoke Tests (Blocking Full Execution)\n"
+                  else:
+                      summary += "### ❌ Failed Tests\n"
+                  for i, test in enumerate(failed_tests[:10], 1):
+                      summary += f"{i}. `{test}`\n"
+                  if len(failed_tests) > 10:
+                      summary += f"... and {len(failed_tests) - 10} more\n"
+                  summary += "\n"
+              
+              # Show some passed tests (limit to 5)
+              if passed_tests:
+                  if test_suite == 'All':
+                      summary += "### ✅ Passed Smoke Tests\n"
+                  else:
+                      summary += "### ✅ Passed Tests\n"
+                  for i, test in enumerate(passed_tests[:5], 1):
+                      summary += f"{i}. `{test}`\n"
+                  if len(passed_tests) > 5:
+                      summary += f"... and {len(passed_tests) - 5} more\n"
+              
+              # Write summary to GitHub Actions page
+              with open(os.environ['GITHUB_STEP_SUMMARY'], 'w') as f:
+                  f.write(summary)
+              
+              # Create GitHub Actions annotations
+              if test_suite == 'All' and total_failed > 0:
+                  print(f"::error title=Smoke Test Gate::Smoke tests failed ({total_failed} failures). Full test suite skipped.")
+              
+              print(f"::notice title=Test Results::Passed: {total_passed}, Failed: {total_failed}")
+              
+              if total_failed > 0:
+                  print(f"::error title=Test Failures::{total_failed} test(s) failed")
+                  # Don't exit with error code to allow artifact upload
+              else:
+                  print(f"::notice title=All Tests Passed::All {total_passed} tests passed! 🎉")
+
+          parse_robot_results()
+          EOF
+        env:
+          INPUT_TEST_SUITE: ${{ github.event.inputs.test_suite }}
+          SMOKE_FAILED: ${{ env.SMOKE_FAILED }}
+
+      # Add execution metadata to GitHub summary
+      - name: Generate Test Report Summary
+        if: always() # Always show execution details
+        run: |
+          echo "## 📋 Test Execution Details" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Test Suite**: ${{ github.event.inputs.test_suite }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Execution Time**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Runner**: ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
+
+      # Upload all test reports as artifacts (always runs, even on failure)
+      - name: Upload Test Reports
+        if: always() # Ensure reports are saved even if tests fail
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports-${{ github.job }}
+          name: test-reports-${{ github.run_number }} # Unique name per run
           path: Reports/
+          retention-days: 30 # Keep reports for 30 days
+
+      # Fail the workflow if smoke tests failed (ensures red X status)
+      - name: Fail Workflow on Smoke Test Failure
+        if: env.SMOKE_FAILED == 'true'
+        run: |
+          echo "::error title=Workflow Failed::Smoke tests failed"
+          exit 1

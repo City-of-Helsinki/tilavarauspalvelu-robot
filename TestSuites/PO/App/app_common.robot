@@ -76,11 +76,11 @@ Verify notification banner message
     Wait For Elements State    section${notification_type}    visible    timeout=10s
 
     custom_keywords.Check elements text
-    ...    [data-testid="BannerNotificationList__Notitification"]
+    ...    [data-testid="BannerNotificationList__Notification"]
     ...    ${notification_banner_message}
 
 Verify notification banner message is not visible
-    Wait For Elements State    [data-testid="BannerNotificationList__Notitification"]    hidden    timeout=2s
+    Wait For Elements State    [data-testid="BannerNotificationList__Notification"]    hidden    timeout=2s
 
 ###
 # Mobile

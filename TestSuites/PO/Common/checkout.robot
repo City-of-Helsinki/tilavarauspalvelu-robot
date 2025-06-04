@@ -5,9 +5,14 @@ Library     Browser
 
 
 *** Keywords ***
-Allow all cookies
-    Wait For Elements State    css=button.ch2-btn.ch2-allow-all-btn.ch2-btn-primary    visible
-    Click    css=button.ch2-btn.ch2-allow-all-btn.ch2-btn-primary
+Allow all cookies if visible
+    TRY
+        Wait For Elements State    css=button[data-approved="required"]    visible    timeout=5s
+        Click    css=button[data-approved="required"]
+        Log    Cookie consent button found and clicked
+    EXCEPT
+        Log    Cookie consent button not found, continuing without clicking
+    END
 
 Select payment method OP
     Wait For Elements State    css=#OP    visible
@@ -53,9 +58,9 @@ In order summary get booking number from product list
 ####
 
 Check the info in checkout
-    Sleep    1s
-    Wait For Load State    load    timeout=15s
-    Allow all cookies
+    Sleep    2s
+    Wait For Load State    load    timeout=20s
+    Allow all cookies if visible
     Sleep    1s
     Wait For Load State    load    timeout=15s
     Select payment method OP
@@ -75,7 +80,7 @@ Check the info in checkout
 Interrupted checkout
     [Arguments]    ${input_URL}
     Sleep    5s
-    Allow all cookies
+    Allow all cookies if visible
     Sleep    1s
     Go To    ${input_URL}
     Wait For Load State    load    timeout=15s

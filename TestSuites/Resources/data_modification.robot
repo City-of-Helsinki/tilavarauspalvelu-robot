@@ -313,5 +313,12 @@ Generate random letter and number
 Get date plus 60 days
     [Documentation]    Sets the current date plus 60 days in format d.M.yyyy (e.g. 12.2.2012).
     ${current_date}=    Get Current Date    result_format=%Y-%m-%d
-    ${date_plus_60_days}=    Add Time To Date    ${current_date}    60 days    result_format=%-d.%-m.%Y
+    ${date_plus_60_days}=    Add Time To Date    ${current_date}    60 days    result_format=%d.%m.%Y
+
+    # Remove leading zeros from day and month
+    ${day}    ${month}    ${year}=    Split String    ${date_plus_60_days}    .
+    ${day}=    Convert To Integer    ${day}
+    ${month}=    Convert To Integer    ${month}
+    ${date_plus_60_days}=    Catenate    SEPARATOR=.    ${day}    ${month}    ${year}
+
     RETURN    ${date_plus_60_days}

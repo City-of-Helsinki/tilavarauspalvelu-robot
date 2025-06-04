@@ -33,7 +33,7 @@ Close notification banner if visible
     WHILE    True    limit=5
         # Check if notification exists
         ${notifications_visible}=    Browser.Get Element Count
-        ...    [data-sentry-component="BannerNotificationsList"] >> [data-testid="BannerNotificationList__Notitification"]
+        ...    [data-sentry-component="BannerNotificationsList"] >> [data-testid="BannerNotificationList__Notification"]
         Log    Attempt ${attempt}: Found ${notifications_visible} notifications
 
         # Exit if no notifications
@@ -43,7 +43,7 @@ Close notification banner if visible
         END
 
         # Close notification and refresh
-        Click    [data-testid="BannerNotificationList__Notitification"] >> button[title="Sulje"] >> nth=0
+        Click    [data-testid="BannerNotificationList__Notification"] >> button[title="Sulje"] >> nth=0
         Sleep    500ms
         Log    Clicked close button on notification
 

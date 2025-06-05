@@ -4,7 +4,6 @@ Resource    ../../Resources/custom_keywords.robot
 Library     Browser
 Library     Collections
 Library     String
-Library     Dialogs
 ##
 # DEVNOTE This is not the quick reservation form
 ##

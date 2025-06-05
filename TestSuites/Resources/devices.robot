@@ -2,7 +2,6 @@
 # INFO ABOUT MOBILE DEVICES
 # https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json
 Library     Browser
-Library     Dialogs
 Library     DateTime
 Resource    variables.robot
 # DEVNOTE viewport=${None} for laptop UI

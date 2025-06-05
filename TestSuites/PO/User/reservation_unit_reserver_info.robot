@@ -1,8 +1,8 @@
 *** Settings ***
+Resource    ../../Resources/variables.robot
 Resource    ../../Resources/custom_keywords.robot
 Resource    ../../Resources/users.robot
 Library     Browser
-Library     Dialogs
 
 
 *** Keywords ***

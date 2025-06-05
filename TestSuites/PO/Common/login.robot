@@ -1,7 +1,6 @@
 *** Settings ***
 Resource    ../../Resources/users.robot
 Library     Browser
-Library     Dialogs
 
 
 *** Keywords ***

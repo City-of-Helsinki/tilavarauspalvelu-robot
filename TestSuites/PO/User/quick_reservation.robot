@@ -5,7 +5,6 @@ Resource    ../../Resources/data_modification.robot
 Library     Browser
 Library     Collections
 Library     String
-Library     Dialogs
 Library     XML
 
 

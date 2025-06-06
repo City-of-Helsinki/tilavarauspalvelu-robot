@@ -111,7 +111,7 @@ ${NUM_FROM_TXT}                                                     ${EMPTY}
 ${BOOKING_NUM_ONLY}                                                 ${EMPTY}
 ${RESERVATION_NUMBER_ADMINSIDE}                                     ${EMPTY}
 ${PAID_BOOKINGNUMBER_FOR_MAIL}                                      ${EMPTY}
-${REASON_FOR_CANCELLATION}                                          En tarvitse varausta enää
+${REASON_FOR_CANCELLATION}                                          Muu syy
 ${ACCESS_CODE_TXT_BY_CODE}                                          Pääsy tilaan: Ovikoodi
 
 ###

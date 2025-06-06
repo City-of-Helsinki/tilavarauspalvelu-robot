@@ -45,7 +45,7 @@ User opens desktop browser to mail
 
 User logs in with suomi_fi
     topNav.Click login
-    login.Login Suomi_fi    ${BASIC_USER_MALE_HETU}
+    login.Login Suomi_fi    ${BASIC_USER_MALE_HETU}sdfg
     # Confirms we are on the landing page
     user_landingpage.Check the user landing page h1    ${USER_LANDING_PAGE_H1_TEXT}
     popups.User accepts cookies if dialog is visible    ${COOKIETEXT}

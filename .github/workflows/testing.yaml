@@ -100,35 +100,52 @@ jobs:
         id: smoke_tests
         if: steps.config.outputs.run_type == 'smoke_first'
         run: |
+          echo "🚀 Starting smoke tests..."
+          set +e  # Don't exit on error
           docker run --rm \
             -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             robotframework-tests:latest robot \
-            ${{ steps.config.outputs.smoke_args }} || echo "SMOKE_FAILED=true" >> $GITHUB_ENV
+            ${{ steps.config.outputs.smoke_args }}
+
+          ROBOT_EXIT_CODE=$?
+          # Smoke tests should block full suite if ANY test fails (exit code > 0)
+          # Exit code 0 = all tests passed (continue to full suite)
+          # Exit code > 0 = some tests failed or execution error (block full suite)
+          if [ $ROBOT_EXIT_CODE -gt 0 ]; then
+            echo "SMOKE_EXECUTION_FAILED=true" >> $GITHUB_ENV
+            # Don't create annotations here - let the evaluation step handle messaging
+          else
+            echo "SMOKE_EXECUTION_FAILED=false" >> $GITHUB_ENV
+            echo "✅ All smoke tests passed, proceeding to full test suite..."
+          fi
 
       # Check smoke test results and provide clear messaging
       - name: Evaluate Smoke Test Results
         if: steps.config.outputs.run_type == 'smoke_first'
         run: |
-          if [ "$SMOKE_FAILED" = "true" ]; then
-            echo "::error title=Smoke Tests Failed::❌ Smoke tests failed! Skipping full test suite"
-            echo "::warning title=Execution Stopped::Full test suite will not run due to smoke test failures."
+          if [ "$SMOKE_EXECUTION_FAILED" = "true" ]; then
+            echo "::error title=Smoke Tests Failed::❌ Smoke tests failed! Full test suite blocked"
           else
-            echo "::notice title=Smoke Tests Passed::✅ Smoke tests passed! Proceeding to full test suite..."
+            echo "::notice title=Smoke Tests Passed::✅ All smoke tests passed! Proceeding to full test suite..."
           fi
 
-      # Run full test suite only if smoke tests passed
+      # Run full test suite only if smoke tests executed successfully
       - name: Run Full Test Suite
-        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_FAILED != 'true'
+        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true'
         run: |
-          echo "::notice title=Starting Full Tests::🚀 Smoke tests passed! Now running complete test suite..."
+          echo "🚀 Smoke tests succeeded; running full test suite..."
+          set +e  # Don't exit on error to ensure we can collect results
           docker run --rm \
             -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             robotframework-tests:latest robot \
             ${{ steps.config.outputs.full_args }}
+
+          ROBOT_EXIT_CODE=$?
+          echo "✅ Full test suite completed with exit code: $ROBOT_EXIT_CODE"
 
       # Run single test suites (for non-"All" options)
       - name: Run Single Test Suite
@@ -156,6 +173,18 @@ jobs:
               
               if not output_files:
                   print("::warning title=No Results::No Robot Framework output.xml files found")
+                  # Create a basic summary even when no results are found
+                  summary = "## 🤖 Test Results Summary\n\n"
+                  summary += "⚠️ **No test results found** - The Robot Framework tests may not have executed properly.\n\n"
+                  summary += "### Possible Issues:\n"
+                  summary += "1. Docker container failed to start or execute tests\n"
+                  summary += "2. Test files not found in the expected location\n"
+                  summary += "3. Robot Framework execution failed before generating output files\n"
+                  summary += "4. Volume mounting issues between host and container\n\n"
+                  summary += "Check the step logs above for more detailed error information.\n"
+                  
+                  with open(os.environ['GITHUB_STEP_SUMMARY'], 'w') as f:
+                      f.write(summary)
                   return
               
               total_passed = 0
@@ -164,8 +193,28 @@ jobs:
               passed_tests = []
               
               # Check if we're in smoke-first mode and determine execution status
-              test_suite = os.environ.get('INPUT_TEST_SUITE', '')
-              smoke_failed = os.environ.get('SMOKE_FAILED', '') == 'true'
+              test_suite = "${{ github.event.inputs.test_suite }}"
+              smoke_execution_failed = os.environ.get('SMOKE_EXECUTION_FAILED', '') == 'true'
+              
+              # Determine if full suite actually ran by checking for multiple output files or full suite patterns
+              full_suite_ran = False
+              if test_suite == 'All':
+                  # Check if we have results that indicate full suite execution
+                  if len(output_files) > 1 or any('full' in f for f in output_files):
+                      full_suite_ran = True
+                  else:
+                      # Check if we have a comprehensive set of results (not just smoke)
+                      for output_file in output_files:
+                          try:
+                              tree = ET.parse(output_file)
+                              root = tree.getroot()
+                              test_count = len(root.findall('.//test'))
+                              # If we have more than 20 tests, it's likely the full suite ran
+                              if test_count > 20:
+                                  full_suite_ran = True
+                                  break
+                          except:
+                              pass
               
               # Parse each output.xml file
               for output_file in output_files:
@@ -195,11 +244,13 @@ jobs:
               
               # Add execution mode information
               if test_suite == 'All':
-                  if total_failed > 0:
-                      summary += "🛑 **SMOKE TESTS FAILED** - Full test suite was **NOT EXECUTED** to save time\n\n"
-                      summary += "📋 **Next Steps**: Review the failing smoke tests below, then re-run the workflow to execute the complete test suite.\n\n"
+                  if smoke_execution_failed:
+                      summary += "🛑 **SMOKE TESTS FAILED** - Full test suite was blocked\n\n"
+                      summary += "📋 **Next Steps**: Fix the failing smoke tests and re-run the workflow\n\n"
                   else:
-                      summary += "✅ **SMOKE TESTS PASSED** - Full test suite was executed successfully\n\n"
+                      summary += "✅ **FULL TEST SUITE EXECUTED** - All smoke tests passed, full suite completed\n\n"
+                      if total_failed > 0:
+                          summary += f"⚠️ Note: {total_failed} test cases failed in the full suite\n\n"
               
               summary += f"- ✅ **Passed**: {total_passed}\n"
               summary += f"- ❌ **Failed**: {total_failed}\n"
@@ -207,8 +258,10 @@ jobs:
               
               # Show failed tests (limit to 10 for readability)
               if failed_tests:
-                  if test_suite == 'All':
-                      summary += "### 🚨 Failed Smoke Tests (Blocking Full Execution)\n"
+                  if test_suite == 'All' and smoke_execution_failed:
+                      summary += "### 🚨 Smoke Test Execution Errors\n"
+                  elif test_suite == 'All' and not full_suite_ran:
+                      summary += "### 🚨 Failed Smoke Tests\n"
                   else:
                       summary += "### ❌ Failed Tests\n"
                   for i, test in enumerate(failed_tests[:10], 1):
@@ -219,7 +272,7 @@ jobs:
               
               # Show some passed tests (limit to 5)
               if passed_tests:
-                  if test_suite == 'All':
+                  if test_suite == 'All' and not full_suite_ran:
                       summary += "### ✅ Passed Smoke Tests\n"
                   else:
                       summary += "### ✅ Passed Tests\n"
@@ -232,23 +285,17 @@ jobs:
               with open(os.environ['GITHUB_STEP_SUMMARY'], 'w') as f:
                   f.write(summary)
               
-              # Create GitHub Actions annotations
-              if test_suite == 'All' and total_failed > 0:
-                  print(f"::error title=Smoke Test Gate::Smoke tests failed ({total_failed} failures). Full test suite skipped.")
+              # Skip creating annotations here - let the final step handle all messaging
+              # The summary will still show detailed results
               
-              print(f"::notice title=Test Results::Passed: {total_passed}, Failed: {total_failed}")
-              
-              if total_failed > 0:
-                  print(f"::error title=Test Failures::{total_failed} test(s) failed")
-                  # Don't exit with error code to allow artifact upload
-              else:
-                  print(f"::notice title=All Tests Passed::All {total_passed} tests passed! 🎉")
+              # Export the failure count for use in final step
+              with open(os.environ['GITHUB_ENV'], 'a') as f:
+                  f.write(f"TEST_FAILURE_COUNT={total_failed}\n")
 
           parse_robot_results()
           EOF
         env:
-          INPUT_TEST_SUITE: ${{ github.event.inputs.test_suite }}
-          SMOKE_FAILED: ${{ env.SMOKE_FAILED }}
+          SMOKE_EXECUTION_FAILED: ${{ env.SMOKE_EXECUTION_FAILED }}
 
       # Add execution metadata to GitHub summary
       - name: Generate Test Report Summary
@@ -267,11 +314,25 @@ jobs:
         with:
           name: test-reports-${{ github.run_number }} # Unique name per run
           path: Reports/
-          retention-days: 30 # Keep reports for 30 days
+          retention-days:
+            30 # Keep reports for 30 days
 
-      # Fail the workflow if smoke tests failed (ensures red X status)
-      - name: Fail Workflow on Smoke Test Failure
-        if: env.SMOKE_FAILED == 'true'
+
+            # Fail the workflow if smoke tests failed or if any tests failed
+      - name: Fail Workflow on Test Failures
+        if: always()
         run: |
-          echo "::error title=Workflow Failed::Smoke tests failed"
-          exit 1
+          # 1) If smoke blocked full suite, report and exit
+          if [ "$SMOKE_EXECUTION_FAILED" = "true" ]; then
+            echo "::error title=Smoke Tests Failed::Smoke tests failed—full suite was blocked"
+            exit 1
+          fi
+
+          # 2) If any tests failed, report with count and exit
+          if [ "${TEST_FAILURE_COUNT:-0}" -gt 0 ]; then
+            echo "::error title=Test Failures::${TEST_FAILURE_COUNT} test(s) failed"
+            exit 1
+          fi
+
+          # 3) All tests passed
+          echo "::notice title=All Tests Passed::All tests passed!"

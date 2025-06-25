@@ -43,11 +43,24 @@ docker run --rm -v "$(pwd)/TestSuites:/opt/robotframework/tests" -v "$(pwd)/Repo
 
 Available test suites:
 
-- `Tests_user_desktop_FI.robot` - Desktop browser tests
+- `Tests_user_desktop_FI.robot` - Desktop browser tests (includes recurring reservations)
 - `Tests_user_mobile_iphone_FI.robot` - Mobile iPhone tests
 - `Tests_user_mobile_android_FI.robot` - Mobile Android tests
 - `Tests_users_with_admin_desktop.robot` - Combined user and admin tests
 - `Tests_admin_desktop_FI.robot` - Admin user tests
+
+### Test Coverage
+
+The test suites cover various booking scenarios including:
+
+- **Single bookings**: Free, paid, subvented, and non-cancelable reservations
+- **Recurring reservations**: Multi-week booking applications with unit selection and application management
+- **Payment flows**: Complete checkout processes with payment verification
+- **Email verification**: Confirmation and cancellation email validation
+- **Access codes**: Reservations requiring special access codes
+- **Calendar integration**: ICS file download and validation
+- **Mobile compatibility**: Touch-optimized interfaces for mobile devices
+- **Admin functionality**: Notification management and reservation oversight
 
 Example:
 
@@ -109,15 +122,32 @@ The workflow will execute the selected tests and make the reports available as d
 │   │   ├── App/                        # Application-specific page objects
 │   │   │   ├── app_admin.robot         # Admin actions and workflows
 │   │   │   ├── app_common.robot        # Shared functionality across user types
-│   │   │   ├── app_user.robot          # User-specific actions (bookings, modifications)
+│   │   │   ├── app_user.robot          # User-specific actions
 │   │   │   └── mail.robot              # Email verification functionality
-│   │   └── Common/                     # Shared UI components and patterns
-│   │       └── popups.robot            # Popup handling (cookies, confirmations)
+│   │   ├── Common/                     # Shared UI components and patterns
+│   │   │   └── popups.robot            # Popup handling (cookies, confirmations)
+│   │   └── User/                       # User interface page objects
+│   │       ├── mybookings.robot        # My Bookings page actions (cancel, modify, status checks)
+│   │       ├── quick_reservation.robot # Quick booking slot selection and time validation
+│   │       ├── recurring.robot         # Recurring booking round and unit selection
+│   │       ├── recurring_applications.robot # Recurring app form (name, people, age, purpose, times)
+│   │       ├── recurring_applications_page2.robot # Recurring app time preferences and availability
+│   │       ├── recurring_applications_page3.robot # Recurring app contact and billing information
+│   │       ├── recurring_applications_page_preview.robot # Terms acceptance before submission
+│   │       ├── recurring_applications_page_sent.robot # Application submission confirmation
+│   │       ├── reservation_calendar.robot # Calendar duration and time slot selection
+│   │       ├── reservation_lownav.robot # Continue/submit button actions
+│   │       ├── reservation_unit_booking_details.robot # Booking form (name, purpose. etc)
+│   │       ├── reservation_unit_reservation_receipt.robot # Reservation confirmation validation
+│   │       ├── reservation_unit_reserver_info.robot # Contact information form fields
+│   │       ├── reservation_unit_reserver_types.robot # Individual/company reserver selection
+│   │       ├── singlebooking.robot     # Unit search and advanced search toggle
+│   │       └── user_landingpage.robot  # Landing page checks and payment notifications
 │   ├── Resources/                      # Shared resources and configuration
 │   │   ├── variables.robot             # Global variables (URLs, test data)
 │   │   ├── texts_FI.robot              # Finnish language texts for verification
 │   │   └── data_modification.robot     # Data manipulation utilities
-│   ├── Tests_user_desktop_FI.robot     # Desktop browser tests
+│   ├── Tests_user_desktop_FI.robot     # Desktop browser tests (includes recurring reservations)
 │   ├── Tests_admin_desktop_FI.robot    # Admin UI tests
 │   ├── Tests_user_mobile_android_FI.robot # Mobile Chrome tests for Android
 │   └── Tests_users_with_admin_desktop.robot # Combined user/admin workflow tests
@@ -126,7 +156,7 @@ The workflow will execute the selected tests and make the reports available as d
 │   ├── report.html                    # Test result summary
 │   ├── output.xml
 │   └── screenshots/                   # Captured screenshots from test failures
-└── Dockerfile                         # Docker configuration with playwright, python and robot framework setup
+└── Dockerfile                         # Docker configuration 
 ```
 
 ## Troubleshooting

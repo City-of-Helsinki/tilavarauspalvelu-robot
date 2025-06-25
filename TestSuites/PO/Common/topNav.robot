@@ -62,6 +62,16 @@ Navigate to my bookings
     # Confirms page is loaded
     mybookings.Check my bookings h1    ${MYBOOKINGS_FI}
 
+Navigate to recurring booking page
+    Click    header >> [href="/recurring"]:text-is("${RECURRING_BOOKINGS_FI}")
+    Sleep    200ms
+    Wait For Load State    load    timeout=15s
+
+Navigate to my applications
+    Click    header >> [href="/applications"]:text-is("${MYAPPLICATIONS_FI}")
+    Sleep    200ms
+    Wait For Load State    load    timeout=15s
+
 ###
 # MOBILE UI
 ###

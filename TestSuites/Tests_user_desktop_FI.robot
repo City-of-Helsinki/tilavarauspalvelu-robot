@@ -242,3 +242,28 @@ Check emails from reservations
     mail.Verify reservation cancellation email
     mail.Verify refund email for paid reservation
     mail.Verify payment receipt email
+
+User makes recurring reservation
+    app_common.User logs in with suomi_fi
+    app_user.User navigates to recurring booking page
+
+    Log    User selects a recurring booking and units
+    recurring.User selects a recurring booking round    ${RECURRING_BOOKING_NAME}
+    recurring.User selects the units for recurring reservation    ${RECURRING_UNIT_MALMI}
+    recurring.User selects the units for recurring reservation    ${RECURRING_UNIT_KESKUSTA}
+    recurring.User checks the count of selected units    ${RECURRING_BOOKING_UNIT_COUNT_TEXT}
+    recurring.User clicks continue button
+
+    Log    User fills the reservation info for recurring reservation
+    app_user.User fills in the application details for recurring application
+    app_user.User selects times for recurring application
+    app_user.User fills in the application user info details
+    app_user.User accepts terms of use and clicks submit
+    app_user.User checks the sent page
+
+    Log    User checks the reservation info is right
+    app_user.User checks the sent page
+
+    Log    User cancels the recurring reservation
+    topNav.Navigate to my applications
+    app_user.User checks the recurring reservation is sent state and cancels it

@@ -1,11 +1,17 @@
 *** Settings ***
 Resource    ../../Resources/variables.robot
 Resource    ../../Resources/texts_FI.robot
+Resource    ../../Resources/custom_keywords.robot
+Resource    ../../Resources/data_modification.robot
+Resource    ../User/recurring.robot
+Resource    ../User/recurring_applications.robot
+Resource    ../User/recurring_applications_page2.robot
+Resource    ../User/recurring_applications_page3.robot
+Resource    ../User/recurring_applications_page_preview.robot
+Resource    ../User/recurring_applications_page_sent.robot
 Resource    ../Common/topNav.robot
 Resource    ../Common/checkout.robot
 Resource    ../Common/popups.robot
-Resource    ../../Resources/custom_keywords.robot
-Resource    ../../Resources/data_modification.robot
 Resource    ../User/reservation_calendar.robot
 Resource    ../User/quick_reservation.robot
 Resource    ../User/user_landingpage.robot
@@ -29,6 +35,11 @@ User navigates to single booking page
 
 User navigates to my bookings
     topNav.Navigate to my bookings
+
+User navigates to recurring booking page
+    topNav.Navigate to recurring booking page
+    Wait For Load State    load    timeout=15s
+
 ###
 
 ###
@@ -646,7 +657,98 @@ User checks that calendar file matches booking time
         ...    Additional info: Check custom_keywords.Convert booking time to ICS format if variables don't match
     END
 
+#
+
 ###
+# Recurring
+###
+
+User fills in the application details for recurring application
+    recurring_applications.User selects the default time period for the recurring reservation
+    #
+    recurring_applications.User fills the recurring reservation name
+    ...    ${RECURRING_BOOKING_NAME}
+    recurring_applications.User fills the number of people in the recurring reservation
+    ...    ${RECURRING_BOOKING_SIZE_OF_GROUP}
+    recurring_applications.User fills the age group in the recurring reservation
+    ...    ${RECURRING_BOOKING_AGE_GROUP_TEXT}
+    recurring_applications.User chooses the purpose of the recurring reservation
+    ...    ${RECURRING_BOOKING_PURPOSE_TEXT}
+    #
+    recurring_applications.User selects the minimum length for the recurring reservation
+    ...    ${RECURRING_BOOKING_MIN_LENGTH_TEXT}
+    recurring_applications.User selects the maximum length for the recurring reservation
+    ...    ${RECURRING_BOOKING_MAX_LENGTH_TEXT}
+    recurring_applications.User selects the amount of reservations per week
+    ...    ${RECURRING_BOOKING_RESERVATION_PER_WEEK}
+    #
+    recurring_applications.User clicks continue button
+
+User selects times for recurring application
+    recurring_applications_page2.User selects type of the booking request
+    ...    ${RECURRING_BOOKING_TYPE_OF_BOOKING_REQUEST_PRIMARY}
+    #
+    recurring_applications_page2.User clicks available seasonal booking times for
+    ...    ${RECURRING_BOOKING_UNIT_NAME_KESKUSTA}
+    #
+    recurring_applications_page2.User selects the times for recurring application
+    ...    ${RECURRING_THU_22_23_OTHER}
+    recurring_applications_page2.User selects the times for recurring application
+    ...    ${RECURRING_THU_23_24_OTHER}
+    #
+    recurring_applications_page2.User clicks available seasonal booking times for
+    ...    ${RECURRING_BOOKING_UNIT_NAME_MALMI}
+    #
+    recurring_applications_page2.User selects type of the booking request
+    ...    ${RECURRING_BOOKING_TYPE_OF_BOOKING_REQUEST_SECONDARY}
+    #
+    recurring_applications_page2.User selects the times for recurring application
+    ...    ${RECURRING_THU_09_10_PREFERRED}
+    recurring_applications_page2.User selects the times for recurring application
+    ...    ${RECURRING_THU_10_11_PREFERRED}
+    #
+    recurring_applications_page2.User clicks continue button
+
+User fills in the application user info details
+    recurring_applications_page3.User selects who is the application created for    INDIVIDUAL
+    #
+    recurring_applications_page3.User types first name    ${RECURRING_BOOKING_FIRST_NAME}
+    recurring_applications_page3.User types last name    ${RECURRING_BOOKING_LAST_NAME}
+    recurring_applications_page3.User types street address    ${RECURRING_BOOKING_STREET_ADDRESS}
+    recurring_applications_page3.User types post code    ${RECURRING_BOOKING_POST_CODE}
+    recurring_applications_page3.User types city    ${RECURRING_BOOKING_CITY}
+    recurring_applications_page3.User types phone number    ${RECURRING_BOOKING_PHONE_NUMBER}
+    recurring_applications_page3.User types email    ${RECURRING_BOOKING_EMAIL}
+    recurring_applications_page3.User types additional information    ${RECURRING_BOOKING_ADDITIONAL_INFO}
+    recurring_applications_page2.User clicks continue button
+
+User accepts terms of use and clicks submit
+    recurring_applications_page_preview.User clicks the accept terms of use checkbox
+    recurring_applications_page_preview.User clicks the specific terms of use checkbox
+    recurring_applications_page_preview.User clicks the submit button
+
+User checks the sent page
+    recurring_applications_page_sent.User checks h1 of the sent page
+
+User checks the recurring reservation is sent state and cancels it
+    [Documentation]    This is a workaround to cancel the recurring reservation with given name in
+    ...    [data-testid="card__heading"]
+    ...    it cancels the last reservation in the list so they won't pile up
+    custom_keywords.Find and click button in group with matching conditions
+    ...    [data-testid="applications__group--wrapper"]
+    ...    Vastaanotettu
+    ...    [data-sentry-element="CardContent"]
+    ...    [data-testid="card__heading"]
+    ...    Kausivaraus (AUTOMAATIO TESTI ÄLÄ POISTA)
+    ...    [data-testid="card__tags"]
+    ...    Lähetetty
+    ...    Peru
+
+    # Wait for animation
+    Sleep    1s
+    custom_keywords.Find and click element with text    id=application-card-modal >> span    Kyllä
+
+#
 
 ###
 ### MOBILE

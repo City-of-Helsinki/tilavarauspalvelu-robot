@@ -88,6 +88,8 @@ ${RESERVATION_STATUS_REQUIRESHANDLING_MSG_FI}                       Varaus käsi
 ${SINGLEBOOKING_BUTTON_TEXT}                                        Tilan varaus
 ${MYBOOKINGS_FI}                                                    Omat varaukset
 ${SINGLEBOOKING_FI}                                                 Tilan varaus
+${RECURRING_BOOKINGS_FI}                                            Kausivaraus
+${MYAPPLICATIONS_FI}                                                Omat hakemukset
 
 ###
 # SINGLE BOOKING
@@ -135,6 +137,39 @@ ${ADMIN_STATUS_PROCESSED}                                           Käsittelyss
 ###
 #
 ###
+
+###
+# RECURRING BOOKING
+###
+
+# Application info
+
+${RECURRING_BOOKING_NAME}                                           Kausivaraus (AUTOMAATIO TESTI ÄLÄ POISTA)
+${RECURRING_BOOKING_UNIT_COUNT_TEXT}                                2 tilaa valittuna
+
+${RECURRING_BOOKING_AGE_GROUP_TEXT}                                 18 - 24
+${RECURRING_BOOKING_PURPOSE_TEXT}                                   Harrastustoiminta, muu
+
+${RECURRING_BOOKING_RESERVATION_PER_WEEK}                           1
+${RECURRING_BOOKING_MIN_LENGTH_TEXT}                                30 minuuttia
+${RECURRING_BOOKING_MAX_LENGTH_TEXT}                                2 tuntia
+${RECURRING_BOOKING_TYPE_OF_BOOKING_REQUEST_PRIMARY}                Valitse ensisijaiset aikatoiveet
+${RECURRING_BOOKING_TYPE_OF_BOOKING_REQUEST_SECONDARY}              Valitse muut aikatoiveet
+${RECURRING_BOOKING_UNIT_NAME_KESKUSTA}                             Harakka, piilokoju: KAUSIVARAUS yksikkö Keskusta (AUTOMAATIOTESTI ÄLÄ POISTA)
+${RECURRING_BOOKING_UNIT_NAME_MALMI}                                Harakka, piilokoju: KAUSIVARAUS yksikkö Malmi (AUTOMAATIOTESTI ÄLÄ POISTA)
+${RECURRING_BOOKING_SIZE_OF_GROUP}                                  5
+
+# Recurring booking user info
+
+${RECURRING_BOOKING_FIRST_NAME}                                     Matti
+${RECURRING_BOOKING_LAST_NAME}                                      Meikäläinen
+${RECURRING_BOOKING_STREET_ADDRESS}                                 Testikatu 123
+${RECURRING_BOOKING_POST_CODE}                                      00100
+${RECURRING_BOOKING_CITY}                                           Helsinki
+${RECURRING_BOOKING_PHONE_NUMBER}                                   +358401234567
+${RECURRING_BOOKING_EMAIL}                                          qfaksi@gmail.com
+${RECURRING_BOOKING_ADDITIONAL_INFO}                                Kausivaraus automaatiotestiin
+#
 
 ###
 # ADMIN MAIN MENU

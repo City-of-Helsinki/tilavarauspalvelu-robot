@@ -35,6 +35,7 @@ ${ICS_TEXT_FROM_FILE}                                   ${EMPTY}
 #
 ${ENGLISH_DAY}                                          ${EMPTY}    # Monday
 ${CALENDAR_TIMESLOT}                                    ${EMPTY}    # 17:30-18:30
+
 ###
 #
 ###
@@ -62,7 +63,24 @@ ${ALWAYS_PAID_UNIT_SUBVENTED_WITH_UNIT_LOCATION}        Alennuskelpoinen aula (A
 ${UNAVAILABLE_UNIT}                                     Aina varattu yksikkö (AUTOMAATIOTESTI ÄLÄ POISTA)
 ${UNAVAILABLE_UNIT_WITH_UNIT_LOCATION}                  Aina varattu yksikkö (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju
 
+${RECURRING_UNIT_MALMI}                                 KAUSIVARAUS yksikkö Malmi (AUTOMAATIOTESTI ÄLÄ POISTA)
+${RECURRING_UNIT_KESKUSTA}                              KAUSIVARAUS yksikkö Keskusta (AUTOMAATIOTESTI ÄLÄ POISTA)
+
 ${UNIT_LOCATION}                                        Harakka, piilokoju
+
+###
+# RECURRING RESERVATIONS
+###
+
+# Recurring reservation time slot selectors
+${RECURRING_THU_22_23_OTHER}                            css=[aria-label="Ei merkitty kausivarattavaksi: To 22 - 23"]
+${RECURRING_THU_23_24_OTHER}                            css=[aria-label="Ei merkitty kausivarattavaksi: To 23 - 24"]
+${RECURRING_THU_09_10_PREFERRED}                        css=[aria-label="Varattavissa: To 9 - 10"]
+${RECURRING_THU_10_11_PREFERRED}                        css=[aria-label="Varattavissa: To 10 - 11"]
+
+###
+#
+###
 
 ###
 # RESERVATIONS INFO

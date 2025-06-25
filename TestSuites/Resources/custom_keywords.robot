@@ -97,6 +97,157 @@ Find and click element with partial text using JS
         Log    No element with text '${partial_text}' was found to click.
     END
 
+Find and click element in card element by text
+    [Documentation]    For each element matching ${card_element}, checks if it contains a child
+    ...    ${text_element} with text ${text}. If so, clicks ${element_to_click} inside that card.
+    [Arguments]    ${card_element}    ${text_element}    ${text}    ${element_to_click}
+
+    Log    Searching for cards: ${card_element}
+    ${cards}=    Browser.Get Elements    ${card_element}
+    ${count}=    Get Length    ${cards}
+    Log    Found ${count} card containers.
+    ${found}=    Set Variable    False
+
+    FOR    ${index}    IN RANGE    0    ${count}
+        Log    Checking card at index ${index}
+
+        # Check if text element exists within the current card
+        ${text_element_exists}=    Run Keyword And Return Status
+        ...    Browser.Get Element
+        ...    ${cards[${index}]} >> ${text_element}
+
+        IF    ${text_element_exists}
+            ${el_text}=    Get Text    ${cards[${index}]} >> ${text_element}
+            ${el_text}=    Strip String    ${el_text}
+            Log    Found text in card: ${el_text}
+
+            IF    "${el_text}" == "${text}"
+                Log    Found matching text '${text}' in card at index ${index}
+                # Found the card with the desired text, now click the target element inside this card
+                Click    ${cards[${index}]} >> ${element_to_click}
+                Log    Clicked element '${element_to_click}' in card containing text '${text}'
+                ${found}=    Set Variable    True
+                BREAK
+            END
+        END
+    END
+
+    IF    not ${found}
+        Fail    No card element found with text '${text}' in '${text_element}'
+    END
+
+Find and click button in group with matching conditions
+    [Documentation]    Finds a group wrapper containing specified text, then searches for card elements
+    ...    within that group. For each card, checks if the heading and tags elements contain
+    ...    specified text. If both conditions are met, clicks the specified button.
+    [Arguments]
+    ...    ${group_wrapper_selector}
+    ...    ${group_text}
+    ...    ${card_selector}
+    ...    ${heading_selector}
+    ...    ${heading_text}
+    ...    ${tags_selector}
+    ...    ${tags_text}
+    ...    ${button_text}
+
+    Log    Searching for group wrapper containing "${group_text}"
+
+    # Find all group wrappers
+    ${group_wrappers}=    Browser.Get Elements    ${group_wrapper_selector}
+    ${group_count}=    Get Length    ${group_wrappers}
+    Log    Found ${group_count} group wrappers.
+
+    ${target_group_wrapper}=    Set Variable    ${None}
+    ${found_target_group}=    Set Variable    False
+
+    # Find the target group wrapper with specified text
+    FOR    ${wrapper}    IN    @{group_wrappers}
+        ${wrapper_text}=    Get Text    ${wrapper}
+        ${wrapper_text}=    Strip String    ${wrapper_text}
+        Log    Checking group wrapper text: ${wrapper_text}
+
+        ${contains_group_text}=    Evaluate    '${group_text}' in '''${wrapper_text}'''
+        IF    ${contains_group_text}
+            ${target_group_wrapper}=    Set Variable    ${wrapper}
+            ${found_target_group}=    Set Variable    True
+            Log    Found target group wrapper containing "${group_text}"
+            BREAK
+        END
+    END
+
+    IF    not ${found_target_group}
+        Fail    No group wrapper found containing "${group_text}" text
+    END
+
+    # Find card elements within the target group wrapper and reverse to find last match efficiently
+    ${card_contents}=    Browser.Get Elements    ${target_group_wrapper} >> ${card_selector}
+    ${card_count}=    Get Length    ${card_contents}
+    Log    Found ${card_count} card elements in target group.
+
+    # Reverse the list to find the last matching card with early termination
+    Reverse List    ${card_contents}
+
+    ${matching_card}=    Set Variable    ${None}
+    ${found_match}=    Set Variable    False
+
+    FOR    ${card}    IN    @{card_contents}
+        ${is_match}=    custom_keywords.Card matches
+        ...    ${card}
+        ...    ${heading_text}
+        ...    ${tags_text}
+        IF    ${is_match}
+            ${matching_card}=    Set Variable    ${card}
+            ${found_match}=    Set Variable    True
+            Log    Found last matching card (first match in reversed list)
+            BREAK
+        END
+    END
+
+    IF    not ${found_match}
+        Fail
+        ...    No card found with matching conditions: heading contains '${heading_text}' and tags contain '${tags_text}'
+    END
+
+    # Click the button in the matching card
+    custom_keywords.Click button in card    ${matching_card}    ${button_text}
+
+Card matches
+    [Documentation]    Check if a card matches both heading and tags text criteria
+    [Arguments]    ${card}    ${heading_text}    ${tags_text}
+
+    # Check heading text contains the expected text
+    ${heading_contains}=    Check element contains text
+    ...    ${card} >> [data-testid="card__heading"]
+    ...    ${heading_text}
+    ...    return_status=True
+    IF    not ${heading_contains}    RETURN    False
+
+    # Check tags text contains the expected text
+    ${tags_contains}=    Check element contains text
+    ...    ${card} >> [data-testid="card__tags"]
+    ...    ${tags_text}
+    ...    return_status=True
+    RETURN    ${tags_contains}
+
+Click button in card
+    [Documentation]    Helper keyword to find and click a button with specific text in a card
+    [Arguments]    ${card}    ${button_text}
+
+    ${buttons}=    Browser.Get Elements    ${card} >> button
+    ${button_count}=    Get Length    ${buttons}
+    Log    Found ${button_count} buttons in card
+
+    FOR    ${button}    IN    @{buttons}
+        ${text_matches}=    Check elements text    ${button}    ${button_text}    return_status=True
+        IF    ${text_matches}
+            Click    ${button}
+            Log    Clicked "${button_text}" button successfully
+            RETURN
+        END
+    END
+
+    Fail    No "${button_text}" button found in card
+
 Find text from elements or fail
     [Arguments]    ${element_with_text}    ${wanted_text}
     Log    Searching for text: ${wanted_text}
@@ -262,7 +413,13 @@ Check text of element with normalization and logging to file
     Fail    Texts still do not match after normalization. Differences logged to debug_${TEST NAME}.txt.
 
 Check elements text
-    [Arguments]    ${Element}    ${Expected text}
+    [Documentation]    Checks element text with automatic space stripping and flexible comparison options
+    [Arguments]
+    ...    ${Element}
+    ...    ${Expected text}
+    ...    ${strip_spaces}=True
+    ...    ${ignore_case}=False
+    ...    ${return_status}=False
 
     Sleep    1s
     Log    Element: ${Element}
@@ -274,8 +431,50 @@ Check elements text
     # Retrieve the text content of the element
     ${Elements_text}=    Get Text    ${Element}
 
-    # Final text comparison
-    Should Be Equal    ${Elements_text}    ${Expected text}
+    # Return status boolean for loops vs fail test for assertions
+    IF    ${return_status}
+        ${status}=    Run Keyword And Return Status
+        ...    Should Be Equal    ${Elements_text}    ${Expected text}
+        ...    strip_spaces=${strip_spaces}    ignore_case=${ignore_case}
+        ...    msg=Element text does not match expected text
+        RETURN    ${status}
+    ELSE
+        Should Be Equal    ${Elements_text}    ${Expected text}
+        ...    strip_spaces=${strip_spaces}    ignore_case=${ignore_case}
+        ...    msg=Element text does not match. Element: ${Element}
+    END
+
+Check element contains text
+    [Documentation]    Checks if element text contains expected text using Should Contain
+    [Arguments]
+    ...    ${Element}
+    ...    ${Expected text}
+    ...    ${strip_spaces}=True
+    ...    ${ignore_case}=False
+    ...    ${return_status}=False
+
+    Sleep    1s
+    Log    Element: ${Element}
+    Log    Expected text: ${Expected text}
+
+    # Wait until the element is visible on the page
+    Wait For Elements State    ${Element}    visible    timeout=10s
+
+    # Retrieve the text content of the element
+    ${Elements_text}=    Get Text    ${Element}
+
+    # Return status boolean for loops vs fail test for assertions
+    IF    ${return_status}
+        ${status}=    Run Keyword And Return Status
+        ...    Should Contain    ${Elements_text}    ${Expected text}
+        ...    strip_spaces=${strip_spaces}    ignore_case=${ignore_case}
+        ...    msg=Element text does not contain expected text
+        RETURN    ${status}
+    ELSE
+        Should Contain    ${Elements_text}    ${Expected text}
+        ...    strip_spaces=${strip_spaces}    ignore_case=${ignore_case}
+        ...    msg=Element text does not contain expected text. Element: ${Element}
+    END
 
 ###
 # Calendar extraction
@@ -335,7 +534,7 @@ Extract Start And End Time From ICS File
     Log    End datetime: ${END_TIME_FROM_ICS}
 
 Verify reservation slot exists
-    [Documentation]    Checks that a given weekday’s column in the calendar contains
+    [Documentation]    Checks that a given weekday's column in the calendar contains
     ...    an event label exactly matching the specified time.
     [Arguments]    ${TIME_TO_CHECK}    ${DAY_TO_CHECK}
 

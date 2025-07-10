@@ -242,7 +242,7 @@ User fills booking details as individual for reservation with access code
 
 User checks unit that is always handled details are right
     reservation_unit_reservation_receipt.Check single booking info
-    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Check reservation user info
     quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
     reservation_unit_reservation_receipt.Click the checkbox generic terms
@@ -256,8 +256,8 @@ User checks unit that is always handled details are right
     ...    ${RESERVATION_STATUS_REQUIRESHANDLING_MSG_FI}
 
 User checks the free single booking details are right
-    reservation_unit_reservation_receipt.Check single free booking info
-    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Check free single booking info
+    reservation_unit_reservation_receipt.Check reservation user info
     quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
     reservation_unit_reservation_receipt.Click the checkbox generic terms
@@ -269,7 +269,7 @@ User checks the free single booking details are right
     ...    ${RESERVATION_STATUS_REQUIRESHANDLING_MSG_FI}
 
 User checks the paid reservation info is right and submits
-    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Check reservation user info
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
     reservation_unit_reservation_receipt.Click the checkbox generic terms
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
@@ -277,7 +277,7 @@ User checks the paid reservation info is right and submits
     reservation_lownav.Click submit button continue
 
 User checks the subvented reservation info is right and submits
-    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Check reservation user info
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
     reservation_unit_reservation_receipt.Click the checkbox generic terms
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
@@ -293,7 +293,7 @@ User checks the subvented reservation info is right after submitting
     quick_reservation.Get booking number
 
 User checks the paid reservation that requires handling info is right and submits
-    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Check reservation user info
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
     reservation_unit_reservation_receipt.Click the checkbox generic terms
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
@@ -310,7 +310,7 @@ User checks the paid reservation info is right after checkout
     quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
 
 User checks the reservation info is right
-    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Check reservation user info
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
     reservation_unit_reservation_receipt.Click the checkbox generic terms
     #
@@ -321,7 +321,7 @@ User checks the reservation info is right
     quick_reservation.Get booking number
 
 User checks the reservation info is right with access code
-    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Check reservation user info
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
     reservation_unit_reservation_receipt.Click the checkbox generic terms
     #
@@ -333,7 +333,7 @@ User checks the reservation info is right with access code
     quick_reservation.Get access code
 
 User checks the noncancelable reservation info is right
-    reservation_unit_reservation_receipt.Check users reservation info
+    reservation_unit_reservation_receipt.Check reservation user info
     reservation_unit_reservation_receipt.Check noncancelable booking info
     reservation_unit_reservation_receipt.Click the checkbox accepted terms
     reservation_unit_reservation_receipt.Click the checkbox generic terms
@@ -460,7 +460,8 @@ User checks the paid reservation info is right in reservations
     mybookings.Check reservation status    ${booking_status}
     mybookings.Check reservations payment status    ${payment_status}
     mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
+    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
+    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
     mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
@@ -479,7 +480,8 @@ User checks booking info in reservations with number of participants and descrip
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${booking_status}
     mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
+    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
+    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
     mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
@@ -497,7 +499,8 @@ User checks booking info in reservations
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${booking_status}
     mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
+    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
+    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
     mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
 
 User checks booking info in reservations with access code
@@ -512,7 +515,8 @@ User checks booking info in reservations with access code
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${booking_status}
     mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
+    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
+    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
     mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
     mybookings.Check reservation access code    ${access_code}
 
@@ -528,7 +532,8 @@ User checks booking info in reservations with all reservation info
     mybookings.Check reservation status    ${MYBOOKINGS_STATUS_PROCESSED}
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
+    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
+    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
     mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
@@ -541,7 +546,8 @@ User checks booking info in reservations for noncancelable booking
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${MYBOOKINGS_STATUS_CONFIRMED}
     mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
+    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
+    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
     mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
@@ -564,7 +570,8 @@ User verifies details of subvented reservation after admin approval without paym
     mybookings.Check reservation age group    ${AGEGROUP_OF_PERSONS}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     #
-    mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
+    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
+    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
     mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
     mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
 
@@ -583,7 +590,8 @@ User checks the rejected reservation info is right after admin handling
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     #
-    mybookings.Check reservation booker name    ${BASIC_USER_MALE_FULLNAME}
+    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
+    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
     mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
     mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
 

@@ -256,10 +256,12 @@ Find text from elements or fail
 
     FOR    ${element}    IN    @{elements_with_text}
         ${el_text}=    Get Text    ${element}
-        Log    Found text in element: ${el_text}
+        ${el_text_clean}=    Strip String    ${el_text}
+        ${wanted_text_clean}=    Strip String    ${wanted_text}
+        Log    Found text in element (cleaned): ${el_text_clean}
 
-        IF    "${el_text}" == "${wanted_text}"
-            Log    Found element with text: "${wanted_text}."
+        IF    '${el_text_clean}' == '${wanted_text_clean}'
+            Log    Found element with text: "${wanted_text_clean}."
             ${text_found}=    Set Variable    True    # Set the flag to True when text is found
             BREAK
         END

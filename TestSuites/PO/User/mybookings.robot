@@ -99,22 +99,34 @@ Check reservation description
     [Arguments]    ${reservation_description}
     custom_keywords.Check elements text    [data-testid="reservation__description"]    ${reservation_description}
 
-Check reservation booker name
+ Check reservation booker name
     [Arguments]    ${reservation_bookerName}
     custom_keywords.Check elements text
     ...    [data-testid="reservation__reservee-name"]
     ...    ${reservation_bookerName}
 
+Check reservation booker first name
+    [Arguments]    ${reservation_bookerFirstName}
+    custom_keywords.Check elements text
+    ...    [data-testid="reservation__reserveeFirstName"]
+    ...    ${reservation_bookerFirstName}
+
+Check reservation booker last name
+    [Arguments]    ${reservation_bookerLastName}
+    custom_keywords.Check elements text
+    ...    [data-testid="reservation__reserveeLastName"]
+    ...    ${reservation_bookerLastName}
+
 Check reservation booker phone
     [Arguments]    ${reservation_bookerPhone}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__reservee-phone"]
+    ...    [data-testid="reservation__reserveePhone"]
     ...    ${reservation_bookerPhone}
 
 Check reservation booker email
     [Arguments]    ${reservation_bookerEmail}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__reservee-email"]
+    ...    [data-testid="reservation__reserveeEmail"]
     ...    ${reservation_bookerEmail}
 
 Check reservation purpose

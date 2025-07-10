@@ -38,6 +38,13 @@ Admin checks reservation title tagline
     # ${RESERVATION_TAGLINE} is set with keyword Formats tagline for admin side
     custom_keywords.Check elements text    [data-testid="reservation_title_section__tagline"]    ${reservation_tagline}
 
+Admin checks reservation info dialog time tagline
+    # TODO Not in use for now
+    [Arguments]    ${reservation_tagline}
+    custom_keywords.Find text from elements or fail
+    ...    [class*="EditTimeModal__TimeInfoBox"] >> b
+    ...    ${reservation_tagline}
+
 Admin checks reservation user info
     # TODO get better ids here
     custom_keywords.Find and click element with text    css=.label    Tilan käyttäjän tiedot
@@ -236,7 +243,7 @@ Admin enters reservation time and type of reservation
     ...    This test uses 00 for minutes. So all the changed times will be 10:00–11:00 -> 15:00–17:00 etc.
     [Arguments]    ${type_of_reservation}    ${startTime-hours}    ${endTime-hours}    ${date}
 
-    Click    ${type_of_reservation}
+    # Click    ${type_of_reservation}
 
     Type Text    id=ReservationDialog.startTime-hours    ${startTime-hours}
     Sleep    500ms
@@ -247,6 +254,9 @@ Admin enters reservation time and type of reservation
     Type Text    id=ReservationDialog.endTime-minutes    00
     Sleep    500ms
     Type Text    id=controlled-date-input__date    ${date}
+    Sleep    500ms
+
+    Click    ${type_of_reservation}
 
 ###
 # Reservation calendar
@@ -289,8 +299,11 @@ Admin opens calendar and changes reservation time
     Sleep    500ms
     Type Text    id=controlled-date-input__date    ${MODIFIED_DATE_SUBVENTED_RESERVATION}
     Sleep    1s
-    Wait For Elements State    [type="submit"]    enabled    message= Check that the modified time is available?
-    Click    [type="submit"]
+    #
+    Wait For Elements State    button[type="submit"]    enabled    message= Check that the modified time is available?
+    #
+    Focus    button[type="submit"]
+    Click    button[type="submit"]
     Sleep    1s
     Wait For Load State    load    timeout=15s
 

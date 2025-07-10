@@ -24,7 +24,8 @@ Admin checks the info and sets reservation free and approves it
     admin_reservations.Admin checks reason for subvention in dialog
     admin_reservations.Admin clicks set reservation to free
     admin_reservations.Admin clicks button in reservation page    [data-testid="approval-dialog__accept-button"]
-    Sleep    500ms
+    # Waiting payment status to be updated
+    Sleep    1.5s
     Wait For Load State    load    timeout=15s
     admin_reservations.Admin checks reservation info after handling
     ...    ${SINGLEBOOKING_NO_PAYMENT_ADMIN_SIDE}    ${MYBOOKINGS_STATUS_CONFIRMED}
@@ -66,7 +67,6 @@ Admin edits reservation time
 
     # This sets the variables for ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}, ${MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION}, ${MODIFIED_DATE_SUBVENTED_RESERVATION}, ${MODIFIED_STARTTIME_SUBVENTED_RESERVATION}
     admin_reservations.Admin opens calendar and changes reservation time
-
     data_modification.Set info card duration time info
     ...    ${MODIFIED_STARTTIME_SUBVENTED_RESERVATION}
     ...    ${MODIFIED_DATE_SUBVENTED_RESERVATION}
@@ -81,7 +81,6 @@ Admin edits reservation time
     data_modification.Formats tagline for admin side
     ...    ${ADMIN_MODIFIES_TIME_OF_INFO_CARD}
     ...    ${ALWAYS_PAID_UNIT_SUBVENTED_WITH_UNIT_LOCATION}
-
     admin_reservations.Admin checks reservation h1    ${BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED}
     admin_reservations.Admin checks reservation title tagline    ${RESERVATION_TAGLINE}
     admin_reservations.Admin checks reservation status    ${MYBOOKINGS_STATUS_CONFIRMED}
@@ -179,6 +178,9 @@ Admin attempts to make an unavailable reservation
     ...    ${UNAVAILABLE_RESERVATION_HOUR_STARTTIME}
     ...    ${UNAVAILABLE_RESERVATION_HOUR_ENDTIME}
     ...    ${UNAVAILABLE_RESERVATION_DATE}
+    Wait For Elements State    [data-testid="CreateReservationModal__accept-reservation"]    visible
+    Sleep    1s
+    Scroll To Element    [data-testid="CreateReservationModal__accept-reservation"]
     custom_keywords.Check elements text
     ...    [data-testid="CreateReservationModal__collision-warning"] >> [class*="Notification-module_body__"]
     ...    ${RESERVATION_TIME_NOT_FREE}

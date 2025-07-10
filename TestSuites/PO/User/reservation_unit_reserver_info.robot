@@ -24,7 +24,7 @@ Enter phone number
 
 Select home city
     [Arguments]    ${homecity}
-    Click    id=reservation-form-field__homeCity-main-button
+    Click    id=reservation-form-field__municipality-main-button
     Sleep    500ms    # Wait for animation
     custom_keywords.Find and click element with text    li    ${homecity}
     Sleep    1.5s    # Wait for animation

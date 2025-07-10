@@ -73,8 +73,8 @@ ${UNIT_LOCATION}                                        Harakka, piilokoju
 ###
 
 # Recurring reservation time slot selectors
-${RECURRING_THU_22_23_OTHER}                            css=[aria-label="Ei merkitty kausivarattavaksi: To 22 - 23"]
-${RECURRING_THU_23_24_OTHER}                            css=[aria-label="Ei merkitty kausivarattavaksi: To 23 - 24"]
+${RECURRING_THU_22_23_OTHER}                            css=[aria-label="Ei varattavissa: To 22 - 23"]
+${RECURRING_THU_23_24_OTHER}                            css=[aria-label="Ei varattavissa: To 23 - 24"]
 ${RECURRING_THU_09_10_PREFERRED}                        css=[aria-label="Varattavissa: To 9 - 10"]
 ${RECURRING_THU_10_11_PREFERRED}                        css=[aria-label="Varattavissa: To 10 - 11"]
 

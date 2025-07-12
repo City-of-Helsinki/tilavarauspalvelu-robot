@@ -299,6 +299,8 @@ User checks the paid reservation that requires handling info is right and submit
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     #
     reservation_lownav.Click submit button continue
+    reservation_unit_reservation_receipt.Check the reservation status message
+    ...    ${RESERVATION_STATUS_REQUIRESHANDLING_MSG_FI}
     quick_reservation.Get booking number
 
 User checks the paid reservation info is right after checkout
@@ -616,7 +618,7 @@ User saves file and formats booking time to ICS
     ${download_promise}=    Promise To Wait For Download    wait_for_finished=True
 
     # Saves the calendar file
-    Click    [data-testid="reservation__confirmation--button__calendar-url"]
+    Click    [data-testid="reservation__button--calendar-link"]
 
     # Wait for the file to be fully downloaded and retrieve file information
     ${file_obj}=    Wait For    ${download_promise}

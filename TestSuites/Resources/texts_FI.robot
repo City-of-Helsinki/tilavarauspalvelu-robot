@@ -78,8 +78,8 @@ ${DELETE_NOTIFICATION_BUTTON_TEXT}                                  Poista
 # RESERVATION PAGE
 ###
 
-${RESERVATION_STATUS_MSG_FI}                                        Varaus tehty!
-${RESERVATION_STATUS_REQUIRESHANDLING_MSG_FI}                       Varaus käsittelyssä
+${RESERVATION_STATUS_MSG_FI}                                        Varauksesi on vahvistettu
+${RESERVATION_STATUS_REQUIRESHANDLING_MSG_FI}                       Varauksesi on käsittelyssä
 
 ###
 # TOPNAV

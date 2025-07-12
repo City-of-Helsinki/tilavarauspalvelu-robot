@@ -73,8 +73,8 @@ Check noncancelable booking info
 
 Check the reservation status message
     [Arguments]    ${expected_reservation_message}
-    ${PageH1}    Get Text    css=h1
-    Should Contain    ${PageH1}    ${expected_reservation_message}
+    ${confirmation_text}    Get Text    [data-testid="reservation__status-notification"]
+    Should Contain    ${confirmation_text}    ${expected_reservation_message}
     Log    ${expected_reservation_message}
 
 ###

@@ -9,7 +9,8 @@ Search units by name
     Type Text    input#search    ${search_text}
     Sleep    1s
 #
-    Click    id=searchButton
+    # Click    button[type="submit"]
+    Click    [data-testid="searchButton"]
     Sleep    2s    # wait for search results to load
     Wait For Load State    load    timeout=15s
     # TODO Check if actual results are found

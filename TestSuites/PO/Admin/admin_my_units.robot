@@ -49,3 +49,14 @@ Admin clicks calendar open in own units
     ...    arg=${unit_name}
 
     Log    ${result}
+
+Admin clicks make reservation
+    Click    span:has-text("Tee varaus")
+
+Admin selects unit from reservation units dropdown
+    [Arguments]    ${units_location}
+    Wait For Elements State    [aria-label*="Varausyksikkö"]    visible
+    Click    [aria-label*="Varausyksikkö"]
+    Sleep    1s
+    custom_keywords.Find and click element with text    li >> span    ${units_location}
+    Sleep    1s

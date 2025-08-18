@@ -11,8 +11,9 @@ Library             Browser
 ###
 ${URL_TEST}                                             https://varaamo.test.hel.ninja/
 ${URL_STAGE}                                            https://varaamo.test.hel.ninja/kasittely
-${URL_PROD}                                             https://tilavaraus.hel.fi/
-${URL_ADMIN}                                            https://tilavaraus.test.hel.ninja/kasittely
+${URL_PROD}                                             https://varaamo.hel.fi/
+${URL_ADMIN}                                            https://varaamo.test.hel.ninja/kasittely
+${URL_DJANGO_ADMIN}                                     https://varaamo.test.hel.ninja/admin/login/
 ${URL_MAIL}                                             https://www.google.com/intl/fi/gmail/about/
 
 # System
@@ -125,9 +126,10 @@ ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}                  ${EMPTY}
 # RESERVATIONS TYPE INFO
 ###
 
-${RESERVATION_INDIVIDUAL}                               id=reserveeType__individual
-${RESERVATION_NONPROFIT}                                id=reserveeType__nonprofit
-${RESERVATION_BUSINESS}                                 id=reserveeType__business
+# ${RESERVATION_INDIVIDUAL}    id=reserveeType__individual
+${RESERVATION_INDIVIDUAL}                               id=reserveeType__INDIVIDUAL
+${RESERVATION_NONPROFIT}                                id=reserveeType__NONPROFIT
+${RESERVATION_BUSINESS}                                 id=reserveeType__COMPANY
 
 ###
 #

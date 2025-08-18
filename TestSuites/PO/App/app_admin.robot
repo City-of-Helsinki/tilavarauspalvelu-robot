@@ -86,10 +86,20 @@ Admin edits reservation time
     admin_reservations.Admin checks reservation status    ${MYBOOKINGS_STATUS_CONFIRMED}
 
 Admin navigates to own units and selects unit
+    # TODO: separate this to two keywords
     [Arguments]    ${unit_name}
     admin_navigation_menu.Admin navigates to my units
     admin_my_units.Admin searches own unit and clicks it    ${UNIT_LOCATION}
-    admin_my_units.Admin clicks calendar open in own units    ${unit_name}
+    # TODO: old version for using calendar UI
+    # admin_my_units.Admin clicks calendar open in own units    ${unit_name}
+    admin_my_units.Admin clicks make reservation
+    admin_my_units.Admin selects unit from reservation units dropdown    ${unit_name}
+
+Admin opens make reservation modal and selects unit
+    # TODO: korjaa tämä
+    [Arguments]    ${unit_name}
+    admin_my_units.Admin clicks make reservation
+    admin_my_units.Admin selects unit from reservation units dropdown    ${unit_name}
 
 Admin tries to make reserevation that is unavailable
     [Arguments]    ${unit_name}

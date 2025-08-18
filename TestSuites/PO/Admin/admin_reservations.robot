@@ -13,6 +13,8 @@ Admin searches reservation with id number and clicks it from name
     Wait For Elements State    id=search    visible
     Type Text    id=search    ${booking_number}
     Sleep    500ms
+    Click    [type="submit"]
+    Sleep    500ms
     custom_keywords.Check elements text    [data-testid="pk-0"]    ${booking_number}
     custom_keywords.Find and click element with text    [data-testid="reservee_name-0"] >> a    ${user_fullname}
     Sleep    500ms
@@ -22,6 +24,8 @@ Admin searches reservation with id number and checks the status
     [Arguments]    ${booking_number}    ${reservation_status}
     Type Text    id=search    ${booking_number}
     Sleep    1s
+    Click    [type="submit"]
+    Sleep    500ms
     custom_keywords.Check elements text    [data-testid="pk-0"]    ${booking_number}
     custom_keywords.Check elements text    [data-testid="state-0"]    ${reservation_status}
     Sleep    2s
@@ -244,14 +248,17 @@ Admin enters reservation time and type of reservation
     [Arguments]    ${type_of_reservation}    ${startTime-hours}    ${endTime-hours}    ${date}
 
     # Click    ${type_of_reservation}
-
-    Type Text    id=ReservationDialog.startTime-hours    ${startTime-hours}
+    # Type Text    id=ReservationDialog.startTime-hours    ${startTime-hours}
+    Type Text    id=TimeInput.startTime-hours    ${startTime-hours}
     Sleep    500ms
-    Type Text    id=ReservationDialog.startTime-minutes    00
+    # Type Text    id=ReservationDialog.startTime-minutes    00
+    Type Text    id=TimeInput.startTime-minutes    00
     Sleep    500ms
-    Type Text    id=ReservationDialog.endTime-hours    ${endTime-hours}
+    # Type Text    id=ReservationDialog.endTime-hours    ${endTime-hours}
+    Type Text    id=TimeInput.endTime-hours    ${endTime-hours}
     Sleep    500ms
-    Type Text    id=ReservationDialog.endTime-minutes    00
+    # Type Text    id=ReservationDialog.endTime-minutes    00
+    Type Text    id=TimeInput.endTime-minutes    00
     Sleep    500ms
     Type Text    id=controlled-date-input__date    ${date}
     Sleep    500ms
@@ -289,13 +296,17 @@ Admin opens calendar and changes reservation time
     Log    This test uses 00 for minutes. So all the changed times will be 10:00–11:00 -> 15:00–17:00 etc
 
     # TODO, Admin enters reservation time and type of reservation could be used here
-    Type Text    id=ReservationDialog.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
+    # Type Text    id=ReservationDialog.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
+    Type Text    id=TimeInput.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
     Sleep    500ms
-    Type Text    id=ReservationDialog.startTime-minutes    00
+    # Type Text    id=ReservationDialog.startTime-minutes    00
+    Type Text    id=TimeInput.startTime-minutes    00
     Sleep    500ms
-    Type Text    id=ReservationDialog.endTime-hours    ${MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION}
+    # Type Text    id=ReservationDialog.endTime-hours    ${MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION}
+    Type Text    id=TimeInput.endTime-hours    ${MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION}
     Sleep    500ms
-    Type Text    id=ReservationDialog.endTime-minutes    00
+    # Type Text    id=ReservationDialog.endTime-minutes    00
+    Type Text    id=TimeInput.endTime-minutes    00
     Sleep    500ms
     Type Text    id=controlled-date-input__date    ${MODIFIED_DATE_SUBVENTED_RESERVATION}
     Sleep    1s

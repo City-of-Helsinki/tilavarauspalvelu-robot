@@ -18,17 +18,23 @@ Admin logs in with suomi_fi
     app_common.Admin logs out
 
 Admin verifies all reservation types and verifies no unavailable reservations exist
-    app_common.Admin logs in with suomi_fi
+    Admin logs in with suomi_fi
     app_admin.Admin navigates to own units and selects unit    ${UNAVAILABLE_UNIT}
     app_admin.Admin makes reservation for behalf
-    admin_my_units.Admin clicks calendar open in own units    ${UNAVAILABLE_UNIT}
+    app_admin.Admin opens make reservation modal and selects unit    ${UNAVAILABLE_UNIT}
+    # TODO: old version for using calendar UI
+    # admin_my_units.Admin clicks calendar open in own units    ${CURRENT_UNAVAILABLE_UNIT}
     app_admin.Admin attempts to make an unavailable reservation
-    admin_my_units.Admin clicks calendar open in own units    ${UNAVAILABLE_UNIT}
+    app_admin.Admin opens make reservation modal and selects unit    ${UNAVAILABLE_UNIT}
+    # admin_my_units.Admin clicks calendar open in own units    ${CURRENT_UNAVAILABLE_UNIT}
     app_admin.Admin makes reservation for closed
-    admin_my_units.Admin clicks calendar open in own units    ${UNAVAILABLE_UNIT}
+    app_admin.Admin opens make reservation modal and selects unit    ${UNAVAILABLE_UNIT}
+    # admin_my_units.Admin clicks calendar open in own units    ${CURRENT_UNAVAILABLE_UNIT}
     app_admin.Admin attempts to make an unavailable reservation
-    admin_my_units.Admin clicks calendar open in own units    ${UNAVAILABLE_UNIT}
+    app_admin.Admin opens make reservation modal and selects unit    ${UNAVAILABLE_UNIT}
+    # admin_my_units.Admin clicks calendar open in own units    ${CURRENT_UNAVAILABLE_UNIT}
     app_admin.Admin makes reservation for staff
-    admin_my_units.Admin clicks calendar open in own units    ${UNAVAILABLE_UNIT}
+    app_admin.Admin opens make reservation modal and selects unit    ${UNAVAILABLE_UNIT}
+    # admin_my_units.Admin clicks calendar open in own units    ${CURRENT_UNAVAILABLE_UNIT}
     app_admin.Admin attempts to make an unavailable reservation
     # TODO remove reservations part

@@ -17,7 +17,6 @@ Admin navigates to my units
     Wait For Load State    load    timeout=15s
 
 Admin navigates to notifications
-# TODO add id
-    Click    [href="/kasittely/messaging/notifications"]
+    Click    [href="/kasittely/notifications"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s

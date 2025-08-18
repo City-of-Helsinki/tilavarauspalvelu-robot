@@ -106,15 +106,15 @@ Admin fills notification text en sv
 
 Admin publishes notification
     Click    [data-testid="Notification__Page--publish-button"]
-    Sleep    500ms
+    Sleep    2s
     Wait For Load State    load    timeout=15s
 
 Admin drafts notification
     Click    [data-testid="Notification__Page--save-draft-button"]
-    Sleep    500ms
+    Sleep    2s
     Wait For Load State    load    timeout=15s
 
 Admin deletes notification
     custom_keywords.Find and click element with text    button    ${DELETE_NOTIFICATION_BUTTON_TEXT}
-    Sleep    500ms
+    Sleep    2s
     Wait For Load State    load    timeout=15s

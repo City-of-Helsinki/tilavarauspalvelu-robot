@@ -372,3 +372,5 @@ Admin creates notification and archive and deletes notification for both sides
     admin_notifications_create_page.Admin deletes notification
     app_common.Reload page
     app_common.Verify notification banner message is not visible
+    admin_notifications_create_page.Admin verifies notification is not found
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NAME}

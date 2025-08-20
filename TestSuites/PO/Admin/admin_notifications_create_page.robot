@@ -106,15 +106,20 @@ Admin fills notification text en sv
 
 Admin publishes notification
     Click    [data-testid="Notification__Page--publish-button"]
-    Sleep    2s
+    Sleep    3s
     Wait For Load State    load    timeout=15s
 
 Admin drafts notification
     Click    [data-testid="Notification__Page--save-draft-button"]
-    Sleep    2s
+    Sleep    3s
     Wait For Load State    load    timeout=15s
 
 Admin deletes notification
     custom_keywords.Find and click element with text    button    ${DELETE_NOTIFICATION_BUTTON_TEXT}
-    Sleep    2s
+    Sleep    3s
     Wait For Load State    load    timeout=15s
+
+Admin verifies notification is not found
+    [Documentation]    Verifies that a notification with the specified name is NOT present in the notifications list
+    [Arguments]    ${notification_name}
+    custom_keywords.Verify element with text is not found    tbody >> a    ${notification_name}

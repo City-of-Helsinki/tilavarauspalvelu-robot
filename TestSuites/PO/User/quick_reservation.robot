@@ -52,8 +52,9 @@ Select duration
     # Wait For Elements State    id=quick-reservation >> id=duration-toggle-button    visible
     # Click    id=quick-reservation >> id=duration-toggle-button
     # Wait For Elements State    id=quick-reservation >> id=hds-select-92-main-button    visible
-    Click    id=quick-reservation >> css=.Select-module_selectAndListContainer__vSJEv
-    Sleep    500ms
+    # Click    id=quick-reservation >> css=.Select-module_selectAndListContainer__vSJEv
+    Click    id=quick-reservation >> id=quick-reservation__duration-main-button
+    Sleep    1s
     Click    [role="option"] >> '${duration}'
     Wait For Load State    load    timeout=15s
 
@@ -148,6 +149,9 @@ Verify time slot not available
     [Documentation]    Verifies that the specified time slot is not available in the list of free slots.
     [Arguments]    ${time_to_check}
     Log    Verifying time slot not available: ${time_to_check}
+
+    Sleep    2s
+    Wait For Elements State    id=quick-reservation__duration-main-button    visible
 
     # 1 Collect all time slots
     ${elements}=    Browser.Get Elements    [class*="slider-list"] >> [data-testid="quick-reservation__slot"]

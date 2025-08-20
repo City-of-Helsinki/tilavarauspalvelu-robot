@@ -37,6 +37,32 @@ Find and click element with text
     # Fail the test if no element was found
     IF    not ${found}    Fail    Element with text "${wanted_text}" not found
 
+Verify element with text is not found
+    [Documentation]    This keyword verifies that an element containing the specified text is NOT found within a list of elements identified by the given selector.
+    [Arguments]    ${element_with_text}    ${wanted_text}
+
+    Log    Verifying that ${element_with_text} with text: ${wanted_text} is NOT found
+    ${elements_with_text}=    Browser.Get Elements    ${element_with_text}
+    ${found}=    Set Variable    False    # Initialize a flag to track if the element is found
+
+    FOR    ${element}    IN    @{elements_with_text}
+        ${el_text}=    Get Text    ${element}
+        ${el_text}=    Strip String    ${el_text}    # Remove leading and trailing whitespaces for webkit
+        Log    element is: ${element}
+        Log    Text found in element: ${el_text}
+
+        IF    $el_text == $wanted_text
+            Log    Element with text "${wanted_text}" found when it should not be.
+            ${found}=    Set Variable    True    # Set the flag to True since the element is found
+            BREAK
+        END
+    END
+
+    # Fail the test if the element WAS found (opposite of the original keyword)
+    IF    ${found}
+        Fail    Element with text "${wanted_text}" was found but should not be present
+    END
+
 Find and click element with exact text using JS
     [Arguments]    ${element_with_text}    ${wanted_text}
     Log    Searching for element with text: ${wanted_text}

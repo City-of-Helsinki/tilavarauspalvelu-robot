@@ -62,8 +62,8 @@ Admin checks reservation maker info
     Sleep    500ms
     custom_keywords.Check elements text
     ...    [data-testid="reservation__info--Varauksen tekijä"]
-    ...    ${ADMIN_ALL_MALE_FULLNAME}
-    custom_keywords.Check elements text    [data-testid="reservation__info--Sähköposti"]    ${ADMIN_ALL_MALE_EMAIL}
+    ...    ${BASIC_ADMIN_MALE_FULLNAME}
+    custom_keywords.Check elements text    [data-testid="reservation__info--Sähköposti"]    ${BASIC_ADMIN_MALE_EMAIL}
 
 Admin checks reservation info after handling
     [Arguments]
@@ -178,7 +178,6 @@ Admin checks reservation status
     custom_keywords.Check elements text    [data-testid="reservation_title_section__reservation_state"]    ${status}
 
 Admin saves reservation number
-    # DEVNOTE fix better selector than span
     Click    id=reservation__reservation-details-heading
     Sleep    500ms
     Wait For Elements State    [data-testid="reservation__info--Varaustunnus"]    visible
@@ -238,7 +237,7 @@ Admin fills reservation details behalf
     Sleep    500ms
     Type Text    [name="reserveeLastName"]    ${ADMIN_BEHALF_LASTNAME_FI}
     Sleep    500ms
-    Type Text    [name="reserveeEmail"]    ${ADMIN_ALL_MALE_EMAIL}
+    Type Text    [name="reserveeEmail"]    ${BASIC_ADMIN_MALE_EMAIL}
     Sleep    500ms
     Type Text    [name="reserveePhone"]    ${ADMIN_BEHALF_PHONE_FI}
 
@@ -295,7 +294,7 @@ Admin opens calendar and changes reservation time
     # Changes the reservation time with date and hours and minutes
     Log    This test uses 00 for minutes. So all the changed times will be 10:00–11:00 -> 15:00–17:00 etc
 
-    # TODO, Admin enters reservation time and type of reservation could be used here
+    # TODO Admin enters reservation time and type of reservation could be used here
     # Type Text    id=ReservationDialog.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
     Type Text    id=TimeInput.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
     Sleep    500ms

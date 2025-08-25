@@ -6,6 +6,11 @@ Library             Browser
 
 
 *** Variables ***
+# HAR Recording Control - Set to ${TRUE} to enable HAR recording
+# WARNING: HAR files can be very large (10-100MB+ per test)
+# Only enable when you need to analyze network traffic
+${ENABLE_HAR_RECORDING}                                 ${FALSE}
+
 ###
 # DEV ENVIRONMENTS
 ###
@@ -184,6 +189,17 @@ ${FORMATTED_STARTTIME_EMAIL}                            ${EMPTY}    # Alkamisaik
 ${FORMATTED_ENDTIME_EMAIL}                              ${EMPTY}    # Päättymisaika: ${day}.${month}.${year} klo ${end_time}
 ${DOWNLOAD_TERMS_OF_USE_FILE}                           ${CURDIR}${/}downloads/asiointipalvelun-ehdot.pdf
 ${EXPECTED_ATTACHMENT_STATUS}                           ${True}
+
+###
+#
+###
+
+###
+# PABOT EXECUTION VARIABLES
+###
+
+# Default value for when not running with pabot
+${PABOTEXECUTIONPOOLID}                                 0
 
 ###
 #

@@ -1,6 +1,8 @@
 *** Settings ***
 Resource    ../../Resources/users.robot
+Resource    ../../Resources/variables.robot
 Library     Browser
+Library     BuiltIn
 
 
 *** Keywords ***
@@ -22,6 +24,25 @@ Login Suomi_fi
     Click    css=#continue-button
     Sleep    3s
     Wait For Load State    load    timeout=60s
+
+    # Check for cookies after login
+    ${fresh_cookies}=    Get Cookies
+    ${fresh_cookie_count}=    Get Length    ${fresh_cookies}
+    Log    "🔍 Login cookies after Tunnistamo: ${fresh_cookie_count}"
+
+Login django admin
+    [Arguments]    ${input_username}    ${input_password}
+    Wait For Load State    load    timeout=15s
+    Wait For Elements State    id=id_username    visible    timeout=10s
+    Type Text    id=id_username    ${input_username}
+    Type Text    id=id_password    ${input_password}
+    Click    [type="submit"]
+    Sleep    2s
+    Wait For Load State    load    timeout=60s
+
+    Go To    ${URL_TEST}
+    Sleep    4s
+    Wait For Load State    networkidle    timeout=60s
 
 Login Suomi_fi mobile
     [Arguments]    ${input_hetu}

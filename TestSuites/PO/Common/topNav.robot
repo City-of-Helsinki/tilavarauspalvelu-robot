@@ -10,7 +10,7 @@ Resource            ../User/mybookings.robot
 
 *** Keywords ***
 Click login
-    Wait For Elements State    id=login    visible
+    Wait For Elements State    id=login    stable
     Click    id=login
     Sleep    500ms
 
@@ -18,10 +18,11 @@ Click login admin side
     Wait For Elements State    h1    visible
     ${LoginElement}=    Browser.Get Element    button >> span:text-is("${LOGIN_TEXT_ADMIN}")
     Click    ${LoginElement}
+    Sleep    1s
 
 Click logout
     Sleep    1s
-    Wait For Elements State    css=[aria-label="Kirjaudu ulos"]    visible
+    Wait For Elements State    css=[aria-label="Kirjaudu ulos"]    stable
     Click    css=[aria-label="Kirjaudu ulos"]
     Wait For Load State    load    timeout=15s
 
@@ -32,12 +33,12 @@ Click logout admin side
     Wait For Load State    load    timeout=15s
 
 Click user menu
-    Wait For Elements State    id=user-menu    visible
+    Wait For Elements State    id=user-menu    stable
     Click    id=user-menu
     Sleep    1s
 
 Click close navigation menu
-    Wait For Elements State    id=Menu    visible
+    Wait For Elements State    id=Menu    stable
     Click    id=Menu
     Sleep    1s
 
@@ -51,12 +52,13 @@ Check dropdown menu has user info
 
 Navigate to single booking page
     Click    header >> [href="/search"]:text-is("${SINGLEBOOKING_FI}")
-    Sleep    200ms
+    Sleep    1s
     Wait For Load State    load    timeout=15s
 
 Navigate to my bookings
     Click    header >> [href="/reservations"]:text-is("${MYBOOKINGS_FI}")
-    Sleep    1s
+    # wait for load
+    Sleep    2s
     Wait For Load State    load    timeout=15s
 
     # Confirms page is loaded

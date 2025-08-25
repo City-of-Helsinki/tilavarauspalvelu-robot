@@ -12,9 +12,10 @@ dependencies:
   - tzdata
   - pip:
       # for robot framework
-      - robotframework==7.2.2
-      - robotframework-browser==19.3.0
+      - robotframework==7.3.2
+      - robotframework-browser==19.6.2
       - robotframework-tidy
+      - robotframework-pabot==4.3.2
 
       # Python dependencies
       - beautifulsoup4
@@ -22,7 +23,7 @@ dependencies:
       # Google Auth
       - google-auth
       - google-auth-oauthlib
-      
+
       # Environment management
       - python-dotenv
 

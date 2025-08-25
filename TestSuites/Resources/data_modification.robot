@@ -4,6 +4,7 @@ Documentation       A resource file with keywords.
 Resource            ../PO/User/quick_reservation.robot
 Resource            variables.robot
 Resource            texts_FI.robot
+Resource            parallel_test_data.robot
 Library             Browser
 Library             DateTime
 Library             OperatingSystem
@@ -13,7 +14,8 @@ Library             python_keywords.py
 *** Keywords ***
 Formats reservation number and name for admin side
     ${bookingNumber_and_NameOfTheBooking}=    Catenate    ${BOOKING_NUM_ONLY},    ${SINGLEBOOKING_NAME}
-    Set Suite Variable    ${BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED}    ${bookingNumber_and_NameOfTheBooking}
+    Store Test Data Variable    BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED    ${bookingNumber_and_NameOfTheBooking}
+    Set Test Variable    ${BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED}    ${bookingNumber_and_NameOfTheBooking}
 
 Formats tagline for admin side
     [Documentation]    Formats the given information as "Ma 25.11.2024 22:30–23:30, 1 t | Aina käsiteltävä kellarikerros (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju"
@@ -45,7 +47,8 @@ Formats tagline for admin side
     ${RESERVATION_TAG}=    Evaluate    ' '.join('''${RESERVATION_TAG}'''.split())
 
     # Set the suite variable to hold the final formatted tagline
-    Set Suite Variable    ${RESERVATION_TAGLINE}    ${RESERVATION_TAG}
+    Store Test Data Variable    RESERVATION_TAGLINE    ${RESERVATION_TAG}
+    Set Test Variable    ${RESERVATION_TAGLINE}    ${RESERVATION_TAG}
 
     # Log the final formatted tagline
     Log    ${RESERVATION_TAGLINE}
@@ -89,7 +92,8 @@ Convert finnish short day to english
     # 6: Use the same index to fetch the English full name
     ${english_day}=    Get From List    ${en_days}    ${idx}
 
-    Set Suite Variable    ${ENGLISH_DAY}    ${english_day}
+    Store Test Data Variable    ENGLISH_DAY    ${english_day}
+    Set Test Variable    ${ENGLISH_DAY}    ${english_day}
 
 Compute reservation time slot
     [Documentation]    Given a start time (HH:MM) and duration (e.g. "60 min"), formats to "HH:MM-HH:MM".
@@ -164,7 +168,8 @@ Compute reservation time slot
     Log    Final reservation slot ➔ ${full_slot}
 
     # 11: Expose for suite use
-    Set Suite Variable    ${CALENDAR_TIMESLOT}    ${full_slot}
+    Store Test Data Variable    CALENDAR_TIMESLOT    ${full_slot}
+    Set Test Variable    ${CALENDAR_TIMESLOT}    ${full_slot}
 
 Get modified date and time
     [Documentation]    Advances the current date by 1–15 days and adjusts start/end hours by random offsets between 1 and 5.

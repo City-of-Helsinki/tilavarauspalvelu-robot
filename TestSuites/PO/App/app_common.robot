@@ -18,6 +18,14 @@ Resource    ../Common/popups.robot
 # LANGUAGE FI
 ###
 
+User opens desktop browser to django admin
+    # Default is chrome
+    devices.Set up chromium desktop browser and open url    ${URL_DJANGO_ADMIN}    ${DOWNLOAD_DIR}
+    Wait For Load State    load    timeout=15s
+    # Check Text    h1    Ylläpito
+    # h1 on Ylläpito
+    # admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_NOT_LOGGED_IN}
+
 User opens desktop browser to landing page
     # Default is chrome
     devices.Set up chromium desktop browser and open url    ${URL_TEST}    ${DOWNLOAD_DIR}
@@ -45,10 +53,11 @@ User opens desktop browser to mail
 
 User logs in with suomi_fi
     topNav.Click login
-    login.Login Suomi_fi    ${BASIC_USER_MALE_HETU}
+    login.Login Suomi_fi    ${CURRENT_USER_HETU}
     # Confirms we are on the landing page
     user_landingpage.Check the user landing page h1    ${USER_LANDING_PAGE_H1_TEXT}
     popups.User accepts cookies if dialog is visible    ${COOKIETEXT}
+    Log current cookies
 
     Log    Enable dropdown menu has user info when the profile bug is fixed and name info is no longer empty
 
@@ -102,7 +111,8 @@ User confirms log out mobile
 User logs in with suomi_fi mobile
     topNav.Click navigation menu mobile
     topNav.Click login mobile
-    login.Login Suomi_fi mobile    ${BASIC_USER_MALE_HETU}
+    # login.Login Suomi_fi mobile    ${BASIC_USER_MALE_HETU}
+    login.Login Suomi_fi mobile    ${CURRENT_USER_HETU}
 
     # Confirms the login was success
     user_landingpage.Check the user landing page h1    ${USER_LANDING_PAGE_H1_TEXT}
@@ -134,13 +144,13 @@ Admin goes to landing page
 
 Admin logs in with suomi_fi
     topNav.Click login admin side
-    login.Login Suomi_fi    ${ADMIN_ALL_MALE_HETU}
-    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN}
+    login.Login Suomi_fi    ${ADMIN_CURRENT_USER_HETU}
+    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN_WITH_USER_INFO}
     # Wait For Elements State    id=user-menu    visible
     # TODO enable these steps when the dropdown has user info again
     # admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN}
     # Sleep    3s
-    # topNav.Check dropdown menu has user info    ${ADMIN_ALL_MALE_FULLNAME}
+    # topNav.Check dropdown menu has user info    ${BASIC_ADMIN_MALE_FULLNAME}
 
 Admin logs out
     topNav.Click user menu

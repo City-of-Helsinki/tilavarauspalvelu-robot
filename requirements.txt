@@ -1,8 +1,11 @@
 # Core Robot Framework testing framework
-robotframework==7.2
+robotframework==7.3.2
 
 # Browser automation library for Robot Framework (uses Playwright)
-robotframework-browser==19.3.0
+robotframework-browser==19.6.2
+
+# Parallel execution for Robot Framework
+robotframework-pabot==4.3.2
 
 # Environment variable loading from .env files
 python-dotenv==1.0.1
@@ -12,4 +15,4 @@ google-auth==2.38.0
 google-auth-oauthlib==1.2.1
 
 # HTML/XML parsing for web scraping and content validation
-beautifulsoup4==4.13.3 
+beautifulsoup4==4.13.3

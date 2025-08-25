@@ -99,11 +99,23 @@ temp/
 
 # Robot Framework specific
 robot-results/
+pabot_results/
+output/
 output.xml
 log.html
 report.html
 selenium-screenshot-*.png
+playwright-log.txt
 
 # Browser downloads and cache
 downloads/
-.cache/ 
+.cache/
+
+# Test-specific files that don't belong in image
+cookies.txt
+har_analyzer.py
+*.har
+
+# Scripts not needed in container
+docker-*.sh
+docker-*.yaml 

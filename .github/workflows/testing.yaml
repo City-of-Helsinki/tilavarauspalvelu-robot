@@ -16,6 +16,15 @@ on:
           - Tests_user_mobile_android_FI
           - Tests_users_with_admin_desktop
           - Tests_admin_desktop_FI
+          - Tests_admin_notifications_serial
+      execution_mode:
+        description: "Select execution mode"
+        required: true
+        default: "parallel"
+        type: choice
+        options:
+          - parallel
+          - sequential
 
 jobs:
   test:
@@ -28,6 +37,12 @@ jobs:
       REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      WAF_BYPASS_SECRET: ${{ secrets.WAF_BYPASS_SECRET }}
+      # Process counts for parallel execution
+      DESKTOP_PROCESSES: 3
+      ADMIN_PROCESSES: 3
+      MOBILE_PROCESSES: 3
+      ALL_SUITES_PROCESSES: 3
 
     steps:
       - uses: actions/checkout@v4
@@ -46,45 +61,92 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # Configure test arguments based on selected suite
+      # Configure test arguments based on selected suite and execution mode
       - name: Determine test configuration
         id: config
         run: |
+          EXECUTION_MODE="${{ github.event.inputs.execution_mode }}"
+
+          # Set execution tool and base flags
+          if [ "$EXECUTION_MODE" = "parallel" ]; then
+            echo "execution_tool=pabot" >> $GITHUB_OUTPUT
+            echo "base_flags=--testlevelsplit --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat" >> $GITHUB_OUTPUT
+          else
+            echo "execution_tool=robot" >> $GITHUB_OUTPUT
+            echo "base_flags=--variable FORCE_SINGLE_USER:True" >> $GITHUB_OUTPUT
+          fi
+
           case "${{ github.event.inputs.test_suite }}" in
             Smoke)
               # Run only smoke tests from specific files
-              echo "suite_args=--outputdir /opt/robotframework/reports --include smoke /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+              if [ "$EXECUTION_MODE" = "parallel" ]; then
+                echo "suite_args=--processes 2 --outputdir /opt/robotframework/reports --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+              else
+                echo "suite_args=--outputdir /opt/robotframework/reports --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+              fi
               echo "run_type=smoke_only" >> $GITHUB_OUTPUT
               ;;
             All)
               # For "All": first run smoke tests, then full suite if smoke passes
-              echo "smoke_args=--outputdir /opt/robotframework/reports/smoke --include smoke /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
-              echo "full_args=--outputdir /opt/robotframework/reports/full --nostatusrc /opt/robotframework/tests" >> $GITHUB_OUTPUT
+              if [ "$EXECUTION_MODE" = "parallel" ]; then
+                echo "smoke_args=--processes 2 --outputdir /opt/robotframework/reports/smoke --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+                echo "full_args=--processes $ALL_SUITES_PROCESSES --outputdir /opt/robotframework/reports/full --nostatusrc --name \"All Test Suites\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot /opt/robotframework/tests/Tests_admin_notifications_serial.robot /opt/robotframework/tests/Tests_users_with_admin_desktop.robot /opt/robotframework/tests/Tests_user_mobile_android_FI.robot /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+              else
+                echo "smoke_args=--outputdir /opt/robotframework/reports/smoke --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+                echo "full_args=--outputdir /opt/robotframework/reports/full --nostatusrc --name \"All Test Suites\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot /opt/robotframework/tests/Tests_admin_notifications_serial.robot /opt/robotframework/tests/Tests_users_with_admin_desktop.robot /opt/robotframework/tests/Tests_user_mobile_android_FI.robot /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+              fi
               echo "run_type=smoke_first" >> $GITHUB_OUTPUT
               ;;
             Tests_user_desktop_FI)
               # Run specific desktop user tests
-              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_desktop_FI.robot" >> $GITHUB_OUTPUT
+              if [ "$EXECUTION_MODE" = "parallel" ]; then
+                echo "suite_args=--processes $DESKTOP_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_desktop_FI.robot" >> $GITHUB_OUTPUT
+              else
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_desktop_FI.robot" >> $GITHUB_OUTPUT
+              fi
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
             Tests_user_mobile_iphone_FI)
               # Run iPhone mobile tests
-              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+              if [ "$EXECUTION_MODE" = "parallel" ]; then
+                echo "suite_args=--processes $MOBILE_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+              else
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+              fi
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
             Tests_user_mobile_android_FI)
               # Run Android mobile tests
-              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_android_FI.robot" >> $GITHUB_OUTPUT
+              if [ "$EXECUTION_MODE" = "parallel" ]; then
+                echo "suite_args=--processes $MOBILE_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_android_FI.robot" >> $GITHUB_OUTPUT
+              else
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_android_FI.robot" >> $GITHUB_OUTPUT
+              fi
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
             Tests_users_with_admin_desktop)
               # Run admin user tests
-              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_users_with_admin_desktop.robot" >> $GITHUB_OUTPUT
+              if [ "$EXECUTION_MODE" = "parallel" ]; then
+                echo "suite_args=--processes $ADMIN_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_users_with_admin_desktop.robot" >> $GITHUB_OUTPUT
+              else
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_users_with_admin_desktop.robot" >> $GITHUB_OUTPUT
+              fi
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
             Tests_admin_desktop_FI)
               # Run admin desktop tests
-              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+              if [ "$EXECUTION_MODE" = "parallel" ]; then
+                echo "suite_args=--processes $ADMIN_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+              else
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+              fi
+              echo "run_type=single_suite" >> $GITHUB_OUTPUT
+              ;;
+            Tests_admin_notifications_serial)
+              # Admin notifications always run sequentially (marked as serialonly)
+              echo "execution_tool=robot" >> $GITHUB_OUTPUT
+              echo "base_flags=--variable FORCE_SINGLE_USER:True" >> $GITHUB_OUTPUT
+              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_admin_notifications_serial.robot" >> $GITHUB_OUTPUT
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
           esac
@@ -94,19 +156,23 @@ jobs:
         run: |
           mkdir -p "${{ github.workspace }}/Reports"
           chmod 777 "${{ github.workspace }}/Reports"
+          # Create downloads directory for email tests
+          mkdir -p "${{ github.workspace }}/TestSuites/Resources/downloads"
+          chmod 777 "${{ github.workspace }}/TestSuites/Resources/downloads"
 
       # Run smoke tests first (only for "All" option)
       - name: Run Smoke Tests
         id: smoke_tests
         if: steps.config.outputs.run_type == 'smoke_first'
         run: |
-          echo "🚀 Starting smoke tests..."
+          echo "🚀 Starting smoke tests with ${{ steps.config.outputs.execution_tool }}..."
           set +e  # Don't exit on error
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e TZ=Europe/Helsinki \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
-            robotframework-tests:latest robot \
+            robotframework-tests:latest ${{ steps.config.outputs.execution_tool }} \
+            ${{ steps.config.outputs.base_flags }} \
             ${{ steps.config.outputs.smoke_args }}
 
           ROBOT_EXIT_CODE=$?
@@ -135,13 +201,14 @@ jobs:
       - name: Run Full Test Suite
         if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true'
         run: |
-          echo "🚀 Smoke tests succeeded; running full test suite..."
+          echo "🚀 Smoke tests succeeded; running full test suite with ${{ steps.config.outputs.execution_tool }}..."
           set +e  # Don't exit on error to ensure we can collect results
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e TZ=Europe/Helsinki \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
-            robotframework-tests:latest robot \
+            robotframework-tests:latest ${{ steps.config.outputs.execution_tool }} \
+            ${{ steps.config.outputs.base_flags }} \
             ${{ steps.config.outputs.full_args }}
 
           ROBOT_EXIT_CODE=$?
@@ -151,11 +218,13 @@ jobs:
       - name: Run Single Test Suite
         if: steps.config.outputs.run_type != 'smoke_first'
         run: |
+          echo "🚀 Running ${{ github.event.inputs.test_suite }} with ${{ steps.config.outputs.execution_tool }} (${{ github.event.inputs.execution_mode }} mode)..."
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e TZ=Europe/Helsinki \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
-            robotframework-tests:latest robot \
+            robotframework-tests:latest ${{ steps.config.outputs.execution_tool }} \
+            ${{ steps.config.outputs.base_flags }} \
             ${{ steps.config.outputs.suite_args }}
 
       # Parse Robot Framework XML results and create GitHub summary
@@ -168,8 +237,31 @@ jobs:
           import glob
 
           def parse_robot_results():
-              # Find all Robot Framework output.xml files
-              output_files = glob.glob("Reports/**/output.xml", recursive=True)
+              # Find Robot Framework output.xml files, excluding pabot worker files
+              all_output_files = glob.glob("Reports/**/output.xml", recursive=True)
+              # Filter out pabot worker results - only use the main consolidated output.xml
+              candidate_files = [f for f in all_output_files if 'pabot_results' not in f]
+              
+              print(f"Found {len(all_output_files)} total output.xml files")
+              print(f"Found {len(candidate_files)} main output files (excluding pabot worker files)")
+              for f in candidate_files:
+                  print(f"  - {f}")
+              
+              # For "All" suite execution, prioritize full results over smoke results
+              test_suite = "${{ github.event.inputs.test_suite }}"
+              if test_suite == 'All' and len(candidate_files) > 1:
+                  # Look for 'full' directory results first, then any non-smoke results
+                  full_files = [f for f in candidate_files if '/full/' in f]
+                  if full_files:
+                      output_files = full_files
+                      print(f"Using full test results: {output_files}")
+                  else:
+                      # If no 'full' directory, exclude smoke results to avoid duplication
+                      output_files = [f for f in candidate_files if '/smoke/' not in f]
+                      print(f"Using non-smoke results: {output_files}")
+              else:
+                  output_files = candidate_files
+                  print(f"Using all available results: {output_files}")
               
               if not output_files:
                   print("::warning title=No Results::No Robot Framework output.xml files found")
@@ -304,6 +396,8 @@ jobs:
           echo "## 📋 Test Execution Details" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Test Suite**: ${{ github.event.inputs.test_suite }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Execution Mode**: ${{ github.event.inputs.execution_mode }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tool Used**: ${{ steps.config.outputs.execution_tool }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Execution Time**: $(date)" >> $GITHUB_STEP_SUMMARY
           echo "- **Runner**: ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
 

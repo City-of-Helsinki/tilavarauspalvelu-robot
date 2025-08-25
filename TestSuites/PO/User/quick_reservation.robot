@@ -2,6 +2,7 @@
 Resource    ../../Resources/variables.robot
 Resource    ../../Resources/custom_keywords.robot
 Resource    ../../Resources/data_modification.robot
+Resource    ../../Resources/parallel_test_data.robot
 Library     Browser
 Library     Collections
 Library     String
@@ -42,16 +43,13 @@ Select the free slot and submits
     # Click the randomly selected slot
     Click    ${all_free_quick_timeslots}[${random_index}]
 
-    Set Suite Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}    # Submits selected time
+    Store Test Data Variable    TIME_OF_QUICK_RESERVATION_FREE_SLOT    ${time_of_selected_slot}
+    Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}    # Submits selected time
     Click    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
 Select duration
     [Arguments]    ${duration}
     Log    ${duration}
-    # devnote fix real selector here
-    # Wait For Elements State    id=quick-reservation >> id=duration-toggle-button    visible
-    # Click    id=quick-reservation >> id=duration-toggle-button
-    # Wait For Elements State    id=quick-reservation >> id=hds-select-92-main-button    visible
     # Click    id=quick-reservation >> css=.Select-module_selectAndListContainer__vSJEv
     Click    id=quick-reservation >> id=quick-reservation__duration-main-button
     Sleep    1s
@@ -89,7 +87,8 @@ Get booking number
     Sleep    1s
     ${reservation_number}=    Get text    [data-testid="reservation__reservation-info-card__reservationNumber"]
     ${BOOKING_NUM_ONLY}=    Set Variable    ${reservation_number}
-    Set Suite Variable    ${BOOKING_NUM_ONLY}
+    Store Test Data Variable    BOOKING_NUM_ONLY    ${BOOKING_NUM_ONLY}
+    Set Test Variable    ${BOOKING_NUM_ONLY}    ${BOOKING_NUM_ONLY}
     Log    ${BOOKING_NUM_ONLY}
 
 Check booking number
@@ -102,7 +101,8 @@ Check booking number
 Get access code
     Wait For Elements State    [data-testid="reservation__reservation-info-card__accessType"]    visible
     ${access_code}=    Get text    [data-testid="reservation__reservation-info-card__accessType"]
-    Set Suite Variable    ${ACCESS_CODE}    ${access_code}
+    Store Test Data Variable    ACCESS_CODE    ${access_code}
+    Set Test Variable    ${ACCESS_CODE}    ${access_code}
     Log    ${ACCESS_CODE}
 
 Check access code

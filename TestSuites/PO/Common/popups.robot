@@ -1,6 +1,5 @@
 *** Settings ***
 Library     Browser
-Resource    ../App/app_common.robot
 
 
 *** Keywords ***
@@ -13,14 +12,15 @@ User accepts cookies if dialog is visible
     ${dialog_visible}=    Run Keyword And Return Status
     ...    Wait For Elements State
     ...    button:has-text("${cookie_text}")
-    ...    visible
+    ...    stable
     ...    timeout=10s
 
     IF    ${dialog_visible}
         Log    Dialog is visible. Checking for the button with text "${cookie_text}".
-        Click    button:has-text("${cookie_text}")
+        Click    .hds-cc__buttons >> button:has-text("${cookie_text}")
         Log    Clicked the "${cookie_text}" button.
         Sleep    1.5s    # wait for the animation to close
+        Wait For Load State    load    30s
     ELSE
         Log    Dialog is not visible. Continuing the test.
     END
@@ -52,13 +52,18 @@ Close notification banner if visible
 
         # Close notification and refresh
         Click    [data-testid="BannerNotificationList__Notification"] >> button[title="Sulje"] >> nth=0
-        Sleep    500ms
+        Sleep    1s
         Log    Clicked close button on notification
 
-        app_common.Reload page
+        Reload page
         ${attempt}=    Evaluate    ${attempt} + 1
     END
     # If we reach here and success is False, we couldn't close all notifications
     IF    not ${success}
         Fail    Too many notification banners! Please delete extra notifications from admin side.
     END
+
+Reload page
+    Reload
+    Sleep    500ms
+    Wait For Load State    networkidle    timeout=30s

@@ -1,6 +1,7 @@
 *** Settings ***
 Resource    ../../Resources/users.robot
 Resource    ../../Resources/texts_FI.robot
+Resource    ../../Resources/parallel_test_data.robot
 Library     Browser
 ### TODO unify this checks to one single keyword
 
@@ -11,16 +12,16 @@ Check reservation user info
     Wait For Elements State    [data-testid="reservation__reserveePhone"]    visible
 #
     ${confirmed_firstname}    Get Text    [data-testid="reservation__reserveeFirstName"]
-    Should Contain    ${confirmed_firstname}    ${BASIC_USER_MALE_FIRSTNAME}
+    Should Contain    ${confirmed_firstname}    ${CURRENT_USER_FIRST_NAME}
 #
     ${confirmed_lastname}    Get Text    [data-testid="reservation__reserveeLastName"]
-    Should Contain    ${confirmed_lastname}    ${BASIC_USER_MALE_LASTNAME}
+    Should Contain    ${confirmed_lastname}    ${CURRENT_USER_LAST_NAME}
 #
     ${confirmed_email}    Get Text    [data-testid="reservation__reserveeEmail"]
-    Should Contain    ${confirmed_email}    ${BASIC_USER_MALE_EMAIL}
+    Should Contain    ${confirmed_email}    ${CURRENT_USER_EMAIL}
 #
     ${confirmed_phone}    Get Text    [data-testid="reservation__reserveePhone"]
-    Should Contain    ${confirmed_phone}    ${BASIC_USER_MALE_PHONE}
+    Should Contain    ${confirmed_phone}    ${CURRENT_USER_PHONE}
 
 Check free single booking info
     [Documentation]    Validates details for a free single booking.

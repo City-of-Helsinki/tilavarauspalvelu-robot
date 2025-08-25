@@ -2,9 +2,195 @@
 # https://github.com/robocorp/rcc/blob/master/docs/recipes.md#what-is-in-robotyaml
 
 tasks:
+  Clean Output:
+    shell: |
+      [ -d output ] && rm -rf output/* || true
+      [ -d pabot_results ] && rm -rf pabot_results/* || true
+      [ -f log.html ] && rm -f log.html || true
+      [ -f output.xml ] && rm -f output.xml || true
+      [ -f report.html ] && rm -f report.html || true
+      [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
   # Task names here are used when executing the bots, so renaming these is recommended.
   Run all tasks:
-    shell: python -m robot --report NONE --outputdir output --logtitle "Task log" tasks.robot
+    shell: |
+      [ -d output ] && rm -rf output/* || true
+      [ -d pabot_results ] && rm -rf pabot_results/* || true
+      [ -f log.html ] && rm -f log.html || true
+      [ -f output.xml ] && rm -f output.xml || true
+      [ -f report.html ] && rm -f report.html || true
+      [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+      python -m robot --report NONE --outputdir output --logtitle "Task log" tasks.robot
+
+  # Parallel testing tasks with optimal process counts
+  Test Desktop Parallel:
+    shell: |
+      bash -c '
+        [ -d output ] && rm -rf output/* || true
+        [ -d pabot_results ] && rm -rf pabot_results/* || true
+        [ -f log.html ] && rm -f log.html || true
+        [ -f output.xml ] && rm -f output.xml || true
+        [ -f report.html ] && rm -f report.html || true
+        [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+        pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_desktop_FI.robot
+      '
+
+  Test Admin Parallel:
+    shell: |
+      bash -c '
+        [ -d output ] && rm -rf output/* || true
+        [ -d pabot_results ] && rm -rf pabot_results/* || true
+        [ -f log.html ] && rm -f log.html || true
+        [ -f output.xml ] && rm -f output.xml || true
+        [ -f report.html ] && rm -f report.html || true
+        [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+        pabot --testlevelsplit --processes 2 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_admin_desktop_FI.robot
+      '
+
+  Test Combined Parallel:
+    shell: |
+      bash -c '
+        [ -d output ] && rm -rf output/* || true
+        [ -d pabot_results ] && rm -rf pabot_results/* || true
+        [ -f log.html ] && rm -f log.html || true
+        [ -f output.xml ] && rm -f output.xml || true
+        [ -f report.html ] && rm -f report.html || true
+        [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+        pabot --testlevelsplit --processes 3 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_users_with_admin_desktop.robot
+      '
+
+  Test Mobile Android Parallel:
+    shell: |
+      bash -c '
+        [ -d output ] && rm -rf output/* || true
+        [ -d pabot_results ] && rm -rf pabot_results/* || true
+        [ -f log.html ] && rm -f log.html || true
+        [ -f output.xml ] && rm -f output.xml || true
+        [ -f report.html ] && rm -f report.html || true
+        [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+        pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_mobile_android_FI.robot
+      '
+
+  Test Mobile iPhone Parallel:
+    shell: |
+      bash -c '
+        [ -d output ] && rm -rf output/* || true
+        [ -d pabot_results ] && rm -rf pabot_results/* || true
+        [ -f log.html ] && rm -f log.html || true
+        [ -f output.xml ] && rm -f output.xml || true
+        [ -f report.html ] && rm -f report.html || true
+        [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+        pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_mobile_iphone_FI.robot
+      '
+
+  Test All Suites Parallel:
+    shell: |
+      bash -c '
+        [ -d output ] && rm -rf output/* || true
+        [ -d pabot_results ] && rm -rf pabot_results/* || true
+        [ -f log.html ] && rm -f log.html || true
+        [ -f output.xml ] && rm -f output.xml || true
+        [ -f report.html ] && rm -f report.html || true
+        [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+        pabot --processes 3 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_desktop_FI.robot TestSuites/Tests_admin_desktop_FI.robot TestSuites/Tests_users_with_admin_desktop.robot TestSuites/Tests_user_mobile_android_FI.robot TestSuites/Tests_user_mobile_iphone_FI.robot
+      '
+
+  # Individual suite execution (sequential, using single user mode)
+  Test Desktop Single:
+    shell: |
+      [ -d output ] && rm -rf output/* || true
+      [ -d pabot_results ] && rm -rf pabot_results/* || true
+      [ -f log.html ] && rm -f log.html || true
+      [ -f output.xml ] && rm -f output.xml || true
+      [ -f report.html ] && rm -f report.html || true
+      [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+      robot --variable FORCE_SINGLE_USER:True TestSuites/Tests_user_desktop_FI.robot
+
+  Test Admin Single:
+    shell: |
+      [ -d output ] && rm -rf output/* || true
+      [ -d pabot_results ] && rm -rf pabot_results/* || true
+      [ -f log.html ] && rm -f log.html || true
+      [ -f output.xml ] && rm -f output.xml || true
+      [ -f report.html ] && rm -f report.html || true
+      [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+      robot --variable FORCE_SINGLE_USER:True TestSuites/Tests_admin_desktop_FI.robot
+
+  Test Combined Single:
+    shell: |
+      [ -d output ] && rm -rf output/* || true
+      [ -d pabot_results ] && rm -rf pabot_results/* || true
+      [ -f log.html ] && rm -f log.html || true
+      [ -f output.xml ] && rm -f output.xml || true
+      [ -f report.html ] && rm -f report.html || true
+      [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+      robot --variable FORCE_SINGLE_USER:True TestSuites/Tests_users_with_admin_desktop.robot
+
+  Test Notifications Single:
+    shell: |
+      bash -c '
+        [ -d output ] && rm -rf output/* || true
+        [ -d pabot_results ] && rm -rf pabot_results/* || true
+        [ -f log.html ] && rm -f log.html || true
+        [ -f output.xml ] && rm -f output.xml || true
+        [ -f report.html ] && rm -f report.html || true
+        [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+        robot --variable FORCE_SINGLE_USER:True TestSuites/Tests_admin_notifications_serial.robot
+      '
+
+  Test Admin Notifications Serial:
+    shell: |
+      [ -d output ] && rm -rf output/* || true
+      [ -d pabot_results ] && rm -rf pabot_results/* || true
+      [ -f log.html ] && rm -f log.html || true
+      [ -f output.xml ] && rm -f output.xml || true
+      [ -f report.html ] && rm -f report.html || true
+      [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+      robot --variable FORCE_SINGLE_USER:True TestSuites/Tests_admin_notifications_serial.robot
+
+  Test Admin Notifications Parallel:
+    shell: |
+      bash -c '
+        [ -d output ] && rm -rf output/* || true
+        [ -d pabot_results ] && rm -rf pabot_results/* || true
+        [ -f log.html ] && rm -f log.html || true
+        [ -f output.xml ] && rm -f output.xml || true
+        [ -f report.html ] && rm -f report.html || true
+        [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+        pabot --processes 2 --pabotlib --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_admin_notifications_serial.robot
+      '
+
+  Test Mobile Android Single:
+    shell: |
+      [ -d output ] && rm -rf output/* || true
+      [ -d pabot_results ] && rm -rf pabot_results/* || true
+      [ -f log.html ] && rm -f log.html || true
+      [ -f output.xml ] && rm -f output.xml || true
+      [ -f report.html ] && rm -f report.html || true
+      [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+      robot --variable FORCE_SINGLE_USER:True TestSuites/Tests_user_mobile_android_FI.robot
+
+  Test Mobile iPhone Single:
+    shell: |
+      [ -d output ] && rm -rf output/* || true
+      [ -d pabot_results ] && rm -rf pabot_results/* || true
+      [ -f log.html ] && rm -f log.html || true
+      [ -f output.xml ] && rm -f output.xml || true
+      [ -f report.html ] && rm -f report.html || true
+      [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+      robot --variable FORCE_SINGLE_USER:True TestSuites/Tests_user_mobile_iphone_FI.robot
+
+  # Alternative: Test-level parallel execution (same as Test Desktop Parallel)
+  Test Desktop All Tests Parallel:
+    shell: |
+      bash -c '
+        [ -d output ] && rm -rf output/* || true
+        [ -d pabot_results ] && rm -rf pabot_results/* || true
+        [ -f log.html ] && rm -f log.html || true
+        [ -f output.xml ] && rm -f output.xml || true
+        [ -f report.html ] && rm -f report.html || true
+        [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
+        pabot --testlevelsplit --processes 2 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_desktop_FI.robot
+      '
 
 condaConfigFile: conda.yaml
 
@@ -16,10 +202,18 @@ environmentConfigs:
 
 artifactsDir: output
 
+# Only for macOS/Linux. For Windows, adjust PATH accordingly.
 PATH:
+  - /bin
+  - /usr/bin
   - .
 PYTHONPATH:
   - .
+
+# For Windows (uncomment if running on Windows)
+# PATH:
+#   - C:/Windows/System32
+#   - .
 
 ignoreFiles:
   - .gitignore

@@ -6,7 +6,8 @@ Resource    ../../Resources/custom_keywords.robot
 *** Keywords ***
 Check my bookings h1
     [Arguments]    ${bookingstatus}
-    Wait For Load State    load    timeout=5s
+    # Wait for load
+    Sleep    2s
     custom_keywords.Check elements text    h1    ${bookingstatus}
 
 ###
@@ -16,6 +17,8 @@ Check my bookings h1
 User cancel booking
     Wait For Elements State    data-testid=reservation-detail__button--cancel    visible
     Click    data-testid=reservation-detail__button--cancel
+    Sleep    1s
+    Wait For Load State    load    timeout=15s
 
 Click reason for cancellation
     # Wait For Elements State    data-testid=reservation-detail__button--cancel    visible

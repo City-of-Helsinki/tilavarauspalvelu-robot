@@ -1,0 +1,462 @@
+# =============================================================================
+# PabotLib Value Sets for Parallel Test Data Distribution
+# =============================================================================
+# Each section is a value set
+# 
+# PARALLEL MODE: Each test gets its own dedicated user to prevent conflicts
+# SINGLE MODE: All tests use desktop-test-data-set-0 (Ande AutomaatioTesteri)
+#
+# =============================================================================
+
+# =============================================================================
+# DESKTOP USER TESTS - Tests_user_desktop_FI.robot (12 tests)
+# =============================================================================
+
+[desktop-test-data-set-0]
+# TEST: "User logs in and out with suomi_fi"
+# DESCRIPTION: Basic login/logout smoke test
+tags=desktop-test-data-set-0,desktop-test-data,user-data,desktop,smoke-test
+CURRENT_USER_EMAIL=qfaksi+ande@gmail.com
+CURRENT_USER_HETU=180674-907T
+CURRENT_USER_PHONE=+35840123654
+CURRENT_USER_FIRST_NAME=Ande
+CURRENT_USER_LAST_NAME=AutomaatioTesteri
+CURRENT_USER_FULLNAME=Ande AutomaatioTesteri
+CURRENT_PASSWORD=AutomaatioTesteri
+
+[desktop-test-data-set-1]
+# TEST: "User can make free single booking and modifies it"
+# DESCRIPTION: Free booking creation, modification, and cancellation
+tags=desktop-test-data-set-1,desktop-test-data,user-data,desktop,booking-test
+CURRENT_USER_EMAIL=qfaksi+mikael@gmail.com
+CURRENT_USER_HETU=150382-901W
+CURRENT_USER_PHONE=+35840123655
+CURRENT_USER_FIRST_NAME=Mikael
+CURRENT_USER_LAST_NAME=Virtanen
+CURRENT_USER_FULLNAME=Mikael Virtanen
+CURRENT_PASSWORD=Virtanen
+
+[desktop-test-data-set-2]
+# TEST: "User can create non-cancelable booking"
+# DESCRIPTION: Non-cancelable booking test
+tags=desktop-test-data-set-2,desktop-test-data,user-data,desktop,non-cancelable
+CURRENT_USER_EMAIL=qfaksi+jukka@gmail.com
+CURRENT_USER_HETU=220990-903Y
+CURRENT_USER_PHONE=+35840123656
+CURRENT_USER_FIRST_NAME=Jukka
+CURRENT_USER_LAST_NAME=Korhonen
+CURRENT_USER_FULLNAME=Jukka Korhonen
+CURRENT_PASSWORD=Korhonen
+
+[desktop-test-data-set-3]
+# TEST: "User can make paid single booking with interrupted checkout"
+# DESCRIPTION: Paid booking with payment interruption
+tags=desktop-test-data-set-3,desktop-test-data,user-data,desktop,paid-interrupted
+CURRENT_USER_EMAIL=qfaksi+petri@gmail.com
+CURRENT_USER_HETU=070785-905A
+CURRENT_USER_PHONE=+35840123657
+CURRENT_USER_FIRST_NAME=Petri
+CURRENT_USER_LAST_NAME=Makinen
+CURRENT_USER_FULLNAME=Petri Makinen
+CURRENT_PASSWORD=Makinen
+
+[desktop-test-data-set-4]
+# TEST: "User can make paid single booking"
+# DESCRIPTION: Standard paid booking with email verification
+tags=desktop-test-data-set-4,desktop-test-data,user-data,desktop,paid-booking
+CURRENT_USER_EMAIL=qfaksi+antti@gmail.com
+CURRENT_USER_HETU=111276-907U
+CURRENT_USER_PHONE=+35840123658
+CURRENT_USER_FIRST_NAME=Antti
+CURRENT_USER_LAST_NAME=Nieminen
+CURRENT_USER_FULLNAME=Antti Nieminen
+CURRENT_PASSWORD=Nieminen
+
+[desktop-test-data-set-5]
+# TEST: "User can make subvented single booking that requires handling"
+# DESCRIPTION: Subvented booking requiring manual handling
+tags=desktop-test-data-set-5,desktop-test-data,user-data,desktop,subvented
+CURRENT_USER_EMAIL=qfaksi+matti@gmail.com
+CURRENT_USER_HETU=040689-907H
+CURRENT_USER_PHONE=+35840123659
+CURRENT_USER_FIRST_NAME=Matti
+CURRENT_USER_LAST_NAME=Mäkelä
+CURRENT_USER_FULLNAME=Matti Mäkelä
+CURRENT_PASSWORD=Mäkelä
+
+[desktop-test-data-set-6]
+# TEST: "User can make reservation with access code"
+# DESCRIPTION: Booking with access code functionality
+tags=desktop-test-data-set-6,desktop-test-data,user-data,desktop,access-code
+CURRENT_USER_EMAIL=qfaksi+anna@gmail.com
+CURRENT_USER_HETU=050576-932R
+CURRENT_USER_PHONE=+35840123660
+CURRENT_USER_FIRST_NAME=Anna
+CURRENT_USER_LAST_NAME=Korhonen
+CURRENT_USER_FULLNAME=Anna Korhonen
+CURRENT_PASSWORD=Korhonen
+
+[desktop-test-data-set-7]
+# TEST: "User checks that reserved time is not available anymore"
+# DESCRIPTION: Time availability verification test
+tags=desktop-test-data-set-7,desktop-test-data,user-data,desktop,availability
+CURRENT_USER_EMAIL=qfaksi+mari@gmail.com
+CURRENT_USER_HETU=240189-938D
+CURRENT_USER_PHONE=+35840123661
+CURRENT_USER_FIRST_NAME=Mari
+CURRENT_USER_LAST_NAME=Leppänen
+CURRENT_USER_FULLNAME=Mari Leppänen
+CURRENT_PASSWORD=Leppänen
+
+[desktop-test-data-set-8]
+# TEST: "User checks that there are not current dates in the past bookings"
+# DESCRIPTION: Past bookings validation
+tags=desktop-test-data-set-8,desktop-test-data,user-data,desktop,past-bookings
+CURRENT_USER_EMAIL=qfaksi+paivi@gmail.com
+CURRENT_USER_HETU=160691-936L
+CURRENT_USER_PHONE=+35840123662
+CURRENT_USER_FIRST_NAME=Päivi
+CURRENT_USER_LAST_NAME=Mustonen
+CURRENT_USER_FULLNAME=Päivi Mustonen
+CURRENT_PASSWORD=Mustonen
+
+[desktop-test-data-set-9]
+# TEST: "User can make free single booking and check info from downloaded calendar file"
+# DESCRIPTION: Calendar file download and verification
+tags=desktop-test-data-set-9,desktop-test-data,user-data,desktop,calendar-download
+CURRENT_USER_EMAIL=qfaksi+kaisa@gmail.com
+CURRENT_USER_HETU=121287-938M
+CURRENT_USER_PHONE=+35840123663
+CURRENT_USER_FIRST_NAME=Kaisa
+CURRENT_USER_LAST_NAME=Rantanen
+CURRENT_USER_FULLNAME=Kaisa Rantanen
+CURRENT_PASSWORD=Rantanen
+
+[desktop-test-data-set-10]
+# TEST: "Check emails from reservations"
+# DESCRIPTION: Email verification for reservation workflows
+tags=desktop-test-data-set-10,desktop-test-data,user-data,desktop,email-verification
+CURRENT_USER_EMAIL=qfaksi+ulla@gmail.com
+CURRENT_USER_HETU=030888-932N
+CURRENT_USER_PHONE=+35840123664
+CURRENT_USER_FIRST_NAME=Ulla
+CURRENT_USER_LAST_NAME=Hakala
+CURRENT_USER_FULLNAME=Ulla Hakala
+CURRENT_PASSWORD=Hakala
+
+[desktop-test-data-set-11]
+# TEST: "User makes recurring reservation"
+# DESCRIPTION: Recurring reservation application
+tags=desktop-test-data-set-11,desktop-test-data,user-data,desktop,recurring
+CURRENT_USER_EMAIL=qfaksi+riitta@gmail.com
+CURRENT_USER_HETU=300474-932P
+CURRENT_USER_PHONE=+35840123665
+CURRENT_USER_FIRST_NAME=Riitta
+CURRENT_USER_LAST_NAME=Lindström
+CURRENT_USER_FULLNAME=Riitta Lindström
+CURRENT_PASSWORD=Lindström
+
+# =============================================================================
+# ADMIN TESTS - Tests_admin_desktop_FI.robot (2 tests)
+# =============================================================================
+
+[admin-test-data-set-0]
+# TEST: "Admin logs in with suomi_fi"
+# DESCRIPTION: Admin login verification
+tags=admin-test-data-set-0,admin-test-data,admin-data,admin,login
+ADMIN_CURRENT_USER_EMAIL=qfaksi+tirehtoori@gmail.com
+ADMIN_CURRENT_USER_HETU=120869-9332
+ADMIN_CURRENT_USER_FIRST_NAME=Tirehtoori
+ADMIN_CURRENT_USER_LAST_NAME=Tötterstrom
+ADMIN_CURRENT_USER_FULLNAME=Tirehtoori Tötterstrom
+ADMIN_CURRENT_USER_PASSWORD=Tötterstrom
+CURRENT_PASSWORD=Tötterstrom
+
+[admin-test-data-set-1]
+# TEST: "Admin verifies all reservation types and verifies no unavailable reservations exist"
+# DESCRIPTION: Admin reservation verification
+tags=admin-test-data-set-1,admin-test-data,admin-data,admin,verification
+ADMIN_CURRENT_USER_EMAIL=qfaksi+pekka@gmail.com
+ADMIN_CURRENT_USER_HETU=220685-934K
+ADMIN_CURRENT_USER_FIRST_NAME=Pekka
+ADMIN_CURRENT_USER_LAST_NAME=Virtanen
+ADMIN_CURRENT_USER_FULLNAME=Pekka Virtanen
+ADMIN_CURRENT_USER_PASSWORD=Virtanen
+CURRENT_PASSWORD=Virtanen
+
+# =============================================================================
+# COMBINED ADMIN+USER TESTS - Tests_users_with_admin_desktop.robot (4+ tests)
+# =============================================================================
+
+[combined-test-data-set-0]
+# TEST: "User creates and Admin accepts single booking that requires handling"
+# DESCRIPTION: User-admin booking acceptance workflow
+tags=combined-test-data-set-0,combined-test-data,user-data,combined,accept-booking
+CURRENT_USER_EMAIL=qfaksi+hannu@gmail.com
+CURRENT_USER_HETU=101281-907D
+CURRENT_USER_PHONE=+35840123667
+CURRENT_USER_FIRST_NAME=Hannu
+CURRENT_USER_LAST_NAME=Rantala
+CURRENT_USER_FULLNAME=Hannu Rantala
+CURRENT_PASSWORD=Rantala
+# Admin assignment for this test
+ADMIN_CURRENT_USER_EMAIL=qfaksi+seppo@gmail.com
+ADMIN_CURRENT_USER_HETU=280677-905Y
+ADMIN_CURRENT_USER_FIRST_NAME=Seppo
+ADMIN_CURRENT_USER_LAST_NAME=Korhonen
+ADMIN_CURRENT_USER_FULLNAME=Seppo Korhonen
+ADMIN_CURRENT_USER_PASSWORD=Korhonen
+
+[combined-test-data-set-1]
+# TEST: "User creates and Admin declines single booking that requires handling"
+# DESCRIPTION: User-admin booking decline workflow
+tags=combined-test-data-set-1,combined-test-data,user-data,combined,decline-booking
+CURRENT_USER_EMAIL=qfaksi+risto@gmail.com
+CURRENT_USER_HETU=051093-905L
+CURRENT_USER_PHONE=+35840123668
+CURRENT_USER_FIRST_NAME=Risto
+CURRENT_USER_LAST_NAME=Hakkarainen
+CURRENT_USER_FULLNAME=Risto Hakkarainen
+CURRENT_PASSWORD=Hakkarainen
+# Admin assignment for this test
+ADMIN_CURRENT_USER_EMAIL=qfaksi+erkki@gmail.com
+ADMIN_CURRENT_USER_HETU=141082-907K
+ADMIN_CURRENT_USER_FIRST_NAME=Erkki
+ADMIN_CURRENT_USER_LAST_NAME=Nieminen
+ADMIN_CURRENT_USER_FULLNAME=Erkki Nieminen
+ADMIN_CURRENT_USER_PASSWORD=Nieminen
+
+[combined-test-data-set-2]
+# TESTS: All notification tests (normal, warning, error, archive)
+# DESCRIPTION: Admin notification creation and management
+tags=combined-test-data-set-2,combined-test-data,user-data,combined,notifications
+CURRENT_USER_EMAIL=qfaksi+ari@gmail.com
+CURRENT_USER_HETU=190684-907F
+CURRENT_USER_PHONE=+35840123669
+CURRENT_USER_FIRST_NAME=Ari
+CURRENT_USER_LAST_NAME=Laine
+CURRENT_USER_FULLNAME=Ari Laine
+CURRENT_PASSWORD=Laine
+# Admin assignment for this test
+ADMIN_CURRENT_USER_EMAIL=qfaksi+kari@gmail.com
+ADMIN_CURRENT_USER_HETU=150875-9345
+ADMIN_CURRENT_USER_FIRST_NAME=Kari
+ADMIN_CURRENT_USER_LAST_NAME=Kekkonen
+ADMIN_CURRENT_USER_FULLNAME=Kari Kekkonen
+ADMIN_CURRENT_USER_PASSWORD=Kekkonen
+
+[combined-test-data-set-3]
+# TEST: "Admin creates warning notifications for both sides"
+# DESCRIPTION: Admin warning notification creation and management
+tags=combined-test-data-set-3,combined-test-data,user-data,combined,warning-notifications
+ADMIN_CURRENT_USER_EMAIL=qfaksi+esa@gmail.com
+ADMIN_CURRENT_USER_HETU=050683-935N
+ADMIN_CURRENT_USER_FIRST_NAME=Esa
+ADMIN_CURRENT_USER_LAST_NAME=Mattila
+ADMIN_CURRENT_USER_FULLNAME=Esa Mattila
+ADMIN_CURRENT_USER_PASSWORD=Mattila
+
+[combined-test-data-set-4]
+# TEST: "Admin creates error notifications for both sides"
+# DESCRIPTION: Admin error notification creation and management
+tags=combined-test-data-set-4,combined-test-data,user-data,combined,error-notifications
+ADMIN_CURRENT_USER_EMAIL=qfaksi+pertti@gmail.com
+ADMIN_CURRENT_USER_HETU=120885-934A
+ADMIN_CURRENT_USER_FIRST_NAME=Pertti
+ADMIN_CURRENT_USER_LAST_NAME=Kallio
+ADMIN_CURRENT_USER_FULLNAME=Pertti Kallio
+ADMIN_CURRENT_USER_PASSWORD=Kallio
+
+[combined-test-data-set-5]
+# TEST: "Admin creates notification and archive and deletes notification for both sides"
+# DESCRIPTION: Admin notification archive and delete workflow
+tags=combined-test-data-set-5,combined-test-data,user-data,combined,archive-notifications
+ADMIN_CURRENT_USER_EMAIL=qfaksi+antero@gmail.com
+ADMIN_CURRENT_USER_HETU=221175-907B
+ADMIN_CURRENT_USER_FIRST_NAME=Antero
+ADMIN_CURRENT_USER_LAST_NAME=Salonen
+ADMIN_CURRENT_USER_FULLNAME=Antero Salonen
+ADMIN_CURRENT_USER_PASSWORD=Salonen
+
+# =============================================================================
+# MOBILE ANDROID TESTS - Tests_user_mobile_android_FI.robot (6 tests)
+# =============================================================================
+
+[mobile-android-data-set-0]
+# TEST: "User logs in and out with suomi_fi mobile"
+# DESCRIPTION: Mobile Android login test
+tags=mobile-android-data-set-0,mobile-android-data,mobile-data,android,login
+CURRENT_USER_EMAIL=qfaksi+anna@gmail.com
+CURRENT_USER_HETU=050576-932R
+CURRENT_USER_PHONE=+35840123673
+CURRENT_USER_FIRST_NAME=Anna
+CURRENT_USER_LAST_NAME=Korhonen
+CURRENT_USER_FULLNAME=Anna Korhonen
+CURRENT_PASSWORD=Korhonen
+
+[mobile-android-data-set-1]
+# TEST: "User can make a free single booking and modifies it mobile"
+# DESCRIPTION: Mobile Android free booking
+tags=mobile-android-data-set-1,mobile-android-data,mobile-data,android,free-booking
+CURRENT_USER_EMAIL=qfaksi+mari@gmail.com
+CURRENT_USER_HETU=240189-938D
+CURRENT_USER_PHONE=+35840123674
+CURRENT_USER_FIRST_NAME=Mari
+CURRENT_USER_LAST_NAME=Leppänen
+CURRENT_USER_FULLNAME=Mari Leppänen
+CURRENT_PASSWORD=Leppänen
+
+[mobile-android-data-set-2]
+# TEST: "User can make paid single booking mobile"
+# DESCRIPTION: Mobile Android paid booking
+tags=mobile-android-data-set-2,mobile-android-data,mobile-data,android,paid-booking
+CURRENT_USER_EMAIL=qfaksi+paivi@gmail.com
+CURRENT_USER_HETU=160691-936L
+CURRENT_USER_PHONE=+35840123675
+CURRENT_USER_FIRST_NAME=Päivi
+CURRENT_USER_LAST_NAME=Mustonen
+CURRENT_USER_FULLNAME=Päivi Mustonen
+CURRENT_PASSWORD=Mustonen
+
+[mobile-android-data-set-3]
+# TEST: "User can make paid single booking with interrupted checkout mobile"
+# DESCRIPTION: Mobile Android interrupted checkout
+tags=mobile-android-data-set-3,mobile-android-data,mobile-data,android,interrupted-checkout
+CURRENT_USER_EMAIL=qfaksi+kaisa@gmail.com
+CURRENT_USER_HETU=121287-938M
+CURRENT_USER_PHONE=+35840123676
+CURRENT_USER_FIRST_NAME=Kaisa
+CURRENT_USER_LAST_NAME=Rantanen
+CURRENT_USER_FULLNAME=Kaisa Rantanen
+CURRENT_PASSWORD=Rantanen
+
+[mobile-android-data-set-4]
+# TEST: "User can make single booking that requires handling mobile"
+# DESCRIPTION: Mobile Android booking requiring handling
+tags=mobile-android-data-set-4,mobile-android-data,mobile-data,android,requires-handling
+CURRENT_USER_EMAIL=qfaksi+ulla@gmail.com
+CURRENT_USER_HETU=030888-932N
+CURRENT_USER_PHONE=+35840123677
+CURRENT_USER_FIRST_NAME=Ulla
+CURRENT_USER_LAST_NAME=Hakala
+CURRENT_USER_FULLNAME=Ulla Hakala
+CURRENT_PASSWORD=Hakala
+
+[mobile-android-data-set-5]
+# TEST: "User can make subvented single booking that requires handling mobile"
+# DESCRIPTION: Mobile Android subvented booking
+tags=mobile-android-data-set-5,mobile-android-data,mobile-data,android,subvented
+CURRENT_USER_EMAIL=qfaksi+riitta@gmail.com
+CURRENT_USER_HETU=300474-932P
+CURRENT_USER_PHONE=+35840123678
+CURRENT_USER_FIRST_NAME=Riitta
+CURRENT_USER_LAST_NAME=Lindström
+CURRENT_USER_FULLNAME=Riitta Lindström
+CURRENT_PASSWORD=Lindström
+
+# =============================================================================
+# MOBILE iPHONE TESTS - Tests_user_mobile_iphone_FI.robot (6 tests)
+# =============================================================================
+
+[mobile-iphone-data-set-0]
+# TEST: "User logs in and out with suomi_fi"
+# DESCRIPTION: Mobile iPhone login test
+tags=mobile-iphone-data-set-0,mobile-iphone-data,mobile-data,iphone,login
+CURRENT_USER_EMAIL=qfaksi+tuula@gmail.com
+CURRENT_USER_HETU=180685-934T
+CURRENT_USER_PHONE=+35840123679
+CURRENT_USER_FIRST_NAME=Tuula
+CURRENT_USER_LAST_NAME=Aaltonen
+CURRENT_USER_FULLNAME=Tuula Aaltonen
+CURRENT_PASSWORD=Aaltonen
+
+[mobile-iphone-data-set-1]
+# TEST: "User can make free single booking and modifies it"
+# DESCRIPTION: Mobile iPhone free booking
+tags=mobile-iphone-data-set-1,mobile-iphone-data,mobile-data,iphone,free-booking
+CURRENT_USER_EMAIL=qfaksi+merja@gmail.com
+CURRENT_USER_HETU=250792-936H
+CURRENT_USER_PHONE=+35840123680
+CURRENT_USER_FIRST_NAME=Merja
+CURRENT_USER_LAST_NAME=Kangas
+CURRENT_USER_FULLNAME=Merja Kangas
+CURRENT_PASSWORD=Kangas
+
+[mobile-iphone-data-set-2]
+# TEST: "User can make paid single booking"
+# DESCRIPTION: Mobile iPhone paid booking
+tags=mobile-iphone-data-set-2,mobile-iphone-data,mobile-data,iphone,paid-booking
+CURRENT_USER_EMAIL=qfaksi+helena@gmail.com
+CURRENT_USER_HETU=081184-938K
+CURRENT_USER_PHONE=+35840123681
+CURRENT_USER_FIRST_NAME=Helena
+CURRENT_USER_LAST_NAME=Hiltunen
+CURRENT_USER_FULLNAME=Helena Hiltunen
+CURRENT_PASSWORD=Hiltunen
+
+[mobile-iphone-data-set-3]
+# TEST: "User can make paid single booking with interrupted checkout"
+# DESCRIPTION: Mobile iPhone interrupted checkout
+tags=mobile-iphone-data-set-3,mobile-iphone-data,mobile-data,iphone,interrupted-checkout
+CURRENT_USER_EMAIL=qfaksi+seija@gmail.com
+CURRENT_USER_HETU=141279-932S
+CURRENT_USER_PHONE=+35840123682
+CURRENT_USER_FIRST_NAME=Seija
+CURRENT_USER_LAST_NAME=Mäenpää
+CURRENT_USER_FULLNAME=Seija Mäenpää
+CURRENT_PASSWORD=Mäenpää
+
+[mobile-iphone-data-set-4]
+# TEST: "User can make booking that requires handling"
+# DESCRIPTION: Mobile iPhone booking requiring handling
+tags=mobile-iphone-data-set-4,mobile-iphone-data,mobile-data,iphone,requires-handling
+CURRENT_USER_EMAIL=qfaksi+maija@gmail.com
+CURRENT_USER_HETU=230986-934L
+CURRENT_USER_PHONE=+35840123683
+CURRENT_USER_FIRST_NAME=Maija
+CURRENT_USER_LAST_NAME=Peltonen
+CURRENT_USER_FULLNAME=Maija Peltonen
+CURRENT_PASSWORD=Peltonen
+
+[mobile-iphone-data-set-5]
+# TEST: "User can make subvented single booking that requires handling"
+# DESCRIPTION: Mobile iPhone subvented booking
+tags=mobile-iphone-data-set-5,mobile-iphone-data,mobile-data,iphone,subvented
+CURRENT_USER_EMAIL=qfaksi+liisa@gmail.com
+CURRENT_USER_HETU=070591-934B
+CURRENT_USER_PHONE=+35840123684
+CURRENT_USER_FIRST_NAME=Liisa
+CURRENT_USER_LAST_NAME=Koivisto
+CURRENT_USER_FULLNAME=Liisa Koivisto
+CURRENT_PASSWORD=Koivisto
+
+# =============================================================================
+# ADDITIONAL TEST DATA SET - New test scenarios
+# =============================================================================
+
+[additional-test-data-set-1]
+# TEST: "User performs comprehensive booking workflow"
+# DESCRIPTION: End-to-end booking process testing
+tags=additional-test-data-set-1,additional-test-data,user-data,comprehensive-booking
+CURRENT_USER_EMAIL=qfaksi+antti@gmail.com
+CURRENT_USER_HETU=180892-936M
+CURRENT_USER_PHONE=+35840123688
+CURRENT_USER_FIRST_NAME=Antti
+CURRENT_USER_LAST_NAME=Koskinen
+CURRENT_USER_FULLNAME=Antti Koskinen
+CURRENT_PASSWORD=Koskinen
+# Admin assignment for this test
+ADMIN_CURRENT_USER_EMAIL=qfaksi+marika@gmail.com
+ADMIN_CURRENT_USER_HETU=140785-932R
+ADMIN_CURRENT_USER_FIRST_NAME=Marika
+ADMIN_CURRENT_USER_LAST_NAME=Salminen
+ADMIN_CURRENT_USER_FULLNAME=Marika Salminen
+ADMIN_CURRENT_USER_PASSWORD=Salminen
+
+# Alternative admin assignment for this test
+ADMIN_CURRENT_USER_EMAIL_ALT=qfaksi+esa@gmail.com
+ADMIN_CURRENT_USER_HETU_ALT=050683-935N
+ADMIN_CURRENT_USER_FIRST_NAME_ALT=Esa
+ADMIN_CURRENT_USER_LAST_NAME_ALT=Mattila
+ADMIN_CURRENT_USER_FULLNAME_ALT=Esa Mattila
+ADMIN_CURRENT_USER_PASSWORD_ALT=Mattila

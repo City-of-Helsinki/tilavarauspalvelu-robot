@@ -3,6 +3,7 @@ Resource    ../../Resources/variables.robot
 Resource    ../../Resources/texts_FI.robot
 Resource    ../../Resources/custom_keywords.robot
 Resource    ../../Resources/data_modification.robot
+Resource    ../../Resources/parallel_test_data.robot
 Resource    ../User/recurring.robot
 Resource    ../User/recurring_applications.robot
 Resource    ../User/recurring_applications_page2.robot
@@ -80,12 +81,16 @@ User uses search to find right unit
     singlebooking.Search units by name    ${nameoftheunit}
 
     # Waiting results to load
-    Sleep    1s
+    Sleep    2s
     Wait For Load State    load    timeout=10s
 
     custom_keywords.Find and click element with text
     ...    [data-testid="list-with-pagination__list--container"] >> [data-testid="card__heading"]
     ...    ${nameoftheunit}
+
+    # Waiting results to load
+    Sleep    2s
+    Wait For Load State    load    timeout=10s
 
 User selects the time with quick reservation
     [Documentation]    here is keyword --> data_modification.Set info card duration time info
@@ -103,15 +108,19 @@ User selects the time with quick reservation
     # This sets ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
     quick_reservation.Select the free slot and submits
 
-    Wait For Load State    load    timeout=15s
+    # Wait for load
+    Sleep    1.5s
+    Wait For Load State    load    timeout=50s
     Log    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
 
     ${formatted_date}    ${formatted_date_minus_t}=    data_modification.Set info card duration time info
     ...    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
     ...    ${quick_reservation_current_date_value}
 
-    Set Suite Variable    ${TIME_OF_QUICK_RESERVATION}    ${formatted_date}
-    Set Suite Variable    ${TIME_OF_QUICK_RESERVATION_MINUS_T}    ${formatted_date_minus_t}
+    Store Test Data Variable    TIME_OF_QUICK_RESERVATION    ${formatted_date}
+    Store Test Data Variable    TIME_OF_QUICK_RESERVATION_MINUS_T    ${formatted_date_minus_t}
+    Set Test Variable    ${TIME_OF_QUICK_RESERVATION}    ${formatted_date}
+    Set Test Variable    ${TIME_OF_QUICK_RESERVATION_MINUS_T}    ${formatted_date_minus_t}
 
     Log    ${TIME_OF_QUICK_RESERVATION}
     Log    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
@@ -140,10 +149,10 @@ User fills the reservation info for always free unit
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
-    reservation_unit_reserver_info.Enter first name    ${BASIC_USER_MALE_FIRSTNAME}
-    reservation_unit_reserver_info.Enter last name    ${BASIC_USER_MALE_LASTNAME}
-    reservation_unit_reserver_info.Enter email    ${BASIC_USER_MALE_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${BASIC_USER_MALE_PHONE}
+    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     #
     reservation_lownav.Click submit button continue
@@ -157,10 +166,10 @@ User fills the reservation info for unit with payment
     reservation_unit_booking_details.Select the number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
     reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${BASIC_USER_MALE_FIRSTNAME}
-    reservation_unit_reserver_info.Enter last name    ${BASIC_USER_MALE_LASTNAME}
-    reservation_unit_reserver_info.Enter email    ${BASIC_USER_MALE_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${BASIC_USER_MALE_PHONE}
+    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
     reservation_unit_reserver_info.Select home city    ${HOME_CITY}
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     #
@@ -180,10 +189,10 @@ User fills subvented booking details as individual
     reservation_unit_booking_details.Click to apply for a free booking
     reservation_unit_booking_details.Type justification for free of charge    ${justification_for_not_paying}
     reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${BASIC_USER_MALE_FIRSTNAME}
-    reservation_unit_reserver_info.Enter last name    ${BASIC_USER_MALE_LASTNAME}
-    reservation_unit_reserver_info.Enter email    ${BASIC_USER_MALE_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${BASIC_USER_MALE_PHONE}
+    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
     reservation_unit_reserver_info.Select home city    ${HOME_CITY}
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     #
@@ -196,10 +205,10 @@ User fills noncancelable booking details as individual
     reservation_unit_booking_details.Select the number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
     reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${BASIC_USER_MALE_FIRSTNAME}
-    reservation_unit_reserver_info.Enter last name    ${BASIC_USER_MALE_LASTNAME}
-    reservation_unit_reserver_info.Enter email    ${BASIC_USER_MALE_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${BASIC_USER_MALE_PHONE}
+    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     #
     reservation_lownav.Click submit button continue
@@ -213,10 +222,10 @@ User fills info for unit that is always handled as individual
     reservation_unit_booking_details.Select the number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
     reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${BASIC_USER_MALE_FIRSTNAME}
-    reservation_unit_reserver_info.Enter last name    ${BASIC_USER_MALE_LASTNAME}
-    reservation_unit_reserver_info.Enter email    ${BASIC_USER_MALE_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${BASIC_USER_MALE_PHONE}
+    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     #
     reservation_lownav.Click submit button continue
@@ -231,10 +240,10 @@ User fills booking details as individual for reservation with access code
     reservation_unit_booking_details.Click and select AgeGroup Button    ${AGEGROUP_OF_PERSONS}
     reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
     reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${BASIC_USER_MALE_FIRSTNAME}
-    reservation_unit_reserver_info.Enter last name    ${BASIC_USER_MALE_LASTNAME}
-    reservation_unit_reserver_info.Enter email    ${BASIC_USER_MALE_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${BASIC_USER_MALE_PHONE}
+    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
     reservation_unit_reserver_info.Select home city    ${HOME_CITY}
     quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
     #
@@ -386,10 +395,10 @@ User modifies booking and verifies the changes
     ...    ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
     ...    ${date_value_from_calendar}
 
-    Set Suite Variable    ${TIME_OF_QUICK_RESERVATION_MODIFIED}    ${formatted_date}
-    Set Suite Variable
-    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T_MODIFIED}
-    ...    ${formatted_date_minus_t}
+    Store Test Data Variable    TIME_OF_QUICK_RESERVATION_MODIFIED    ${formatted_date}
+    Store Test Data Variable    TIME_OF_QUICK_RESERVATION_MINUS_T_MODIFIED    ${formatted_date_minus_t}
+    Set Test Variable    ${TIME_OF_QUICK_RESERVATION_MODIFIED}    ${formatted_date}
+    Set Test Variable    ${TIME_OF_QUICK_RESERVATION_MINUS_T_MODIFIED}    ${formatted_date_minus_t}
 
     # Log    ${returned_formatted_values}
     Log    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
@@ -461,10 +470,10 @@ User checks the paid reservation info is right in reservations
     quick_reservation.Check the price of quick reservation    ${booking_price}
     mybookings.Check reservation status    ${booking_status}
     mybookings.Check reservations payment status    ${payment_status}
-    mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
-    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
-    mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
+    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
+    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     mybookings.Check reservation purpose    ${PURPOSE_OF_THE_BOOKING}
@@ -481,10 +490,10 @@ User checks booking info in reservations with number of participants and descrip
 
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${booking_status}
-    mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
-    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
-    mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
+    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
+    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     mybookings.Check reservation purpose    ${PURPOSE_OF_THE_BOOKING}
@@ -500,10 +509,10 @@ User checks booking info in reservations
 
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${booking_status}
-    mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
-    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
-    mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
+    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
+    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
 
 User checks booking info in reservations with access code
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}    ${access_code}
@@ -516,10 +525,10 @@ User checks booking info in reservations with access code
 
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${booking_status}
-    mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
-    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
-    mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
+    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
+    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
     mybookings.Check reservation access code    ${access_code}
 
 User checks booking info in reservations with all reservation info
@@ -533,10 +542,10 @@ User checks booking info in reservations with all reservation info
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${MYBOOKINGS_STATUS_PROCESSED}
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
-    mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
-    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
-    mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
+    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
+    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     mybookings.Check reservation purpose    ${PURPOSE_OF_THE_BOOKING}
@@ -547,10 +556,10 @@ User checks booking info in reservations for noncancelable booking
 
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${MYBOOKINGS_STATUS_CONFIRMED}
-    mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
-    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
-    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
-    mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
+    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
+    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     mybookings.Check cancel button is not found in reservations
@@ -572,10 +581,10 @@ User verifies details of subvented reservation after admin approval without paym
     mybookings.Check reservation age group    ${AGEGROUP_OF_PERSONS}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     #
-    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
-    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
-    mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
-    mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
+    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
+    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
 
 User checks the rejected reservation info is right after admin handling
     Wait For Elements State    [data-testid="reservation__name"]    visible
@@ -592,10 +601,10 @@ User checks the rejected reservation info is right after admin handling
     mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
     #
-    mybookings.Check reservation booker first name    ${BASIC_USER_MALE_FIRSTNAME}
-    mybookings.Check reservation booker last name    ${BASIC_USER_MALE_LASTNAME}
-    mybookings.Check reservation booker phone    ${BASIC_USER_MALE_PHONE}
-    mybookings.Check reservation booker email    ${BASIC_USER_MALE_EMAIL}
+    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
+    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
 
 ###
 # Calendar usage

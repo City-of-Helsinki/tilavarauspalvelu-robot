@@ -2,7 +2,7 @@
 # Byte-compiled files and caches.
 *.pyc
 __pycache__/
-venv/
+.venv/
 
 # === IDEs and Editor Settings ===
 # Most IDE settings moved to .git/info/exclude for personal preferences
@@ -15,6 +15,10 @@ Results/
 temp/
 testrun/
 robocop-report/
+
+# === Pabot run results ===
+.pabotsuitenames
+pabot_results
 
 # Downloads directory in TestSuites/Resources/
 TestSuites/Resources/downloads/
@@ -37,9 +41,19 @@ report.html
 client_secret.json
 Tests_mail.robot
 
+# === WAF Header Verifier ===
+TestSuites/Resources/waf_header_verifier.py
+
+# === HAR Analysis Tools ===
+
+# === Test Data System Documentation ===
+README_TEST_DATA_SYSTEM.md
+PARALLEL_SETUP_GUIDE.md
+
 # === Other Directories ===
 browser
 node_modules
+.browser_profiles/
 
 # === RPA Artifacts ===
 .rpa/

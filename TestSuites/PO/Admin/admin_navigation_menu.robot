@@ -6,7 +6,8 @@ Library     Browser
 Admin navigates to requested reservations
 # TODO add id
     # Click    xpath=(//a[@href='/kasittely/reservations/requested'])[last()]
-    Click    [href="/kasittely/reservations/requested"]
+    # Click    [href="/kasittely/reservations/requested"]
+    Click    [href="/kasittely/reservations"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s
 

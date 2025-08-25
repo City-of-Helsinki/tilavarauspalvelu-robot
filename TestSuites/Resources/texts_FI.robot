@@ -35,7 +35,7 @@ ${USER_LOGOUT_TEXT}                                                 You have bee
 
 ${ADMIN_LANDING_PAGE_H1_TEXT_NOT_LOGGED_IN}                         Tilavarauskäsittely
 ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN}                             Tervetuloa!
-${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN_WITH_USER_INFO}              Tervetuloa, ${ADMIN_ALL_MALE_FIRSTNAME}
+${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN_WITH_USER_INFO}              Tervetuloa, ${ADMIN_CURRENT_USER_FIRST_NAME}
 ${LOGIN_TEXT_ADMIN}                                                 Kirjaudu sisään
 
 ###

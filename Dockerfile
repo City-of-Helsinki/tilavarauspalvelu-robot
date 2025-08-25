@@ -1,7 +1,7 @@
 # =============================================================================
 # Robot Framework Test Environment with Playwright
 # =============================================================================
-# Based on Microsoft's Playwright image (mcr.microsoft.com/playwright:v1.50.0-noble)
+# Based on Microsoft's Playwright image (mcr.microsoft.com/playwright:v1.53.2-noble)
 # This base image includes:
 # - Ubuntu 24.04 Noble Numbat as the OS base
 # - Node.js 22.x with npm and yarn pre-installed
@@ -11,7 +11,8 @@
 # - Multi-architecture support (amd64/arm64)
 # 
 # Note: Base image timezone is America/Los_Angeles (we override to UTC)
-FROM mcr.microsoft.com/playwright:v1.50.0-noble
+# FROM mcr.microsoft.com/playwright:v1.50.0-noble
+FROM mcr.microsoft.com/playwright:v1.53.2-noble
 
 # =============================================================================
 # Environment Configuration
@@ -19,20 +20,12 @@ FROM mcr.microsoft.com/playwright:v1.50.0-noble
 # Configure system locale, timezone, and Robot Framework specific paths
 # Finnish locale is set for using Varaamo
 ENV DEBIAN_FRONTEND=noninteractive \
-    TZ=UTC \
+    TZ=Europe/Helsinki \
     LANG=fi_FI.UTF-8 \
     LC_ALL=fi_FI.UTF-8 \
-    ROBOT_UID=1000 \
-    ROBOT_GID=1000 \
-    ROBOT_DEPENDENCY_DIR=/opt/robotframework/dependencies \
     ROBOT_REPORTS_DIR=/opt/robotframework/reports \
-    ROBOT_TESTS_DIR=/opt/robotframework/tests \
     ROBOT_WORK_DIR=/opt/robotframework/temp \
     CLEANED_EMAILS_PATH=/opt/robotframework/tests/Resources/downloads/cleaned_emails.json \
-    SCREEN_COLOUR_DEPTH=24 \
-    SCREEN_HEIGHT=1080 \
-    SCREEN_WIDTH=1920 \
-    ROBOT_THREADS=1 \
     PATH="/home/pwuser/.venv/bin:$PATH"
 
 # =============================================================================
@@ -62,7 +55,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Create Robot Framework directory structure with secure permissions
 RUN mkdir -p ${ROBOT_REPORTS_DIR} \
     ${ROBOT_WORK_DIR} \
-    ${ROBOT_DEPENDENCY_DIR} \
+    /opt/robotframework/output \
     /opt/robotframework/tests/Resources/downloads \
     && echo "Create placeholder file for email cleaning functionality" \
     && touch /opt/robotframework/tests/Resources/downloads/cleaned_emails.json \
@@ -70,11 +63,12 @@ RUN mkdir -p ${ROBOT_REPORTS_DIR} \
     && chown -R pwuser:pwuser \
         ${ROBOT_REPORTS_DIR} \
         ${ROBOT_WORK_DIR} \
-        ${ROBOT_DEPENDENCY_DIR} \
+        /opt/robotframework/output \
         /opt/robotframework/tests/Resources/downloads \
         /var/log \
     && echo "Apply secure permissions" \
-    && chmod -R 755 ${ROBOT_REPORTS_DIR} ${ROBOT_WORK_DIR} ${ROBOT_DEPENDENCY_DIR} \
+    && chmod -R 755 ${ROBOT_REPORTS_DIR} ${ROBOT_WORK_DIR} \
+    && chmod -R 775 /opt/robotframework/output \
     && chmod -R 775 /opt/robotframework/tests/Resources/downloads \
     && chmod 664 /opt/robotframework/tests/Resources/downloads/cleaned_emails.json \
     && chmod 755 /var/log
@@ -122,7 +116,7 @@ WORKDIR ${ROBOT_WORK_DIR}
 # =============================================================================
 # Add metadata labels
 LABEL description="Robot Framework test environment with Playwright" \
-      base-image="mcr.microsoft.com/playwright:v1.50.0-noble"
+      base-image="mcr.microsoft.com/playwright:v1.53.2-noble"
 
 # =============================================================================
 # Default Execution Command
@@ -132,4 +126,4 @@ LABEL description="Robot Framework test environment with Playwright" \
 # - --outputdir: Directory where test reports will be generated
 # - --nostatusrc: Return exit code 0 regardless of test results
 # - Final argument: Path to directory containing Robot Framework test files
-CMD ["robot", "--outputdir", "/opt/robotframework/reports", "--nostatusrc", "/opt/robotframework/tests"] 
+CMD ["robot", "--outputdir", "/opt/robotframework/reports", "--nostatusrc", "/opt/robotframework/tests"]

@@ -11,28 +11,30 @@ Resource    ../../Resources/variables.robot
 
 *** Keywords ***
 Check emails from reservations
+    [Arguments]    ${reservation_number}
     Log    ${ATTACHMENT_FILENAME}
     ${texts}=    email_tools.Search Reservations
     ...    ${USERMAIL_EMAIL}
-    ...    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
+    ...    ${reservation_number}
     ...    ${ATTACHMENT_FILENAME}
     ...    ${DOWNLOAD_DIR}
 
     ${count}=    Evaluate    len(${texts})
-    Log    Found ${count} emails with reservation number: ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
+    Log    Found ${count} emails with reservation number: ${reservation_number}
 
     # Fail the test if no emails are found
     IF    ${count} == 0
-        Fail    No emails found with reservation number: ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
+        Fail    No emails found with reservation number: ${reservation_number}
     END
 
 Verify reservation confirmation email
+    [Arguments]    ${reservation_number}
     Log    ${EMAIL_FILE_PATH}
     ${result}=    email_tools.Check Email Content
     ...    ${EMAIL_FILE_PATH}
     ...    ${ALWAYS_PAID_UNIT}
     ...    ${CONFIRMATION_TEXT_IN_MAIL}
-    ...    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
+    ...    ${reservation_number}
     ...    ${FORMATTED_STARTTIME_EMAIL}
     ...    ${FORMATTED_ENDTIME_EMAIL}
     IF    not ${result}
@@ -40,12 +42,13 @@ Verify reservation confirmation email
     END
 
 Verify reservation cancellation email
+    [Arguments]    ${reservation_number}
     Log    ${EMAIL_FILE_PATH}
     ${result}=    email_tools.Check Email Content
     ...    ${EMAIL_FILE_PATH}
     ...    ${ALWAYS_PAID_UNIT}
     ...    ${CANCELLATION_TEXT_IN_MAIL}
-    ...    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
+    ...    ${reservation_number}
     ...    ${FORMATTED_STARTTIME_EMAIL}
     ...    ${FORMATTED_ENDTIME_EMAIL}
     IF    not ${result}
@@ -53,12 +56,13 @@ Verify reservation cancellation email
     END
 
 Verify payment receipt email
+    [Arguments]    ${reservation_number}
     Log    ${EMAIL_FILE_PATH}
     ${result}=    email_tools.Check Email Content
     ...    ${EMAIL_FILE_PATH}
     ...    ${ALWAYS_PAID_UNIT}
     ...    ${CONFIRMATION_AND_RECEIPT_TEXT_IN_MAIL}
-    ...    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
+    ...    ${reservation_number}
     ...    ${RESERVATION_TIME_EMAIL_RECEIPT}
     ...    ${EXPECTED_ATTACHMENT_STATUS}
     IF    not ${result}
@@ -66,12 +70,13 @@ Verify payment receipt email
     END
 
 Verify refund email for paid reservation
+    [Arguments]    ${reservation_number}
     Log    ${EMAIL_FILE_PATH}
     ${result}=    email_tools.Check Email Content
     ...    ${EMAIL_FILE_PATH}
     ...    ${ALWAYS_PAID_UNIT}
     ...    ${CANCELLATION_AND_REFUND_TEXT_IN_MAIL}
-    ...    ${NUMBER_OF_RESERVATION_FOR_MAIL_TEST}
+    ...    ${reservation_number}
     ...    ${RESERVATION_TIME_EMAIL_RECEIPT}
     IF    not ${result}
         Fail    Some required terms are missing in email content

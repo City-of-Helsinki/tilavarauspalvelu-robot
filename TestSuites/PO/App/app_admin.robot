@@ -96,7 +96,6 @@ Admin navigates to own units and selects unit
     admin_my_units.Admin selects unit from reservation units dropdown    ${unit_name}
 
 Admin opens make reservation modal and selects unit
-    # TODO: korjaa tämä
     [Arguments]    ${unit_name}
     admin_my_units.Admin clicks make reservation
     admin_my_units.Admin selects unit from reservation units dropdown    ${unit_name}

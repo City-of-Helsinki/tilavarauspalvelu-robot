@@ -1,6 +1,7 @@
 *** Settings ***
 Resource    ../../Resources/users.robot
 Resource    ../../Resources/custom_keywords.robot
+Resource    ../../Resources/parallel_test_data.robot
 Library     Browser
 
 
@@ -30,7 +31,7 @@ Check user details in checkout
     # TODO - add more checks here
     custom_keywords.Find text from elements or fail
     ...    css=.customer-details-information >> td
-    ...    ${BASIC_USER_MALE_EMAIL}
+    ...    ${CURRENT_USER_EMAIL}
 
 Check product list has all the info
     # TODO - add more checks here
@@ -51,7 +52,8 @@ In order summary get booking number from product list
     Log    Reservation number: ${reservation_number}
 
     ${BOOKING_NUM_ONLY}=    Set Variable    ${reservation_number}
-    Set Suite Variable    ${BOOKING_NUM_ONLY}
+    Store Test Data Variable    BOOKING_NUM_ONLY    ${BOOKING_NUM_ONLY}
+    Set Test Variable    ${BOOKING_NUM_ONLY}    ${BOOKING_NUM_ONLY}
     Log    ${BOOKING_NUM_ONLY}
 
 ####
@@ -75,7 +77,7 @@ Check the info in checkout
     Sleep    1s
     Click submit
     Sleep    3s
-    Wait For Load State    networkidle    timeout=30s
+    Wait For Load State    networkidle    timeout=50s
 
 Interrupted checkout
     [Arguments]    ${input_URL}
@@ -84,3 +86,47 @@ Interrupted checkout
     Sleep    1s
     Go To    ${input_URL}
     Wait For Load State    load    timeout=15s
+
+Check the info in checkout with auth validation
+    [Documentation]    Enhanced checkout with authentication validation and timing
+
+    # Basic session validation
+    Sleep    2s
+    Wait For Load State    load    timeout=20s
+
+    # Validate we're not on a 403 page
+    ${current_url}=    Get Url
+    Should Not Contain    ${current_url}    403
+    Should Not Contain    ${current_url}    forbidden
+
+    Allow all cookies if visible
+    Sleep    1s
+    Wait For Load State    load    timeout=15s
+
+    # Double-check session is still valid before proceeding
+    ${cookies}=    Get Cookies
+    ${has_session}=    Set Variable    False
+    FOR    ${cookie}    IN    @{cookies}
+        IF    'sessionid' in '${cookie}[name]' or 'AUTH_SESSION_ID' in '${cookie}[name]'
+            ${has_session}=    Set Variable    True
+            Log    "✅ Active session cookie: ${cookie}[name]"
+            BREAK
+        END
+    END
+
+    Should Be True    ${has_session}
+    ...    msg=No session cookie found before checkout - authentication may have failed
+
+    Select payment method OP
+    Sleep    1s
+    Click submit
+    Sleep    3s
+    Wait For Load State    load    timeout=15s
+    Check user details in checkout
+    Check product list has all the info
+    In order summary get booking number from product list
+    Click accept terms
+    Sleep    1s
+    Click submit
+    Sleep    3s
+    Wait For Load State    networkidle    timeout=50s

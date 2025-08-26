@@ -15,15 +15,20 @@ Chrome, Firefox, Safari via Playwright.
 
 ## 📋 Prerequisites
 
-- **Docker** (recommended for easy setup)
-- **Python 3.9+** (for local development)
+### For All Platforms (Recommended)
+- **Docker** - Containerized execution works on Windows, macOS, and Linux
+
+### For Local Development (macOS/Linux Only)
+- **Python 3.9+**
 - **Node.js 22+** (for Playwright browsers)
 
-> **Note:** This project uses Docker for easy setup and execution. If you prefer to install Robot Framework manually, please refer to the [official Robot Framework installation guide](https://docs.robotframework.org/docs/getting_started/testing#install-robot-framework).
+> **⚠️ Windows Users:** Local development setup is currently only supported on macOS and Linux. Windows users should use the Docker approach for running tests. If you prefer to install Robot Framework manually on supported platforms, please refer to the [official Robot Framework installation guide](https://docs.robotframework.org/docs/getting_started/testing#install-robot-framework).
 
 ## 🔧 Environment Configuration
 
-### Local Development Setup
+### Local Development Setup (macOS/Linux Only)
+
+**Note:** This section applies only to macOS and Linux users. Windows users should use the Docker setup instead.
 
 For local development, create a `.env` file in `TestSuites/Resources/` to store your secrets and configuration:
 
@@ -51,6 +56,8 @@ For GitHub Actions, add the following secrets to your repository:
 
 ### Quick Start with Docker
 
+> **💡 Windows Users:** Docker is the recommended and only supported method for running tests on Windows.
+
 1. **Clone the repository and navigate to the project directory**
 
 2. **Build the Docker image:**
@@ -58,11 +65,11 @@ For GitHub Actions, add the following secrets to your repository:
    docker build --no-cache -t robotframework-tests .
    ```
    
-   **Or use the interactive script which includes a build option:**
+   **macOS/Linux users can also use the interactive script:**
    ```bash
    ./docker-test.sh
    ```
-   The interactive script provides a menu with options for building the Docker image and running tests.
+   The interactive script provides a menu with options for building the Docker image and running tests. (Note: This script is not available on Windows)
 
 ### Docker Configuration
 
@@ -123,23 +130,10 @@ docker run --rm \
 
 #### Running Complete Test Suites
 
-**Windows (CMD):**
-```cmd
-# First source the config
-source docker-config.sh
-
-docker run --rm \
-  -e WAF_BYPASS_SECRET="%WAF_BYPASS_SECRET%" \
-  -v "%cd%\TestSuites:/opt/robotframework/tests" \
-  -v "%cd%\output:/opt/robotframework/reports" \
-  robotframework-tests \
-  robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
-```
-
 **Windows (PowerShell):**
 ```powershell
-# First source the config
-. docker-config.sh
+# Manually set the environment variable (replace with your actual secret)
+$env:WAF_BYPASS_SECRET = "your-secret-here"
 
 docker run --rm `
   -e WAF_BYPASS_SECRET="$env:WAF_BYPASS_SECRET" `
@@ -148,6 +142,20 @@ docker run --rm `
   robotframework-tests `
   robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
 ```
+
+**Windows (CMD):**
+```cmd
+set WAF_BYPASS_SECRET=your-secret-here
+
+docker run --rm ^
+  -e WAF_BYPASS_SECRET="%WAF_BYPASS_SECRET%" ^
+  -v "%cd%\TestSuites:/opt/robotframework/tests" ^
+  -v "%cd%\output:/opt/robotframework/reports" ^
+  robotframework-tests ^
+  robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
+```
+
+> **⚠️ Note for Windows Users:** You must manually set the `WAF_BYPASS_SECRET` environment variable as shown above. The `docker-config.sh` script only works on macOS/Linux.
 
 **Linux/Mac:**
 ```bash
@@ -415,7 +423,9 @@ To manually run tests via GitHub Actions:
 └── PARALLEL_SETUP_GUIDE.md             # Detailed parallel testing setup guide
 ```
 
-## WIP 🛠️ Local Development WIP
+## 🛠️ Local Development (macOS/Linux Only)
+
+> **⚠️ Windows Users:** Local development is not currently supported on Windows. Please use the Docker setup instead.
 
 ### Using RCC (Recommended)
 

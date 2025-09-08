@@ -1,8 +1,9 @@
 # Varaamo Robot Framework Tests
 
-> **⚠️ WIP (Work In Progress):** This README is currently being updated and may contain incomplete or outdated information.
+> **⚠️ WIP (Work In Progress):** This README is currently being updated and may contain incomplete or outdated information.  
+> Email authentication system is being refactored. Setup requirements may change in future versions. 
 
-This repository contains comprehensive automated test suites for the Varaamo booking system using Robot Framework with the Browser Library (Playwright). The project supports both Docker-based execution and local development with parallel testing capabilities.
+This repository contains automated test suites for the Varaamo booking system using Robot Framework with the Browser Library (Playwright). The project supports both Docker-based execution and local development with parallel testing capabilities.
 
 ## 🚀 Features
 
@@ -13,33 +14,339 @@ Chrome, Firefox, Safari via Playwright.
 - **CI/CD Pipeline**: GitHub Actions workflow with configurable test suites
 - **User Isolation**: Deterministic user assignment to prevent conflicts in parallel testing
 
-## 📋 Prerequisites
+## 📦 Version Compatibility
+| Component | Version | Notes |
+|-----------|---------|-------|
+| Robot Framework | 7.3.2 | Required for Browser Library |
+| Playwright | Latest | Auto-installed in Docker |
+| Python | 3.12.3 | Minimum 3.10 required |
+| Docker | 20.10+ | For buildkit features |
 
-### For All Platforms (Recommended)
-- **Docker** - Containerized execution works on Windows, macOS, and Linux
+## 🔐 Required Secrets
 
-### For Local Development (macOS/Linux Only)
-- **Python 3.9+**
-- **Node.js 22+** (for Playwright browsers)
+Before running tests, you need to acquire these secrets:
 
-> **⚠️ Windows Users:** Local development setup is currently only supported on macOS and Linux. Windows users should use the Docker approach for running tests. If you prefer to install Robot Framework manually on supported platforms, please refer to the [official Robot Framework installation guide](https://docs.robotframework.org/docs/getting_started/testing#install-robot-framework).
+- **Google OAuth Credentials** (for email verification tests)
+- **WAF Bypass Secret** for web application firewall
 
-## 🔧 Environment Configuration
+📖 **See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed setup instructions**
 
-### Local Development Setup (macOS/Linux Only)
+## 🚀 Quick Start (5 minutes)
+1. Clone repo: `git clone [repo-url]`
+2. Set up secrets: `cp .env.example TestSuites/Resources/.env` and fill values
+3. Build: `docker build -t robotframework-tests .`
+OR
+4. Run: `./docker-test.sh` (Mac/Linux) or `.\docker-test.ps1` (Windows)
+5. View results: Open `output/report.html`
 
-**Note:** This section applies only to macOS and Linux users. Windows users should use the Docker setup instead.
+## 🐳 Docker Setup
 
-For local development, create a `.env` file in `TestSuites/Resources/` to store your secrets and configuration:
+### Docker Configuration
+
+Docker-related files:
+
+- **`Dockerfile`**: With Playwright browsers and Robot Framework
+- **`docker-test.sh`**: Interactive test runner with menu options (macOS/Linux)
+- **`docker-test.ps1`**: Interactive test runner with menu options (Windows PowerShell)
+- **`docker-config.json`**: Shared configuration for process counts and test suites
+
+### Docker Environment
+
+The Docker container is based on Microsoft's Playwright image and includes:
+- **Ubuntu 24.04** with Finnish locale support
+- **Python 3.12.3** with virtual environment
+- **Node.js 22** with Playwright browsers
+- **Robot Framework 7.3.2** with Browser library
+- **Parallel execution support** via pabot
+
+### Building the Docker Image
 
 ```bash
-# Copy the sample file and fill in your values
-cp TestSuites/Resources/.env.sample TestSuites/Resources/.env
+docker build --no-cache -t robotframework-tests .
 ```
 
-**Note:** A sample file already exists at `TestSuites/Resources/.env.sample` with the correct template and placeholders ready to be filled in.
+## Interactive Docker Runner
 
-> **Important:** The `.env` file is already in `.gitignore` and will not be committed to the repository.
+# 🏃‍♂️ Running Tests
+
+This provides a menu with options for:
+- **Parallel execution** (pabot) with configurable process counts
+- **Sequential execution** for single-user scenarios
+- **Individual test suites** or **all suites**
+- **Docker image management** (build, clean)
+- **HAR analyzer** for network traffic analysis
+
+## 📋 Available Test Suites
+
+- **`Tests_user_desktop_FI.robot`** - Desktop browser tests (includes recurring reservations)
+- **`Tests_admin_desktop_FI.robot`** - Admin user tests
+- **`Tests_admin_notifications_serial.robot`** - Admin notification management (cannot be run in parallel)
+- **`Tests_users_with_admin_desktop.robot`** - Combined user and admin tests
+- **`Tests_user_mobile_android_FI.robot`** - Mobile Android tests
+- **`Tests_user_mobile_iphone_FI.robot`** - Mobile iPhone tests
+
+### Process Configuration (Parallel Testing)
+
+Default process counts for parallel execution (configurable in `docker-config.json`):
+- **Desktop processes**: 8
+- **Admin processes**: 2
+- **Mobile processes**: 3
+- **All suites processes**: 5
+
+**macOS/Linux:**
+```bash
+./docker-test.sh
+```
+
+**Windows:**
+```powershell
+# Option 1: Set Execution Policy Once (Recommended)
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+.\docker-test.ps1
+
+# Option 2: Bypass for Single Execution
+powershell -ExecutionPolicy Bypass -File docker-test.ps1
+```
+## 📈 Test Reports
+
+After running tests, reports are generated in the `output` directory:
+
+- `report.html` - HTML report with test results summary (open in browser)
+- `log.html` - Detailed log of test execution
+- `output.xml` - XML output containing all test data
+- `screenshots/` - Captured screenshots from test failures
+
+To view the reports, open the `report.html` HTML file in your browser after test execution completes.
+
+## Manual Docker Commands
+
+> **⚠️ WIP (Work In Progress)**: Email authentication system is being refactored. The current `.env` file structure and email-related environment variables may change in future versions.
+
+**📧 Note**: All secrets (`ACCESS_TOKEN`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`, `WAF_BYPASS_SECRET`) are loaded from your `.env` file using Docker's `--env-file` parameter.
+
+## 🔑 Environment File (.env) Location
+
+**⚠️ Important**: The `.env` file **must** be located at `TestSuites/Resources/.env` for proper functionality.
+
+**📍 Why this location?**
+- Python scripts (`generate_tokens.py`, `token_manager.py`) write and read from this fixed location
+- Ensures consistency between token generation and usage
+- Prevents path-related issues when running from different directories
+
+📖 **For detailed setup instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md)**
+
+**Building the Docker image:**
+```bash
+docker build --no-cache -t robotframework-tests .
+```
+
+# Manual Docker Commands (Mac/Linux)
+
+**Sequential Robot Framework execution:**
+```bash
+docker run --rm \
+  --env-file TestSuites/Resources/.env \
+  -v "$(pwd)/TestSuites:/opt/robotframework/tests" \
+  -v "$(pwd)/output:/opt/robotframework/reports" \
+  robotframework-tests \
+  robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
+```
+
+**Parallel execution with pabot:**
+```bash
+docker run --rm \
+  --env-file TestSuites/Resources/.env \
+  -v "$(pwd)/TestSuites:/opt/robotframework/tests" \
+  -v "$(pwd)/output:/opt/robotframework/reports" \
+  robotframework-tests \
+  pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
+```
+
+**Note:** 
+- To run a different test suite, replace `Tests_user_desktop_FI.robot` with your desired suite name (e.g., `Tests_admin_desktop_FI.robot`, `Tests_user_mobile_android_FI.robot`).
+- `--processes 6` is the number of tests run simultaneously
+
+## Manual Docker Commands (Windows PowerShell)
+
+**Sequential Robot Framework execution:**
+```powershell
+docker run --rm `
+  --env-file TestSuites\Resources\.env `
+  -v "${PWD}\TestSuites:/opt/robotframework/tests" `
+  -v "${PWD}\output:/opt/robotframework/reports" `
+  robotframework-tests `
+  robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
+```
+
+**Note:** To run a specific test suite, add the suite name after the command: `robot --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot`
+
+**Example - Run specific test suite:**
+```powershell
+docker run --rm `
+  --env-file TestSuites\Resources\.env `
+  -v "${PWD}\TestSuites:/opt/robotframework/tests" `
+  -v "${PWD}\output:/opt/robotframework/reports" `
+  robotframework-tests `
+  robot --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
+```
+
+**Parallel execution with pabot:**
+```powershell
+docker run --rm `
+  --env-file TestSuites\Resources\.env `
+  -v "${PWD}\TestSuites:/opt/robotframework/tests" `
+  -v "${PWD}\output:/opt/robotframework/reports" `
+  robotframework-tests `
+  pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
+```
+
+**Note:** 
+- To run a different test suite, replace `Tests_user_desktop_FI.robot` with your desired suite name (e.g., `Tests_admin_desktop_FI.robot`, `Tests_user_mobile_android_FI.robot`).
+- `--processes 6` is the number of tests run simultaneously
+
+
+#### Running Individual Test Cases
+
+To run a specific test case from a suite, add the test case name with the `-t` flag:
+
+**Windows:**
+```powershell
+docker run --rm `
+  --env-file TestSuites\Resources\.env `
+  -v "${PWD}\TestSuites:/opt/robotframework/tests" `
+  -v "${PWD}\output:/opt/robotframework/reports" `
+  robotframework-tests `
+  robot --outputdir /opt/robotframework/reports `
+  -t "User logs in and out with suomi_fi" `
+  /opt/robotframework/tests/Tests_user_desktop_FI.robot
+```
+
+**macOS/Linux**
+```bash
+docker run --rm \
+  --env-file TestSuites/Resources/.env \
+  -v "$(pwd)/TestSuites:/opt/robotframework/tests" \
+  -v "$(pwd)/output:/opt/robotframework/reports" \
+  robotframework-tests \
+  robot --outputdir /opt/robotframework/reports \
+  -t "User logs in and out with suomi_fi" \
+  /opt/robotframework/tests/Tests_user_desktop_FI.robot
+```
+
+### HAR Recording Control
+
+HAR files can be recorded during test execution for network traffic analysis:
+
+**Enable/Disable HAR Recording:**
+
+Via `docker-config.json` (recommended):
+```json
+{
+  "robot_variables": {
+    "enable_har_recording": true
+  }
+}
+```
+
+Or directly in Robot Framework variables:
+```robot
+# In TestSuites/Resources/variables.robot
+${ENABLE_HAR_RECORDING}    ${TRUE}  # Set to ${FALSE} to disable
+```
+
+**HAR File Location:**
+- HAR files are saved to `output/har_files/` directory
+- Files can be very large (10-100MB+ per test)
+- Only enable when you need to analyze network traffic
+
+**Analyze HAR Files:**
+
+Via Docker (recommended):
+
+**Linux/Mac:**
+```bash
+# Using the test runner menu - option 17
+./docker-test.sh
+```
+
+**Windows:**
+```powershell
+# Using the test runner menu - option 17
+.\docker-test.ps1
+```
+
+**Direct Docker command:**
+```bash
+# Linux/Mac
+docker run --rm \
+  -v "$(pwd):/opt/project" \
+  -w /opt/project \
+  robotframework-tests:latest \
+  python har_analyzer.py
+
+# Windows (PowerShell)
+docker run --rm `
+  -v "${PWD}:/opt/project" `
+  -w /opt/project `
+  robotframework-tests:latest `
+  python har_analyzer.py
+```
+
+Or locally if Python is installed:
+```bash
+python har_analyzer.py
+```
+
+**Note:** HAR recording is disabled by default to improve performance. Only enable when debugging network issues.
+
+## 🔧 Browser Settings
+
+Browser configurations and device settings are managed in `TestSuites/Resources/devices.robot`:
+
+- **Browser Types**: Chromium (desktop), WebKit (iPhone), Chromium (Android)
+- **WAF Bypass**: Configured via and `WAF_BYPASS_SECRET` environment variable
+- **Parallel Execution**: Staggered startup strategy to prevent resource conflicts
+
+📖 **For detailed test coverage and architecture information, see [TEST_ARCHITECTURE.md](TEST_ARCHITECTURE.md)**
+
+
+## 🚀 GitHub Actions
+
+This project includes GitHub Actions workflow that automatically runs tests when:
+
+- Manually triggered via the GitHub Actions UI
+
+### Test Execution
+
+To manually run tests via GitHub Actions:
+
+1. Go to the "Actions" tab in your GitHub repository
+2. Select the "Varaamo Robot Framework Tests" workflow
+3. Click "Run workflow"
+4. Select which test suite you want to run from the dropdown menu
+5. Choose execution mode (parallel or sequential)
+6. **Optional**: Enable "Enable HAR recording" for network traffic analysis
+7. Click "Run workflow"
+
+### Workflow Features
+
+- **Configurable test suites**: Choose from individual suites or run all
+- **Execution modes**: Parallel (pabot) or sequential (robot)
+- **HAR recording**: Optional network traffic recording for analysis
+- **Smoke test validation**: For "All" option, runs smoke tests first
+- **Docker caching**: Optimized builds with GitHub Actions cache
+- **Artifact uploads**: Test reports available as downloadable artifacts
+- **Comprehensive reporting**: Detailed test results and failure analysis
+- **Automated HAR analysis**: Network traffic analysis when HAR recording is enabled
+
+### HAR Analysis in GitHub Actions
+
+When HAR recording is enabled in the workflow:
+
+1. **Automatic Recording**: All network traffic during test execution is captured
+2. **Post-Test Analysis**: HAR analyzer runs automatically after tests complete
+3. **Results Integration**: Analysis summary appears in the workflow summary page
+
 
 ### GitHub Actions Setup
 
@@ -51,294 +358,6 @@ For GitHub Actions, add the following secrets to your repository:
    - `CLIENT_ID`
    - `CLIENT_SECRET`
    - `WAF_BYPASS_SECRET`
-
-## 🐳 Docker Setup
-
-### Quick Start with Docker
-
-> **💡 Windows Users:** Docker is the recommended and only supported method for running tests on Windows.
-
-1. **Clone the repository and navigate to the project directory**
-
-2. **Build the Docker image:**
-   ```bash
-   docker build --no-cache -t robotframework-tests .
-   ```
-   
-   **macOS/Linux users can also use the interactive script:**
-   ```bash
-   ./docker-test.sh
-   ```
-   The interactive script provides a menu with options for building the Docker image and running tests. (Note: This script is not available on Windows)
-
-### Docker Configuration
-
-Docker-related files:
-
-- **`Dockerfile`**: Multi-stage build with Playwright browsers and Robot Framework
-- **`docker-config.sh`**: Shared configuration for cross-platform compatibility
-- **`docker-test.sh`**: Interactive test runner with menu options
-- **`docker-tasks.yaml`**: Task definitions for RCC (Robot Framework Control Center)
-
-### Docker Environment
-
-The Docker container is based on Microsoft's Playwright image and includes:
-- **Ubuntu 24.04** with Finnish locale support
-- **Python 3.12.3** with virtual environment
-- **Node.js 22** with Playwright browsers
-- **Robot Framework 7.3.2** with Browser library
-- **Parallel execution support** via pabot
-
-## 🏃‍♂️ Running Tests
-
-### Interactive Docker Runner
-
-Use the interactive script for easy test execution:
-
-```bash
-./docker-test.sh
-```
-
-This provides a menu with options for:
-- **Parallel execution** (pabot) with configurable process counts
-- **Sequential execution** (robot) for single-user scenarios
-- **Individual test suites** or **all suites**
-- **Docker image management** (build, clean)
-
-### Manual Docker Commands
-
-**⚠️ Important**: When running Docker commands manually, you must provide the required environment variables (especially `WAF_BYPASS_SECRET`) that are normally loaded by the `docker-config.sh` script.
-
-**📧 Note**: Mail-related secrets (`ACCESS_TOKEN`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`) are automatically loaded from the mounted `.env` file and don't need to be passed as environment variables to Docker.
-
-#### Option 1: Source docker-config.sh first (Recommended)
-
-```bash
-# Source the configuration script to load environment variables from .env file
-source docker-config.sh
-
-# Then run Docker with the loaded variables
-docker run --rm \
-  -e WAF_BYPASS_SECRET="$WAF_BYPASS_SECRET" \
-  -v "$(pwd)/TestSuites:/opt/robotframework/tests" \
-  -v "$(pwd)/output:/opt/robotframework/reports" \
-  robotframework-tests \
-  robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
-```
-
-
-
-#### Running Complete Test Suites
-
-**Windows (PowerShell):**
-```powershell
-# Manually set the environment variable (replace with your actual secret)
-$env:WAF_BYPASS_SECRET = "your-secret-here"
-
-docker run --rm `
-  -e WAF_BYPASS_SECRET="$env:WAF_BYPASS_SECRET" `
-  -v "${PWD}\TestSuites:/opt/robotframework/tests" `
-  -v "${PWD}\output:/opt/robotframework/reports" `
-  robotframework-tests `
-  robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
-```
-
-**Windows (CMD):**
-```cmd
-set WAF_BYPASS_SECRET=your-secret-here
-
-docker run --rm ^
-  -e WAF_BYPASS_SECRET="%WAF_BYPASS_SECRET%" ^
-  -v "%cd%\TestSuites:/opt/robotframework/tests" ^
-  -v "%cd%\output:/opt/robotframework/reports" ^
-  robotframework-tests ^
-  robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
-```
-
-> **⚠️ Note for Windows Users:** You must manually set the `WAF_BYPASS_SECRET` environment variable as shown above. The `docker-config.sh` script only works on macOS/Linux.
-
-**Linux/Mac:**
-```bash
-# First source the config
-source docker-config.sh
-
-docker run --rm \
-  -e WAF_BYPASS_SECRET="$WAF_BYPASS_SECRET" \
-  -v "$(pwd)/TestSuites:/opt/robotframework/tests" \
-  -v "$(pwd)/output:/opt/robotframework/reports" \
-  robotframework-tests \
-  robot --outputdir /opt/robotframework/reports /opt/robotframework/tests
-```
-
-#### Available Test Suites
-
-- `Tests_user_desktop_FI.robot` - Desktop browser tests (includes recurring reservations)
-- `Tests_user_mobile_iphone_FI.robot` - Mobile iPhone tests
-- `Tests_user_mobile_android_FI.robot` - Mobile Android tests
-- `Tests_users_with_admin_desktop.robot` - Combined user and admin tests
-- `Tests_admin_desktop_FI.robot` - Admin user tests
-- `Tests_admin_notifications_serial.robot` - Admin notification management (sequential only)
-
-#### Parallel Execution
-
-For faster execution, use pabot with multiple processes:
-
-```bash
-# First source the config
-source docker-config.sh
-
-docker run --rm \
-  -e WAF_BYPASS_SECRET="$WAF_BYPASS_SECRET" \
-  -v "$(pwd)/TestSuites:/opt/robotframework/tests" \
-  -v "$(pwd)/output:/opt/robotframework/reports" \
-  robotframework-tests \
-  pabot --processes 4 --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
-```
-
-#### Running Individual Test Cases
-
-To run a specific test case from a suite, add the test case name with the `-t` flag:
-
-```bash
-# First source the config
-source docker-config.sh
-
-docker run --rm \
-  -e WAF_BYPASS_SECRET="$WAF_BYPASS_SECRET" \
-  -v "$(pwd)/TestSuites:/opt/robotframework/tests" \
-  -v "$(pwd)/output:/opt/robotframework/reports" \
-  robotframework-tests \
-  robot --outputdir /opt/robotframework/reports \
-  -t "User logs in and out with suomi_fi" \
-  /opt/robotframework/tests/Tests_user_desktop_FI.robot
-```
-
-## 🔄 Parallel Testing
-
-### User Isolation System
-
-The project implements user isolation system for parallel testing using **PabotLib value sets**:
-
-- **Deterministic user assignment** preventing conflicts in parallel execution
-- **Two execution modes**: Parallel (unique users) and Single (shared user for debugging)
-- **Value set-based isolation** with each test mapped to specific user data
-
-### User Allocation by Test Suite
-
-The user allocation is configured in `test_value_sets.dat` for parallel execution:
-
-- **Desktop Suite**: 12 users (`desktop-test-data-set-0` to `desktop-test-data-set-11`)
-- **Admin Suite**: 2 users (`admin-test-data-set-0` to `admin-test-data-set-1`)
-- **Combined Suite**: 6 users (`combined-test-data-set-0` to `combined-test-data-set-5`)
-- **Android Mobile**: 6 users (`mobile-android-data-set-0` to `mobile-android-data-set-5`)
-- **iPhone Mobile**: 6 users (`mobile-iphone-data-set-0` to `mobile-iphone-data-set-5`)
-- **Admin Notifications**: Sequential execution only (uses `FORCE_SINGLE_USER=True`)
-
-### Process Configuration
-
-Default process counts (configurable in `docker-config.sh`):
-- **Desktop processes**: 8
-- **Admin processes**: 2
-- **Mobile processes**: 3
-- **All suites processes**: 5
-
-## 🎯 Test Data Management System
-
-The project uses test data management system with **PabotLib value sets** to ensure test isolation:
-
-### **Configuration Files**
-- **`test_value_sets.dat`**: ConfigParser/INI format file containing user data for each test
-- **`parallel_test_data.robot`**: Robot Framework keywords for test data initialization  
-- **`suite_specific_units.robot`**: Suite-specific unit definitions for parallel isolation
-- **`suite_unit_selector.robot`**: Dynamic unit assignment based on test suite type
-- **`README_TEST_DATA_SYSTEM.md`**: Detailed documentation of the test data system
-
-### **Key Features**
-- **Deterministic Mapping**: Each test is mapped to a specific user (e.g., "User logs in" → desktop-test-data-set-0)
-- **Conflict Prevention**: No two tests share the same user credentials in parallel execution
-- **Debug-Friendly**: Single user mode available with `FORCE_SINGLE_USER=True`
-- **Maintainable**: Easy to add new tests and users to the value sets
-
-### **Usage Examples**
-
-**Parallel Execution** (recommended):
-```bash
-pabot --processes 6 --pabotlib --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_desktop_FI.robot
-```
-
-**Single User Mode** (debugging):
-```bash
-robot --variable FORCE_SINGLE_USER:True TestSuites/Tests_user_desktop_FI.robot
-```
-
-## 📊 Test Coverage
-
-The test suites cover various booking scenarios including:
-
-- **Single bookings**: Free, paid, subvented, and non-cancelable reservations
-- **Recurring reservations**: Multi-week booking applications with unit selection and application management
-- **Payment flows**: Complete checkout processes with payment verification
-- **Email verification**: Confirmation and cancellation email validation
-- **Access codes**: Reservations requiring special access codes
-- **Calendar integration**: ICS file download and validation
-- **Mobile compatibility**: Touch-optimized interfaces for mobile devices
-- **Admin functionality**: Notification management and reservation oversight
-- **Smoke tests**: Critical functionality validation
-
-### 📊 Test Execution Modes
-
-#### **Parallel Mode**
-Uses PabotLib value sets for isolated test execution:
-- **Desktop Tests**: 12 parallel-enabled tests with dedicated users
-- **Admin Tests**: 2 parallel-enabled tests with admin users  
-- **Combined Tests**: 6 parallel-enabled user+admin workflow tests
-- **Mobile Android**: 6 parallel-enabled mobile browser tests
-- **Mobile iPhone**: 6 parallel-enabled iOS Safari tests
-- **Total Parallel Tests**: **32 tests** with complete user isolation
-
-#### **Sequential Mode**
-For tests requiring serialized execution:
-- **Admin Notifications**: All tests run sequentially with `FORCE_SINGLE_USER=True`
-- **Single User**: All tests use the same user (Ande AutomaatioTesteri)
-
-
-
-## 📈 Test Reports
-
-After running tests, reports are generated in the `output` directory:
-
-- `report.html` - HTML report with test results summary
-- `log.html` - Detailed log of test execution
-- `output.xml` - XML output containing all test data
-- `screenshots/` - Captured screenshots from test failures
-
-To view the reports, open the `report.html` HTML file in your browser after test execution completes.
-
-## 🚀 GitHub Actions
-
-This project includes GitHub Actions workflow that automatically runs tests when:
-
-- Manually triggered via the GitHub Actions UI
-
-### Manual Test Execution
-
-To manually run tests via GitHub Actions:
-
-1. Go to the "Actions" tab in your GitHub repository
-2. Select the "Varaamo Robot Framework Tests" workflow
-3. Click "Run workflow"
-4. Select which test suite you want to run from the dropdown menu
-5. Choose execution mode (parallel or sequential)
-6. Click "Run workflow"
-
-### Workflow Features
-
-- **Configurable test suites**: Choose from individual suites or run all
-- **Execution modes**: Parallel (pabot) or sequential (robot)
-- **Smoke test validation**: For "All" option, runs smoke tests first
-- **Docker caching**: Optimized builds with GitHub Actions cache
-- **Artifact uploads**: Test reports available as downloadable artifacts
-- **Comprehensive reporting**: Detailed test results and failure analysis
 
 ## 📁 Project Structure
 
@@ -412,105 +431,16 @@ To manually run tests via GitHub Actions:
 │   ├── report.html                     # Test result summary
 │   ├── output.xml                      # XML output file
 │   └── screenshots/                    # Captured screenshots from test failures
-├── Dockerfile                          # Docker configuration
-├── docker-config.sh                    # Shared Docker configuration
-├── docker-test.sh                      # Interactive Docker test runner
-├── docker-tasks.yaml                   # RCC task definitions
+├── Dockerfile                          # Docker image definition
+├── docker-config.json                  # Test configuration (process counts, test suites)
+├── docker-test.sh                      # Interactive test runner for Linux/macOS
+├── docker-test.ps1                     # Interactive test runner for Windows
 ├── requirements.txt                    # Python dependencies
 ├── conda.yaml                          # Conda environment configuration
 ├── robot.yaml                          # RCC configuration
 ├── har_analyzer.py                     # HAR file analysis utilities
 └── PARALLEL_SETUP_GUIDE.md             # Detailed parallel testing setup guide
 ```
-
-## 🛠️ Local Development (macOS/Linux Only)
-
-> **⚠️ Windows Users:** Local development is not currently supported on Windows. Please use the Docker setup instead.
-
-### Using RCC (Recommended)
-
-This project is configured for RCC (Robocorp Control Center) with environment management via `conda.yaml`:
-
-1. **Install RCC:**
-   ```bash
-   # macOS
-   brew install robocorp/tools/rcc
-   
-   # Other platforms: Download from https://github.com/robocorp/rcc/releases
-   ```
-
-2. **Run tasks using RCC:**
-   ```bash
-   # List available tasks
-   rcc task list
-   
-   # Run specific test suite
-   rcc task run --task "Test Desktop Parallel"
-   ```
-
-**Note:** RCC automatically manages the Python environment based on `conda.yaml` and `robot.yaml` configurations.
-
-### Manual Setup
-
-For manual setup without RCC (requires more configuration):
-
-1. **Create conda environment:**
-   ```bash
-   conda env create -f conda.yaml
-   conda activate robotframework-tests
-   ```
-
-2. **Initialize Playwright browsers:**
-   ```bash
-   rfbrowser init
-   ```
-
-3. **Configure environment variables:**
-   ```bash
-   cp TestSuites/Resources/.env.sample TestSuites/Resources/.env
-   # Edit .env with your values
-   ```
-
-4. **Run tests:**
-   ```bash
-   robot TestSuites/Tests_user_desktop_FI.robot
-   ```
-
-## WIP 🔧 Troubleshooting WIP
----
-
-### HAR Recording Control
-
-HAR files can be recorded during test execution for network traffic analysis:
-
-**Enable/Disable HAR Recording:**
-```robot
-# In TestSuites/Resources/variables.robot
-${ENABLE_HAR_RECORDING}    ${TRUE}  # Set to ${FALSE} to disable
-```
-
-**HAR File Location:**
-- HAR files are saved to `output/har_files/` directory
-- Files can be very large (10-100MB+ per test)
-- Only enable when you need to analyze network traffic
-
-**Analyze HAR Files:**
-```bash
-python har_analyzer.py
-```
-
-**Note:** HAR recording is disabled by default to improve performance. Only enable when debugging network issues.
-
-
-### Environment Variables
-
-Ensure all required environment variables are set:
-- `ACCESS_TOKEN`
-- `REFRESH_TOKEN`
-- `CLIENT_ID`
-- `CLIENT_SECRET`
-- `WAF_BYPASS_SECRET`
-
 
 ## 📚 Additional Resources
 

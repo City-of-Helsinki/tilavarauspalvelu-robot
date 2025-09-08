@@ -9,6 +9,7 @@ Library             Browser
 # HAR Recording Control - Set to ${TRUE} to enable HAR recording
 # WARNING: HAR files can be very large (10-100MB+ per test)
 # Only enable when you need to analyze network traffic
+# NOTE: This setting is overridden by docker-config.json when using Docker
 ${ENABLE_HAR_RECORDING}                                 ${FALSE}
 
 ###

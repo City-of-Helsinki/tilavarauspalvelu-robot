@@ -1,0 +1,23 @@
+{
+    "processes": {
+      "desktop": 6,
+      "admin": 2,
+      "mobile": 3,
+      "all_suites": 5
+    },
+    "docker": {
+      "image_name": "robotframework-tests",
+      "env_file": "TestSuites/Resources/.env"
+    },
+    "robot_variables": {
+      "enable_har_recording": false
+    },
+    "suites": {
+      "user_desktop": "Tests_user_desktop_FI.robot",
+      "admin_desktop": "Tests_admin_desktop_FI.robot",
+      "admin_notifications": "Tests_admin_notifications_serial.robot",
+      "users_with_admin": "Tests_users_with_admin_desktop.robot",
+      "mobile_android": "Tests_user_mobile_android_FI.robot",
+      "mobile_iphone": "Tests_user_mobile_iphone_FI.robot"
+    }
+  }

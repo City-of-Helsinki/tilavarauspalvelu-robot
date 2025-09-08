@@ -25,6 +25,11 @@ on:
         options:
           - parallel
           - sequential
+      enable_har_recording:
+        description: "Enable HAR recording for network traffic analysis"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   test:
@@ -66,14 +71,22 @@ jobs:
         id: config
         run: |
           EXECUTION_MODE="${{ github.event.inputs.execution_mode }}"
+          ENABLE_HAR="${{ github.event.inputs.enable_har_recording }}"
+
+          # Convert boolean to Robot Framework format
+          if [ "$ENABLE_HAR" = "true" ]; then
+            HAR_VARIABLE="--variable ENABLE_HAR_RECORDING:True"
+          else
+            HAR_VARIABLE="--variable ENABLE_HAR_RECORDING:False"
+          fi
 
           # Set execution tool and base flags
           if [ "$EXECUTION_MODE" = "parallel" ]; then
             echo "execution_tool=pabot" >> $GITHUB_OUTPUT
-            echo "base_flags=--testlevelsplit --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat" >> $GITHUB_OUTPUT
+            echo "base_flags=--testlevelsplit --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat $HAR_VARIABLE" >> $GITHUB_OUTPUT
           else
             echo "execution_tool=robot" >> $GITHUB_OUTPUT
-            echo "base_flags=--variable FORCE_SINGLE_USER:True" >> $GITHUB_OUTPUT
+            echo "base_flags=--variable FORCE_SINGLE_USER:True $HAR_VARIABLE" >> $GITHUB_OUTPUT
           fi
 
           case "${{ github.event.inputs.test_suite }}" in
@@ -145,7 +158,7 @@ jobs:
             Tests_admin_notifications_serial)
               # Admin notifications always run sequentially (marked as serialonly)
               echo "execution_tool=robot" >> $GITHUB_OUTPUT
-              echo "base_flags=--variable FORCE_SINGLE_USER:True" >> $GITHUB_OUTPUT
+              echo "base_flags=--variable FORCE_SINGLE_USER:True $HAR_VARIABLE" >> $GITHUB_OUTPUT
               echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_admin_notifications_serial.robot" >> $GITHUB_OUTPUT
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
@@ -156,6 +169,9 @@ jobs:
         run: |
           mkdir -p "${{ github.workspace }}/Reports"
           chmod 777 "${{ github.workspace }}/Reports"
+          # Create output directory for HAR files
+          mkdir -p "${{ github.workspace }}/output"
+          chmod 777 "${{ github.workspace }}/output"
           # Create downloads directory for email tests
           mkdir -p "${{ github.workspace }}/TestSuites/Resources/downloads"
           chmod 777 "${{ github.workspace }}/TestSuites/Resources/downloads"
@@ -171,6 +187,7 @@ jobs:
             -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            -v "${{ github.workspace }}/output:/opt/robotframework/output" \
             robotframework-tests:latest ${{ steps.config.outputs.execution_tool }} \
             ${{ steps.config.outputs.base_flags }} \
             ${{ steps.config.outputs.smoke_args }}
@@ -207,6 +224,7 @@ jobs:
             -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            -v "${{ github.workspace }}/output:/opt/robotframework/output" \
             robotframework-tests:latest ${{ steps.config.outputs.execution_tool }} \
             ${{ steps.config.outputs.base_flags }} \
             ${{ steps.config.outputs.full_args }}
@@ -223,6 +241,7 @@ jobs:
             -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            -v "${{ github.workspace }}/output:/opt/robotframework/output" \
             robotframework-tests:latest ${{ steps.config.outputs.execution_tool }} \
             ${{ steps.config.outputs.base_flags }} \
             ${{ steps.config.outputs.suite_args }}
@@ -389,6 +408,44 @@ jobs:
         env:
           SMOKE_EXECUTION_FAILED: ${{ env.SMOKE_EXECUTION_FAILED }}
 
+      # Run HAR analyzer if HAR recording was enabled
+      - name: Analyze HAR Files
+        if: always() && github.event.inputs.enable_har_recording == 'true'
+        run: |
+          echo "📊 Analyzing HAR files..."
+          
+          # Check if HAR files exist
+          if find output -name "*.har" -type f | grep -q .; then
+            echo "HAR files found, running analysis..."
+            docker run --rm \
+              -v "${{ github.workspace }}:/opt/project" \
+              -w /opt/project \
+              robotframework-tests:latest \
+              python3 har_analyzer.py | tee har_analysis_detailed.txt
+            
+            # Debug: Check what files were created
+            echo "📁 Files in workspace root:"
+            ls -la har_analysis_*.txt || echo "No har_analysis_*.txt files found in root"
+            
+            # Check if analysis output was created
+            if [ -f har_analysis_summary.txt ]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "## 📊 HAR Analysis Results" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              cat har_analysis_summary.txt >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+            else
+              echo "::warning title=HAR Analysis::HAR analysis completed but no summary file was generated"
+            fi
+          else
+            echo "::warning title=No HAR Files::No HAR files found. HAR recording may not have been enabled properly."
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "## 📊 HAR Analysis Results" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **No HAR files found** - HAR recording may not have been enabled properly." >> $GITHUB_STEP_SUMMARY
+          fi
+
       # Add execution metadata to GitHub summary
       - name: Generate Test Report Summary
         if: always() # Always show execution details
@@ -397,6 +454,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Test Suite**: ${{ github.event.inputs.test_suite }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Execution Mode**: ${{ github.event.inputs.execution_mode }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **HAR Recording**: ${{ github.event.inputs.enable_har_recording }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Tool Used**: ${{ steps.config.outputs.execution_tool }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Execution Time**: $(date)" >> $GITHUB_STEP_SUMMARY
           echo "- **Runner**: ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
@@ -408,8 +466,40 @@ jobs:
         with:
           name: test-reports-${{ github.run_number }} # Unique name per run
           path: Reports/
-          retention-days:
-            30 # Keep reports for 30 days
+          retention-days: 30 # Keep reports for 30 days
+
+      # Upload HAR files and analysis results if HAR recording was enabled
+      - name: Upload HAR Analysis Results
+        if: always() && github.event.inputs.enable_har_recording == 'true'
+        run: |
+          echo "📦 Preparing HAR analysis artifacts..."
+          echo "Files in workspace:"
+          ls -la har_analysis_*.txt || echo "No har_analysis files found"
+          echo "Files in output:"
+          find output -name "*.har" -type f | head -5 || echo "No HAR files found"
+        
+      - name: Upload HAR Analysis Artifacts  
+        if: always() && github.event.inputs.enable_har_recording == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: har-analysis-${{ github.run_number }}
+          path: |
+            output/**/*.har
+            har_analysis_summary.txt
+            har_analysis_detailed.txt
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload HAR Analysis Text Files Only
+        if: always() && github.event.inputs.enable_har_recording == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: har-analysis-text-${{ github.run_number }}
+          path: |
+            har_analysis_summary.txt
+            har_analysis_detailed.txt
+          retention-days: 30
+          if-no-files-found: warn
 
 
             # Fail the workflow if smoke tests failed or if any tests failed

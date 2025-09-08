@@ -31,7 +31,7 @@ tasks:
         [ -f output.xml ] && rm -f output.xml || true
         [ -f report.html ] && rm -f report.html || true
         [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-        pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_desktop_FI.robot
+        pabot --testlevelsplit --processes 8 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_desktop_FI.robot
       '
 
   Test Admin Parallel:

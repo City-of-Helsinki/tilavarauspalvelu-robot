@@ -21,8 +21,13 @@ Create Context With Optional HAR
     [Arguments]    ${context_config}    ${browser_type}=UNKNOWN
 
     ${har_enabled}=    Get Variable Value    ${ENABLE_HAR_RECORDING}    ${FALSE}
+    
+    # Convert string values to boolean for proper evaluation
+    ${har_enabled}=    Run Keyword If    '${har_enabled}' == 'True' or '${har_enabled}' == '${TRUE}' or $har_enabled == ${TRUE}
+    ...    Set Variable    ${TRUE}
+    ...    ELSE    Set Variable    ${FALSE}
 
-    IF    ${har_enabled}
+    IF    $har_enabled
         Log    📹 HAR recording enabled - creating HAR-enabled context
         ${context_config}=    Start HAR Recording For Context    ${browser_type}    ${context_config}
         # Temporarily suppress logging to prevent sensitive headers from being logged

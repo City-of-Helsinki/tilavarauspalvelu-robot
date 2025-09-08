@@ -108,7 +108,7 @@ Apply Staggered Startup Strategy
     Log    📋 Test: ${test_name}
     Log    📁 Suite: ${suite_name}
     Log    🌐 URL: ${input_URL}
-    IF    "${download_dir}" != "${EMPTY}"
+    IF    $download_dir
         Log    📂 Download Dir: ${download_dir}
     END
 

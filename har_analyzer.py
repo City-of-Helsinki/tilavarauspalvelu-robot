@@ -352,6 +352,36 @@ def main():
         print("✅ All systems functioning normally!")
     
     print("=" * 80)
+    
+    # Create summary file for GitHub Actions
+    try:
+        summary_content = f"""HAR Analysis Summary
+===================
+
+📁 Files Analyzed: {len(har_files)}
+🌐 Total Requests: {total_requests_all}
+
+📈 Health Metrics:
+✅ Success Rate: {success_percentage:.1f}% ({len(combined_stats['2xx_success'])} requests)
+❌ Error Rate: {error_percentage:.1f}% ({len(combined_stats['4xx_client_error']) + len(combined_stats['5xx_server_error'])} requests)
+↪️ Redirections: {len(combined_stats['3xx_redirection'])}
+
+Status Code Breakdown:
+- 4xx Client Errors: {len(combined_stats['4xx_client_error'])}
+- 5xx Server Errors: {len(combined_stats['5xx_server_error'])}
+- 3xx Redirections: {len(combined_stats['3xx_redirection'])}
+- 2xx Success: {len(combined_stats['2xx_success'])}
+
+Health Assessment: {"🟢 EXCELLENT" if total_errors == 0 else "🟡 GOOD" if error_percentage < 1.0 else "🟠 FAIR" if error_percentage < 5.0 else "🔴 POOR"}
+"""
+        
+        with open('har_analysis_summary.txt', 'w', encoding='utf-8') as f:
+            f.write(summary_content)
+        
+        print("📄 Summary saved to har_analysis_summary.txt")
+        
+    except Exception as e:
+        print(f"⚠️ Warning: Could not create summary file: {e}")
 
 if __name__ == "__main__":
     main() 

@@ -6,11 +6,13 @@ from robot.api import logger
 
 def load_environment_variables():
     """Load environment variables from .env file if it exists."""
-    loaded = load_dotenv()
+    # Load from the same directory as this script to match where generate_tokens.py writes it
+    env_path = os.path.join(os.path.dirname(__file__), '.env')
+    loaded = load_dotenv(env_path)
     if loaded:
-        logger.info("Successfully loaded .env file")
+        logger.info(f"Successfully loaded .env file from {env_path}")
     else:
-        logger.info("No .env file found; skipping loading")
+        logger.info(f"No .env file found at {env_path}; skipping loading")
 
 def mask(token):
     """Return a masked version of the token (first 5 and last 5 characters)."""

@@ -43,6 +43,7 @@ jobs:
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       WAF_BYPASS_SECRET: ${{ secrets.WAF_BYPASS_SECRET }}
+      ROBOT_API_TOKEN: ${{ secrets.ROBOT_API_TOKEN }}
       # Process counts for parallel execution
       DESKTOP_PROCESSES: 3
       ADMIN_PROCESSES: 3
@@ -184,7 +185,7 @@ jobs:
           echo "🚀 Starting smoke tests with ${{ steps.config.outputs.execution_tool }}..."
           set +e  # Don't exit on error
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e TZ=Europe/Helsinki \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
@@ -221,7 +222,7 @@ jobs:
           echo "🚀 Smoke tests succeeded; running full test suite with ${{ steps.config.outputs.execution_tool }}..."
           set +e  # Don't exit on error to ensure we can collect results
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e TZ=Europe/Helsinki \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
@@ -238,7 +239,7 @@ jobs:
         run: |
           echo "🚀 Running ${{ github.event.inputs.test_suite }} with ${{ steps.config.outputs.execution_tool }} (${{ github.event.inputs.execution_mode }} mode)..."
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e TZ=Europe/Helsinki \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
@@ -413,7 +414,7 @@ jobs:
         if: always() && github.event.inputs.enable_har_recording == 'true'
         run: |
           echo "📊 Analyzing HAR files..."
-          
+
           # Check if HAR files exist
           if find output -name "*.har" -type f | grep -q .; then
             echo "HAR files found, running analysis..."
@@ -477,8 +478,8 @@ jobs:
           ls -la har_analysis_*.txt || echo "No har_analysis files found"
           echo "Files in output:"
           find output -name "*.har" -type f | head -5 || echo "No HAR files found"
-        
-      - name: Upload HAR Analysis Artifacts  
+
+      - name: Upload HAR Analysis Artifacts
         if: always() && github.event.inputs.enable_har_recording == 'true'
         uses: actions/upload-artifact@v4
         with:
@@ -501,8 +502,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-
-            # Fail the workflow if smoke tests failed or if any tests failed
+      # Fail the workflow if smoke tests failed or if any tests failed
       - name: Fail Workflow on Test Failures
         if: always()
         run: |

@@ -89,14 +89,14 @@ export OUTPUT_DIR="$DOCKER_PWD/output"
 if [ -f "$DOCKER_ENV_FILE" ]; then
     echo "Loading environment variables from $DOCKER_ENV_FILE..."
     while IFS= read -r line; do
-        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET)= ]]; then
+        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT)= ]]; then
             export "$line"
         fi
     done < <(grep -v '^#' "$DOCKER_ENV_FILE")
 elif [ -f .env ]; then
     echo "Loading environment variables from .env file..."
     while IFS= read -r line; do
-        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET)= ]]; then
+        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT)= ]]; then
             export "$line"
         fi
     done < <(grep -v '^#' .env)
@@ -112,7 +112,7 @@ echo "  All suites processes: $ALL_SUITES_PROCESSES"
 # Function to validate required environment variables
 validate_required_vars() {
     local missing_vars=()
-    local required_vars=("WAF_BYPASS_SECRET")
+    local required_vars=("WAF_BYPASS_SECRET" "ROBOT_API_TOKEN")
     
     for var in "${required_vars[@]}"; do
         if [ -z "${!var}" ]; then
@@ -142,7 +142,7 @@ validate_env_secrets() {
     
     echo "Validating secrets in .env file..."
     
-    local required_vars=("WAF_BYPASS_SECRET" "ACCESS_TOKEN" "REFRESH_TOKEN" "CLIENT_ID" "CLIENT_SECRET")
+    local required_vars=("WAF_BYPASS_SECRET" "ACCESS_TOKEN" "REFRESH_TOKEN" "CLIENT_ID" "CLIENT_SECRET" "ROBOT_API_TOKEN")
     local missing=()
     local found=()
     

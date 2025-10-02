@@ -429,14 +429,110 @@ Get Test Data Variable
     IF    ${status}
         ${value}=    Get Parallel Value For Key    ${variable_name}
         Log    DEBUG: PabotLib returned value '${value}' for '${variable_name}'
-        # If PabotLib returns an empty value, fall back to the default
+        # If PabotLib returns an empty value, use the default value (key doesn't exist yet)
         IF    "${value}" == ""
-            ${value}=    Get Variable Value    ${${variable_name}}    ${default_value}
-            Log    DEBUG: PabotLib value was empty, using fallback value '${value}' for '${variable_name}'
+            Log
+            ...    DEBUG: PabotLib value was empty (key doesn't exist), using default value '${default_value}' for '${variable_name}'
+            RETURN    ${default_value}
+        ELSE
+            RETURN    ${value}
         END
-        RETURN    ${value}
     ELSE
         ${value}=    Get Variable Value    ${${variable_name}}    ${default_value}
         Log    DEBUG: PabotLib not available, using fallback value '${value}' for '${variable_name}'
         RETURN    ${value}
+    END
+
+# =============================================================================
+# SYNCHRONIZATION KEYWORDS FOR MAIL TEST
+# =============================================================================
+
+Mark Paid Booking Test Started
+    [Documentation]    Marks that the paid booking test has started execution
+    Store Test Data Variable    PAID_BOOKING_STARTED    True
+    Log    Marked paid booking test as started
+
+Mark Paid Booking Test Completed
+    [Documentation]    Marks that the paid booking test has completed successfully
+    Store Test Data Variable    PAID_BOOKING_COMPLETED    True
+    Log    Marked paid booking test as completed
+
+Mark Paid Booking Test Failed
+    [Documentation]    Marks that the paid booking test has failed
+    Store Test Data Variable    PAID_BOOKING_FAILED    True
+    Log    Marked paid booking test as failed
+
+Wait For Paid Booking Completion
+    [Documentation]    Waits for the paid booking test to complete (success or failure)
+    [Arguments]    ${timeout}=300
+
+    Log    Checking if paid booking test has started...
+
+    # Poll for up to 120 seconds to see if paid booking test starts (accounts for browser setup time)
+    ${start_check_timeout}=    Evaluate    time.time() + 120    modules=time
+    ${started}=    Set Variable    ${EMPTY}
+
+    WHILE    "${started}" == ""
+        ${current_time}=    Evaluate    time.time()    modules=time
+
+        IF    ${current_time} > ${start_check_timeout}
+            Log    Paid booking test has not started within 120 seconds - it may not be part of this test run
+            RETURN    NOT_STARTED
+        END
+
+        ${started}=    Get Test Data Variable    PAID_BOOKING_STARTED    ${EMPTY}
+        Log    DEBUG: PAID_BOOKING_STARTED value: '${started}'
+
+        IF    "${started}" == ""    Sleep    0.5s
+    END
+
+    Log    Paid booking test has started, now waiting for completion...
+
+    # Use progressive polling for completion
+    ${end_time}=    Evaluate    time.time() + ${timeout}    modules=time
+    ${check_count}=    Set Variable    0
+    ${start_time}=    Evaluate    time.time()    modules=time
+
+    WHILE    True
+        ${current_time}=    Evaluate    time.time()    modules=time
+        ${elapsed}=    Evaluate    ${current_time} - ${start_time}
+        ${check_count}=    Evaluate    ${check_count} + 1
+
+        IF    ${current_time} > ${end_time}
+            Log    Timeout after ${check_count} checks
+            RETURN    TIMEOUT
+        END
+
+        # Check for successful completion (BOOKING_NUM_FOR_MAIL is set)
+        ${booking_num}=    Get Test Data Variable    BOOKING_NUM_FOR_MAIL    ${EMPTY}
+        ${has_booking_data}=    Run Keyword And Return Status    Should Not Be Empty    ${booking_num}
+
+        IF    ${has_booking_data}
+            ${elapsed_formatted}=    Evaluate    f"{${elapsed}:.1f}"
+            Log    Test completed successfully after ${check_count} checks (${elapsed_formatted}s)
+            RETURN    COMPLETED
+        END
+
+        # Check if test has explicitly marked completion (even if failed)
+        ${completed}=    Get Test Data Variable    PAID_BOOKING_COMPLETED    ${EMPTY}
+        ${failed}=    Get Test Data Variable    PAID_BOOKING_FAILED    ${EMPTY}
+
+        IF    "${completed}" == "True"
+            ${elapsed_formatted}=    Evaluate    f"{${elapsed}:.1f}"
+            Log    Test marked as completed after ${check_count} checks (${elapsed_formatted}s)
+            RETURN    COMPLETED
+        ELSE IF    "${failed}" == "True"
+            ${elapsed_formatted}=    Evaluate    f"{${elapsed}:.1f}"
+            Log    Test failed after ${check_count} checks (${elapsed_formatted}s)
+            RETURN    FAILED
+        END
+
+        # Progressive polling intervals
+        IF    ${elapsed} < 180    # First 3 minutes
+            Sleep    5s    # Check every 5 seconds
+        ELSE IF    ${elapsed} < 240    # 3-4 minutes
+            Sleep    2s    # Check every 2 seconds (getting close)
+        ELSE    # After 4 minutes
+            Sleep    1s    # Check every second (should complete soon)
+        END
     END

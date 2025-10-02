@@ -12,6 +12,7 @@ Resource            ${CURDIR}/PO/Common/topNav.robot
 Resource            ${CURDIR}/PO/Admin/admin_notifications.robot
 Resource            ${CURDIR}/PO/Admin/admin_notifications_create_page.robot
 
+Suite Setup         Run Only Once    create_data.Create robot test data
 Test Setup          User opens desktop browser to landing page
 Test Teardown       Complete Test Teardown
 
@@ -239,7 +240,7 @@ Admin creates error notifications for both sides
     app_common.Verify notification banner message is not visible
 
 Admin creates notification and archive and deletes notification for both sides
-    [Documentation]    In this test we dont check every step of the notification creation process.
+    [Documentation]    In this test we don't check every step of the notification creation process.
     ...    We avoid double checking the same parts as in "Admin creates normal notifications for both sides" test.
     [Tags]    serialonly
     common_setups_teardowns.Complete Combined Test Setup

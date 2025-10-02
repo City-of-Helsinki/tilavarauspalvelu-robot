@@ -6,6 +6,7 @@ Resource            ${CURDIR}/Resources/common_setups_teardowns.robot
 Resource            ${CURDIR}/PO/Common/topNav.robot
 Resource            ${CURDIR}/PO/App/app_common.robot
 
+Suite Setup         Run Only Once    create_data.Create robot test data
 Test Setup          User opens iphone webkit to landing page
 Test Teardown       Complete Test Teardown
 
@@ -16,7 +17,6 @@ User logs in and out with suomi_fi
     app_common.User logs in with suomi_fi mobile
     app_common.User logs out mobile
     app_common.User confirms log out mobile
-    # [Teardown]    Run Keywords    Run Keyword If Test Failed    Take Screenshot    EMBED    AND    Release Test Data
 
 User can make free single booking and modifies it
     common_setups_teardowns.Complete iPhone Mobile Test Setup

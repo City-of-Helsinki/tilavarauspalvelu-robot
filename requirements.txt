@@ -16,3 +16,6 @@ google-auth-oauthlib==1.2.1
 
 # HTML/XML parsing for web scraping and content validation
 beautifulsoup4==4.13.3
+
+# HTTP requests library for Robot Framework API testing
+robotframework-requests==0.9.7

@@ -13,6 +13,7 @@ Resource            ${CURDIR}/PO/Common/topNav.robot
 Resource            ${CURDIR}/PO/Admin/admin_notifications.robot
 Resource            ${CURDIR}/PO/Admin/admin_notifications_create_page.robot
 
+Suite Setup         Run Only Once    create_data.Create robot test data
 Test Setup          User opens desktop browser to landing page
 Test Teardown       Complete Test Teardown
 

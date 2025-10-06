@@ -148,7 +148,7 @@ ${RECURRING_BOOKING_NAME}                                           Kausivaraus 
 ${RECURRING_BOOKING_UNIT_COUNT_TEXT}                                2 tilaa valittuna
 
 ${RECURRING_BOOKING_AGE_GROUP_TEXT}                                 18 - 24
-${RECURRING_BOOKING_PURPOSE_TEXT}                                   Harrasta yhdessä
+${RECURRING_BOOKING_PURPOSE_TEXT}                                   Harrastustoiminta, muu
 
 ${RECURRING_BOOKING_RESERVATION_PER_WEEK}                           1
 ${RECURRING_BOOKING_MIN_LENGTH_TEXT}                                30 minuuttia

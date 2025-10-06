@@ -74,23 +74,28 @@ Apply Global Header To Context Config
 
     ${waf_header_enabled}=    Get Variable Value    ${ENABLE_WAF_BYPASS_HEADER}    ${TRUE}
     IF    ${waf_header_enabled}
-        # Temporarily suppress logging to prevent secret from being logged
+        # Temporarily suppress logging
         ${original_log_level}=    Set Log Level    NONE
+
+        # Retrieve secret from variables or environment
         ${secret_from_env}=    Get Environment Variable    WAF_BYPASS_SECRET    default=${EMPTY}
         ${secret}=    Set Variable If    "${WAF_BYPASS_SECRET}"!=""    ${WAF_BYPASS_SECRET}    ${secret_from_env}
+
+        # Apply the header if secret exists
+        IF    "${secret}" != ""
+            ${headers}=    Create Dictionary    ${WAF_BYPASS_HEADER_NAME}=${secret}
+            Set To Dictionary    ${context_config}    extraHTTPHeaders=${headers}
+        END
+
+        # Restore original log level after all sensitive operations
         Set Log Level    ${original_log_level}
 
+        # Now safe to log messages
         IF    "${secret}" == ""
             Log
             ...    ENABLE_WAF_BYPASS_HEADER is True but no secret provided in ${WAF_BYPASS_SECRET} nor env WAF_BYPASS_SECRET
             ...    WARN
         ELSE
-            # Temporarily suppress logging to prevent secret from being logged
-            ${original_log_level}=    Set Log Level    NONE
-            ${headers}=    Create Dictionary    ${WAF_BYPASS_HEADER_NAME}=${secret}
-            Set To Dictionary    ${context_config}    extraHTTPHeaders=${headers}
-            Set Log Level    ${original_log_level}
-
             Log    🛡️ Added global WAF bypass header to browser context config
         END
     END
@@ -108,9 +113,7 @@ Apply Staggered Startup Strategy
     Log    📋 Test: ${test_name}
     Log    📁 Suite: ${suite_name}
     Log    🌐 URL: ${input_URL}
-    IF    $download_dir
-        Log    📂 Download Dir: ${download_dir}
-    END
+    IF    $download_dir    Log    📂 Download Dir: ${download_dir}
 
     # Staggered startup strategy for parallel execution
     ${pool_id}=    Get Variable Value    ${PABOTEXECUTIONPOOLID}    ${NONE}

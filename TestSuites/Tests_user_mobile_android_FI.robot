@@ -8,6 +8,7 @@ Resource            ${CURDIR}/PO/App/app_user.robot
 Resource            ${CURDIR}/Resources/common_setups_teardowns.robot
 Resource            ${CURDIR}/PO/Common/topNav.robot
 
+Suite Setup         Run Only Once    create_data.Create robot test data
 Test Setup          User opens android chrome to landing page
 Test Teardown       Complete Test Teardown
 

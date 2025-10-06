@@ -8,6 +8,7 @@ Resource            ${CURDIR}/PO/Admin/admin_my_units.robot
 Resource            ${CURDIR}/Resources/common_setups_teardowns.robot
 Resource            ${CURDIR}/PO/Common/login.robot
 
+Suite Setup         Run Only Once    create_data.Create robot test data
 Test Setup          Admin opens desktop browser to landing page
 Test Teardown       Complete Test Teardown
 

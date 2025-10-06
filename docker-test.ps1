@@ -48,7 +48,7 @@ function Validate-EnvSecrets {
     
     Write-Info "Validating secrets in .env file..."
     
-    $requiredVars = @("WAF_BYPASS_SECRET", "ACCESS_TOKEN", "REFRESH_TOKEN", "CLIENT_ID", "CLIENT_SECRET")
+    $requiredVars = @("WAF_BYPASS_SECRET", "ACCESS_TOKEN", "REFRESH_TOKEN", "CLIENT_ID", "CLIENT_SECRET", "ROBOT_API_TOKEN")
     $missing = @()
     $found = @()
     

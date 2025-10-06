@@ -7,11 +7,13 @@ Resource            ${CURDIR}/Resources/variables.robot
 Resource            ${CURDIR}/Resources/texts_FI.robot
 Resource            ${CURDIR}/PO/App/mail.robot
 Resource            ${CURDIR}/Resources/common_setups_teardowns.robot
+Resource            ${CURDIR}/Resources/parallel_test_data.robot
 Resource            ${CURDIR}/PO/Common/topNav.robot
 Resource            ${CURDIR}/PO/Common/login.robot
 Resource            ${CURDIR}/PO/User/user_landingpage.robot
 Resource            ${CURDIR}/PO/Common/popups.robot
 
+Suite Setup         Run Only Once    create_data.Create robot test data
 Test Setup          User opens desktop browser to landing page
 Test Teardown       Complete Test Teardown
 
@@ -118,55 +120,60 @@ User can make paid single booking with interrupted checkout
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
 User can make paid single booking
-    # Acquire lock to ensure email test waits for this test to complete
+    Mark Paid Booking Test Started
+
+    # Acquire lock to ensure email test waits
     Acquire Lock    PAID_BOOKING_EMAIL_SEQUENCE
 
-    common_setups_teardowns.Complete Desktop User Test Setup
-    app_common.User logs in with suomi_fi
+    TRY
+        common_setups_teardowns.Complete Desktop User Test Setup
+        app_common.User logs in with suomi_fi
 
-    app_user.User navigates to single booking page
-    app_user.User uses search to find right unit    ${CURRENT_ALWAYS_PAID_UNIT}
-    app_user.User selects the time with quick reservation
-    app_user.User fills the reservation info for unit with payment
-    app_user.User checks the paid reservation info is right and submits
-    app_user.User checks info in paid checkout and confirms booking
-    app_user.User checks the paid reservation info is right after checkout
-    topNav.Navigate to my bookings
-    app_user.User can see upcoming booking in list and clicks it
-    ...    ${CURRENT_ALWAYS_PAID_UNIT_WITH_LOCATION}
-    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
-    app_user.User checks the paid reservation info is right in reservations
-    ...    ${MYBOOKINGS_STATUS_CONFIRMED}
-    ...    ${MYBOOKINGS_STATUS_PAID_CONFIRMED}
-    ...    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
-    ...    ${TIME_OF_QUICK_RESERVATION}
-    ...    ${BOOKING_NUM_ONLY}
-    app_user.User cancel booking in reservations and checks it got cancelled
-    Sleep    10s    # Waiting for the status payment to change
-    topNav.Navigate to my bookings
-    app_user.User checks cancelled booking is found
-    ...    ${CURRENT_ALWAYS_PAID_UNIT_WITH_LOCATION}
-    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
-    app_user.User checks the paid reservation info is right in reservations
-    ...    ${IN_RESERVATIONS_STATUS_CANCELED}
-    ...    ${MYBOOKINGS_STATUS_REFUNDED}
-    ...    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
-    ...    ${TIME_OF_QUICK_RESERVATION}
-    ...    ${BOOKING_NUM_ONLY}
-#
-    # If this is set to true mail test will be skipped. By default it is set to true
-    Store Test Data Variable    MAIL_TEST_TRIGGER    False
+        app_user.User navigates to single booking page
+        app_user.User uses search to find right unit    ${CURRENT_ALWAYS_PAID_UNIT}
+        app_user.User selects the time with quick reservation
+        app_user.User fills the reservation info for unit with payment
+        app_user.User checks the paid reservation info is right and submits
+        app_user.User checks info in paid checkout and confirms booking
+        app_user.User checks the paid reservation info is right after checkout
+        topNav.Navigate to my bookings
+        app_user.User can see upcoming booking in list and clicks it
+        ...    ${CURRENT_ALWAYS_PAID_UNIT_WITH_LOCATION}
+        ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
+        app_user.User checks the paid reservation info is right in reservations
+        ...    ${MYBOOKINGS_STATUS_CONFIRMED}
+        ...    ${MYBOOKINGS_STATUS_PAID_CONFIRMED}
+        ...    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
+        ...    ${TIME_OF_QUICK_RESERVATION}
+        ...    ${BOOKING_NUM_ONLY}
+        app_user.User cancel booking in reservations and checks it got cancelled
+        Sleep    10s    # Waiting for the status payment to change
+        topNav.Navigate to my bookings
+        app_user.User checks cancelled booking is found
+        ...    ${CURRENT_ALWAYS_PAID_UNIT_WITH_LOCATION}
+        ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
+        app_user.User checks the paid reservation info is right in reservations
+        ...    ${IN_RESERVATIONS_STATUS_CANCELED}
+        ...    ${MYBOOKINGS_STATUS_REFUNDED}
+        ...    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
+        ...    ${TIME_OF_QUICK_RESERVATION}
+        ...    ${BOOKING_NUM_ONLY}
 
-    # Store all mail-related data in one consolidated call
-    parallel_test_data.Store Mail Test Data
-    ...    ${BOOKING_NUM_ONLY}
-    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
-    ...    ${CURRENT_ALWAYS_PAID_UNIT}
-    ...    ${EMPTY}
-    ...    ${EMPTY}
+        # Store mail data for email if test got this far successfully
+        Store Test Data Variable    BOOKING_NUM_FOR_MAIL    ${BOOKING_NUM_ONLY}
+        Store Test Data Variable    TIME_FOR_MAIL    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
+        Store Test Data Variable    UNIT_NAME_FOR_MAIL    ${CURRENT_ALWAYS_PAID_UNIT}
 
-    # Release lock to allow email test to proceed
-    Release Lock    PAID_BOOKING_EMAIL_SEQUENCE
+        Mark Paid Booking Test Completed
+    EXCEPT    AS    ${error}
+        Log    Paid booking test failed: ${error}
+        # Mark test as failed so email test doesn't run
+        Mark Paid Booking Test Failed
+        Fail    ${error}
+    FINALLY
+        # Always release lock
+        Release Lock    PAID_BOOKING_EMAIL_SEQUENCE
+    END
 
 User can make subvented single booking that requires handling
     common_setups_teardowns.Complete Desktop User Test Setup
@@ -265,32 +272,40 @@ User can make free single booking and check info from downloaded calendar file
 Check emails from reservations
     [Documentation]    Waits for paid booking test to complete, then verifies reservation emails.
     ...    This test depends on 'User can make paid single booking' completing successfully first.
-    ...    ###
-    ...    Without pabot run -->
-    ...    ###
-    ...    If test - User can make paid single booking didnt set 'MAIL_TEST_TRIGGER' value to False this test is skipped.
-    ...    Default value true skips this test
-    ...    'NUMBER_OF_RESERVATION_FOR_MAIL_TEST' and 'TIME_OF_RESERVATION_FOR_MAIL_TEST' are set in test --> 'User can make paid single booking'
+    ...    Uses synchronization with polling to ensure proper test ordering.
 
     ${skip_message}=    Catenate
     ...    Test is being skipped because 'User can make paid single booking' test either failed or did not complete successfully.
     ...    Without a successful test, there may not be valid emails to verify.
 
-    # Wait automatically for paid booking test to complete and release the lock
-    Log    Waiting for paid booking test to complete before checking emails...
+    # Wait for the paid booking test to complete first
+    ${status}=    Wait For Paid Booking Completion    timeout=300
+
+    IF    "${status}" == "NOT_STARTED"
+        Skip    Paid booking test is not part of this test run
+    ELSE IF    "${status}" == "TIMEOUT"
+        Skip    Paid booking test did not complete within timeout
+    END
+
+    # Now check if the test succeeded by checking for required data
+    ${booking_num}=    Get Test Data Variable    BOOKING_NUM_FOR_MAIL    ${EMPTY}
+    ${has_booking_data}=    Run Keyword And Return Status    Should Not Be Empty    ${booking_num}
+
+    IF    not ${has_booking_data}
+        Log    No booking data found - paid booking test likely failed
+        Skip    ${skip_message}
+    END
+
+    # Now acquire the lock (paid booking test has finished successfully)
+    Log    Acquiring lock after paid booking test completion...
     Acquire Lock    PAID_BOOKING_EMAIL_SEQUENCE
 
-    ${mail_test_trigger}=    Get Test Data Variable    MAIL_TEST_TRIGGER    True
-    IF    "${mail_test_trigger}" == "True"    Skip    ${skip_message}
+    # Get data for mail test. This is set in the paid booking test.
+    ${booking_num_for_mail}=    Get Test Data Variable    BOOKING_NUM_FOR_MAIL
+    ${time_for_mail}=    Get Test Data Variable    TIME_FOR_MAIL
+    ${unit_name_for_mail}=    Get Test Data Variable    UNIT_NAME_FOR_MAIL
 
-    # Get all mail-related data in one consolidated call
-    ${booking_num_for_mail}
-    ...    ${time_for_mail}
-    ...    ${unit_name_for_mail}
-    ...    ${formatted_start_time}
-    ...    ${formatted_end_time}=
-    ...    parallel_test_data.Get Mail Test Data
-
+    # Process emails
     mail.Check emails from reservations    ${booking_num_for_mail}
     mail.Format reservation time for email texts and receipts    ${time_for_mail}
     mail.Verify reservation confirmation email    ${booking_num_for_mail}
@@ -298,7 +313,6 @@ Check emails from reservations
     mail.Verify refund email for paid reservation    ${booking_num_for_mail}
     mail.Verify payment receipt email    ${booking_num_for_mail}
 
-    # Release lock after email verification is complete
     Release Lock    PAID_BOOKING_EMAIL_SEQUENCE
 
 User makes recurring reservation

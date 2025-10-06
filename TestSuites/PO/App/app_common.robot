@@ -4,6 +4,7 @@ Resource    ../../Resources/variables.robot
 Resource    ../../Resources/users.robot
 Resource    ../../Resources/texts_FI.robot
 Resource    ../../Resources/custom_keywords.robot
+Resource    ../../create_data.robot
 Resource    ../User/user_landingpage.robot
 Resource    ../Admin/admin_landingpage.robot
 Resource    ../Common/topNav.robot
@@ -28,6 +29,7 @@ User opens desktop browser to django admin
 
 User opens desktop browser to landing page
     # Default is chrome
+
     devices.Set up chromium desktop browser and open url    ${URL_TEST}    ${DOWNLOAD_DIR}
     user_landingpage.Check the user landing page h1    ${USER_LANDING_PAGE_H1_TEXT}
 
@@ -134,6 +136,7 @@ User logs in with suomi_fi mobile
 
 Admin opens desktop browser to landing page
     # Default is chrome
+    # create_data.Create robot test data
     devices.Set up chromium desktop browser and open url    ${URL_ADMIN}    ${DOWNLOAD_DIR}
     admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_NOT_LOGGED_IN}
 

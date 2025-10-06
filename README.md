@@ -28,6 +28,7 @@ Before running tests, you need to acquire these secrets:
 
 - **Google OAuth Credentials** (for email verification tests)
 - **WAF Bypass Secret** for web application firewall
+- **Robot API Token** for test data creation endpoint
 
 📖 **See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed setup instructions**
 
@@ -122,7 +123,7 @@ To view the reports, open the `report.html` HTML file in your browser after test
 
 > **⚠️ WIP (Work In Progress)**: Email authentication system is being refactored. The current `.env` file structure and email-related environment variables may change in future versions.
 
-**📧 Note**: All secrets (`ACCESS_TOKEN`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`, `WAF_BYPASS_SECRET`) are loaded from your `.env` file using Docker's `--env-file` parameter.
+**📧 Note**: All secrets (`ACCESS_TOKEN`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`, `WAF_BYPASS_SECRET`, `ROBOT_API_TOKEN`) are loaded from your `.env` file using Docker's `--env-file` parameter.
 
 ## 🔑 Environment File (.env) Location
 
@@ -358,6 +359,7 @@ For GitHub Actions, add the following secrets to your repository:
    - `CLIENT_ID`
    - `CLIENT_SECRET`
    - `WAF_BYPASS_SECRET`
+   - `ROBOT_API_TOKEN`
 
 ## 📁 Project Structure
 

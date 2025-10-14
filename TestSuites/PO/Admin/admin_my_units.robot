@@ -53,6 +53,16 @@ Admin clicks calendar open in own units
 Admin clicks make reservation
     Click    span:has-text("Tee varaus")
 
+Admin checks make reservation button is disabled
+    ${button_selector}=    Set Variable    button:has-text("Tee varaus")
+    Wait For Elements State    ${button_selector}    visible
+    ${disabled_state}=    Get Attribute    ${button_selector}    disabled    ==    ${None}
+    Log    Button disabled attribute: ${disabled_state}
+    Should Not Be Equal
+    ...    ${disabled_state}
+    ...    ${None}
+    ...    msg=Button should be disabled but disabled attribute is missing
+
 Admin selects unit from reservation units dropdown
     [Arguments]    ${units_location}
     Wait For Elements State    [aria-label*="Varausyksikkö"]    visible

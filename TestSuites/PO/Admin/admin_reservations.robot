@@ -200,6 +200,16 @@ Admin selects reservation unit
     Sleep    500ms
     Wait For Load State    load    timeout=15s
 
+Admin open access code modal
+    Click    id=reservation__access-type
+    # Wait for the modal to open
+    Sleep    500ms
+
+Admin changes access code
+    Click    [data-testid="AccessCodeChangeRepairButton--open-dialog"]
+    # Wait for the modal to open
+    Sleep    1s
+
 ###
 # Dialog window
 ###
@@ -263,6 +273,16 @@ Admin enters reservation time and type of reservation
     Sleep    500ms
 
     Click    ${type_of_reservation}
+
+Admin clicks confirm access code button
+    Click    [data-testid="AccessCodeChangeRepairButton__ConfirmationDialog--accept"]
+    # Wait for the modal to open
+    Sleep    500ms
+
+Admin closes dialog modal
+    Click    id=info-dialog >> [data-testid="CreateReservationModal__cancel-reservation"]
+    # waiting for the dialog to close
+    Sleep    1s
 
 ###
 # Reservation calendar

@@ -43,7 +43,7 @@ Admin creates normal notifications for both sides
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_NORMAL}
     #
-    app_common.Open new window from admin side to user side and saves both windows
+    app_common.Open new window from admin side to user side and saves both windows    ${URL_TEST}
     app_common.Verify notification banner message
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_NORMAL}
@@ -117,7 +117,7 @@ Admin creates warning notifications for both sides
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_WARNING}
     #
-    app_common.Open new window from admin side to user side and saves both windows
+    app_common.Open new window from admin side to user side and saves both windows    ${URL_TEST}
     app_common.Verify notification banner message
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_WARNING}
@@ -190,7 +190,7 @@ Admin creates error notifications for both sides
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_ERROR}
     #
-    app_common.Open new window from admin side to user side and saves both windows
+    app_common.Open new window from admin side to user side and saves both windows    ${URL_TEST}
     app_common.Verify notification banner message
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_ERROR}
@@ -276,7 +276,7 @@ Admin creates notification and archive and deletes notification for both sides
     Log    Admin verifies notification banner is drafted and not visible
     app_common.Verify notification banner message is not visible
 
-    app_common.Open new window from admin side to user side and saves both windows
+    app_common.Open new window from admin side to user side and saves both windows    ${URL_TEST}
     Switch page    ${PAGE_USER_SIDE}
     app_common.Verify notification banner message is not visible
     Switch page    ${PAGE_ADMIN_SIDE}

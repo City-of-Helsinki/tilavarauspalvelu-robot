@@ -164,6 +164,16 @@ ${NOTIFICATION_BANNER_MESSAGE_NAME}                     ${EMPTY}    # Normaali (
 ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}                  ${EMPTY}    # Normaali (sininen) + random value Z6
 
 ###
+# ADMINROLES
+###
+
+${ADMIN_ROLE_ADMIN}                                     ADMIN
+${ADMIN_ROLE_HANDLER}                                   HANDLER
+${ADMIN_ROLE_VIEWER}                                    VIEWER
+${ADMIN_ROLE_RESERVER}                                  RERSERVER
+${ADMIN_ROLE_NOTIFICATION_MANAGER}                      NOTIFICATION MANAGER
+
+###
 #
 ###
 

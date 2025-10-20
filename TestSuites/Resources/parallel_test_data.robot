@@ -66,9 +66,16 @@ Initialize Test Data
                 Set User Variables From Value Set
                 Log    ✓ User variables set from value set
             ELSE IF    '${data_type}' == 'admin-test-data'
-                # ADMIN-ONLY SUITES: Set only admin variables
+                # ADMIN SUITES: Set admin variables, and check for additional variables
                 Set Admin Variables From Value Set
-                Log    ✓ Admin variables set from value set
+                # Check if this set also has Django admin variables (for permission tests)
+                ${has_django_admin}=    Run Keyword And Return Status    Get Value From Set    DJANGO_ADMIN_EMAIL
+                IF    ${has_django_admin}
+                    Set Django Admin Variables From Value Set
+                    Log    ✓ Admin and Django admin variables set from value set
+                ELSE
+                    Log    ✓ Admin variables set from value set
+                END
             ELSE IF    '${data_type}' == 'combined-test-data'
                 # COMBINED SUITES: Set both user and admin variables
                 Set User Variables From Value Set
@@ -155,12 +162,14 @@ Get User Index For Test
             RETURN    0    # Default fallback
         END
 
-        # ADMIN SUITE TESTS (indices 0-1)
+        # ADMIN SUITE TESTS (indices 0-2)
     ELSE IF    'Tests admin desktop FI' in '${suite_name}'
         IF    'Admin logs in with suomi_fi' in '${test_name}'
             RETURN    0
         ELSE IF    'Admin verifies all reservation types' in '${test_name}'
             RETURN    1
+        ELSE IF    'Admin checks permissions' in '${test_name}'
+            RETURN    2    # Uses admin-test-data-set-2 (includes DJANGO_ADMIN variables)
         ELSE
             RETURN    0    # Default fallback
         END
@@ -351,6 +360,22 @@ Set Admin Variables From Value Set
     Set Test Variable    ${ADMIN_CURRENT_USER_HETU}    ${admin_hetu}
     Set Test Variable    ${ADMIN_CURRENT_USER_FULLNAME}    ${admin_fullname}
     Set Test Variable    ${ADMIN_CURRENT_USER_PASSWORD}    ${admin_password}
+
+Set Django Admin Variables From Value Set
+    [Documentation]    Sets Django admin variables from the PabotLib value set (for permission tests)
+    ${django_email}=    Get Value From Set    DJANGO_ADMIN_EMAIL
+    ${django_first_name}=    Get Value From Set    DJANGO_ADMIN_FIRST_NAME
+    ${django_last_name}=    Get Value From Set    DJANGO_ADMIN_LAST_NAME
+    ${django_hetu}=    Get Value From Set    DJANGO_ADMIN_HETU
+    ${django_fullname}=    Get Value From Set    DJANGO_ADMIN_FULLNAME
+    ${django_password}=    Get Value From Set    DJANGO_ADMIN_PASSWORD
+
+    Set Test Variable    ${DJANGO_ADMIN_EMAIL}    ${django_email}
+    Set Test Variable    ${DJANGO_ADMIN_FIRST_NAME}    ${django_first_name}
+    Set Test Variable    ${DJANGO_ADMIN_LAST_NAME}    ${django_last_name}
+    Set Test Variable    ${DJANGO_ADMIN_HETU}    ${django_hetu}
+    Set Test Variable    ${DJANGO_ADMIN_FULLNAME}    ${django_fullname}
+    Set Test Variable    ${DJANGO_ADMIN_PASSWORD}    ${django_password}
 
 # =============================================================================
 # MAIL TEST DATA MANAGEMENT (for cross-test data sharing)

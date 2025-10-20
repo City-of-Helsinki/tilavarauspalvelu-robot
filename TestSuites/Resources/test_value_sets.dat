@@ -184,8 +184,29 @@ ADMIN_CURRENT_USER_FULLNAME=Pekka Virtanen
 ADMIN_CURRENT_USER_PASSWORD=Virtanen
 CURRENT_PASSWORD=Virtanen
 
+[admin-test-data-set-2]
+# TEST: "Admin checks permissions" (Tests_admin_desktop_FI.robot)
+# DESCRIPTION: Django admin modifies admin user's permissions to notification manager role
+tags=admin-test-data-set-2,admin-test-data,admin-data,admin,permissions
+# Admin user whose permissions are being modified
+ADMIN_CURRENT_USER_EMAIL=qfaksi+marika@gmail.com
+ADMIN_CURRENT_USER_HETU=140785-932R
+ADMIN_CURRENT_USER_PHONE=+35840123669
+ADMIN_CURRENT_USER_FIRST_NAME=Marika
+ADMIN_CURRENT_USER_LAST_NAME=Salminen
+ADMIN_CURRENT_USER_FULLNAME=Marika Salminen
+ADMIN_CURRENT_USER_PASSWORD=Salminen
+# Django admin who performs the permission changes
+DJANGO_ADMIN_EMAIL=qfaksi+kari@gmail.com
+DJANGO_ADMIN_HETU=150875-9345
+DJANGO_ADMIN_FIRST_NAME=Kari
+DJANGO_ADMIN_LAST_NAME=Kekkonen
+DJANGO_ADMIN_FULLNAME=Kari Kekkonen
+DJANGO_ADMIN_PASSWORD=Kekkonen
+
 # =============================================================================
-# COMBINED ADMIN+USER TESTS - Tests_users_with_admin_desktop.robot (4+ tests)
+# COMBINED ADMIN+USER TESTS
+# Used by: Tests_users_with_admin_desktop.robot, Tests_admin_notifications_serial.robot
 # =============================================================================
 
 [combined-test-data-set-0]
@@ -445,13 +466,6 @@ CURRENT_USER_FIRST_NAME=Antti
 CURRENT_USER_LAST_NAME=Koskinen
 CURRENT_USER_FULLNAME=Antti Koskinen
 CURRENT_PASSWORD=Koskinen
-# Admin assignment for this test
-ADMIN_CURRENT_USER_EMAIL=qfaksi+marika@gmail.com
-ADMIN_CURRENT_USER_HETU=140785-932R
-ADMIN_CURRENT_USER_FIRST_NAME=Marika
-ADMIN_CURRENT_USER_LAST_NAME=Salminen
-ADMIN_CURRENT_USER_FULLNAME=Marika Salminen
-ADMIN_CURRENT_USER_PASSWORD=Salminen
 
 # Alternative admin assignment for this test
 ADMIN_CURRENT_USER_EMAIL_ALT=qfaksi+esa@gmail.com

@@ -85,24 +85,111 @@ Admin edits reservation time
     admin_reservations.Admin checks reservation title tagline    ${RESERVATION_TAGLINE}
     admin_reservations.Admin checks reservation status    ${MYBOOKINGS_STATUS_CONFIRMED}
 
-Admin navigates to own units and selects unit
+Admin navigates to own units and selects unit group
     # TODO: separate this to two keywords
-    [Arguments]    ${unit_name}
+    [Arguments]    ${unit_group_name}
     admin_navigation_menu.Admin navigates to my units
-    admin_my_units.Admin searches own unit and clicks it    ${UNIT_LOCATION}
+    admin_my_units.Admin searches own unit and clicks it    ${unit_group_name}
     # TODO: old version for using calendar UI
     # admin_my_units.Admin clicks calendar open in own units    ${unit_name}
-    admin_my_units.Admin clicks make reservation
-    admin_my_units.Admin selects unit from reservation units dropdown    ${unit_name}
+    # admin_my_units.Admin clicks make reservation
+    # admin_my_units.Admin selects unit from reservation units dropdown    ${unit_name}
 
 Admin opens make reservation modal and selects unit
     [Arguments]    ${unit_name}
     admin_my_units.Admin clicks make reservation
     admin_my_units.Admin selects unit from reservation units dropdown    ${unit_name}
 
-Admin tries to make reserevation that is unavailable
-    [Arguments]    ${unit_name}
-    admin_my_units.Admin clicks calendar open in own units    ${unit_name}
+Admin checks that reservation cannot be made
+    admin_my_units.Admin checks make reservation button is disabled
+
+###
+# Access code
+###
+
+Admin opens access code modal
+    admin_reservations.Admin open access code modal
+
+Admin changes access code
+    admin_reservations.Admin changes access code
+    admin_reservations.Admin clicks confirm access code button
+    # waiting for the access code to be changed
+    Sleep    3s
+    Wait For Elements State    [data-testid="reservation__info--Ovikoodi"]    visible    timeout=5s
+
+Admin checks access code matches
+    [Documentation]    Verifies that the access code matches the expected value (extracts numbers only).
+    [Arguments]    ${access_code}
+    custom_keywords.Check elements text
+    ...    [data-testid="reservation__info--Ovikoodi"]
+    ...    ${access_code}
+
+Admin checks access code does not match
+    [Documentation]    Verifies that the access code does NOT match the expected value (extracts numbers only).
+    [Arguments]    ${access_code}
+    custom_keywords.Verify element with text is not found
+    ...    [data-testid="reservation__info--Ovikoodi"]
+    ...    ${access_code}
+
+Admin saves access code
+    ${access_code}=    Get Text    [data-testid="reservation__info--Ovikoodi"]
+    Store Test Data Variable    ACCESS_CODE_ADMINSIDE    ${access_code}
+    Set Test Variable    ${ACCESS_CODE_ADMINSIDE}    ${access_code}
+    Log    ${ACCESS_CODE_ADMINSIDE}
+
+###
+###
+
+###
+# Top navigation
+###
+
+Admin checks top navigation for notification manager
+    custom_keywords.Verify element is found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservations/requested"]
+
+Admin checks top navigation for reserver
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/application-rounds"]
+
+Admin checks top navigation for viewer
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/application-rounds"]
+
+Admin checks top navigation for handler
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+
+Admin checks top navigation for admin
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/units"]
+##
+##
 
 Admin navigates to reservations by units and checks reserevation info
     # TODO lets fix this to better keyword
@@ -113,6 +200,15 @@ Admin navigates to reservations by units and checks reserevation info
     app_common.Switch to new tab from current page
     admin_reservations.Admin checks reservation title tagline    ${RESERVATION_TAGLINE}
     admin_reservations.Admin checks reservation user info
+
+Admin clicks make reservation and checks dialog opens
+    admin_my_units.Admin clicks make reservation
+    Sleep    1s
+    Wait For Elements State
+    ...    id=info-dialog
+    ...    visible
+    ...    timeout=5s
+    ...    message=Info dialog should be visible after clicking make reservation button
 
 Admin rejects reservation and checks the status
     admin_reservations.Admin clicks button in reservation page    [data-testid="approval-buttons__reject-button"]

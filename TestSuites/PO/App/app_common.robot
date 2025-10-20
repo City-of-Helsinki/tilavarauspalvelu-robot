@@ -161,6 +161,19 @@ Admin logs out
     # TODO enable these steps when the dropdown has user info again
     # custom_keywords.Check text of element with logging    p    ${USER_LOGOUT_TEXT}
 
+Admin opens desktop browser to django admin
+    # Default is chrome
+    devices.Set up chromium desktop browser and open url    ${URL_DJANGO_ADMIN}    ${DOWNLOAD_DIR}
+    Wait For Load State    load    timeout=15s
+    # Check Text    h1    Ylläpito
+    # h1 on Ylläpito
+    # admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_NOT_LOGGED_IN}
+
+Admin navigates to django admin
+    # Default is chrome
+    Go To    ${URL_DJANGO_ADMIN}
+    Wait For Load State    load    timeout=15s
+
 ###
 # END OF ADMIN TEST SET UP
 ###
@@ -177,6 +190,7 @@ Switch to new tab from current page
     Wait For Load State    load    timeout=15s
 
 Open new window from admin side to user side and saves both windows
+    [Arguments]    ${url}
     # Save the current page
     ${all_pages_before}=    Get Page Ids
     ${admin_id}=    Get From List    ${all_pages_before}    0
@@ -184,12 +198,38 @@ Open new window from admin side to user side and saves both windows
     Log    Admin page handle is ${PAGE_ADMIN_SIDE}
 
     # Open the user side page in a brand new tab
-    ${user_handle}=    New Page    ${URL_TEST}
+    ${user_handle}=    New Page    ${url}
     Wait For Load State    load    timeout=15s
 
     # Save the new page
     Set Suite Variable    ${PAGE_USER_SIDE}    ${user_handle}
     Log    User page handle is ${PAGE_USER_SIDE}
+
+Open django admin in firefox and app admin in chromium
+    [Documentation]    Sets up two separate browsers: Firefox for Django admin and Chromium for app admin
+    [Arguments]    ${django_url}    ${app_url}
+
+    # Set up Firefox browser for Django admin
+    Log    🦊 Setting up Firefox browser for Django admin...
+    devices.Set up firefox desktop browser and open url    ${django_url}    ${DOWNLOAD_DIR}
+
+    # Get and save the Firefox browser ID
+    ${firefox_browsers}=    Get Browser Ids    ACTIVE
+    ${firefox_browser_id}=    Get From List    ${firefox_browsers}    0
+    Set Suite Variable    ${BROWSER_ADMIN_SIDE}    ${firefox_browser_id}
+    Log    Django admin (Firefox) browser ID is ${BROWSER_ADMIN_SIDE}
+
+    # Set up Chromium browser for app admin
+    Log    🌐 Setting up Chromium browser for app admin...
+    devices.Set up chromium desktop browser and open url    ${app_url}    ${DOWNLOAD_DIR}
+
+    # Get and save the Chromium browser ID
+    ${chromium_browsers}=    Get Browser Ids    ACTIVE
+    ${chromium_browser_id}=    Get From List    ${chromium_browsers}    0
+    Set Suite Variable    ${BROWSER_USER_SIDE}    ${chromium_browser_id}
+    Log    App admin (Chromium) browser ID is ${BROWSER_USER_SIDE}
+
+    Log    ✅ Both browsers set up successfully
 
 Reload page
     Reload

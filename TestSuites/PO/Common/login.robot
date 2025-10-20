@@ -40,10 +40,6 @@ Login django admin
     Sleep    2s
     Wait For Load State    load    timeout=60s
 
-    Go To    ${URL_TEST}
-    Sleep    4s
-    Wait For Load State    networkidle    timeout=60s
-
 Login Suomi_fi mobile
     [Arguments]    ${input_hetu}
     Wait For Load State    load    timeout=15s

@@ -53,6 +53,15 @@ Admin clicks calendar open in own units
 Admin clicks make reservation
     Click    span:has-text("Tee varaus")
 
+Admin checks make reservation button is disabled
+    ${button_selector}=    Set Variable    button:has-text("Tee varaus")
+
+    # Verify button is visible and disabled
+    Wait For Elements State    ${button_selector}    visible    timeout=5s
+    Wait For Elements State    ${button_selector}    disabled    timeout=2s
+
+    Log    Button is properly disabled for VIEWER role
+
 Admin selects unit from reservation units dropdown
     [Arguments]    ${units_location}
     Wait For Elements State    [aria-label*="Varausyksikkö"]    visible

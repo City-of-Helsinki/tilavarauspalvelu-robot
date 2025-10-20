@@ -146,7 +146,7 @@ Check reservation age group
 
 Check reservation access code
     [Arguments]    ${access_code}
-    custom_keywords.Check elements text
+    custom_keywords.Check element contains text
     ...    [data-testid="reservation__reservation-info-card__accessType"]
     ...    ${access_code}
 

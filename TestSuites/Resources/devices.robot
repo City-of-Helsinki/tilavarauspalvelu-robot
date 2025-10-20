@@ -224,7 +224,6 @@ Set up firefox desktop browser and open url
     ...    --no-remote
 
     Log    🔧 Firefox Arguments: ${firefox_args}
-    Log    🖥️    Viewport: 1920x1080
     Log    🌍 Locale: ${LOCALE}
 
     # Create new browser and independent context for session isolation
@@ -237,19 +236,12 @@ Set up firefox desktop browser and open url
 
     Log    🔄 Creating independent Firefox context for session isolation...
 
-    ${firefox_prefs}=    Create Dictionary
-    ...    browser.sessionstore.resume_from_crash=${FALSE}
-    ...    datareporting.policy.dataSubmissionEnabled=${FALSE}
-    ...    toolkit.telemetry.reportingpolicy.firstRun=${FALSE}
-
     ${context_config}=    Create Dictionary
-    ...    viewport={'width': 1920, 'height': 1080}
+    ...    viewport={'width': 1440, 'height': 900}
     ...    acceptDownloads=True
     ...    locale=${LOCALE}
     ...    timezoneId=Europe/Helsinki
     ...    ignoreHTTPSErrors=true
-    ...    javaScriptEnabled=True
-    ...    firefoxUserPrefs=${firefox_prefs}
 
     ${context_config}=    Apply Global Header To Context Config    ${context_config}
     ${contextId}=    Create Context With Optional HAR    ${context_config}    FIREFOX
@@ -270,9 +262,7 @@ Set up firefox desktop browser and open url
     Log    ✅ Page loaded successfully
 
     Log current time
-    Log    ================================================================================
-    Log    🎉 FIREFOX SETUP COMPLETED
-    Log    ================================================================================
+    Log    🎉 BROWSER SETUP COMPLETED
 
 Set up iphone 14 and open url
     [Documentation]    Sets up iPhone 14 simulation

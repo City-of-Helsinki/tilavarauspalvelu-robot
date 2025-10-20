@@ -7,7 +7,7 @@ Library             Browser
 
 *** Variables ***
 # HAR Recording Control - Set to ${TRUE} to enable HAR recording
-# WARNING: HAR files can be very large (10-100MB+ per test)
+# NOTE: HAR files can be very large (10-100MB+ per test)
 # Only enable when you need to analyze network traffic
 # NOTE: This setting is overridden by docker-config.json when using Docker
 ${ENABLE_HAR_RECORDING}                                 ${FALSE}
@@ -162,6 +162,16 @@ ${NOTIFICATION_TYPE_WARNING}                            [class*="Notification-mo
 #
 ${NOTIFICATION_BANNER_MESSAGE_NAME}                     ${EMPTY}    # Normaali (sininen) + random value h5
 ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}                  ${EMPTY}    # Normaali (sininen) + random value Z6
+
+###
+# ADMINROLES
+###
+
+${ADMIN_ROLE_ADMIN}                                     ADMIN
+${ADMIN_ROLE_HANDLER}                                   HANDLER
+${ADMIN_ROLE_VIEWER}                                    VIEWER
+${ADMIN_ROLE_RESERVER}                                  RESERVER
+${ADMIN_ROLE_NOTIFICATION_MANAGER}                      NOTIFICATION_MANAGER
 
 ###
 #

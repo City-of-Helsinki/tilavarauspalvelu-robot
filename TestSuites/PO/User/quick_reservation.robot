@@ -99,19 +99,23 @@ Check booking number
     Should Be Equal    ${quick_booking_num}    ${booking_number}
 
 Get access code
+    [Documentation]    Extracts and saves the numeric access code from the element.
     Wait For Elements State    [data-testid="reservation__reservation-info-card__accessType"]    visible
-    ${access_code}=    Get text    [data-testid="reservation__reservation-info-card__accessType"]
-    Store Test Data Variable    ACCESS_CODE    ${access_code}
-    Set Test Variable    ${ACCESS_CODE}    ${access_code}
-    Log    ${ACCESS_CODE}
+    Sleep    2s
+    ${access_code_numbers}=    custom_keywords.Get number from element text
+    ...    [data-testid="reservation__reservation-info-card__accessType"]
+    # Add # at the end as it's required for access code entry in the system
+    ${access_code_with_hash}=    Set Variable    ${access_code_numbers}#
+    Store Test Data Variable    ACCESS_CODE    ${access_code_with_hash}
+    Set Test Variable    ${ACCESS_CODE}    ${access_code_with_hash}
+    Log    Saved access code (with #): ${ACCESS_CODE}
 
 Check access code
     # TODO Change here real selector
     [Arguments]    ${access_code}
-    Wait For Elements State    [data-testid="reservation__reservation-info-card__accessType"]    visible
-    ${quick_access_code}=    Get text    [data-testid="reservation__reservation-info-card__accessType"]
-    Log    access code: ${quick_access_code}, access code should be: ${access_code}
-    Should Be Equal    ${quick_access_code}    ${access_code}
+    custom_keywords.Check number from text is equal to
+    ...    [data-testid="reservation__reservation-info-card__accessType"]
+    ...    ${access_code}
 
 Confirms date picker opens from quick reservation
     Wait For Elements State    id=quick-reservation__date    visible

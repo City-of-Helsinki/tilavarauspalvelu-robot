@@ -63,6 +63,36 @@ Verify element with text is not found
         Fail    Element with text "${wanted_text}" was found but should not be present
     END
 
+Verify element is not found
+    [Documentation]    This keyword verifies that an element identified by the given selector is NOT found on the page.
+    [Arguments]    ${element_selector}
+
+    Log    Verifying that element ${element_selector} is NOT found
+    ${element_count}=    Browser.Get Element Count    ${element_selector}
+    Log    Element count: ${element_count}
+
+    # Fail the test if the element WAS found
+    IF    ${element_count} > 0
+        Fail    Element "${element_selector}" was found but should not be present (count: ${element_count})
+    END
+
+    Log    Element "${element_selector}" is correctly not present on the page
+
+Verify element is found
+    [Documentation]    This keyword verifies that an element identified by the given selector IS found on the page.
+    [Arguments]    ${element_selector}
+
+    Log    Verifying that element ${element_selector} IS found
+    ${element_count}=    Browser.Get Element Count    ${element_selector}
+    Log    Element count: ${element_count}
+
+    # Fail the test if the element was NOT found
+    IF    ${element_count} == 0
+        Fail    Element "${element_selector}" was not found but should be present
+    END
+
+    Log    Element "${element_selector}" is correctly present on the page (count: ${element_count})
+
 Find and click element with exact text using JS
     [Arguments]    ${element_with_text}    ${wanted_text}
     Log    Searching for element with text: ${wanted_text}
@@ -343,6 +373,30 @@ Check number from text is equal to
     ${NUM_FROM_TXT}=    Set Variable    ${number_element_string_num_only}
     Log    ${NUM_FROM_TXT}
     Should Be Equal    ${NUM_FROM_TXT}    ${number_equalTo}
+
+Check number from text is not equal to
+    [Documentation]    Verifies if a number extracted from the specified text element does NOT match the expected value.
+    [Arguments]    ${text_element}    ${number_notEqualTo}
+    Log    Expected number should NOT be: ${number_notEqualTo}
+    Wait For Elements State    ${text_element}    visible
+    ${number_element_string}=    Get text    ${text_element}
+    Log    Original text from element: ${number_element_string}
+    ${number_element_string_num_only}=    Replace String Using Regexp    ${number_element_string}    [^0-9]    ${EMPTY}
+    ${NUM_FROM_TXT}=    Set Variable    ${number_element_string_num_only}
+    Log    Extracted number: ${NUM_FROM_TXT}
+    Should Not Be Equal    ${NUM_FROM_TXT}    ${number_notEqualTo}
+    Log    ✓ Numbers are different: ${NUM_FROM_TXT} != ${number_notEqualTo}
+
+Get number from element text
+    [Documentation]    Extracts only numeric characters from an element's text and returns the number.
+    ...    Returns empty string if no numbers are found.
+    [Arguments]    ${text_element}
+    Wait For Elements State    ${text_element}    visible
+    ${element_text}=    Get text    ${text_element}
+    Log    Original text: ${element_text}
+    ${numbers_only}=    Replace String Using Regexp    ${element_text}    [^0-9]    ${EMPTY}
+    Log    Extracted numbers: ${numbers_only}
+    RETURN    ${numbers_only}
 
 Check elements text with remove non-breaking space
     [Arguments]    ${Element}    ${Expected text}

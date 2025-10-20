@@ -9,7 +9,7 @@ Library             OperatingSystem
 
 *** Variables ***
 ${BASE_URL}             https://varaamo.test.hel.ninja
-${TOKEN}                ${EMPTY}
+${TOKEN}                VT7QH4qoBNQZayi8ZCCX
 ${ENDPOINT}             ${EMPTY}
 ${MAX_RETRIES}          2
 ${RETRY_DELAY}          60    # seconds

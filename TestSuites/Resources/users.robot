@@ -226,7 +226,7 @@ ${COMBINED_USER_MALE2_FULLNAME}             ${COMBINED_USER_MALE2_FIRSTNAME} ${C
 ${COMBINED_USER_MALE2_PASSWORD}             Hakkarainen
 
 # USER 16 (Index 16): Ari Laine - Male
-# ASSIGNED TEST: Tests_users_with_admin_desktop.robot -> "All notification tests (normal, warning, error, archive)"
+# ASSIGNED TEST: Available for other tests
 ${COMBINED_USER_MALE3_EMAIL}                qfaksi+ari@gmail.com
 ${COMBINED_USER_MALE3_HETU}                 190684-907F
 ${COMBINED_USER_MALE3_PHONE}                +35840123669
@@ -396,8 +396,93 @@ ${IPHONE_USER_FEM7_FULLNAME}                ${IPHONE_USER_FEM7_FIRSTNAME} ${IPHO
 ${IPHONE_USER_FEM7_PASSWORD}                Koivisto
 
 ###############################################################################
-#    ADDITIONAL COMBINED TEST USERS (32-33)    #
-#    Tests_users_with_admin_desktop.robot    #
+#    ADMIN USERS    #
+#    KÄSITTELIJÄT    #
+###############################################################################
+
+# ADMIN USER 1: TirehtööriPääkäytäjä Tötterstrom - Primary Admin
+# ASSIGNED TESTS: "Admin logs in with suomi_fi", All notification tests, Fallback for unknown admin tests
+# PÄÄKÄYTTÄJÄ
+${BASIC_ADMIN_MALE_EMAIL}                   qfaksi+tirehtoori@gmail.com
+${BASIC_ADMIN_MALE_HETU}                    120869-9332
+${BASIC_ADMIN_MALE_FIRSTNAME}               Tirehtoori
+${BASIC_ADMIN_MALE_LASTNAME}                Tötterstrom
+${BASIC_ADMIN_MALE_FULLNAME}                ${BASIC_ADMIN_MALE_FIRSTNAME} ${BASIC_ADMIN_MALE_LASTNAME}
+${BASIC_ADMIN_MALE_PASSWORD}                Tötterstrom
+
+# DEVNOTE: Registered user information
+# Tirehtööri-Pääkäyttäjä Tötterström
+# Sex: Male
+# Date of birth: 12.08.1969
+# Age: 54
+
+# DJANGO ADMIN USER: Kari Kekkonen - Django Admin for Permission Tests
+# ASSIGNED TESTS: "Admin checks permissions", Single user mode fallback
+# DJANGO PÄÄKÄYTTÄJÄ
+${BASIC_DJANGO_ADMIN_EMAIL}                 qfaksi+kari@gmail.com
+${BASIC_DJANGO_ADMIN_HETU}                  150875-9345
+${BASIC_DJANGO_ADMIN_FIRSTNAME}             Kari
+${BASIC_DJANGO_ADMIN_LASTNAME}              Kekkonen
+${BASIC_DJANGO_ADMIN_FULLNAME}              ${BASIC_DJANGO_ADMIN_FIRSTNAME} ${BASIC_DJANGO_ADMIN_LASTNAME}
+${BASIC_DJANGO_ADMIN_PASSWORD}              Kekkonen
+
+# DEVNOTE: Registered user information
+# Kari Kekkonen (Django Admin User)
+# Sex: Male
+# Date of birth: 15.08.1975
+# Age: 48
+
+# ADMIN USER 2: Seppo Korhonen - Accept Booking Admin
+# ASSIGNED TEST: "Admin accepts single booking"
+# PÄÄKÄYTTÄJÄ 2
+${COMBINED_ADMIN_ALL_MALE3_EMAIL}           qfaksi+seppo@gmail.com
+${COMBINED_ADMIN_ALL_MALE3_HETU}            280677-905Y
+${COMBINED_ADMIN_ALL_MALE3_FIRSTNAME}       Seppo
+${COMBINED_ADMIN_ALL_MALE3_LASTNAME}        Korhonen
+${COMBINED_ADMIN_ALL_MALE3_FULLNAME}        ${COMBINED_ADMIN_ALL_MALE3_FIRSTNAME} ${COMBINED_ADMIN_ALL_MALE3_LASTNAME}
+${COMBINED_ADMIN_ALL_MALE3_PASSWORD}        Korhonen
+
+# DEVNOTE: Registered user information
+# Seppo Korhonen (Admin User 2)
+# Sex: Male
+# Date of birth: 28.06.1977
+# Age: 46
+
+# ADMIN USER 3: Erkki Nieminen - Decline Booking Admin
+# ASSIGNED TEST: "Admin declines single booking"
+# PÄÄKÄYTTÄJÄ 3
+${COMBINED_ADMIN_ALL_MALE4_EMAIL}           qfaksi+erkki@gmail.com
+${COMBINED_ADMIN_ALL_MALE4_HETU}            141082-907K
+${COMBINED_ADMIN_ALL_MALE4_FIRSTNAME}       Erkki
+${COMBINED_ADMIN_ALL_MALE4_LASTNAME}        Nieminen
+${COMBINED_ADMIN_ALL_MALE4_FULLNAME}        ${COMBINED_ADMIN_ALL_MALE4_FIRSTNAME} ${COMBINED_ADMIN_ALL_MALE4_LASTNAME}
+${COMBINED_ADMIN_ALL_MALE4_PASSWORD}        Nieminen
+
+# DEVNOTE: Registered user information
+# Erkki Nieminen (Admin User 3)
+# Sex: Male
+# Date of birth: 14.10.1982
+# Age: 41
+
+# ADMIN USER 4: Antero Salonen - Available Admin
+# ASSIGNED TEST: Available (not currently assigned to any specific test)
+# PÄÄKÄYTTÄJÄ 4
+${COMBINED_ADMIN_ALL_MALE6_EMAIL}           qfaksi+antero@gmail.com
+${COMBINED_ADMIN_ALL_MALE6_HETU}            221175-907B
+${COMBINED_ADMIN_ALL_MALE6_FIRSTNAME}       Antero
+${COMBINED_ADMIN_ALL_MALE6_LASTNAME}        Salonen
+${COMBINED_ADMIN_ALL_MALE6_FULLNAME}        ${COMBINED_ADMIN_ALL_MALE6_FIRSTNAME} ${COMBINED_ADMIN_ALL_MALE6_LASTNAME}
+${COMBINED_ADMIN_ALL_MALE6_PASSWORD}        Salonen
+
+# DEVNOTE: Registered user information
+# Antero Salonen (Admin User 4)
+# Sex: Male
+# Date of birth: 22.11.1975
+# Age: 48
+
+###############################################################################
+#    ADDITIONAL TEST USERS    #
+#    Available for future tests    #
 ###############################################################################
 
 # USER 32: Laura Virtanen - Female
@@ -420,30 +505,9 @@ ${COMBINED_USER_FEM2_LASTNAME}              Koskinen
 ${COMBINED_USER_FEM2_FULLNAME}              ${COMBINED_USER_FEM2_FIRSTNAME} ${COMBINED_USER_FEM2_LASTNAME}
 ${COMBINED_USER_FEM2_PASSWORD}              Koskinen
 
-###############################################################################
-#    ADMIN USERS    #
-#    KÄSITTELIJÄT    #
-###############################################################################
-
-# ADMIN USER 1: TirehtööriPääkäytäjä Tötterstrom - Primary Admin
-# ASSIGNED TESTS: "Admin logs in with suomi_fi", All notification tests, Fallback for unknown admin tests
+# ADMIN USER: Esa Mattila - Reservation Verification Admin
+# ASSIGNED TEST: Available (previously used for admin verification, now available for future use)
 # PÄÄKÄYTTÄJÄ
-${BASIC_ADMIN_MALE_EMAIL}                   qfaksi+tirehtoori@gmail.com
-${BASIC_ADMIN_MALE_HETU}                    120869-9332
-${BASIC_ADMIN_MALE_FIRSTNAME}               Tirehtoori
-${BASIC_ADMIN_MALE_LASTNAME}                Tötterstrom
-${BASIC_ADMIN_MALE_FULLNAME}                ${BASIC_ADMIN_MALE_FIRSTNAME} ${BASIC_ADMIN_MALE_LASTNAME}
-${BASIC_ADMIN_MALE_PASSWORD}                Tötterstrom
-
-# DEVNOTE: Registered user information
-# Tirehtööri-Pääkäyttäjä Tötterström
-# Sex: Male
-# Date of birth: 12.08.1969
-# Age: 54
-
-# ADMIN USER 2: Esa Mattila - Reservation Verification Admin
-# ASSIGNED TEST: "Admin verifies all reservation types"
-# PÄÄKÄYTTÄJÄ 2
 ${ADMIN_ALL_MALE2_EMAIL}                    qfaksi+esa@gmail.com
 ${ADMIN_ALL_MALE2_HETU}                     050683-935N
 ${ADMIN_ALL_MALE2_FIRSTNAME}                Esa
@@ -452,46 +516,14 @@ ${ADMIN_ALL_MALE2_FULLNAME}                 ${ADMIN_ALL_MALE2_FIRSTNAME} ${ADMIN
 ${ADMIN_ALL_MALE2_PASSWORD}                 Mattila
 
 # DEVNOTE: Registered user information
-# Esa Mattila (Admin User 2)
+# Esa Mattila (Admin User)
 # Sex: Male
 # Date of birth: 05.06.1983
 # Age: 40
 
-# ADMIN USER 3: Seppo Korhonen - Accept Booking Admin
-# ASSIGNED TEST: "Admin accepts single booking"
-# PÄÄKÄYTTÄJÄ 3
-${COMBINED_ADMIN_ALL_MALE3_EMAIL}           qfaksi+seppo@gmail.com
-${COMBINED_ADMIN_ALL_MALE3_HETU}            280677-905Y
-${COMBINED_ADMIN_ALL_MALE3_FIRSTNAME}       Seppo
-${COMBINED_ADMIN_ALL_MALE3_LASTNAME}        Korhonen
-${COMBINED_ADMIN_ALL_MALE3_FULLNAME}        ${COMBINED_ADMIN_ALL_MALE3_FIRSTNAME} ${COMBINED_ADMIN_ALL_MALE3_LASTNAME}
-${COMBINED_ADMIN_ALL_MALE3_PASSWORD}        Korhonen
-
-# DEVNOTE: Registered user information
-# Seppo Korhonen (Admin User 3)
-# Sex: Male
-# Date of birth: 28.06.1977
-# Age: 46
-
-# ADMIN USER 4: Erkki Nieminen - Decline Booking Admin
-# ASSIGNED TEST: "Admin declines single booking"
-# PÄÄKÄYTTÄJÄ 4
-${COMBINED_ADMIN_ALL_MALE4_EMAIL}           qfaksi+erkki@gmail.com
-${COMBINED_ADMIN_ALL_MALE4_HETU}            141082-907K
-${COMBINED_ADMIN_ALL_MALE4_FIRSTNAME}       Erkki
-${COMBINED_ADMIN_ALL_MALE4_LASTNAME}        Nieminen
-${COMBINED_ADMIN_ALL_MALE4_FULLNAME}        ${COMBINED_ADMIN_ALL_MALE4_FIRSTNAME} ${COMBINED_ADMIN_ALL_MALE4_LASTNAME}
-${COMBINED_ADMIN_ALL_MALE4_PASSWORD}        Nieminen
-
-# DEVNOTE: Registered user information
-# Erkki Nieminen (Admin User 4)
-# Sex: Male
-# Date of birth: 14.10.1982
-# Age: 41
-
-# ADMIN USER 5: Hannu Rantala - Available Admin
+# ADMIN USER: Hannu Rantala - Available Admin
 # ASSIGNED TEST: Available (previously used for notifications, now available for future use)
-# PÄÄKÄYTTÄJÄ 5
+# PÄÄKÄYTTÄJÄ
 ${COMBINED_ADMIN_ALL_MALE5_EMAIL}           qfaksi+hannu@gmail.com
 ${COMBINED_ADMIN_ALL_MALE5_HETU}            070590-905C
 ${COMBINED_ADMIN_ALL_MALE5_FIRSTNAME}       Hannu
@@ -500,30 +532,14 @@ ${COMBINED_ADMIN_ALL_MALE5_FULLNAME}        ${COMBINED_ADMIN_ALL_MALE5_FIRSTNAME
 ${COMBINED_ADMIN_ALL_MALE5_PASSWORD}        Rantala
 
 # DEVNOTE: Registered user information
-# Hannu Rantala (Admin User 5)
+# Hannu Rantala (Admin User)
 # Sex: Male
 # Date of birth: 07.05.1990
 # Age: 33
 
-# ADMIN USER 6: Antero Salonen - Available Admin
+# ADMIN USER: Matti Koskinen - Available Admin
 # ASSIGNED TEST: Available (not currently assigned to any specific test)
-# PÄÄKÄYTTÄJÄ 6
-${COMBINED_ADMIN_ALL_MALE6_EMAIL}           qfaksi+antero@gmail.com
-${COMBINED_ADMIN_ALL_MALE6_HETU}            221175-907B
-${COMBINED_ADMIN_ALL_MALE6_FIRSTNAME}       Antero
-${COMBINED_ADMIN_ALL_MALE6_LASTNAME}        Salonen
-${COMBINED_ADMIN_ALL_MALE6_FULLNAME}        ${COMBINED_ADMIN_ALL_MALE6_FIRSTNAME} ${COMBINED_ADMIN_ALL_MALE6_LASTNAME}
-${COMBINED_ADMIN_ALL_MALE6_PASSWORD}        Salonen
-
-# DEVNOTE: Registered user information
-# Antero Salonen (Admin User 6)
-# Sex: Male
-# Date of birth: 22.11.1975
-# Age: 48
-
-# ADMIN USER 7: Matti Koskinen - Available Admin
-# ASSIGNED TEST: Available (not currently assigned to any specific test)
-# PÄÄKÄYTTÄJÄ 7
+# PÄÄKÄYTTÄJÄ
 ${COMBINED_ADMIN_ALL_MALE7_EMAIL}           qfaksi+matti@gmail.com
 ${COMBINED_ADMIN_ALL_MALE7_HETU}            090385-907F
 ${COMBINED_ADMIN_ALL_MALE7_FIRSTNAME}       Matti
@@ -532,9 +548,26 @@ ${COMBINED_ADMIN_ALL_MALE7_FULLNAME}        ${COMBINED_ADMIN_ALL_MALE7_FIRSTNAME
 ${COMBINED_ADMIN_ALL_MALE7_PASSWORD}        Koskinen
 
 # DEVNOTE: Registered user information
-# Matti Koskinen (Admin User 7)
+# Matti Koskinen (Admin User)
 # Sex: Male
 # Date of birth: 09.03.1985
+# Age: 38
+
+# ADMIN USER: Marika Salminen - Permission Test Admin
+# ASSIGNED TEST: "Admin checks permissions" - Admin whose permissions are being modified
+# PÄÄKÄYTTÄJÄ
+${PERMISSION_TEST_ADMIN_EMAIL}              qfaksi+marika@gmail.com
+${PERMISSION_TEST_ADMIN_HETU}               140785-932R
+${PERMISSION_TEST_ADMIN_PHONE}              +35840123669
+${PERMISSION_TEST_ADMIN_FIRSTNAME}          Marika
+${PERMISSION_TEST_ADMIN_LASTNAME}           Salminen
+${PERMISSION_TEST_ADMIN_FULLNAME}           ${PERMISSION_TEST_ADMIN_FIRSTNAME} ${PERMISSION_TEST_ADMIN_LASTNAME}
+${PERMISSION_TEST_ADMIN_PASSWORD}           Salminen
+
+# DEVNOTE: Registered user information
+# Marika Salminen (Permission Test Admin)
+# Sex: Female
+# Date of birth: 14.07.1985
 # Age: 38
 
 ###

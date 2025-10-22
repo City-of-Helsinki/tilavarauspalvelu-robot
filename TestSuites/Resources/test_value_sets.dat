@@ -247,58 +247,6 @@ ADMIN_CURRENT_USER_LAST_NAME=Nieminen
 ADMIN_CURRENT_USER_FULLNAME=Erkki Nieminen
 ADMIN_CURRENT_USER_PASSWORD=Nieminen
 
-[combined-test-data-set-2]
-# TESTS: All notification tests (normal, warning, error, archive)
-# DESCRIPTION: Admin notification creation and management
-tags=combined-test-data-set-2,combined-test-data,user-data,combined,notifications
-CURRENT_USER_EMAIL=qfaksi+ari@gmail.com
-CURRENT_USER_HETU=190684-907F
-CURRENT_USER_PHONE=+35840123669
-CURRENT_USER_FIRST_NAME=Ari
-CURRENT_USER_LAST_NAME=Laine
-CURRENT_USER_FULLNAME=Ari Laine
-CURRENT_PASSWORD=Laine
-# Admin assignment for this test
-ADMIN_CURRENT_USER_EMAIL=qfaksi+kari@gmail.com
-ADMIN_CURRENT_USER_HETU=150875-9345
-ADMIN_CURRENT_USER_FIRST_NAME=Kari
-ADMIN_CURRENT_USER_LAST_NAME=Kekkonen
-ADMIN_CURRENT_USER_FULLNAME=Kari Kekkonen
-ADMIN_CURRENT_USER_PASSWORD=Kekkonen
-
-[combined-test-data-set-3]
-# TEST: "Admin creates warning notifications for both sides"
-# DESCRIPTION: Admin warning notification creation and management
-tags=combined-test-data-set-3,combined-test-data,user-data,combined,warning-notifications
-ADMIN_CURRENT_USER_EMAIL=qfaksi+esa@gmail.com
-ADMIN_CURRENT_USER_HETU=050683-935N
-ADMIN_CURRENT_USER_FIRST_NAME=Esa
-ADMIN_CURRENT_USER_LAST_NAME=Mattila
-ADMIN_CURRENT_USER_FULLNAME=Esa Mattila
-ADMIN_CURRENT_USER_PASSWORD=Mattila
-
-[combined-test-data-set-4]
-# TEST: "Admin creates error notifications for both sides"
-# DESCRIPTION: Admin error notification creation and management
-tags=combined-test-data-set-4,combined-test-data,user-data,combined,error-notifications
-ADMIN_CURRENT_USER_EMAIL=qfaksi+pertti@gmail.com
-ADMIN_CURRENT_USER_HETU=120885-934A
-ADMIN_CURRENT_USER_FIRST_NAME=Pertti
-ADMIN_CURRENT_USER_LAST_NAME=Kallio
-ADMIN_CURRENT_USER_FULLNAME=Pertti Kallio
-ADMIN_CURRENT_USER_PASSWORD=Kallio
-
-[combined-test-data-set-5]
-# TEST: "Admin creates notification and archive and deletes notification for both sides"
-# DESCRIPTION: Admin notification archive and delete workflow
-tags=combined-test-data-set-5,combined-test-data,user-data,combined,archive-notifications
-ADMIN_CURRENT_USER_EMAIL=qfaksi+antero@gmail.com
-ADMIN_CURRENT_USER_HETU=221175-907B
-ADMIN_CURRENT_USER_FIRST_NAME=Antero
-ADMIN_CURRENT_USER_LAST_NAME=Salonen
-ADMIN_CURRENT_USER_FULLNAME=Antero Salonen
-ADMIN_CURRENT_USER_PASSWORD=Salonen
-
 # =============================================================================
 # MOBILE ANDROID TESTS - Tests_user_mobile_android_FI.robot (6 tests)
 # =============================================================================
@@ -452,13 +400,13 @@ CURRENT_USER_FULLNAME=Liisa Koivisto
 CURRENT_PASSWORD=Koivisto
 
 # =============================================================================
-# ADDITIONAL TEST DATA SET - New test scenarios
+# UNUSED TEST DATA - Reserved for future test scenarios
 # =============================================================================
 
-[additional-test-data-set-1]
-# TEST: "User performs comprehensive booking workflow"
-# DESCRIPTION: End-to-end booking process testing
-tags=additional-test-data-set-1,additional-test-data,user-data,comprehensive-booking
+[unused-test-data-set-0]
+# TEST: Reserved for future use
+# DESCRIPTION: Additional test user data
+tags=unused-test-data-set-0,unused-data,reserved
 CURRENT_USER_EMAIL=qfaksi+antti@gmail.com
 CURRENT_USER_HETU=180892-936M
 CURRENT_USER_PHONE=+35840123688
@@ -467,10 +415,36 @@ CURRENT_USER_LAST_NAME=Koskinen
 CURRENT_USER_FULLNAME=Antti Koskinen
 CURRENT_PASSWORD=Koskinen
 
-# Alternative admin assignment for this test
-ADMIN_CURRENT_USER_EMAIL_ALT=qfaksi+esa@gmail.com
-ADMIN_CURRENT_USER_HETU_ALT=050683-935N
-ADMIN_CURRENT_USER_FIRST_NAME_ALT=Esa
-ADMIN_CURRENT_USER_LAST_NAME_ALT=Mattila
-ADMIN_CURRENT_USER_FULLNAME_ALT=Esa Mattila
-ADMIN_CURRENT_USER_PASSWORD_ALT=Mattila
+[unused-test-data-set-1]
+# TEST: Reserved for future use
+# DESCRIPTION: Additional test user data
+tags=unused-test-data-set-1,unused-data,reserved
+CURRENT_USER_EMAIL=qfaksi+ari@gmail.com
+CURRENT_USER_HETU=190684-907F
+CURRENT_USER_PHONE=+35840123669
+CURRENT_USER_FIRST_NAME=Ari
+CURRENT_USER_LAST_NAME=Laine
+CURRENT_USER_FULLNAME=Ari Laine
+CURRENT_PASSWORD=Laine
+
+[unused-admin-data-set-0]
+# TEST: Reserved for future use
+# DESCRIPTION: Additional admin user data
+tags=unused-admin-data-set-0,unused-admin-data,reserved
+ADMIN_CURRENT_USER_EMAIL=qfaksi+antero@gmail.com
+ADMIN_CURRENT_USER_HETU=221175-907B
+ADMIN_CURRENT_USER_FIRST_NAME=Antero
+ADMIN_CURRENT_USER_LAST_NAME=Salonen
+ADMIN_CURRENT_USER_FULLNAME=Antero Salonen
+ADMIN_CURRENT_USER_PASSWORD=Salonen
+
+[unused-admin-data-set-1]
+# TEST: Reserved for future use
+# DESCRIPTION: Additional admin user data
+tags=unused-admin-data-set-1,unused-admin-data,reserved
+ADMIN_CURRENT_USER_EMAIL=qfaksi+pertti@gmail.com
+ADMIN_CURRENT_USER_HETU=120885-934A
+ADMIN_CURRENT_USER_FIRST_NAME=Pertti
+ADMIN_CURRENT_USER_LAST_NAME=Kallio
+ADMIN_CURRENT_USER_FULLNAME=Pertti Kallio
+ADMIN_CURRENT_USER_PASSWORD=Kallio

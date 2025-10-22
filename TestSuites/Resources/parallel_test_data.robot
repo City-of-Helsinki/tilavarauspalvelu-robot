@@ -117,6 +117,11 @@ Use Single User Mode
         Use Single Admin User Mode
     END
 
+    # Set Django admin variables for admin suites (for permission tests)
+    IF    '${data_type}' == 'admin-test-data'
+        Use Single Django Admin User Mode
+    END
+
 Use Single Admin User Mode
     [Documentation]    Sets admin test variables to use the default admin user (TirehtööriPääkäytäjä Tötterstrom)
     Log    Using single admin user mode: TirehtööriPääkäytäjä Tötterstrom
@@ -126,6 +131,27 @@ Use Single Admin User Mode
     Set Test Variable    ${ADMIN_CURRENT_USER_LAST_NAME}    ${BASIC_ADMIN_MALE_LASTNAME}
     Set Test Variable    ${ADMIN_CURRENT_USER_FULLNAME}    ${BASIC_ADMIN_MALE_FULLNAME}
     Set Test Variable    ${ADMIN_CURRENT_USER_PASSWORD}    ${BASIC_ADMIN_MALE_PASSWORD}
+
+Use Single Django Admin User Mode
+    [Documentation]    Sets Django admin test variables to use the default Django admin user (Kari Kekkonen)
+    ...    Used for permission tests that require Django admin access
+    ...    Also sets ADMIN_CURRENT_USER to Marika Salminen (the admin whose permissions are being modified)
+    Log    Using single Django admin user mode: ${BASIC_DJANGO_ADMIN_FULLNAME}
+    Set Test Variable    ${DJANGO_ADMIN_EMAIL}    ${BASIC_DJANGO_ADMIN_EMAIL}
+    Set Test Variable    ${DJANGO_ADMIN_HETU}    ${BASIC_DJANGO_ADMIN_HETU}
+    Set Test Variable    ${DJANGO_ADMIN_FIRST_NAME}    ${BASIC_DJANGO_ADMIN_FIRSTNAME}
+    Set Test Variable    ${DJANGO_ADMIN_LAST_NAME}    ${BASIC_DJANGO_ADMIN_LASTNAME}
+    Set Test Variable    ${DJANGO_ADMIN_FULLNAME}    ${BASIC_DJANGO_ADMIN_FULLNAME}
+    Set Test Variable    ${DJANGO_ADMIN_PASSWORD}    ${BASIC_DJANGO_ADMIN_PASSWORD}
+
+    # Set the admin user whose permissions are being modified (Marika Salminen)
+    Log    Setting admin user for permission modification: ${PERMISSION_TEST_ADMIN_FULLNAME}
+    Set Test Variable    ${ADMIN_CURRENT_USER_EMAIL}    ${PERMISSION_TEST_ADMIN_EMAIL}
+    Set Test Variable    ${ADMIN_CURRENT_USER_HETU}    ${PERMISSION_TEST_ADMIN_HETU}
+    Set Test Variable    ${ADMIN_CURRENT_USER_FIRST_NAME}    ${PERMISSION_TEST_ADMIN_FIRSTNAME}
+    Set Test Variable    ${ADMIN_CURRENT_USER_LAST_NAME}    ${PERMISSION_TEST_ADMIN_LASTNAME}
+    Set Test Variable    ${ADMIN_CURRENT_USER_FULLNAME}    ${PERMISSION_TEST_ADMIN_FULLNAME}
+    Set Test Variable    ${ADMIN_CURRENT_USER_PASSWORD}    ${PERMISSION_TEST_ADMIN_PASSWORD}
 
 Get User Index For Test
     [Documentation]    Returns the user index for a specific test in a specific suite

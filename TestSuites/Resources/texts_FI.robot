@@ -108,7 +108,7 @@ ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}                                Hinta: 40,00
 ${SINGLEBOOKING_SUBVENTED_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}       Hinta: 0 - 30,00 € (sis. alv 25,5%)
 ${ALWAYS_REQUESTED_UNIT_PAID_PRICE_VAT_INCL}                        Hinta: 40,00 € (sis. alv 25,5%)
 ${SINGLEBOOKING_NO_PAYMENT}                                         Hinta: Maksuton
-${SINGLEBOOKING_PAID_PRICE_CHECKOUT}                                40€
+${SINGLEBOOKING_PAID_PRICE_CHECKOUT}                                40.00€
 ${NUM_FROM_TXT}                                                     ${EMPTY}
 ${BOOKING_NUM_ONLY}                                                 ${EMPTY}
 ${RESERVATION_NUMBER_ADMINSIDE}                                     ${EMPTY}

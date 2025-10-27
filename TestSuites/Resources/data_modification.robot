@@ -25,23 +25,25 @@ Formats tagline for admin side
     Log    ${info_card_time_of_reservation}
     Log    ${name_of_reservationunit}
 
-    # Remove 'klo' and any following whitespace using a regular expression
-    ${RESERVATION_TAG_KLO_REMOVED}=    Replace String Using Regexp
-    ...    ${info_card_time_of_reservation}
-    ...    klo\s*
-    ...    ${EMPTY}
+    # DEVNOTE: Remove 'klo' and any following whitespace using a regular expression
+    # This was used when the app didn't include 'klo' in the time format
+    # Uncomment the lines below if the app changes back to not including 'klo'
+    # ${RESERVATION_TAG_KLO_REMOVED}=    Replace String Using Regexp
+    # ...    ${info_card_time_of_reservation}
+    # ...    klo\s*
+    # ...    ${EMPTY}
+    # Log    ${RESERVATION_TAG_KLO_REMOVED}
+    # ${RESERVATION_TAG_KLO_REMOVED}=    Evaluate    '${RESERVATION_TAG_KLO_REMOVED}'.strip()
+    # Log    ${RESERVATION_TAG_KLO_REMOVED}
 
-    # Log the result after 'klo' removal
-    Log    ${RESERVATION_TAG_KLO_REMOVED}
-
-    # Strip any leading or trailing whitespace from the result
-    ${RESERVATION_TAG_KLO_REMOVED}=    Evaluate    '${RESERVATION_TAG_KLO_REMOVED}'.strip()
+    # Use the original time string directly (keeping 'klo' as the app now includes it)
+    ${RESERVATION_TAG_TIME}=    Evaluate    '${info_card_time_of_reservation}'.strip()
 
     # Log the result after stripping whitespace
-    Log    ${RESERVATION_TAG_KLO_REMOVED}
+    Log    ${RESERVATION_TAG_TIME}
 
     # Build tagline by default with location
-    ${RESERVATION_TAG}=    Catenate    ${RESERVATION_TAG_KLO_REMOVED} | ${name_of_reservationunit}
+    ${RESERVATION_TAG}=    Catenate    ${RESERVATION_TAG_TIME} | ${name_of_reservationunit}
 
     # Normalize whitespace: replace multiple spaces with a single space
     ${RESERVATION_TAG}=    Evaluate    ' '.join('''${RESERVATION_TAG}'''.split())

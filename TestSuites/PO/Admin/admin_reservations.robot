@@ -178,9 +178,11 @@ Admin checks reservation status
     custom_keywords.Check elements text    [data-testid="reservation_title_section__reservation_state"]    ${status}
 
 Admin saves reservation number
+    # Opens the reservation details section
     Click    id=reservation__reservation-details-heading
     Sleep    500ms
     Wait For Elements State    [data-testid="reservation__info--Varaustunnus"]    visible
+    # Gets the reservation number
     ${reservation_number}=    Get Text    [data-testid="reservation__info--Varaustunnus"]
     Set Suite Variable    ${RESERVATION_NUMBER_ADMINSIDE}    ${reservation_number}
 

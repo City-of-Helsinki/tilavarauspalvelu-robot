@@ -103,7 +103,7 @@ Click tablist scroll button to right mobile
     Wait For Load State    load    timeout=15s
 
 # Check menu has user info mobile
-    # DEVNOTE Commented out. Waiting for fixes for the test environment from another team
+    # DEVNOTE - Waiting for fixes for the test environment from another team
     # this step will be enabled when the test environment is fixed
 
     # TODO - 4 selectors of the same name in the ui. Fix better selector

@@ -55,7 +55,7 @@ Admin checks the info and cancels reservation
 
 Admin returns reservation to handling state from rejected state
     admin_reservations.Admin clicks button in reservation page
-    ...    [data-testid="approval-buttons__return-to-handling-button"]
+    ...    [data-testid="approval-buttons__return-to-handling-button"] >> nth=-1
     Sleep    1s
     Wait For Elements State    id=info-dialog    visible
     Find and click element with text    id=info-dialog >> span    ${RESERVATION_STATUS_DIALOG}
@@ -211,7 +211,14 @@ Admin clicks make reservation and checks dialog opens
     ...    message=Info dialog should be visible after clicking make reservation button
 
 Admin rejects reservation and checks the status
-    admin_reservations.Admin clicks button in reservation page    [data-testid="approval-buttons__reject-button"]
+    # Get all elements and click the last one to avoid strict mode violation that might happen
+    # when accordion is open
+    ${elements}=    Browser.Get Elements    [data-testid="approval-buttons__reject-button"]
+    ${element_count}=    Get Length    ${elements}
+    Log    Found ${element_count} reject buttons
+    Click    ${elements}[-1]
+    Sleep    500ms
+    Wait For Load State    load    timeout=15s
     admin_reservations.Admin selects reason for rejection    ${ADMIN_REASON_REJECTED}
     Sleep    1s
     Click    [data-testid="deny-dialog__deny-button"]

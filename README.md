@@ -94,6 +94,32 @@ Default process counts for parallel execution (configurable in `docker-config.js
 - **Mobile processes**: 3
 - **All suites processes**: 5
 
+### How Parallel Testing Works
+
+The test framework uses a **tag-based system** to automatically initialize test data and assign users for parallel execution:
+
+```
+Test Case with Tags
+    ↓
+Complete Test Setup From Tags
+    ↓
+    ├─→ Initialize suite units from tags
+    │   └─→ Reads ${TEST TAGS} → Finds suite type → Loads units
+    │
+    └─→ Initialize Test Data From Tags
+        └─→ Reads ${TEST TAGS} → Finds data set tag
+            ↓
+            ├─→ [Parallel Mode] Acquires PabotLib value set
+            └─→ [Single Mode] Uses basic users from users.robot
+```
+
+Each test case is tagged (e.g., `[Tags]  user_desktop  dataset_user_1`), and the setup automatically:
+1. **Loads appropriate test units** based on suite type tag
+2. **Assigns isolated user data** to prevent conflicts in parallel execution
+3. **Switches between parallel/single mode** based on execution context
+
+📖 **For detailed information, see [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md)**
+
 **macOS/Linux:**
 ```bash
 ./docker-test.sh
@@ -441,13 +467,13 @@ For GitHub Actions, add the following secrets to your repository:
 ├── conda.yaml                          # Conda environment configuration
 ├── robot.yaml                          # RCC configuration
 ├── har_analyzer.py                     # HAR file analysis utilities
-└── PARALLEL_SETUP_GUIDE.md             # Detailed parallel testing setup guide
+└── PARALLEL_DATA_SETUP_GUIDE.md        # Tag-based test data initialization and parallel execution flow
 ```
 
 ## 📚 Additional Resources
 
 - [TestSuites/Resources/README_TEST_DATA_SYSTEM.md](TestSuites/Resources/README_TEST_DATA_SYSTEM.md) - Comprehensive test data system documentation
-- [PARALLEL_SETUP_GUIDE.md](PARALLEL_SETUP_GUIDE.md) - Detailed guide for parallel testing configuration  
+- [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md) - Tag-based test data initialization and parallel execution flow
 - [Robot Framework Documentation](https://docs.robotframework.org/)
 - [Robot Framework Browser Library](https://marketsquare.github.io/robotframework-browser/Browser.html)
 - [Playwright Documentation](https://playwright.dev/)

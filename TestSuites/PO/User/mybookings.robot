@@ -86,12 +86,12 @@ Check reservations payment status
 
 Check reservation number from h1 text
     [Arguments]    ${booking_num}
-    custom_keywords.Check number from text is equal to    [data-testid="reservation__name"]    ${booking_num}
+    custom_keywords.Check number from text is equal to    [data-testid="reservation__content"] >> h1    ${booking_num}
 
 Check number of participants
     [Arguments]    ${reservation_number_participants}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__numPersons"]
+    ...    [data-testid="reservation__summary-fields__numPersons"]
     ...    ${reservation_number_participants}
 
 Check reservation time
@@ -100,48 +100,50 @@ Check reservation time
 
 Check reservation description
     [Arguments]    ${reservation_description}
-    custom_keywords.Check elements text    [data-testid="reservation__description"]    ${reservation_description}
+    custom_keywords.Check elements text
+    ...    [data-testid="reservation__summary-fields__description"]
+    ...    ${reservation_description}
 
  Check reservation booker name
     [Arguments]    ${reservation_bookerName}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__reservee-name"]
+    ...    [data-testid="reservation__summary-fields__reservee-name"]
     ...    ${reservation_bookerName}
 
 Check reservation booker first name
     [Arguments]    ${reservation_bookerFirstName}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__reserveeFirstName"]
+    ...    [data-testid="reservation__summary-fields__reserveeFirstName"]
     ...    ${reservation_bookerFirstName}
 
 Check reservation booker last name
     [Arguments]    ${reservation_bookerLastName}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__reserveeLastName"]
+    ...    [data-testid="reservation__summary-fields__reserveeLastName"]
     ...    ${reservation_bookerLastName}
 
 Check reservation booker phone
     [Arguments]    ${reservation_bookerPhone}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__reserveePhone"]
+    ...    [data-testid="reservation__summary-fields__reserveePhone"]
     ...    ${reservation_bookerPhone}
 
 Check reservation booker email
     [Arguments]    ${reservation_bookerEmail}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__reserveeEmail"]
+    ...    [data-testid="reservation__summary-fields__reserveeEmail"]
     ...    ${reservation_bookerEmail}
 
 Check reservation purpose
     [Arguments]    ${reservation_purpose}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__purpose"]
+    ...    [data-testid="reservation__summary-fields__purpose"]
     ...    ${reservation_purpose}
 
 Check reservation age group
     [Arguments]    ${age_group}
     custom_keywords.Check elements text
-    ...    [data-testid="reservation__ageGroup"]
+    ...    [data-testid="reservation__summary-fields__ageGroup"]
     ...    ${age_group}
 
 Check reservation access code

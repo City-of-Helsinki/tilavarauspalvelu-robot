@@ -13,43 +13,32 @@ Library             OperatingSystem
 
 *** Keywords ***
 # =============================================================================
-# UNIFIED TEST SETUP - DOES EVERYTHING NEEDED FOR ANY TEST
+# TAG-BASED UNIFIED TEST SETUP
 # =============================================================================
 
-Complete Desktop User Test Setup
-    [Documentation]    Complete setup for desktop user tests
-    Initialize Suite Units    desktop
-    ${data_type}=    Get Suite Data Type
-    Initialize Test Data    ${data_type}
+Complete Test Setup From Tags
+    [Documentation]    Tag-based test setup
+    ...
+    ...    Automatically initializes test data and suite units based on test tags.
+    ...
+    ...    REQUIRED TAGS on each test:
+    ...    - Data set tag: desktop-test-data-set-0, admin-test-data-set-2, etc.
+    ...    - Suite type tag: desktop-suite, admin-suite, combined-suite, android-suite, iphone-suite
+    ...
+    ...    EXAMPLE:
+    ...    Test Case
+    ...    [Tags]    desktop-test-data-set-0    desktop-suite    smoke
 
-Complete Admin Desktop Test Setup
-    [Documentation]    Complete setup for admin desktop tests
-    Initialize Suite Units    admin
-    ${data_type}=    Get Suite Data Type
-    Initialize Test Data    ${data_type}
-    # Select Suite Specific Admin User
-    # app_common.Admin opens desktop browser to landing page
+    ${test_name}=    Get Variable Value    ${TEST NAME}    unknown_test
+    Log    🚀 Starting tag-based setup for: ${test_name}
 
-Complete Android Mobile Test Setup
-    [Documentation]    Complete setup for Android mobile tests
-    Initialize Suite Units    android
-    ${data_type}=    Get Suite Data Type
-    Initialize Test Data    ${data_type}
-    # app_common.User opens android chrome to landing page
+    # Initialize suite-specific units from tags
+    Initialize suite units from tags
 
-Complete iPhone Mobile Test Setup
-    [Documentation]    Complete setup for iPhone mobile tests
-    Initialize Suite Units    iphone
-    ${data_type}=    Get Suite Data Type
-    Initialize Test Data    ${data_type}
-    # app_common.User opens iphone webkit to landing page
+    # Initialize test data (users) from tags
+    Initialize Test Data From Tags
 
-Complete Combined Test Setup
-    [Documentation]    Complete setup for combined admin+user tests
-    Initialize Suite Units    combined
-    ${data_type}=    Get Suite Data Type
-    Initialize Test Data    ${data_type}
-    # app_common.User opens desktop browser to landing page
+    Log    ✓ Test setup completed successfully
 
 # =============================================================================
 # TEST TEARDOWN

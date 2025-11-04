@@ -429,12 +429,13 @@ User checks cancelled booking is found
 
 User can see upcoming booking in list and clicks it
     [Arguments]    ${unitname}    ${reservationtime}
-    Sleep    2s
+    Sleep    1s
     Log    ${unitname}
     Log    ${reservationtime}
     mybookings.Check unitname and reservation time and click show
     ...    ${unitname}
     ...    ${reservationtime}
+    Sleep    1s
     Wait For Load State    load    timeout=15s
 
 User can see upcoming noncancelable booking in list and clicks it
@@ -464,7 +465,7 @@ User checks the paid reservation info is right in reservations
     ...    ${time_in_quickreservations}
     ...    ${reservation_number}
 
-    Wait For Elements State    [data-testid="reservation__name"]    visible
+    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     #
     quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
     quick_reservation.Check the price of quick reservation    ${booking_price}
@@ -482,7 +483,7 @@ User checks the paid reservation info is right in reservations
 User checks booking info in reservations with number of participants and description and purpose
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}
 
-    Wait For Elements State    [data-testid="reservation__name"]    visible
+    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     #
     quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
     quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
@@ -501,7 +502,7 @@ User checks booking info in reservations with number of participants and descrip
 User checks booking info in reservations
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}
 
-    Wait For Elements State    [data-testid="reservation__name"]    visible
+    Wait For Elements State    [data-testid="reservation__reservation-info-card__content"]    visible
     #
     quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
     quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
@@ -517,7 +518,7 @@ User checks booking info in reservations
 User checks booking info in reservations with access code
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}    ${access_code}
 
-    Wait For Elements State    [data-testid="reservation__name"]    visible
+    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     #
     quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
     quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
@@ -534,7 +535,7 @@ User checks booking info in reservations with access code
 User checks booking info in reservations with all reservation info
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}
 
-    Wait For Elements State    [data-testid="reservation__name"]    visible
+    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     #
     quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
     quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
@@ -552,7 +553,7 @@ User checks booking info in reservations with all reservation info
     mybookings.Check reservation age group    ${AGEGROUP_OF_PERSONS}
 
 User checks booking info in reservations for noncancelable booking
-    Wait For Elements State    [data-testid="reservation__name"]    visible
+    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
 
     mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
     mybookings.Check reservation status    ${MYBOOKINGS_STATUS_CONFIRMED}
@@ -566,7 +567,7 @@ User checks booking info in reservations for noncancelable booking
     quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_NO_PAYMENT}
 
 User verifies details of subvented reservation after admin approval without payment
-    Wait For Elements State    [data-testid="reservation__name"]    visible
+    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     Log
     ...    If the booking number comparison fails, verify that there are no duplicate times in the upcoming bookings list.
 
@@ -587,7 +588,7 @@ User verifies details of subvented reservation after admin approval without paym
     mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
 
 User checks the rejected reservation info is right after admin handling
-    Wait For Elements State    [data-testid="reservation__name"]    visible
+    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     Log
     ...    If the booking number comparison fails, verify that there are no duplicate times in the upcoming bookings list.
 
@@ -756,7 +757,7 @@ User checks the recurring reservation is sent state and cancels it
     custom_keywords.Find and click button in group with matching conditions
     ...    [data-testid="applications__group--wrapper"]
     ...    Vastaanotettu
-    ...    [data-sentry-element="CardContent"]
+    ...    [class*="Card__CardContent"]
     ...    [data-testid="card__heading"]
     ...    Kausivaraus (AUTOMAATIO TESTI ÄLÄ POISTA)
     ...    [data-testid="card__tags"]
@@ -767,7 +768,11 @@ User checks the recurring reservation is sent state and cancels it
     Sleep    1s
     custom_keywords.Find and click element with text    id=application-card-modal >> span    Kyllä
 
-#
+User verifies the recurring reservation is cancelled
+    [Documentation]    Verifies that the recurring reservation with the given name is no longer found
+    ...    in the applications list. Fails if the reservation is still present.
+    custom_keywords.Verify card not found in group with matching conditions
+    ...    ${EMPTY_STATE_MESSAGE_RECURRING_APPLICATIONS}
 
 ###
 ### MOBILE

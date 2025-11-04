@@ -171,6 +171,9 @@ ${RECURRING_BOOKING_EMAIL}                                          qfaksi@gmail
 ${RECURRING_BOOKING_ADDITIONAL_INFO}                                Kausivaraus automaatiotestiin
 #
 
+# Applications (My applications)
+${EMPTY_STATE_MESSAGE_RECURRING_APPLICATIONS}                       Hakemuksia ei ole.
+
 ###
 # ADMIN MAIN MENU
 ###

@@ -17,92 +17,182 @@ ${FORCE_SINGLE_USER}    ${FALSE}
 
 
 *** Keywords ***
-Initialize Test Data
-    [Documentation]    Acquires an isolated value set for this test based on test suite type
+Initialize Test Data From Tags
+    [Documentation]    Tag-based test data initialization
     ...
-    ...    PARALLEL MODE: Uses PabotLib to assign unique users per test
-    ...    SINGLE MODE: Uses desktop-test-data-set-0 for all tests
-    [Arguments]    ${data_type}=desktop-test-data
+    ...    Determines data type and value set from test tags:
+    ...    - Data set tag: desktop-test-data-set-0, admin-test-data-set-2, etc.
+    ...    - Falls back to single user mode if no data set tag found
+    ...    Single user mode uses:
+    ...    - Regular user: Ande AutomaatioTesteri (BASIC_USER_MALE)
+    ...    - Admin user: TirehtööriPääkäytäjä Tötterstrom (BASIC_ADMIN_MALE)
+    ...    - Django admin (permissions): Kari Kekkonen (BASIC_DJANGO_ADMIN)
+    ...    - Permission target admin: Marika Salminen (BASIC_PERMISSION_TARGET_ADMIN)
+    ...
+    ...    PARALLEL MODE: Uses PabotLib to acquire value sets by tag
+    ...    SINGLE MODE: Uses basic users from users.robot
+    ...
+    ...    EXAMPLE TAGS:
+    ...    [Tags]    desktop-test-data-set-0    desktop-suite    smoke
+    ...    [Tags]    admin-test-data-set-2    admin-suite    permissions
 
     # Get test context
     ${test_name}=    Get Variable Value    ${TEST NAME}    unknown_test
     ${suite_name}=    Get Variable Value    ${SUITE NAME}    unknown_suite
     ${process_id}=    Get Variable Value    ${PABOTEXECUTIONPOOLID}    ${NONE}
+    ${test_tags}=    Get Variable Value    ${TEST TAGS}    []
 
-    Log    Initializing test data for: ${test_name} (Suite: ${suite_name}, Process: ${process_id})
+    Log    🏷️ Initializing test data from tags for: ${test_name}
+    Log    📋 Suite: ${suite_name}
+    Log    🏷️ Tags: ${test_tags}
+    Log    🔧 Process ID: ${process_id}
+
+    # Parse all tags and set flags
+    ${value_set_name}    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}=
+    ...    Parse Test Tags    ${test_tags}
+
+    IF    '${value_set_name}' == '${NONE}'
+        Log    ⚠️ No data set tag found, using single user mode fallback
+        Use Single User Mode From Parsed Tags    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
+        RETURN
+    END
+
+    Log    🎯 Found data set tag: ${value_set_name}
 
     # Check if we should force single user mode
     ${force_single}=    Get Variable Value    ${FORCE_SINGLE_USER}    ${FALSE}
     IF    ${force_single}
-        Log    Using FORCE_SINGLE_USER mode - all tests use desktop-test-data-set-0
-        Use Single User Mode
+        Log    Using FORCE_SINGLE_USER mode - using basic users from users.robot
+        Use Single User Mode From Parsed Tags    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
         RETURN
     END
 
     # Check if running without pabot (Code editor, single execution)
     IF    '${process_id}' == '${NONE}'
         Log    Non-parallel execution detected - using single user mode
-        Use Single User Mode
+        Use Single User Mode From Parsed Tags    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
         RETURN
     END
 
-    # PARALLEL MODE: Use test-specific user assignment
-    ${user_index}=    Get User Index For Test    ${suite_name}    ${test_name}
-    ${value_set_name}=    Set Variable    ${data_type}-set-${user_index}
-
-    Log    Attempting to acquire value set: ${value_set_name}
-
-    # Try to acquire the PabotLib value set
+    # PARALLEL MODE: Acquire value set by name
+    Log    Attempting to acquire PabotLib value set: ${value_set_name}
     ${status}=    Run Keyword And Return Status    Acquire Value Set    ${value_set_name}
+
     IF    ${status}
         Set Test Variable    ${CURRENT_VALUE_SET}    ${value_set_name}
         Log    ✓ Successfully acquired PabotLib value set: ${value_set_name}
 
-        # Import all variables from the value set
+        # Import variables based on pre-parsed tag flags
         TRY
-            # Determine what variables to set based on data type
-            IF    '${data_type}' == 'desktop-test-data' or '${data_type}' == 'mobile-android-data' or '${data_type}' == 'mobile-iphone-data'
-                # USER-ONLY SUITES: Set only regular user variables
-                Set User Variables From Value Set
-                Log    ✓ User variables set from value set
-            ELSE IF    '${data_type}' == 'admin-test-data'
-                # ADMIN SUITES: Set admin variables, and check for additional variables
-                Set Admin Variables From Value Set
-                # Check if this set also has Django admin variables (for permission tests)
-                ${has_django_admin}=    Run Keyword And Return Status    Get Value From Set    DJANGO_ADMIN_EMAIL
-                IF    ${has_django_admin}
-                    Set Django Admin Variables From Value Set
-                    Log    ✓ Admin and Django admin variables set from value set
-                ELSE
-                    Log    ✓ Admin variables set from value set
-                END
-            ELSE IF    '${data_type}' == 'combined-test-data'
-                # COMBINED SUITES: Set both user and admin variables
+            IF    ${has_combined}
+                # COMBINED tests: Load both user and admin variables
                 Set User Variables From Value Set
                 Set Admin Variables From Value Set
                 Log    ✓ Both user and admin variables set from value set
+            ELSE IF    ${has_admin}
+                # ADMIN tests: Load admin variables (or Django admin for permissions)
+                IF    ${has_permissions}
+                    # Permission test: Load only Django admin and permission target
+                    Log    Permission test detected - loading Django admin and permission target only
+                    Set Django Admin Variables From Value Set
+                    Set Permission Target Admin Variables From Value Set
+                    Log    ✓ Permission test: Django admin and permission target variables set
+                ELSE
+                    # Normal admin test: Load only standard admin variables
+                    Set Admin Variables From Value Set
+                    Log    ✓ Admin variables set from value set
+                END
+            ELSE IF    ${has_user}
+                # USER tests: Load only user variables
+                Set User Variables From Value Set
+                Log    ✓ User variables set from value set
             ELSE
-                Log    ⚠ WARNING: Unknown data type ${data_type}, using user variables only
+                Log    ⚠️ WARNING: No valid test type detected, using user variables as fallback
                 Set User Variables From Value Set
             END
         EXCEPT    AS    ${error}
-            Log    ⚠ WARNING: Failed to get variables from value set: ${error}
+            Log    ⚠️ WARNING: Failed to get variables from value set: ${error}
             Log    Falling back to single user mode
-            Use Single User Mode
+            Use Single User Mode From Parsed Tags
+            ...    ${has_admin}
+            ...    ${has_combined}
+            ...    ${has_permissions}
+            ...    ${has_user}
         END
     ELSE
-        Log    ⚠ WARNING: Value set ${value_set_name} not available
+        Log    ⚠️ WARNING: Value set ${value_set_name} not available
         Log    Falling back to single user mode
-        Use Single User Mode
+        Use Single User Mode From Parsed Tags    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
     END
 
-Use Single User Mode
-    [Documentation]    Sets test variables to use the default test user (Ande AutomaatioTesteri)
-    ${data_type}=    Get Suite Data Type
+Parse Test Tags
+    [Documentation]    Parse test tags and return all relevant information
+    ...    Returns: data_set_name, has_admin_tag, has_combined_tag, has_permissions_tag, has_user_tag
+    ...    Example:
+    ...    Tags: ['admin-suite', 'admin-test-data-set-2', 'permissions']
+    ...    Returns: 'admin-test-data-set-2', True, False, True, False
+    [Arguments]    ${tags}
 
-    # Set user variables for user and combined suites
-    IF    '${data_type}' == 'desktop-test-data' or '${data_type}' == 'mobile-android-data' or '${data_type}' == 'mobile-iphone-data' or '${data_type}' == 'combined-test-data'
-        Log    Using single user mode: Ande AutomaatioTesteri
+    # Initialize all flags
+    ${data_set_name}=    Set Variable    ${NONE}
+    ${has_admin_tag}=    Set Variable    ${FALSE}
+    ${has_combined_tag}=    Set Variable    ${FALSE}
+    ${has_permissions_tag}=    Set Variable    ${FALSE}
+    ${has_user_tag}=    Set Variable    ${FALSE}
+
+    # Single pass through all tags
+    FOR    ${tag}    IN    @{tags}
+        ${is_data_set}=    Run Keyword And Return Status
+        ...    Should Match Regexp
+        ...    ${tag}
+        ...    ^(desktop-test-data|admin-test-data|mobile-android-data|mobile-iphone-data|combined-test-data)-set-\\d+$
+        IF    ${is_data_set}
+            ${data_set_name}=    Set Variable    ${tag}
+        END
+
+        # Check for suite type tags
+        ${is_admin}=    Run Keyword And Return Status    Should Start With    ${tag}    admin-test-data
+        IF    ${is_admin}
+            ${has_admin_tag}=    Set Variable    ${TRUE}
+        END
+
+        ${is_combined}=    Run Keyword And Return Status    Should Start With    ${tag}    combined-test-data
+        IF    ${is_combined}
+            ${has_combined_tag}=    Set Variable    ${TRUE}
+        END
+
+        ${is_desktop}=    Run Keyword And Return Status    Should Start With    ${tag}    desktop-test-data
+        ${is_mobile_android}=    Run Keyword And Return Status    Should Start With    ${tag}    mobile-android-data
+        ${is_mobile_iphone}=    Run Keyword And Return Status    Should Start With    ${tag}    mobile-iphone-data
+        IF    ${is_desktop} or ${is_mobile_android} or ${is_mobile_iphone}
+            ${has_user_tag}=    Set Variable    ${TRUE}
+        END
+
+        # Check for special tags
+        ${is_permissions}=    Run Keyword And Return Status    Should Start With    ${tag}    permissions
+        IF    ${is_permissions}
+            ${has_permissions_tag}=    Set Variable    ${TRUE}
+        END
+    END
+
+    # Log parsed results for easy debugging
+    Log
+    ...    📊 Parsed tags: data_set='${data_set_name}', admin=${has_admin_tag}, combined=${has_combined_tag}, permissions=${has_permissions_tag}, user=${has_user_tag}
+
+    RETURN    ${data_set_name}    ${has_admin_tag}    ${has_combined_tag}    ${has_permissions_tag}    ${has_user_tag}
+
+Use Single User Mode From Parsed Tags
+    [Documentation]    Sets test variables based on pre-parsed tag flags in single user mode    ...
+    ...    Arguments:
+    ...    - has_admin: Boolean indicating admin test
+    ...    - has_combined: Boolean indicating combined test
+    ...    - has_permissions: Boolean indicating permission test
+    ...    - has_user: Boolean indicating user test
+    [Arguments]    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
+
+    # Set user variables for user and combined tests
+    IF    not ${has_admin} or ${has_combined}
+        Log    Using single user mode: ${BASIC_USER_MALE_FULLNAME}
         Set Test Variable    ${CURRENT_USER_EMAIL}    ${BASIC_USER_MALE_EMAIL}
         Set Test Variable    ${CURRENT_USER_HETU}    ${BASIC_USER_MALE_HETU}
         Set Test Variable    ${CURRENT_USER_PHONE}    ${BASIC_USER_MALE_PHONE}
@@ -112,14 +202,17 @@ Use Single User Mode
         Set Test Variable    ${CURRENT_PASSWORD}    ${BASIC_USER_MALE_PASSWORD}
     END
 
-    # Set admin variables for admin and combined suites
-    IF    '${data_type}' == 'admin-test-data' or '${data_type}' == 'combined-test-data'
-        Use Single Admin User Mode
-    END
-
-    # Set Django admin variables for admin suites (for permission tests)
-    IF    '${data_type}' == 'admin-test-data'
-        Use Single Django Admin User Mode
+    # Set admin variables for admin and combined tests
+    IF    ${has_admin} or ${has_combined}
+        IF    ${has_permissions}
+            Log    Permission test detected - loading Django admin and permission target only
+            Use Single Django And Permission Admin Mode
+            Log    ✓ Permission test: Django admin and permission target variables set
+        ELSE
+            # Normal admin test: Load only standard admin
+            Use Single Admin User Mode
+            Log    ✓ Single admin mode: Admin variables set
+        END
     END
 
 Use Single Admin User Mode
@@ -132,11 +225,19 @@ Use Single Admin User Mode
     Set Test Variable    ${ADMIN_CURRENT_USER_FULLNAME}    ${BASIC_ADMIN_MALE_FULLNAME}
     Set Test Variable    ${ADMIN_CURRENT_USER_PASSWORD}    ${BASIC_ADMIN_MALE_PASSWORD}
 
-Use Single Django Admin User Mode
-    [Documentation]    Sets Django admin test variables to use the default Django admin user (Kari Kekkonen)
-    ...    Used for permission tests that require Django admin access
-    ...    Also sets ADMIN_CURRENT_USER to Marika Salminen (the admin whose permissions are being modified)
-    Log    Using single Django admin user mode: ${BASIC_DJANGO_ADMIN_FULLNAME}
+Use Single Django And Permission Admin Mode
+    [Documentation]    Sets admin variables for permission tests in single mode
+    ...
+    ...    Sets two groups of variables:
+    ...    1. DJANGO_ADMIN_* (Kari Kekkonen - performs permission changes)
+    ...    2. PERMISSION_TARGET_ADMIN_* (Marika Salminen - whose permissions are modified)
+    ...
+    ...    Note: Does NOT set ADMIN_CURRENT_USER_*
+    ...    Permission tests explicitly use PERMISSION_TARGET_ADMIN_* for login
+    Log    Using single Django and permission admin mode
+
+    # Set Django admin (Kari Kekkonen) - performs permission changes
+    Log    Loading Django admin: ${BASIC_DJANGO_ADMIN_FULLNAME}
     Set Test Variable    ${DJANGO_ADMIN_EMAIL}    ${BASIC_DJANGO_ADMIN_EMAIL}
     Set Test Variable    ${DJANGO_ADMIN_HETU}    ${BASIC_DJANGO_ADMIN_HETU}
     Set Test Variable    ${DJANGO_ADMIN_FIRST_NAME}    ${BASIC_DJANGO_ADMIN_FIRSTNAME}
@@ -144,136 +245,16 @@ Use Single Django Admin User Mode
     Set Test Variable    ${DJANGO_ADMIN_FULLNAME}    ${BASIC_DJANGO_ADMIN_FULLNAME}
     Set Test Variable    ${DJANGO_ADMIN_PASSWORD}    ${BASIC_DJANGO_ADMIN_PASSWORD}
 
-    # Set the admin user whose permissions are being modified (Marika Salminen)
-    Log    Setting admin user for permission modification: ${PERMISSION_TEST_ADMIN_FULLNAME}
-    Set Test Variable    ${ADMIN_CURRENT_USER_EMAIL}    ${PERMISSION_TEST_ADMIN_EMAIL}
-    Set Test Variable    ${ADMIN_CURRENT_USER_HETU}    ${PERMISSION_TEST_ADMIN_HETU}
-    Set Test Variable    ${ADMIN_CURRENT_USER_FIRST_NAME}    ${PERMISSION_TEST_ADMIN_FIRSTNAME}
-    Set Test Variable    ${ADMIN_CURRENT_USER_LAST_NAME}    ${PERMISSION_TEST_ADMIN_LASTNAME}
-    Set Test Variable    ${ADMIN_CURRENT_USER_FULLNAME}    ${PERMISSION_TEST_ADMIN_FULLNAME}
-    Set Test Variable    ${ADMIN_CURRENT_USER_PASSWORD}    ${PERMISSION_TEST_ADMIN_PASSWORD}
+    # Set permission target admin (Marika Salminen) - whose permissions are modified
+    Log    Loading permission target admin: ${BASIC_PERMISSION_TARGET_ADMIN_FULLNAME}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_EMAIL}    ${BASIC_PERMISSION_TARGET_ADMIN_EMAIL}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_HETU}    ${BASIC_PERMISSION_TARGET_ADMIN_HETU}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_FIRST_NAME}    ${BASIC_PERMISSION_TARGET_ADMIN_FIRSTNAME}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_LAST_NAME}    ${BASIC_PERMISSION_TARGET_ADMIN_LASTNAME}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_FULLNAME}    ${BASIC_PERMISSION_TARGET_ADMIN_FULLNAME}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_PASSWORD}    ${BASIC_PERMISSION_TARGET_ADMIN_PASSWORD}
 
-Get User Index For Test
-    [Documentation]    Returns the user index for a specific test in a specific suite
-    ...    This creates a deterministic mapping: each test always gets the same user
-    [Arguments]    ${suite_name}    ${test_name}
-
-    # DESKTOP SUITE TESTS (indices 0-11)
-    IF    'Tests user desktop FI' in '${suite_name}'
-        IF    'User logs in and out with suomi_fi' in '${test_name}'
-            RETURN    0
-        ELSE IF    'User can make free single booking and modifies it' in '${test_name}'
-            RETURN    1
-        ELSE IF    'User can create non-cancelable booking' in '${test_name}'
-            RETURN    2
-        ELSE IF    'User can make paid single booking with interrupted checkout' in '${test_name}'
-            RETURN    3
-        ELSE IF    'User can make paid single booking' in '${test_name}' and 'interrupted' not in '${test_name}'
-            RETURN    4
-        ELSE IF    'User can make subvented single booking that requires handling' in '${test_name}'
-            RETURN    5
-        ELSE IF    'User can make reservation with access code' in '${test_name}'
-            RETURN    6
-        ELSE IF    'User checks that reserved time is not available anymore' in '${test_name}'
-            RETURN    7
-        ELSE IF    'User checks that there are not current dates in the past bookings' in '${test_name}'
-            RETURN    8
-        ELSE IF    'User can make free single booking and check info from downloaded calendar file' in '${test_name}'
-            RETURN    9
-        ELSE IF    'Check emails from reservations' in '${test_name}'
-            RETURN    10
-        ELSE IF    'User makes recurring reservation' in '${test_name}'
-            RETURN    11
-        ELSE
-            RETURN    0    # Default fallback
-        END
-
-        # ADMIN SUITE TESTS (indices 0-2)
-    ELSE IF    'Tests admin desktop FI' in '${suite_name}'
-        IF    'Admin logs in with suomi_fi' in '${test_name}'
-            RETURN    0
-        ELSE IF    'Admin verifies all reservation types' in '${test_name}'
-            RETURN    1
-        ELSE IF    'Admin checks permissions' in '${test_name}'
-            RETURN    2    # Uses admin-test-data-set-2 (includes DJANGO_ADMIN variables)
-        ELSE
-            RETURN    0    # Default fallback
-        END
-
-        # COMBINED SUITE TESTS (indices 0-5)
-    ELSE IF    'Tests users with admin desktop' in '${suite_name}'
-        IF    'User creates and Admin accepts single booking that requires handling' in '${test_name}'
-            RETURN    0
-        ELSE IF    'User creates and Admin declines single booking that requires handling' in '${test_name}'
-            RETURN    1
-        ELSE IF    'Admin creates normal notifications for both sides' in '${test_name}'
-            RETURN    2
-        ELSE IF    'Admin creates warning notifications for both sides' in '${test_name}'
-            RETURN    3
-        ELSE IF    'Admin creates error notifications for both sides' in '${test_name}'
-            RETURN    4
-        ELSE IF    'Admin creates notification and archive and deletes notification for both sides' in '${test_name}'
-            RETURN    5
-        ELSE
-            RETURN    0    # Default fallback
-        END
-
-        # NOTIFICATIONS SUITE TESTS (indices 0-3)
-    ELSE IF    'Tests notifications single process' in '${suite_name}'
-        IF    'Admin creates normal notifications for both sides' in '${test_name}'
-            RETURN    0
-        ELSE IF    'Admin creates warning notifications for both sides' in '${test_name}'
-            RETURN    1
-        ELSE IF    'Admin creates error notifications for both sides' in '${test_name}'
-            RETURN    2
-        ELSE IF    'Admin creates notification and archive and deletes notification for both sides' in '${test_name}'
-            RETURN    3
-        ELSE
-            RETURN    0    # Default fallback
-        END
-
-        # MOBILE ANDROID SUITE TESTS (indices 0-5)
-    ELSE IF    'Tests user mobile android FI' in '${suite_name}'
-        IF    'User logs in and out with suomi_fi mobile' in '${test_name}'
-            RETURN    0
-        ELSE IF    'User can make a free single booking and modifies it mobile' in '${test_name}'
-            RETURN    1
-        ELSE IF    'User can make paid single booking mobile' in '${test_name}' and 'interrupted' not in '${test_name}'
-            RETURN    2
-        ELSE IF    'User can make paid single booking with interrupted checkout mobile' in '${test_name}'
-            RETURN    3
-        ELSE IF    'User can make single booking that requires handling mobile' in '${test_name}'
-            RETURN    4
-        ELSE IF    'User can make subvented single booking that requires handling mobile' in '${test_name}'
-            RETURN    5
-        ELSE
-            RETURN    0    # Default fallback
-        END
-
-        # MOBILE iPHONE SUITE TESTS (indices 0-5)
-    ELSE IF    'Tests user mobile iphone FI' in '${suite_name}'
-        IF    'User logs in and out with suomi_fi' in '${test_name}'
-            RETURN    0
-        ELSE IF    'User can make free single booking and modifies it' in '${test_name}'
-            RETURN    1
-        ELSE IF    'User can make paid single booking' in '${test_name}' and 'interrupted' not in '${test_name}'
-            RETURN    2
-        ELSE IF    'User can make paid single booking with interrupted checkout' in '${test_name}'
-            RETURN    3
-        ELSE IF    'User can make booking that requires handling' in '${test_name}'
-            RETURN    4
-        ELSE IF    'User can make subvented single booking that requires handling' in '${test_name}'
-            RETURN    5
-        ELSE
-            RETURN    0    # Default fallback
-        END
-
-        # UNKNOWN SUITE - Use hash-based selection as fallback
-    ELSE
-        Log    Unknown suite: ${suite_name}, using hash-based user selection
-        ${hash_value}=    Evaluate    hash('${test_name}') % 12
-        RETURN    ${hash_value}
-    END
+    Log    ✓ Permission test admin variables set (Django admin and permission target)
 
 Release Test Data
     [Documentation]    Releases the PabotLib value set when test is finished
@@ -282,75 +263,6 @@ Release Test Data
         Log    ✓ Released PabotLib value set
     ELSE
         Log    No PabotLib value set to release (single user mode or non-parallel execution)
-    END
-
-Get Suite Data Type
-    [Documentation]    Returns the appropriate data type based on the suite name
-    ...    - Tests_user_desktop_FI.robot → desktop-test-data (user variables only)
-    ...    - Tests_user_mobile_android_FI.robot → mobile-android-data (user variables only)
-    ...    - Tests_user_mobile_iphone_FI.robot → mobile-iphone-data (user variables only)
-    ...    - Tests_admin_desktop_FI.robot → admin-test-data (admin variables only)
-    ...    - Tests_users_with_admin_desktop.robot → combined-test-data (both user and admin variables)
-    ...    - Tests_admin_notifications_serial.robot → combined-test-data (both user and admin variables)
-    ${suite_name}=    Get Variable Value    ${SUITE NAME}    unknown
-
-    Log    Debug: Suite name for data type detection: ${suite_name}
-
-    # Handle combined suite names by looking at the last part after the final dot
-    # Example: "Tests user desktop FI & Tests admin desktop FI.Tests admin desktop FI"
-    # We want to check "Tests admin desktop FI" (the actual running suite)
-    ${suite_parts}=    Split String    ${suite_name}    .
-    ${actual_suite}=    Get From List    ${suite_parts}    -1
-    Log    Debug: Actual running suite: ${actual_suite}
-
-    # Check the actual running suite (last part after final dot)
-    IF    '${actual_suite}' == 'Tests admin desktop FI'
-        Log    Debug: Detected admin-test-data for actual suite: ${actual_suite}
-        RETURN    admin-test-data
-    ELSE IF    '${actual_suite}' == 'Tests users with admin desktop'
-        Log    Debug: Detected combined-test-data for actual suite: ${actual_suite}
-        RETURN    combined-test-data
-    ELSE IF    '${actual_suite}' == 'Tests admin notifications serial'
-        Log    Debug: Detected combined-test-data for actual suite: ${actual_suite}
-        RETURN    combined-test-data
-    ELSE IF    '${actual_suite}' == 'Tests notifications single process'
-        Log    Debug: Detected combined-test-data for actual suite: ${actual_suite}
-        RETURN    combined-test-data
-    ELSE IF    '${actual_suite}' == 'Tests user desktop FI'
-        Log    Debug: Detected desktop-test-data for actual suite: ${actual_suite}
-        RETURN    desktop-test-data
-    ELSE IF    '${actual_suite}' == 'Tests user mobile android FI'
-        Log    Debug: Detected mobile-android-data for actual suite: ${actual_suite}
-        RETURN    mobile-android-data
-    ELSE IF    '${actual_suite}' == 'Tests user mobile iphone FI'
-        Log    Debug: Detected mobile-iphone-data for actual suite: ${actual_suite}
-        RETURN    mobile-iphone-data
-        # Fallback to original logic for non-combined suites
-    ELSE IF    'Tests admin desktop FI' in '${suite_name}'
-        Log    Debug: Detected admin-test-data for suite (fallback): ${suite_name}
-        RETURN    admin-test-data
-    ELSE IF    'Tests users with admin desktop' in '${suite_name}'
-        Log    Debug: Detected combined-test-data for suite (fallback): ${suite_name}
-        RETURN    combined-test-data
-    ELSE IF    'Tests admin notifications serial' in '${suite_name}'
-        Log    Debug: Detected combined-test-data for suite (fallback): ${suite_name}
-        RETURN    combined-test-data
-    ELSE IF    'Tests notifications single process' in '${suite_name}'
-        Log    Debug: Detected combined-test-data for suite (fallback): ${suite_name}
-        RETURN    combined-test-data
-        # Check for user-specific patterns after admin patterns
-    ELSE IF    'Tests user desktop FI' in '${suite_name}'
-        Log    Debug: Detected desktop-test-data for suite (fallback): ${suite_name}
-        RETURN    desktop-test-data
-    ELSE IF    'Tests user mobile android FI' in '${suite_name}'
-        Log    Debug: Detected mobile-android-data for suite (fallback): ${suite_name}
-        RETURN    mobile-android-data
-    ELSE IF    'Tests user mobile iphone FI' in '${suite_name}'
-        Log    Debug: Detected mobile-iphone-data for suite (fallback): ${suite_name}
-        RETURN    mobile-iphone-data
-    ELSE
-        Log    Debug: Using default desktop-test-data for unknown suite: ${suite_name}
-        RETURN    desktop-test-data    # Default fallback
     END
 
 Set User Variables From Value Set
@@ -402,6 +314,23 @@ Set Django Admin Variables From Value Set
     Set Test Variable    ${DJANGO_ADMIN_HETU}    ${django_hetu}
     Set Test Variable    ${DJANGO_ADMIN_FULLNAME}    ${django_fullname}
     Set Test Variable    ${DJANGO_ADMIN_PASSWORD}    ${django_password}
+
+Set Permission Target Admin Variables From Value Set
+    [Documentation]    Sets permission target admin variables from the PabotLib value set (for permission tests)
+    ...    These are the admin user whose permissions will be modified
+    ${target_email}=    Get Value From Set    PERMISSION_TARGET_ADMIN_EMAIL
+    ${target_first_name}=    Get Value From Set    PERMISSION_TARGET_ADMIN_FIRST_NAME
+    ${target_last_name}=    Get Value From Set    PERMISSION_TARGET_ADMIN_LAST_NAME
+    ${target_hetu}=    Get Value From Set    PERMISSION_TARGET_ADMIN_HETU
+    ${target_fullname}=    Get Value From Set    PERMISSION_TARGET_ADMIN_FULLNAME
+    ${target_password}=    Get Value From Set    PERMISSION_TARGET_ADMIN_PASSWORD
+
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_EMAIL}    ${target_email}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_FIRST_NAME}    ${target_first_name}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_LAST_NAME}    ${target_last_name}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_HETU}    ${target_hetu}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_FULLNAME}    ${target_fullname}
+    Set Test Variable    ${PERMISSION_TARGET_ADMIN_PASSWORD}    ${target_password}
 
 # =============================================================================
 # MAIL TEST DATA MANAGEMENT (for cross-test data sharing)

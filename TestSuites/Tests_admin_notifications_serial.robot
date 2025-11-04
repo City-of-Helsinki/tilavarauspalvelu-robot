@@ -19,8 +19,8 @@ Test Teardown       Complete Test Teardown
 
 *** Test Cases ***
 Admin creates normal notifications for both sides
-    [Tags]    serialonly
-    common_setups_teardowns.Complete Combined Test Setup
+    [Tags]    combined-test-data-set-0    combined-suite    serialonly    notifications
+    common_setups_teardowns.Complete Test Setup From Tags
     Log    Test cleanup
     # This is for test cleanup if the last run failed
     popups.Close notification banner if visible
@@ -93,8 +93,8 @@ Admin creates normal notifications for both sides
     app_common.Verify notification banner message is not visible
 
 Admin creates warning notifications for both sides
-    [Tags]    serialonly
-    common_setups_teardowns.Complete Combined Test Setup
+    [Tags]    combined-test-data-set-0    combined-suite    serialonly    notifications
+    common_setups_teardowns.Complete Test Setup From Tags
     Log    Test cleanup
     # This is for test cleanup if the last run failed
     popups.Close notification banner if visible
@@ -167,8 +167,8 @@ Admin creates warning notifications for both sides
     app_common.Verify notification banner message is not visible
 
 Admin creates error notifications for both sides
-    [Tags]    serialonly
-    common_setups_teardowns.Complete Combined Test Setup
+    [Tags]    combined-test-data-set-0    combined-suite    serialonly    notifications
+    common_setups_teardowns.Complete Test Setup From Tags
     Log    Test cleanup
     # This is for test cleanup if the last run failed
     popups.Close notification banner if visible
@@ -242,8 +242,8 @@ Admin creates error notifications for both sides
 Admin creates notification and archive and deletes notification for both sides
     [Documentation]    In this test we don't check every step of the notification creation process.
     ...    We avoid double checking the same parts as in "Admin creates normal notifications for both sides" test.
-    [Tags]    serialonly
-    common_setups_teardowns.Complete Combined Test Setup
+    [Tags]    combined-test-data-set-0    combined-suite    serialonly    notifications
+    common_setups_teardowns.Complete Test Setup From Tags
 
     Log    Test cleanup
     # This is for test cleanup if the last run failed

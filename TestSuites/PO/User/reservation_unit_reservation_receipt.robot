@@ -9,63 +9,63 @@ Library     Browser
 *** Keywords ***
 Check reservation user info
     [Documentation]    Validates the reservation details of the user.
-    Wait For Elements State    [data-testid="reservation__reserveePhone"]    visible
+    Wait For Elements State    [data-testid="reservation__summary-fields__reserveePhone"]    visible
 #
-    ${confirmed_firstname}    Get Text    [data-testid="reservation__reserveeFirstName"]
+    ${confirmed_firstname}    Get Text    [data-testid="reservation__summary-fields__reserveeFirstName"]
     Should Contain    ${confirmed_firstname}    ${CURRENT_USER_FIRST_NAME}
 #
-    ${confirmed_lastname}    Get Text    [data-testid="reservation__reserveeLastName"]
+    ${confirmed_lastname}    Get Text    [data-testid="reservation__summary-fields__reserveeLastName"]
     Should Contain    ${confirmed_lastname}    ${CURRENT_USER_LAST_NAME}
 #
-    ${confirmed_email}    Get Text    [data-testid="reservation__reserveeEmail"]
+    ${confirmed_email}    Get Text    [data-testid="reservation__summary-fields__reserveeEmail"]
     Should Contain    ${confirmed_email}    ${CURRENT_USER_EMAIL}
 #
-    ${confirmed_phone}    Get Text    [data-testid="reservation__reserveePhone"]
+    ${confirmed_phone}    Get Text    [data-testid="reservation__summary-fields__reserveePhone"]
     Should Contain    ${confirmed_phone}    ${CURRENT_USER_PHONE}
 
 Check free single booking info
     [Documentation]    Validates details for a free single booking.
-    Wait For Elements State    [data-testid="reservation__reserveePhone"]    visible
+    Wait For Elements State    [data-testid="reservation__summary-fields__reserveePhone"]    visible
 #
-    ${confirmed_name_of_booking}    Get Text    [data-testid="reservation__name"]
+    ${confirmed_name_of_booking}    Get Text    [data-testid="reservation__summary-fields__name"]
     Should Contain    ${confirmed_name_of_booking}    ${SINGLEBOOKING_NAME}
 #
-    ${confirmed_purpose}    Get Text    [data-testid="reservation__purpose"]
+    ${confirmed_purpose}    Get Text    [data-testid="reservation__summary-fields__purpose"]
     Should Contain    ${confirmed_purpose}    ${PURPOSE_OF_THE_BOOKING}
 #
-    ${confirmed_description}    Get Text    [data-testid="reservation__description"]
+    ${confirmed_description}    Get Text    [data-testid="reservation__summary-fields__description"]
     Should Contain    ${confirmed_description}    ${SINGLEBOOKING_DESCRIPTION}
 #
     ${confirmed_reason_for_free}    Get Text    [data-testid="confirm_freeOfChargeReason"]
     Should Contain    ${confirmed_reason_for_free}    ${JUSTIFICATION_FOR_FREE_OF_CHARGE}
 #
-    ${confirmed_number_of_persons}    Get Text    [data-testid="reservation__numPersons"]
+    ${confirmed_number_of_persons}    Get Text    [data-testid="reservation__summary-fields__numPersons"]
     Should Contain    ${confirmed_number_of_persons}    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
 
 Check single booking info
     [Documentation]    Validates details for a single booking.
-    Wait For Elements State    [data-testid="reservation__reserveePhone"]    visible
+    Wait For Elements State    [data-testid="reservation__summary-fields__reserveePhone"]    visible
 #
-    ${confirmed_name_of_booking}    Get Text    [data-testid="reservation__name"]
+    ${confirmed_name_of_booking}    Get Text    [data-testid="reservation__summary-fields__name"]
     Should Contain    ${confirmed_name_of_booking}    ${SINGLEBOOKING_NAME}
 #
-    ${confirmed_purpose}    Get Text    [data-testid="reservation__purpose"]
+    ${confirmed_purpose}    Get Text    [data-testid="reservation__summary-fields__purpose"]
     Should Contain    ${confirmed_purpose}    ${PURPOSE_OF_THE_BOOKING}
 #
-    ${confirmed_description}    Get Text    [data-testid="reservation__description"]
+    ${confirmed_description}    Get Text    [data-testid="reservation__summary-fields__description"]
     Should Contain    ${confirmed_description}    ${SINGLEBOOKING_DESCRIPTION}
 #
-    ${confirmed_number_of_persons}    Get Text    [data-testid="reservation__numPersons"]
+    ${confirmed_number_of_persons}    Get Text    [data-testid="reservation__summary-fields__numPersons"]
     Should Contain    ${confirmed_number_of_persons}    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
 
 Check noncancelable booking info
     [Documentation]    Validates details for a non-cancelable booking.
-    Wait For Elements State    [data-testid="reservation__description"]    visible
+    Wait For Elements State    [data-testid="reservation__summary-fields__description"]    visible
 #
-    ${confirmed_description}    Get Text    [data-testid="reservation__description"]
+    ${confirmed_description}    Get Text    [data-testid="reservation__summary-fields__description"]
     Should Contain    ${confirmed_description}    ${SINGLEBOOKING_DESCRIPTION}
 #
-    ${confirmed_number_of_persons}    Get Text    [data-testid="reservation__numPersons"]
+    ${confirmed_number_of_persons}    Get Text    [data-testid="reservation__summary-fields__numPersons"]
     Should Contain    ${confirmed_number_of_persons}    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
 
 ###

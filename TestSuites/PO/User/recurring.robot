@@ -11,7 +11,7 @@ Resource            ../../Resources/users.robot
 User selects a recurring booking round
     [Arguments]    ${name_of_the_recurring_reservation}
     custom_keywords.Find and click element in card element by text
-    ...    [data-testid="recurring-lander__application-round-container--active"] >> [data-sentry-element="CardContent"]
+    ...    [data-testid="recurring-lander__application-round-container--active"] >> .card--default
     ...    [data-testid="card__heading"]
     ...    ${name_of_the_recurring_reservation}
     ...    a[href*="/recurring/"]:not([href*="/criteria"])
@@ -23,7 +23,7 @@ User selects a recurring booking round
 User selects the units for recurring reservation
     [Arguments]    ${name_of_the_recurring_unit}
     custom_keywords.Find and click element in card element by text
-    ...    [data-sentry-element="CardContent"]
+    ...    [class*="Card__CardContent"]
     ...    [data-testid="card__heading"]
     ...    ${name_of_the_recurring_unit}
     ...    [data-testid="recurring-card__button--toggle"]

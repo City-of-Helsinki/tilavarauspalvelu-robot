@@ -20,15 +20,16 @@ Test Teardown       Complete Test Teardown
 
 *** Test Cases ***
 User logs in and out with suomi_fi
-    [Tags]    smoke
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    desktop-test-data-set-0    desktop-suite    smoke
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     app_common.User logs out
     app_common.User confirms log out
 
 User can make free single booking and modifies it
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    desktop-test-data-set-1    desktop-suite    booking-test
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     Log    User creates reservation
@@ -59,7 +60,8 @@ User can make free single booking and modifies it
     ...    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
 
 User can create non-cancelable booking
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    desktop-test-data-set-2    desktop-suite    non-cancelable
+    common_setups_teardowns.Complete Test Setup From Tags
     topNav.Click login
     login.Login Suomi_fi    ${CURRENT_USER_HETU}
     user_landingpage.Check the user landing page h1    ${USER_LANDING_PAGE_H1_TEXT}
@@ -80,7 +82,8 @@ User can create non-cancelable booking
     app_user.User checks booking info in reservations for noncancelable booking
 
 User can make paid single booking with interrupted checkout
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    desktop-test-data-set-3    desktop-suite    paid-interrupted
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     Log    User creates reservation
@@ -120,13 +123,14 @@ User can make paid single booking with interrupted checkout
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
 User can make paid single booking
+    [Tags]    desktop-test-data-set-4    desktop-suite    paid-booking
     Mark Paid Booking Test Started
 
     # Acquire lock to ensure email test waits
     Acquire Lock    PAID_BOOKING_EMAIL_SEQUENCE
 
     TRY
-        common_setups_teardowns.Complete Desktop User Test Setup
+        common_setups_teardowns.Complete Test Setup From Tags
         app_common.User logs in with suomi_fi
 
         app_user.User navigates to single booking page
@@ -176,7 +180,8 @@ User can make paid single booking
     END
 
 User can make subvented single booking that requires handling
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    desktop-test-data-set-5    desktop-suite    subvented
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     app_user.User navigates to single booking page
@@ -193,34 +198,9 @@ User can make subvented single booking that requires handling
     ...    ${SINGLEBOOKING_SUBVENTED_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
     ...    ${TIME_OF_QUICK_RESERVATION}
 
-User can make reservation with access code
-    common_setups_teardowns.Complete Desktop User Test Setup
-    app_common.User logs in with suomi_fi
-
-    Log    User creates reservation
-    app_user.User navigates to single booking page
-    app_user.User uses search to find right unit    ${CURRENT_UNIT_WITH_ACCESS_CODE}
-    app_user.User selects the time with quick reservation
-    app_user.User fills booking details as individual for reservation with access code
-    app_user.User checks the reservation info is right with access code    # TODO add submit here in the middle
-    #
-    topNav.Navigate to my bookings
-    app_user.User can see upcoming booking in list and clicks it
-    ...    ${CURRENT_UNIT_WITH_ACCESS_CODE_WITH_LOCATION}
-    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
-    app_user.User cancel booking in reservations and checks it got cancelled
-    topNav.Navigate to my bookings
-    app_user.User checks cancelled booking is found
-    ...    ${CURRENT_UNIT_WITH_ACCESS_CODE_WITH_LOCATION}
-    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
-    app_user.User checks booking info in reservations with access code
-    ...    ${IN_RESERVATIONS_STATUS_CANCELED}
-    ...    ${SINGLEBOOKING_NO_PAYMENT}
-    ...    ${TIME_OF_QUICK_RESERVATION}
-    ...    ${ACCESS_CODE_TXT_BY_CODE}
-
 User checks that reserved time is not available anymore
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    desktop-test-data-set-7    desktop-suite    availability
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     app_user.User navigates to single booking page
@@ -241,7 +221,8 @@ User checks that reserved time is not available anymore
     Log    No further checks are needed here
 
 User checks that there are not current dates in the past bookings
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    desktop-test-data-set-8    desktop-suite    past-bookings
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     topNav.Navigate to my bookings
@@ -249,7 +230,8 @@ User checks that there are not current dates in the past bookings
     mybookings.Validate reservations are not for today or later
 
 User can make free single booking and check info from downloaded calendar file
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    desktop-test-data-set-9    desktop-suite    calendar-download
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     app_user.User navigates to single booking page
@@ -273,6 +255,7 @@ Check emails from reservations
     [Documentation]    Waits for paid booking test to complete, then verifies reservation emails.
     ...    This test depends on 'User can make paid single booking' completing successfully first.
     ...    Uses synchronization with polling to ensure proper test ordering.
+    [Tags]    desktop-test-data-set-10    desktop-suite    email-verification
 
     ${skip_message}=    Catenate
     ...    Test is being skipped because 'User can make paid single booking' test either failed or did not complete successfully.
@@ -316,7 +299,8 @@ Check emails from reservations
     Release Lock    PAID_BOOKING_EMAIL_SEQUENCE
 
 User makes recurring reservation
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    desktop-test-data-set-11    desktop-suite    recurring
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     app_user.User navigates to recurring booking page
@@ -341,3 +325,5 @@ User makes recurring reservation
     Log    User cancels the recurring reservation
     topNav.Navigate to my applications
     app_user.User checks the recurring reservation is sent state and cancels it
+    app_common.Reload page
+    app_user.User verifies the recurring reservation is cancelled

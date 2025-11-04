@@ -87,7 +87,7 @@ Verify notification banner message
     Wait For Elements State    section${notification_type}    visible    timeout=10s
 
     custom_keywords.Check elements text
-    ...    [data-testid="BannerNotificationList__Notification"]
+    ...    section${notification_type}
     ...    ${notification_banner_message}
 
 Verify notification banner message is not visible
@@ -148,6 +148,18 @@ Admin goes to landing page
 Admin logs in with suomi_fi
     topNav.Click login admin side
     login.Login Suomi_fi    ${ADMIN_CURRENT_USER_HETU}
+    admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN_WITH_USER_INFO}
+    # Wait For Elements State    id=user-menu    visible
+    # TODO enable these steps when the dropdown has user info again
+    # admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN}
+    # Sleep    3s
+    # topNav.Check dropdown menu has user info    ${BASIC_ADMIN_MALE_FULLNAME}
+
+Permission target admin logs in with suomi_fi
+    [Documentation]    Logs in the permission target admin (Marika Salminen) for permission tests
+    ...    This is the admin whose permissions are being modified and verified
+    topNav.Click login admin side
+    login.Login Suomi_fi    ${PERMISSION_TARGET_ADMIN_HETU}
     admin_landingpage.Checks the admin landing page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_LOGGED_IN_WITH_USER_INFO}
     # Wait For Elements State    id=user-menu    visible
     # TODO enable these steps when the dropdown has user info again
@@ -233,7 +245,7 @@ Open django admin in firefox and app admin in chromium
 
 Reload page
     Reload
-    Sleep    500ms
+    Sleep    1s
     Wait For Load State    networkidle    timeout=30s
 
 ###

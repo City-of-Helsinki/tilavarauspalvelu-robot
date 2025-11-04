@@ -15,13 +15,15 @@ Test Teardown       Complete Test Teardown
 
 *** Test Cases ***
 User logs in and out with suomi_fi mobile
-    common_setups_teardowns.Complete Android Mobile Test Setup
+    [Tags]    mobile-android-data-set-0    android-suite    login
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_common.User logs out mobile
     app_common.User confirms log out mobile
 
 User can make a free single booking and modifies it mobile
-    common_setups_teardowns.Complete Android Mobile Test Setup
+    [Tags]    mobile-android-data-set-1    android-suite    free-booking
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
     app_user.User uses search to find right unit    ${CURRENT_ALWAYS_FREE_UNIT}
@@ -45,7 +47,8 @@ User can make a free single booking and modifies it mobile
     ...    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
 
 User can make paid single booking mobile
-    common_setups_teardowns.Complete Android Mobile Test Setup
+    [Tags]    mobile-android-data-set-2    android-suite    paid-booking
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
     app_user.User uses search to find right unit    ${CURRENT_ALWAYS_PAID_UNIT}
@@ -78,7 +81,8 @@ User can make paid single booking mobile
     ...    ${BOOKING_NUM_ONLY}
 
 User can make paid single booking with interrupted checkout mobile
-    common_setups_teardowns.Complete Android Mobile Test Setup
+    [Tags]    mobile-android-data-set-3    android-suite    interrupted-checkout
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
     app_user.User uses search to find right unit    ${CURRENT_ALWAYS_PAID_UNIT}
@@ -107,7 +111,8 @@ User can make paid single booking with interrupted checkout mobile
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
 User can make single booking that requires handling mobile
-    common_setups_teardowns.Complete Android Mobile Test Setup
+    [Tags]    mobile-android-data-set-4    android-suite    requires-handling
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
     app_user.User uses search to find right unit    ${CURRENT_UNIT_REQUIRES_ALWAYS_HANDLING}
@@ -124,7 +129,8 @@ User can make single booking that requires handling mobile
     ...    ${TIME_OF_QUICK_RESERVATION}
 
 User can make subvented single booking that requires handling mobile
-    common_setups_teardowns.Complete Android Mobile Test Setup
+    [Tags]    mobile-android-data-set-5    android-suite    subvented
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
     app_user.User uses search to find right unit    ${CURRENT_ALWAYS_PAID_UNIT_SUBVENTED}

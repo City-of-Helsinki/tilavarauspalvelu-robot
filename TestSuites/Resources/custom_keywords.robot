@@ -304,6 +304,52 @@ Click button in card
 
     Fail    No "${button_text}" button found in card
 
+Verify card not found in group with matching conditions
+    [Documentation]    Verifies that a specific empty state message is displayed in the application.
+    ...
+    ...    0. Before test runs: User data is set so there are NO other applications - everything is empty
+    ...    1. The test creates exactly 1 application
+    ...    2. The test then cancels that 1 application
+    ...    3. After cancellation, there should be NO other applications remaining
+    ...    4. An appropriate empty state message should be displayed
+    [Arguments]
+    ...    ${empty_state_message}
+
+    Log    Starting verification for empty state message: "${empty_state_message}"
+    Log    Context: Test creates 1 application, cancels it, then verifies no applications remain
+
+    # Get all elements that could contain the message
+    ${message_selector}=    Set Variable    id=main >> span
+    ${message_elements}=    Browser.Get Elements    ${message_selector}
+    ${element_count}=    Get Length    ${message_elements}
+
+    IF    ${element_count} == 0
+        Fail    No message elements found using selector: ${message_selector}
+    END
+
+    Log    Found ${element_count} potential message element(s) to check
+
+    # Check if any element contains the expected message
+    ${message_found}=    Set Variable    False
+    ${found_text}=    Set Variable    ${EMPTY}
+
+    FOR    ${element}    IN    @{message_elements}
+        ${element_text}=    Get Text    ${element}
+        ${element_text}=    Strip String    ${element_text}
+
+        # Check for exact match
+        IF    '${element_text}' == '${empty_state_message}'
+            ${message_found}=    Set Variable    True
+            ${found_text}=    Set Variable    ${element_text}
+            Log    SUCCESS: Found expected empty state message: "${empty_state_message}"
+            RETURN
+        END
+    END
+
+    # If message not found, raise error (message should exist after cancellation)
+    Fail
+    ...    Expected empty state message "${empty_state_message}" not found. This indicates applications still exist after cancellation, but none should remain.
+
 Find text from elements or fail
     [Arguments]    ${element_with_text}    ${wanted_text}
     Log    Searching for text: ${wanted_text}

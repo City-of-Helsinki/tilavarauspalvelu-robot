@@ -107,11 +107,11 @@ Compute reservation time slot
     Log    Reservation start time: ${reservation_start_time}
     Log    Duration: ${duration}
 
-    # 1: Validate start time (H:MM or HH:MM without leading zeros, minutes 00–59)
+    # 1: Validate start time (H:MM or HH:MM with optional leading zeros, minutes 00–59)
     Should Match Regexp
     ...    ${reservation_start_time}
-    ...    ^(?:[1-9]|1[0-9]|2[0-3]):[0-5][0-9]$
-    ...    msg=Start time must be "H:MM" or "HH:MM" without leading zeros and valid minutes
+    ...    ^(?:[0-1]?[0-9]|2[0-3]):[0-5][0-9]$
+    ...    msg=Start time must be "H:MM" or "HH:MM" (with optional leading zero) and valid minutes (00-59)
 
     # 2: Validate duration "<digits> min"
     Should Match Regexp
@@ -121,9 +121,12 @@ Compute reservation time slot
 
     # 3: Split the start time into hour and minute components
     ${start_parts}=    Split String    ${reservation_start_time}    :
-    ${start_hour}=    Get From List    ${start_parts}    0    # e.g. "17"
+    ${start_hour_raw}=    Get From List    ${start_parts}    0    # e.g. "17" or "09"
     ${start_min}=    Get From List    ${start_parts}    1    # e.g. "30"
-    Log    Parsed start: ${start_hour}h ${start_min}m
+
+    # 3a: Remove leading zero from start hour
+    ${start_hour}=    Convert To Integer    ${start_hour_raw}
+    Log    Parsed start: ${start_hour}h ${start_min}m (leading zero removed if present)
 
     # 4: Build a time interval string for the start (e.g. "17 hours 30 minutes")
     ${start_interval}=    Catenate    SEPARATOR=${SPACE}
@@ -164,9 +167,10 @@ Compute reservation time slot
     Should Be True    ${end_h_int} >= ${start_h_int}
     ...    msg=End hour ${end_h_int} is before start hour ${start_h_int}
 
-    # 10: Combine into final slot
+    # 10: Combine into final slot (both times without leading zeros)
+    ${start_time}=    Catenate    SEPARATOR=:    ${start_hour}    ${start_min}
     ${end_time}=    Catenate    SEPARATOR=:    ${end_hour}    ${end_min}
-    ${full_slot}=    Catenate    SEPARATOR=-    ${reservation_start_time}    ${end_time}
+    ${full_slot}=    Catenate    SEPARATOR=-    ${start_time}    ${end_time}
     Log    Final reservation slot ➔ ${full_slot}
 
     # 11: Expose for suite use

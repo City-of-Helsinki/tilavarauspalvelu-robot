@@ -113,7 +113,7 @@ Complete Test Setup From Tags
             └─→ [Single Mode] Uses basic users from users.robot
 ```
 
-Each test case is tagged (e.g., `[Tags]  user_desktop  dataset_user_1`), and the setup automatically:
+Each test case is tagged (e.g., `[Tags] desktop-test-data-set-0 desktop-suite`), and the setup automatically:
 1. **Loads appropriate test units** based on suite type tag
 2. **Assigns isolated user data** to prevent conflicts in parallel execution
 3. **Switches between parallel/single mode** based on execution context

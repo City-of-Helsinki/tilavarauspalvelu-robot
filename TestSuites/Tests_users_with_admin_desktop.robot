@@ -18,7 +18,8 @@ Test Teardown       Complete Test Teardown
 
 *** Test Cases ***
 User creates and Admin accepts single booking that requires handling
-    common_setups_teardowns.Complete Combined Test Setup
+    [Tags]    combined-test-data-set-0    combined-suite    accept-booking
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     Log    User creates subvented reservation
@@ -68,7 +69,8 @@ User creates and Admin accepts single booking that requires handling
     app_user.User verifies details of subvented reservation after admin approval without payment
 
 User creates and Admin declines single booking that requires handling
-    common_setups_teardowns.Complete Combined Test Setup
+    [Tags]    combined-test-data-set-1    combined-suite    decline-booking
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     Log    User creates reservation that requires handling
@@ -117,7 +119,8 @@ User creates and Admin declines single booking that requires handling
     app_user.User checks the rejected reservation info is right after admin handling
 
 User can make reservation with access code and admin changes the code
-    common_setups_teardowns.Complete Desktop User Test Setup
+    [Tags]    combined-test-data-set-2    combined-suite    access-code
+    common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
     Log    User creates reservation

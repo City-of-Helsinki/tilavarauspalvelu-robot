@@ -89,14 +89,14 @@ export OUTPUT_DIR="$DOCKER_PWD/output"
 if [ -f "$DOCKER_ENV_FILE" ]; then
     echo "Loading environment variables from $DOCKER_ENV_FILE..."
     while IFS= read -r line; do
-        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT)= ]]; then
+        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT|DJANGO_ADMIN_PASSWORD)= ]]; then
             export "$line"
         fi
     done < <(grep -v '^#' "$DOCKER_ENV_FILE")
 elif [ -f .env ]; then
     echo "Loading environment variables from .env file..."
     while IFS= read -r line; do
-        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT)= ]]; then
+        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT|DJANGO_ADMIN_PASSWORD)= ]]; then
             export "$line"
         fi
     done < <(grep -v '^#' .env)
@@ -142,7 +142,7 @@ validate_env_secrets() {
     
     echo "Validating secrets in .env file..."
     
-    local required_vars=("WAF_BYPASS_SECRET" "ACCESS_TOKEN" "REFRESH_TOKEN" "CLIENT_ID" "CLIENT_SECRET" "ROBOT_API_TOKEN")
+    local required_vars=("WAF_BYPASS_SECRET" "ACCESS_TOKEN" "REFRESH_TOKEN" "CLIENT_ID" "CLIENT_SECRET" "ROBOT_API_TOKEN" "DJANGO_ADMIN_PASSWORD")
     local missing=()
     local found=()
     
@@ -201,6 +201,7 @@ validate_env_secrets() {
     fi
     
     if [[ ${#missing[@]} -gt 0 ]]; then
+        echo ""
         echo "Missing secrets:"
         for var in "${missing[@]}"; do
             echo "  ✗ $var"
@@ -647,7 +648,7 @@ show_menu() {
     echo "3. Build Docker Image"
     echo ""
     echo -e "${YELLOW}╔══════════════════════════════════════════════╗${NC}"
-    echo -e "${YELLOW}║ 🚀 PARALLEL EXECUTION (pabot) - Multiple proc║${NC}"
+    echo -e "${YELLOW}║ 🚀 PARALLEL (pabot) - Multiple processes     ║${NC}"
     echo -e "${YELLOW}╚══════════════════════════════════════════════╝${NC}"
     echo "4. $SUITE_USER_DESKTOP ($DESKTOP_PROCESSES processes)"
     echo "5. $SUITE_ADMIN_DESKTOP ($ADMIN_PROCESSES processes)"
@@ -657,7 +658,7 @@ show_menu() {
     echo "9. All Suites Parallel ($ALL_SUITES_PROCESSES processes)"
     echo ""
     echo -e "${YELLOW}╔══════════════════════════════════════════════╗${NC}"
-    echo -e "${YELLOW}║ 🌐 SEQUENTIAL EXECUTION (robot) - One process║${NC}"
+    echo -e "${YELLOW}║ 🌐 SEQUENTIAL (robot) - One process          ║${NC}"
     echo -e "${YELLOW}╚══════════════════════════════════════════════╝${NC}"
     echo "10. $SUITE_ADMIN_NOTIFICATIONS (sequential)"
     echo "11. $SUITE_USER_DESKTOP (sequential)"
@@ -673,7 +674,7 @@ show_menu() {
     echo "17. Analyze HAR Files"
     echo ""
     echo -e "${YELLOW}╔══════════════════════════════════════════════╗${NC}"
-    echo -e "${YELLOW}║ ⚙️  CONFIGURATION - Settings                  ║${NC}"
+    echo -e "${YELLOW}║ ⚙️  CONFIGURATION - Settings                 ║${NC}"
     echo -e "${YELLOW}╚══════════════════════════════════════════════╝${NC}"
     echo "18. Toggle HAR Recording (Currently: $har_status)"
     echo ""

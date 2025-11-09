@@ -44,6 +44,7 @@ jobs:
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       WAF_BYPASS_SECRET: ${{ secrets.WAF_BYPASS_SECRET }}
       ROBOT_API_TOKEN: ${{ secrets.ROBOT_API_TOKEN }}
+      DJANGO_ADMIN_PASSWORD: ${{ secrets.DJANGO_ADMIN_PASSWORD }}
       # Process counts for parallel execution
       DESKTOP_PROCESSES: 3
       ADMIN_PROCESSES: 3
@@ -185,7 +186,7 @@ jobs:
           echo "🚀 Starting smoke tests with ${{ steps.config.outputs.execution_tool }}..."
           set +e  # Don't exit on error
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e TZ=Europe/Helsinki \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
@@ -222,7 +223,7 @@ jobs:
           echo "🚀 Smoke tests succeeded; running full test suite with ${{ steps.config.outputs.execution_tool }}..."
           set +e  # Don't exit on error to ensure we can collect results
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e TZ=Europe/Helsinki \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
@@ -239,7 +240,7 @@ jobs:
         run: |
           echo "🚀 Running ${{ github.event.inputs.test_suite }} with ${{ steps.config.outputs.execution_tool }} (${{ github.event.inputs.execution_mode }} mode)..."
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e TZ=Europe/Helsinki \
+            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \

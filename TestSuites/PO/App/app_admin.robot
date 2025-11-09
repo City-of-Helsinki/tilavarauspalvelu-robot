@@ -144,6 +144,10 @@ Admin saves access code
 # Top navigation
 ###
 
+###
+# Basic permissions
+###
+
 Admin checks top navigation for notification manager
     custom_keywords.Verify element is found    [href="/kasittely/notifications"]
     custom_keywords.Verify element is not found    [href="/kasittely/reservations"]
@@ -191,7 +195,111 @@ Admin checks top navigation for admin
 ##
 ##
 
-Admin navigates to reservations by units and checks reserevation info
+###
+# Unit permissions
+###
+
+Admin checks top navigation for notification manager with unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservations/requested"]
+    custom_keywords.Verify element is not found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+
+Admin checks top navigation for viewer with unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+
+Admin checks top navigation for reserver with unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+
+Admin checks top navigation for handler with unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+
+Admin checks top navigation for admin with unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+
+##
+##
+
+###
+# Group unit permissions
+###
+
+Admin checks top navigation for notification manager with group unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservations/requested"]
+    custom_keywords.Verify element is not found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+
+Admin checks top navigation for viewer with group unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+
+Admin checks top navigation for reserver with group unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+
+Admin checks top navigation for handler with group unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is not found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is not found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+
+Admin checks top navigation for admin with group unit permissions
+    custom_keywords.Verify element is not found    [href="/kasittely/notifications"]
+    custom_keywords.Verify element is found    [href="/kasittely/application-rounds"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservation-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/units"]
+    custom_keywords.Verify element is found    [href="/kasittely/my-units"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations"]
+    custom_keywords.Verify element is found    [href="/kasittely/reservations/requested"]
+
+##
+##
+
+Admin navigates to reservations by units and checks reservation info
     # TODO lets fix this to better keyword
     ${ByUnitsElement}=    Browser.Get Element    css=[role="tablist"] >> span:text-is("${RESERVATIONS_BY_UNITS_FI}")
     Click    ${ByUnitsElement}

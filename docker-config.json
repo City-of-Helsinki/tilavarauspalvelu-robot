@@ -10,7 +10,7 @@
     "env_file": "TestSuites/Resources/.env"
   },
   "robot_variables": {
-    "enable_har_recording": true
+    "enable_har_recording": false
   },
   "suites": {
     "user_desktop": "Tests_user_desktop_FI.robot",

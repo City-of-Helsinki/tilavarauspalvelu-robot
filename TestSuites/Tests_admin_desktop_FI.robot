@@ -41,15 +41,13 @@ Admin verifies all reservation types and verifies no unavailable reservations ex
     app_admin.Admin attempts to make an unavailable reservation
 
 Admin checks permissions
-    [Tags]    admin-test-data-set-2    admin-suite    permissions
+    [Tags]    admin-test-data-set-2    admin-suite    permissions    general-permissions-test
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.Open django admin in firefox and app admin in chromium    ${URL_DJANGO_ADMIN}    ${URL_ADMIN}
     # Now in Chromium, so switch to Firefox for Django admin operations
     Switch Browser    ${BROWSER_ADMIN_SIDE}
 
-    login.Login django admin
-    ...    ${DJANGO_ADMIN_FIRST_NAME}
-    ...    ${DJANGO_ADMIN_PASSWORD}
+    login.Login django admin    ${DJANGO_ADMIN_FIRST_NAME}
 
     Log    Django admin changes permissions for admin user to notification manager
     django_admin.Admin navigates to general role page
@@ -134,5 +132,197 @@ Admin checks permissions
     #
     Log    Checking permissions
     app_admin.Admin checks top navigation for admin
+    app_admin.Admin clicks make reservation and checks dialog opens
+    admin_reservations.Admin closes dialog modal
+
+Admin checks unit permissions
+    [Tags]    admin-test-data-set-3    admin-suite    permissions    unit-permissions-test
+    common_setups_teardowns.Complete Test Setup From Tags
+    app_common.Open django admin in firefox and app admin in chromium    ${URL_DJANGO_ADMIN}    ${URL_ADMIN}
+    # Now in Chromium, so switch to Firefox for Django admin operations
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+
+    login.Login django admin    ${DJANGO_ADMIN_FIRST_NAME}
+
+    # TODO Setting this role will be removed from django
+    Log    Django admin changes permissions for admin user to notification manager
+    django_admin.Admin navigates to unit role page
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
+    django_admin.Admin saves changes
+
+    # Switch to Chromium browser for app admin checks
+    Switch Browser    ${BROWSER_USER_SIDE}
+    Log    Checking permissions
+    app_common.Permission target admin logs in with suomi_fi
+    app_admin.Admin checks top navigation for notification manager with unit permissions
+
+    #
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+    #
+
+    Log    Django admin changes permissions to viewer
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_VIEWER}
+    django_admin.Admin saves changes
+    #
+    Switch Browser    ${BROWSER_USER_SIDE}
+    app_common.Reload page
+    #
+    Log    Checking permissions
+    app_admin.Admin checks top navigation for viewer with unit permissions
+    app_admin.Admin navigates to own units and selects unit group    ${UNIT_LOCATION}
+    app_admin.Admin checks that reservation cannot be made
+
+    #
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+    #
+
+    Log    Django admin changes permissions to reserver
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_RESERVER}
+    django_admin.Admin saves changes
+
+    #
+    Switch Browser    ${BROWSER_USER_SIDE}
+    app_common.Reload page
+    #
+    Log    Checking permissions
+    app_admin.Admin checks top navigation for reserver with unit permissions
+    app_admin.Admin clicks make reservation and checks dialog opens
+    admin_reservations.Admin closes dialog modal
+
+    #
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+    #
+    Log    Django admin changes permissions to handler
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_HANDLER}
+    django_admin.Admin saves changes
+
+    #
+    Switch Browser    ${BROWSER_USER_SIDE}
+    app_common.Reload page
+    #
+    Log    Checking permissions
+    app_admin.Admin checks top navigation for handler with unit permissions
+    app_admin.Admin clicks make reservation and checks dialog opens
+    admin_reservations.Admin closes dialog modal
+
+    #
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+    #
+    Log    Django admin changes permissions to admin
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_ADMIN}
+    django_admin.Admin saves changes
+
+    #
+    Switch Browser    ${BROWSER_USER_SIDE}
+    app_common.Reload page
+    #
+    Log    Checking permissions
+    app_admin.Admin checks top navigation for admin with unit permissions
+    app_admin.Admin clicks make reservation and checks dialog opens
+    admin_reservations.Admin closes dialog modal
+
+Admin checks group unit permissions
+    [Tags]    admin-test-data-set-4    admin-suite    permissions    unit-group-permissions-test
+    common_setups_teardowns.Complete Test Setup From Tags
+    app_common.Open django admin in firefox and app admin in chromium    ${URL_DJANGO_ADMIN}    ${URL_ADMIN}
+    # Now in Chromium, so switch to Firefox for Django admin operations
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+
+    login.Login django admin    ${DJANGO_ADMIN_FIRST_NAME}
+
+    # TODO Setting this role will be removed from django
+    Log    Django admin changes permissions for admin user to notification manager
+    django_admin.Admin navigates to unit role page
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
+    django_admin.Admin saves changes
+
+    # Switch to Chromium browser for app admin checks
+    Switch Browser    ${BROWSER_USER_SIDE}
+    Log    Checking permissions
+    app_common.Permission target admin logs in with suomi_fi
+    app_admin.Admin checks top navigation for notification manager with group unit permissions
+
+    #
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+    #
+
+    Log    Django admin changes permissions to viewer
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_VIEWER}
+    django_admin.Admin saves changes
+    #
+    Switch Browser    ${BROWSER_USER_SIDE}
+    app_common.Reload page
+    #
+    Log    Checking permissions
+    app_admin.Admin checks top navigation for viewer with group unit permissions
+    app_admin.Admin navigates to own units and selects unit group    ${UNIT_LOCATION}
+    app_admin.Admin checks that reservation cannot be made
+
+    #
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+    #
+
+    Log    Django admin changes permissions to reserver
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_RESERVER}
+    django_admin.Admin saves changes
+
+    #
+    Switch Browser    ${BROWSER_USER_SIDE}
+    app_common.Reload page
+    #
+    Log    Checking permissions
+    app_admin.Admin checks top navigation for reserver with group unit permissions
+    app_admin.Admin clicks make reservation and checks dialog opens
+    admin_reservations.Admin closes dialog modal
+
+    #
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+    #
+    Log    Django admin changes permissions to handler
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_HANDLER}
+    django_admin.Admin saves changes
+
+    #
+    Switch Browser    ${BROWSER_USER_SIDE}
+    app_common.Reload page
+    #
+    Log    Checking permissions
+    app_admin.Admin checks top navigation for handler with group unit permissions
+    app_admin.Admin clicks make reservation and checks dialog opens
+    admin_reservations.Admin closes dialog modal
+
+    #
+    Switch Browser    ${BROWSER_ADMIN_SIDE}
+    #
+    Log    Django admin changes permissions to admin
+    django_admin.Admin searches the user by email    ${PERMISSION_TARGET_ADMIN_EMAIL}
+    django_admin.Admin clicks first user
+    django_admin.Admin changes permissions    ${ADMIN_ROLE_ADMIN}
+    django_admin.Admin saves changes
+
+    #
+    Switch Browser    ${BROWSER_USER_SIDE}
+    app_common.Reload page
+    #
+    Log    Checking permissions
+    app_admin.Admin checks top navigation for admin with group unit permissions
     app_admin.Admin clicks make reservation and checks dialog opens
     admin_reservations.Admin closes dialog modal

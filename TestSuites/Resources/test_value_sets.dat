@@ -178,21 +178,58 @@ CURRENT_PASSWORD=Virtanen
 [admin-test-data-set-2]
 # TEST: "Admin checks permissions" (Tests_admin_desktop_FI.robot)
 # DESCRIPTION: Django admin modifies admin user's permissions to notification manager role
-tags=admin-test-data-set-2,admin-test-data,admin-data,admin-suite,permissions
+tags=admin-test-data-set-2,admin-test-data,admin-data,admin-suite,permissions,general-permissions-test
 # Permission target admin - the admin whose permissions are being modified
 PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+marika@gmail.com
 PERMISSION_TARGET_ADMIN_HETU=140785-932R
 PERMISSION_TARGET_ADMIN_FIRST_NAME=Marika
 PERMISSION_TARGET_ADMIN_LAST_NAME=Salminen
 PERMISSION_TARGET_ADMIN_FULLNAME=Marika Salminen
-PERMISSION_TARGET_ADMIN_PASSWORD=Salminen
 # Django admin who performs the permission changes
 DJANGO_ADMIN_EMAIL=qfaksi+kari@gmail.com
 DJANGO_ADMIN_HETU=150875-9345
 DJANGO_ADMIN_FIRST_NAME=Kari
 DJANGO_ADMIN_LAST_NAME=Kekkonen
 DJANGO_ADMIN_FULLNAME=Kari Kekkonen
-DJANGO_ADMIN_PASSWORD=Kekkonen
+# NOTE: Password is read from DJANGO_ADMIN_PASSWORD environment variable
+
+[admin-test-data-set-3]
+# TEST: "Admin checks unit permissions" (Tests_admin_desktop_FI.robot)
+# DESCRIPTION: Django admin modifies admin user's unit permissions
+tags=admin-test-data-set-3,admin-test-data,admin-data,admin-suite,permissions,unit-permissions-test
+# Permission target admin - the admin whose permissions are being modified
+# NOTE: This user must have unit permissions set by default (set in data setup phase)
+PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+niko@gmail.com
+PERMISSION_TARGET_ADMIN_HETU=150785-907H
+PERMISSION_TARGET_ADMIN_FIRST_NAME=Niko
+PERMISSION_TARGET_ADMIN_LAST_NAME=Selänne
+PERMISSION_TARGET_ADMIN_FULLNAME=Niko Selänne
+# Django admin who performs the permission changes
+DJANGO_ADMIN_EMAIL=qfaksi+ari@gmail.com
+DJANGO_ADMIN_HETU=190684-907F
+DJANGO_ADMIN_FIRST_NAME=Ari
+DJANGO_ADMIN_LAST_NAME=Laine
+DJANGO_ADMIN_FULLNAME=Ari Laine
+# NOTE: Password is read from DJANGO_ADMIN_PASSWORD environment variable
+
+[admin-test-data-set-4]
+# TEST: "Admin checks unit group permissions" (Tests_admin_desktop_FI.robot)
+# DESCRIPTION: Django admin modifies admin user's unit group permissions
+tags=admin-test-data-set-4,admin-test-data,admin-data,admin-suite,permissions,unit-group-permissions-test
+# Permission target admin - the admin whose permissions are being modified
+# NOTE: This user must have unit permissions set by default (set in data setup phase)
+PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+mikko@gmail.com
+PERMISSION_TARGET_ADMIN_HETU=200685-907K
+PERMISSION_TARGET_ADMIN_FIRST_NAME=Mikko
+PERMISSION_TARGET_ADMIN_LAST_NAME=Mäkinen
+PERMISSION_TARGET_ADMIN_FULLNAME=Mikko Mäkinen
+# Django admin who performs the permission changes
+DJANGO_ADMIN_EMAIL=qfaksi+nieminen@gmail.com
+DJANGO_ADMIN_HETU=160776-934M
+DJANGO_ADMIN_FIRST_NAME=Timo
+DJANGO_ADMIN_LAST_NAME=Nieminen
+DJANGO_ADMIN_FULLNAME=Timo Nieminen
+# NOTE: Password is read from DJANGO_ADMIN_PASSWORD environment variable
 
 # =============================================================================
 # COMBINED ADMIN+USER TESTS

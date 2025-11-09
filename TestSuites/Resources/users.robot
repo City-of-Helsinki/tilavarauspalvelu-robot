@@ -27,7 +27,6 @@ ${PERMISSION_TARGET_ADMIN_HETU}                 ${EMPTY}
 ${PERMISSION_TARGET_ADMIN_FIRST_NAME}           ${EMPTY}
 ${PERMISSION_TARGET_ADMIN_LAST_NAME}            ${EMPTY}
 ${PERMISSION_TARGET_ADMIN_FULLNAME}             ${EMPTY}
-${PERMISSION_TARGET_ADMIN_PASSWORD}             ${EMPTY}
 
 ###############################################################################
 #    DESKTOP USERS    #
@@ -74,6 +73,7 @@ ${BASIC_ADMIN_MALE_PASSWORD}                    Tötterstrom
 # DJANGO ADMIN USER: Kari Kekkonen - Django Admin for Permission Tests
 # ASSIGNED TESTS: "Admin checks permissions", Single user mode fallback
 # DJANGO PÄÄKÄYTTÄJÄ
+# NOTE: Actual password is read from DJANGO_ADMIN_PASSWORD environment variable
 ${BASIC_DJANGO_ADMIN_EMAIL}                     qfaksi+kari@gmail.com
 ${BASIC_DJANGO_ADMIN_HETU}                      150875-9345
 ${BASIC_DJANGO_ADMIN_FIRSTNAME}                 Kari
@@ -96,7 +96,6 @@ ${BASIC_PERMISSION_TARGET_ADMIN_PHONE}          +35840123669
 ${BASIC_PERMISSION_TARGET_ADMIN_FIRSTNAME}      Marika
 ${BASIC_PERMISSION_TARGET_ADMIN_LASTNAME}       Salminen
 ${BASIC_PERMISSION_TARGET_ADMIN_FULLNAME}       ${BASIC_PERMISSION_TARGET_ADMIN_FIRSTNAME} ${BASIC_PERMISSION_TARGET_ADMIN_LASTNAME}
-${BASIC_PERMISSION_TARGET_ADMIN_PASSWORD}       Salminen
 
 # DEVNOTE: Registered user information
 # Marika Salminen (Permission Test Admin)

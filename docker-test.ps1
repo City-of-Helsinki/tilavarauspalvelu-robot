@@ -48,7 +48,7 @@ function Validate-EnvSecrets {
     
     Write-Info "Validating secrets in .env file..."
     
-    $requiredVars = @("WAF_BYPASS_SECRET", "ACCESS_TOKEN", "REFRESH_TOKEN", "CLIENT_ID", "CLIENT_SECRET", "ROBOT_API_TOKEN")
+    $requiredVars = @("WAF_BYPASS_SECRET", "ACCESS_TOKEN", "REFRESH_TOKEN", "CLIENT_ID", "CLIENT_SECRET", "ROBOT_API_TOKEN", "DJANGO_ADMIN_PASSWORD")
     $missing = @()
     $found = @()
     
@@ -92,7 +92,7 @@ function Validate-EnvSecrets {
     }
     
     if ($missing.Count -gt 0) {
-        Write-Warning "Missing secrets:"
+        Write-Warning "`nMissing secrets:"
         $missing | ForEach-Object { Write-Error "  [MISSING] $_" }
         Write-Warning "`n[WARNING] Tests requiring these secrets may fail"
         return $false

@@ -7,7 +7,6 @@ Documentation       Parallel test data management using PabotLib
 
 Library             pabot.PabotLib
 Library             String
-Library             Collections
 Resource            users.robot
 
 
@@ -48,12 +47,23 @@ Initialize Test Data From Tags
     Log    🔧 Process ID: ${process_id}
 
     # Parse all tags and set flags
-    ${value_set_name}    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}=
-    ...    Parse Test Tags    ${test_tags}
+    ${value_set_name}
+    ...    ${has_admin}
+    ...    ${has_combined}
+    ...    ${has_permissions}
+    ...    ${has_user}
+    ...    ${permission_test_type}=
+    ...    Parse Test Tags
+    ...    ${test_tags}
 
     IF    '${value_set_name}' == '${NONE}'
         Log    ⚠️ No data set tag found, using single user mode fallback
-        Use Single User Mode From Parsed Tags    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
+        Use Single User Mode From Parsed Tags
+        ...    ${has_admin}
+        ...    ${has_combined}
+        ...    ${has_permissions}
+        ...    ${has_user}
+        ...    ${permission_test_type}
         RETURN
     END
 
@@ -63,14 +73,24 @@ Initialize Test Data From Tags
     ${force_single}=    Get Variable Value    ${FORCE_SINGLE_USER}    ${FALSE}
     IF    ${force_single}
         Log    Using FORCE_SINGLE_USER mode - using basic users from users.robot
-        Use Single User Mode From Parsed Tags    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
+        Use Single User Mode From Parsed Tags
+        ...    ${has_admin}
+        ...    ${has_combined}
+        ...    ${has_permissions}
+        ...    ${has_user}
+        ...    ${permission_test_type}
         RETURN
     END
 
     # Check if running without pabot (Code editor, single execution)
     IF    '${process_id}' == '${NONE}'
         Log    Non-parallel execution detected - using single user mode
-        Use Single User Mode From Parsed Tags    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
+        Use Single User Mode From Parsed Tags
+        ...    ${has_admin}
+        ...    ${has_combined}
+        ...    ${has_permissions}
+        ...    ${has_user}
+        ...    ${permission_test_type}
         RETURN
     END
 
@@ -118,19 +138,26 @@ Initialize Test Data From Tags
             ...    ${has_combined}
             ...    ${has_permissions}
             ...    ${has_user}
+            ...    ${permission_test_type}
         END
     ELSE
         Log    ⚠️ WARNING: Value set ${value_set_name} not available
         Log    Falling back to single user mode
-        Use Single User Mode From Parsed Tags    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
+        Use Single User Mode From Parsed Tags
+        ...    ${has_admin}
+        ...    ${has_combined}
+        ...    ${has_permissions}
+        ...    ${has_user}
+        ...    ${permission_test_type}
     END
 
 Parse Test Tags
     [Documentation]    Parse test tags and return all relevant information
-    ...    Returns: data_set_name, has_admin_tag, has_combined_tag, has_permissions_tag, has_user_tag
+    ...    Returns: data_set_name, has_admin_tag, has_combined_tag, has_permissions_tag, has_user_tag, permission_test_type
+    ...    permission_test_type values: 'unit-permissions-test', 'unit-group-permissions-test', 'general-permissions-test', or ${NONE}
     ...    Example:
-    ...    Tags: ['admin-suite', 'admin-test-data-set-2', 'permissions']
-    ...    Returns: 'admin-test-data-set-2', True, False, True, False
+    ...    Tags: ['admin-suite', 'admin-test-data-set-2', 'permissions', 'general-permissions-test']
+    ...    Returns: 'admin-test-data-set-2', True, False, True, False, 'general-permissions-test'
     [Arguments]    ${tags}
 
     # Initialize all flags
@@ -139,6 +166,7 @@ Parse Test Tags
     ${has_combined_tag}=    Set Variable    ${FALSE}
     ${has_permissions_tag}=    Set Variable    ${FALSE}
     ${has_user_tag}=    Set Variable    ${FALSE}
+    ${permission_test_type}=    Set Variable    ${NONE}
 
     # Single pass through all tags
     FOR    ${tag}    IN    @{tags}
@@ -173,13 +201,28 @@ Parse Test Tags
         IF    ${is_permissions}
             ${has_permissions_tag}=    Set Variable    ${TRUE}
         END
+
+        # Check for permission test type tags (more specific)
+        IF    '${tag}' == 'unit-permissions-test'
+            ${permission_test_type}=    Set Variable    unit-permissions-test
+        ELSE IF    '${tag}' == 'unit-group-permissions-test'
+            ${permission_test_type}=    Set Variable    unit-group-permissions-test
+        ELSE IF    '${tag}' == 'general-permissions-test'
+            ${permission_test_type}=    Set Variable    general-permissions-test
+        END
     END
 
     # Log parsed results for easy debugging
     Log
-    ...    📊 Parsed tags: data_set='${data_set_name}', admin=${has_admin_tag}, combined=${has_combined_tag}, permissions=${has_permissions_tag}, user=${has_user_tag}
+    ...    📊 Parsed tags: data_set='${data_set_name}', admin=${has_admin_tag}, combined=${has_combined_tag}, permissions=${has_permissions_tag}, user=${has_user_tag}, perm_type='${permission_test_type}'
 
-    RETURN    ${data_set_name}    ${has_admin_tag}    ${has_combined_tag}    ${has_permissions_tag}    ${has_user_tag}
+    RETURN
+    ...    ${data_set_name}
+    ...    ${has_admin_tag}
+    ...    ${has_combined_tag}
+    ...    ${has_permissions_tag}
+    ...    ${has_user_tag}
+    ...    ${permission_test_type}
 
 Use Single User Mode From Parsed Tags
     [Documentation]    Sets test variables based on pre-parsed tag flags in single user mode    ...
@@ -188,7 +231,13 @@ Use Single User Mode From Parsed Tags
     ...    - has_combined: Boolean indicating combined test
     ...    - has_permissions: Boolean indicating permission test
     ...    - has_user: Boolean indicating user test
-    [Arguments]    ${has_admin}    ${has_combined}    ${has_permissions}    ${has_user}
+    ...    - permission_test_type: Type of permission test or ${NONE}
+    [Arguments]
+    ...    ${has_admin}
+    ...    ${has_combined}
+    ...    ${has_permissions}
+    ...    ${has_user}
+    ...    ${permission_test_type}=${NONE}
 
     # Set user variables for user and combined tests
     IF    not ${has_admin} or ${has_combined}
@@ -206,7 +255,7 @@ Use Single User Mode From Parsed Tags
     IF    ${has_admin} or ${has_combined}
         IF    ${has_permissions}
             Log    Permission test detected - loading Django admin and permission target only
-            Use Single Django And Permission Admin Mode
+            Use Single Django And Permission Admin Mode    ${permission_test_type}
             Log    ✓ Permission test: Django admin and permission target variables set
         ELSE
             # Normal admin test: Load only standard admin
@@ -230,11 +279,17 @@ Use Single Django And Permission Admin Mode
     ...
     ...    Sets two groups of variables:
     ...    1. DJANGO_ADMIN_* (Kari Kekkonen - performs permission changes)
-    ...    2. PERMISSION_TARGET_ADMIN_* (Marika Salminen - whose permissions are modified)
+    ...    2. PERMISSION_TARGET_ADMIN_* (whose permissions are modified - varies by test)
     ...
     ...    Note: Does NOT set ADMIN_CURRENT_USER_*
-    ...    Permission tests explicitly use PERMISSION_TARGET_ADMIN_* for login
-    Log    Using single Django and permission admin mode
+    ...    Permission tests explicitly use PERMISSION_TARGET_ADMIN_* for login (uses HETU, not password)
+    ...
+    ...    Permission target admin is mapped from permission_test_type:
+    ...    - unit-permissions-test: Niko Selänne (admin-test-data-set-3)
+    ...    - unit-group-permissions-test: Mikko Mäkinen (admin-test-data-set-4)
+    ...    - general-permissions-test or ${NONE}: Marika Salminen (admin-test-data-set-2)
+    [Arguments]    ${permission_test_type}=${NONE}
+    Log    Using single Django and permission admin mode (type: ${permission_test_type})
 
     # Set Django admin (Kari Kekkonen) - performs permission changes
     Log    Loading Django admin: ${BASIC_DJANGO_ADMIN_FULLNAME}
@@ -243,16 +298,31 @@ Use Single Django And Permission Admin Mode
     Set Test Variable    ${DJANGO_ADMIN_FIRST_NAME}    ${BASIC_DJANGO_ADMIN_FIRSTNAME}
     Set Test Variable    ${DJANGO_ADMIN_LAST_NAME}    ${BASIC_DJANGO_ADMIN_LASTNAME}
     Set Test Variable    ${DJANGO_ADMIN_FULLNAME}    ${BASIC_DJANGO_ADMIN_FULLNAME}
-    Set Test Variable    ${DJANGO_ADMIN_PASSWORD}    ${BASIC_DJANGO_ADMIN_PASSWORD}
 
-    # Set permission target admin (Marika Salminen) - whose permissions are modified
-    Log    Loading permission target admin: ${BASIC_PERMISSION_TARGET_ADMIN_FULLNAME}
-    Set Test Variable    ${PERMISSION_TARGET_ADMIN_EMAIL}    ${BASIC_PERMISSION_TARGET_ADMIN_EMAIL}
-    Set Test Variable    ${PERMISSION_TARGET_ADMIN_HETU}    ${BASIC_PERMISSION_TARGET_ADMIN_HETU}
-    Set Test Variable    ${PERMISSION_TARGET_ADMIN_FIRST_NAME}    ${BASIC_PERMISSION_TARGET_ADMIN_FIRSTNAME}
-    Set Test Variable    ${PERMISSION_TARGET_ADMIN_LAST_NAME}    ${BASIC_PERMISSION_TARGET_ADMIN_LASTNAME}
-    Set Test Variable    ${PERMISSION_TARGET_ADMIN_FULLNAME}    ${BASIC_PERMISSION_TARGET_ADMIN_FULLNAME}
-    Set Test Variable    ${PERMISSION_TARGET_ADMIN_PASSWORD}    ${BASIC_PERMISSION_TARGET_ADMIN_PASSWORD}
+    # Set permission target admin based on permission test type (parsed from tags)
+    IF    '${permission_test_type}' == 'unit-permissions-test'
+        Log    Loading permission target admin: Niko Selänne (unit permissions test)
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_EMAIL}    qfaksi+niko@gmail.com
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_HETU}    150785-907H
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_FIRST_NAME}    Niko
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_LAST_NAME}    Selänne
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_FULLNAME}    Niko Selänne
+    ELSE IF    '${permission_test_type}' == 'unit-group-permissions-test'
+        Log    Loading permission target admin: Mikko Mäkinen (unit group permissions test)
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_EMAIL}    qfaksi+mikko@gmail.com
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_HETU}    200685-907K
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_FIRST_NAME}    Mikko
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_LAST_NAME}    Mäkinen
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_FULLNAME}    Mikko Mäkinen
+    ELSE
+        # Default: Marika Salminen (general-permissions-test or fallback)
+        Log    Loading permission target admin: ${BASIC_PERMISSION_TARGET_ADMIN_FULLNAME} (general permissions)
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_EMAIL}    ${BASIC_PERMISSION_TARGET_ADMIN_EMAIL}
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_HETU}    ${BASIC_PERMISSION_TARGET_ADMIN_HETU}
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_FIRST_NAME}    ${BASIC_PERMISSION_TARGET_ADMIN_FIRSTNAME}
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_LAST_NAME}    ${BASIC_PERMISSION_TARGET_ADMIN_LASTNAME}
+        Set Test Variable    ${PERMISSION_TARGET_ADMIN_FULLNAME}    ${BASIC_PERMISSION_TARGET_ADMIN_FULLNAME}
+    END
 
     Log    ✓ Permission test admin variables set (Django admin and permission target)
 
@@ -301,19 +371,21 @@ Set Admin Variables From Value Set
 
 Set Django Admin Variables From Value Set
     [Documentation]    Sets Django admin variables from the PabotLib value set (for permission tests)
+    ...    Password is ONLY read from environment variable DJANGO_ADMIN_PASSWORD
     ${django_email}=    Get Value From Set    DJANGO_ADMIN_EMAIL
     ${django_first_name}=    Get Value From Set    DJANGO_ADMIN_FIRST_NAME
     ${django_last_name}=    Get Value From Set    DJANGO_ADMIN_LAST_NAME
     ${django_hetu}=    Get Value From Set    DJANGO_ADMIN_HETU
     ${django_fullname}=    Get Value From Set    DJANGO_ADMIN_FULLNAME
-    ${django_password}=    Get Value From Set    DJANGO_ADMIN_PASSWORD
+
+    # Password is already available from ${DJANGO_ADMIN_PASSWORD} (loaded by env_loader.py)
+    # Always use DJANGO_ADMIN_PASSWORD for all Django admins
 
     Set Test Variable    ${DJANGO_ADMIN_EMAIL}    ${django_email}
     Set Test Variable    ${DJANGO_ADMIN_FIRST_NAME}    ${django_first_name}
     Set Test Variable    ${DJANGO_ADMIN_LAST_NAME}    ${django_last_name}
     Set Test Variable    ${DJANGO_ADMIN_HETU}    ${django_hetu}
     Set Test Variable    ${DJANGO_ADMIN_FULLNAME}    ${django_fullname}
-    Set Test Variable    ${DJANGO_ADMIN_PASSWORD}    ${django_password}
 
 Set Permission Target Admin Variables From Value Set
     [Documentation]    Sets permission target admin variables from the PabotLib value set (for permission tests)
@@ -323,14 +395,12 @@ Set Permission Target Admin Variables From Value Set
     ${target_last_name}=    Get Value From Set    PERMISSION_TARGET_ADMIN_LAST_NAME
     ${target_hetu}=    Get Value From Set    PERMISSION_TARGET_ADMIN_HETU
     ${target_fullname}=    Get Value From Set    PERMISSION_TARGET_ADMIN_FULLNAME
-    ${target_password}=    Get Value From Set    PERMISSION_TARGET_ADMIN_PASSWORD
 
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_EMAIL}    ${target_email}
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_FIRST_NAME}    ${target_first_name}
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_LAST_NAME}    ${target_last_name}
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_HETU}    ${target_hetu}
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_FULLNAME}    ${target_fullname}
-    Set Test Variable    ${PERMISSION_TARGET_ADMIN_PASSWORD}    ${target_password}
 
 # =============================================================================
 # MAIL TEST DATA MANAGEMENT (for cross-test data sharing)

@@ -35,3 +35,8 @@ Admin navigates to general role page
     Go to    https://varaamo.test.hel.ninja/admin/tilavarauspalvelu/generalrole/
     sleep    1s
     wait for load state    load    timeout=15s
+
+Admin navigates to unit role page
+    Go to    https://varaamo.test.hel.ninja/admin/tilavarauspalvelu/unitrole/
+    sleep    1s
+    wait for load state    load    timeout=15s

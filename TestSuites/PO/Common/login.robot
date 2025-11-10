@@ -1,6 +1,7 @@
 *** Settings ***
 Resource    ../../Resources/users.robot
 Resource    ../../Resources/variables.robot
+Resource    ../../Resources/parallel_test_data.robot
 Library     Browser
 Library     BuiltIn
 
@@ -31,11 +32,16 @@ Login Suomi_fi
     Log    "🔍 Login cookies after Tunnistamo: ${fresh_cookie_count}"
 
 Login django admin
-    [Arguments]    ${input_username}    ${input_password}
+    [Documentation]    The input_password argument is kept for backward compatibility but is not used
+    [Arguments]    ${input_username}    ${input_password}=${EMPTY}
     Wait For Load State    load    timeout=15s
     Wait For Elements State    id=id_username    visible    timeout=10s
     Type Text    id=id_username    ${input_username}
-    Type Text    id=id_password    ${input_password}
+    # Use password from Robot Framework variable (loaded by env_loader.py)
+    # Suppress logging when typing password
+    ${original_log_level}=    Set Log Level    WARN
+    Type Text    id=id_password    ${DJANGO_ADMIN_PASSWORD}
+    Set Log Level    ${original_log_level}
     Click    [type="submit"]
     Sleep    2s
     Wait For Load State    load    timeout=60s

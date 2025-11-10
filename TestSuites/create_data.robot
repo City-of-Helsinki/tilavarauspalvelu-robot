@@ -9,8 +9,9 @@ Library             OperatingSystem
 
 *** Variables ***
 ${BASE_URL}             https://varaamo.test.hel.ninja
-${TOKEN}                ${EMPTY}
-${ENDPOINT}             ${EMPTY}
+# For quick testing, set TOKEN to the value of ROBOT_API_TOKEN in the .env file
+# ${TOKEN}    ${EMPTY}
+# ${ENDPOINT}    ${EMPTY}
 ${MAX_RETRIES}          2
 ${RETRY_DELAY}          60    # seconds
 
@@ -20,15 +21,19 @@ ${DEFAULT_ENDPOINT}     /v1/create_robot_test_data/
 
 *** Keywords ***
 Create robot test data
+    Log    Disabled until backend data creation is ready
+
+Create robot test data DISABLED
     [Documentation]    Calls the endpoint to Create robot test data.
     [Timeout]    5 minutes
 
     # Temporarily suppress logging
     ${original_log_level}=    Set Log Level    NONE
 
-    # Retrieve token from variables or environment
-    ${token_from_env}=    Get Environment Variable    ROBOT_API_TOKEN    default=${EMPTY}
-    ${token}=    Set Variable If    "${TOKEN}"!=""    ${TOKEN}    ${token_from_env}
+    # Retrieve token from Robot Framework variables (loaded by env_loader.py)
+    # Priority: $TOKEN (if defined) > $ROBOT_API_TOKEN from env_loader.py > empty
+    ${token}=    Get Variable Value    $TOKEN    ${EMPTY}
+    ${token}=    Set Variable If    "${token}"==""    $ROBOT_API_TOKEN    ${token}
 
     # Create headers with token
     ${headers}=    Create Dictionary
@@ -40,12 +45,13 @@ Create robot test data
     Set Log Level    ${original_log_level}
 
     IF    "${token}" == ""
-        Fail    ROBOT_API_TOKEN not provided in TOKEN variable nor env ROBOT_API_TOKEN
+        Fail    ROBOT_API_TOKEN not provided in TOKEN variable nor .env file
     END
 
-    # Get endpoint from environment variable or use default
-    ${endpoint_from_env}=    Get Environment Variable    ROBOT_API_ENDPOINT    default=${EMPTY}
-    ${endpoint}=    Set Variable If    "${ENDPOINT}"!=""    ${ENDPOINT}    ${endpoint_from_env}
+    # Get endpoint from Robot Framework variables or use default
+    # Priority: $ENDPOINT (if defined) > $ROBOT_API_ENDPOINT from env_loader.py > DEFAULT_ENDPOINT
+    ${endpoint}=    Get Variable Value    $ENDPOINT    ${EMPTY}
+    ${endpoint}=    Set Variable If    "${endpoint}"==""    $ROBOT_API_ENDPOINT    ${endpoint}
     ${endpoint}=    Set Variable If    "${endpoint}"!=""    ${endpoint}    ${DEFAULT_ENDPOINT}
 
     Log    Creating robot test data

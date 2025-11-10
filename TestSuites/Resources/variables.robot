@@ -1,6 +1,8 @@
 *** Settings ***
 Documentation       A resource file with variables.
 
+# This is used to load the environment variables from the .env file
+Variables           ${CURDIR}/env_loader.py
 Library             Browser
 # TODO add examples to EMPTY
 

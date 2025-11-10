@@ -74,29 +74,19 @@ Apply Global Header To Context Config
 
     ${waf_header_enabled}=    Get Variable Value    ${ENABLE_WAF_BYPASS_HEADER}    ${TRUE}
     IF    ${waf_header_enabled}
-        # Temporarily suppress logging
-        ${original_log_level}=    Set Log Level    NONE
-
-        # Retrieve secret from variables or environment
-        ${secret_from_env}=    Get Environment Variable    WAF_BYPASS_SECRET    default=${EMPTY}
-        ${secret}=    Set Variable If    "${WAF_BYPASS_SECRET}"!=""    ${WAF_BYPASS_SECRET}    ${secret_from_env}
-
-        # Apply the header if secret exists
-        IF    "${secret}" != ""
-            ${headers}=    Create Dictionary    ${WAF_BYPASS_HEADER_NAME}=${secret}
+        # Check if secret exists (loaded by env_loader.py from .env file)
+        IF    "${WAF_BYPASS_SECRET}" != ""
+            # Temporarily suppress logging when using secret
+            ${original_log_level}=    Set Log Level    NONE
+            ${headers}=    Create Dictionary    ${WAF_BYPASS_HEADER_NAME}=${WAF_BYPASS_SECRET}
             Set To Dictionary    ${context_config}    extraHTTPHeaders=${headers}
-        END
+            Set Log Level    ${original_log_level}
 
-        # Restore original log level after all sensitive operations
-        Set Log Level    ${original_log_level}
-
-        # Now safe to log messages
-        IF    "${secret}" == ""
-            Log
-            ...    ENABLE_WAF_BYPASS_HEADER is True but no secret provided in ${WAF_BYPASS_SECRET} nor env WAF_BYPASS_SECRET
-            ...    WARN
-        ELSE
             Log    🛡️ Added global WAF bypass header to browser context config
+        ELSE
+            Log
+            ...    ENABLE_WAF_BYPASS_HEADER is True but WAF_BYPASS_SECRET not found in .env file
+            ...    WARN
         END
     END
 

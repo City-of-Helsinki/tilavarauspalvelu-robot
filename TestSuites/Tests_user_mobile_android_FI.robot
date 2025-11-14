@@ -15,14 +15,14 @@ Test Teardown       Complete Test Teardown
 
 *** Test Cases ***
 User logs in and out with suomi_fi mobile
-    [Tags]    mobile-android-data-set-0    android-suite    login
+    [Tags]    mobile-android-data-set-0    android-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_common.User logs out mobile
     app_common.User confirms log out mobile
 
 User can make a free single booking and modifies it mobile
-    [Tags]    mobile-android-data-set-1    android-suite    free-booking
+    [Tags]    mobile-android-data-set-1    android-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
@@ -47,7 +47,7 @@ User can make a free single booking and modifies it mobile
     ...    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
 
 User can make paid single booking mobile
-    [Tags]    mobile-android-data-set-2    android-suite    paid-booking
+    [Tags]    mobile-android-data-set-2    android-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
@@ -81,7 +81,7 @@ User can make paid single booking mobile
     ...    ${BOOKING_NUM_ONLY}
 
 User can make paid single booking with interrupted checkout mobile
-    [Tags]    mobile-android-data-set-3    android-suite    interrupted-checkout
+    [Tags]    mobile-android-data-set-3    android-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
@@ -111,7 +111,7 @@ User can make paid single booking with interrupted checkout mobile
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
 User can make single booking that requires handling mobile
-    [Tags]    mobile-android-data-set-4    android-suite    requires-handling
+    [Tags]    mobile-android-data-set-4    android-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
@@ -129,7 +129,7 @@ User can make single booking that requires handling mobile
     ...    ${TIME_OF_QUICK_RESERVATION}
 
 User can make subvented single booking that requires handling mobile
-    [Tags]    mobile-android-data-set-5    android-suite    subvented
+    [Tags]    mobile-android-data-set-5    android-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile

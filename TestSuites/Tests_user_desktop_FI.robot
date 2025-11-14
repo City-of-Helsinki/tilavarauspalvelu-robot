@@ -28,7 +28,7 @@ User logs in and out with suomi_fi
     app_common.User confirms log out
 
 User can make free single booking and modifies it
-    [Tags]    desktop-test-data-set-1    desktop-suite    booking-test
+    [Tags]    desktop-test-data-set-1    desktop-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
@@ -60,7 +60,7 @@ User can make free single booking and modifies it
     ...    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
 
 User can create non-cancelable booking
-    [Tags]    desktop-test-data-set-2    desktop-suite    non-cancelable
+    [Tags]    desktop-test-data-set-2    desktop-suite
     common_setups_teardowns.Complete Test Setup From Tags
     topNav.Click login
     login.Login Suomi_fi    ${CURRENT_USER_HETU}
@@ -82,7 +82,7 @@ User can create non-cancelable booking
     app_user.User checks booking info in reservations for noncancelable booking
 
 User can make paid single booking with interrupted checkout
-    [Tags]    desktop-test-data-set-3    desktop-suite    paid-interrupted
+    [Tags]    desktop-test-data-set-3    desktop-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
@@ -123,7 +123,7 @@ User can make paid single booking with interrupted checkout
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
 User can make paid single booking
-    [Tags]    desktop-test-data-set-4    desktop-suite    paid-booking
+    [Tags]    desktop-test-data-set-4    desktop-suite
     Mark Paid Booking Test Started
 
     # Acquire lock to ensure email test waits
@@ -180,7 +180,7 @@ User can make paid single booking
     END
 
 User can make subvented single booking that requires handling
-    [Tags]    desktop-test-data-set-5    desktop-suite    subvented
+    [Tags]    desktop-test-data-set-5    desktop-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
@@ -199,7 +199,7 @@ User can make subvented single booking that requires handling
     ...    ${TIME_OF_QUICK_RESERVATION}
 
 User checks that reserved time is not available anymore
-    [Tags]    desktop-test-data-set-7    desktop-suite    availability
+    [Tags]    desktop-test-data-set-7    desktop-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
@@ -221,7 +221,7 @@ User checks that reserved time is not available anymore
     Log    No further checks are needed here
 
 User checks that there are not current dates in the past bookings
-    [Tags]    desktop-test-data-set-8    desktop-suite    past-bookings
+    [Tags]    desktop-test-data-set-8    desktop-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
@@ -230,7 +230,7 @@ User checks that there are not current dates in the past bookings
     mybookings.Validate reservations are not for today or later
 
 User can make free single booking and check info from downloaded calendar file
-    [Tags]    desktop-test-data-set-9    desktop-suite    calendar-download
+    [Tags]    desktop-test-data-set-9    desktop-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 
@@ -255,7 +255,7 @@ Check emails from reservations
     [Documentation]    Waits for paid booking test to complete, then verifies reservation emails.
     ...    This test depends on 'User can make paid single booking' completing successfully first.
     ...    Uses synchronization with polling to ensure proper test ordering.
-    [Tags]    desktop-test-data-set-10    desktop-suite    email-verification
+    [Tags]    desktop-test-data-set-10    desktop-suite
 
     ${skip_message}=    Catenate
     ...    Test is being skipped because 'User can make paid single booking' test either failed or did not complete successfully.
@@ -299,7 +299,7 @@ Check emails from reservations
     Release Lock    PAID_BOOKING_EMAIL_SEQUENCE
 
 User makes recurring reservation
-    [Tags]    desktop-test-data-set-11    desktop-suite    recurring
+    [Tags]    desktop-test-data-set-11    desktop-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi
 

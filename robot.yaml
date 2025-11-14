@@ -31,7 +31,7 @@ tasks:
         [ -f output.xml ] && rm -f output.xml || true
         [ -f report.html ] && rm -f report.html || true
         [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-        pabot --testlevelsplit --processes 8 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_desktop_FI.robot
+        pabot --testlevelsplit --processes 8 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/pabot_users.dat TestSuites/Tests_user_desktop_FI.robot
       '
 
   Test Admin Parallel:
@@ -43,7 +43,7 @@ tasks:
         [ -f output.xml ] && rm -f output.xml || true
         [ -f report.html ] && rm -f report.html || true
         [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-        pabot --testlevelsplit --processes 2 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_admin_desktop_FI.robot
+        pabot --testlevelsplit --processes 2 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/pabot_users.dat TestSuites/Tests_admin_desktop_FI.robot
       '
 
   Test Combined Parallel:
@@ -55,7 +55,7 @@ tasks:
         [ -f output.xml ] && rm -f output.xml || true
         [ -f report.html ] && rm -f report.html || true
         [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-        pabot --testlevelsplit --processes 3 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_users_with_admin_desktop.robot
+        pabot --testlevelsplit --processes 3 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/pabot_users.dat TestSuites/Tests_users_with_admin_desktop.robot
       '
 
   Test Mobile Android Parallel:
@@ -67,7 +67,7 @@ tasks:
         [ -f output.xml ] && rm -f output.xml || true
         [ -f report.html ] && rm -f report.html || true
         [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-        pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_mobile_android_FI.robot
+        pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/pabot_users.dat TestSuites/Tests_user_mobile_android_FI.robot
       '
 
   Test Mobile iPhone Parallel:
@@ -79,7 +79,7 @@ tasks:
         [ -f output.xml ] && rm -f output.xml || true
         [ -f report.html ] && rm -f report.html || true
         [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-        pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_mobile_iphone_FI.robot
+        pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/pabot_users.dat TestSuites/Tests_user_mobile_iphone_FI.robot
       '
 
   Test All Suites Parallel:
@@ -91,7 +91,7 @@ tasks:
         [ -f output.xml ] && rm -f output.xml || true
         [ -f report.html ] && rm -f report.html || true
         [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-        pabot --processes 3 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_desktop_FI.robot TestSuites/Tests_admin_desktop_FI.robot TestSuites/Tests_users_with_admin_desktop.robot TestSuites/Tests_user_mobile_android_FI.robot TestSuites/Tests_user_mobile_iphone_FI.robot
+        pabot --processes 3 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/pabot_users.dat TestSuites/Tests_user_desktop_FI.robot TestSuites/Tests_admin_desktop_FI.robot TestSuites/Tests_users_with_admin_desktop.robot TestSuites/Tests_user_mobile_android_FI.robot TestSuites/Tests_user_mobile_iphone_FI.robot
       '
 
   # Individual suite execution (sequential, using single user mode)
@@ -156,7 +156,7 @@ tasks:
         [ -f output.xml ] && rm -f output.xml || true
         [ -f report.html ] && rm -f report.html || true
         [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-        pabot --processes 2 --pabotlib --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_admin_notifications_serial.robot
+        pabot --processes 2 --pabotlib --resourcefile TestSuites/Resources/pabot_users.dat TestSuites/Tests_admin_notifications_serial.robot
       '
 
   Test Mobile Android Single:
@@ -189,7 +189,7 @@ tasks:
         [ -f output.xml ] && rm -f output.xml || true
         [ -f report.html ] && rm -f report.html || true
         [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-        pabot --testlevelsplit --processes 2 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/test_value_sets.dat TestSuites/Tests_user_desktop_FI.robot
+        pabot --testlevelsplit --processes 2 --pabotlib --exclude serialonly --resourcefile TestSuites/Resources/pabot_users.dat TestSuites/Tests_user_desktop_FI.robot
       '
 
 condaConfigFile: conda.yaml

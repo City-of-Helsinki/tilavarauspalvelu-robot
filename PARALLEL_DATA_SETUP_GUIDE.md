@@ -1,5 +1,7 @@
 # Parallel Test Data Setup Guide
 
+> **📖 This is the comprehensive guide for parallel testing.** For a quick overview, see [README.md](README.md). This guide covers all technical details, flow diagrams, tag requirements, and how to add new tests or data sets.
+
 ## 🎯 Overview
 
 The Varaamo test framework uses **tag-based data distribution** to ensure each parallel test gets unique user data, preventing conflicts and enabling reliable parallel execution.
@@ -41,13 +43,14 @@ The Varaamo test framework uses **tag-based data distribution** to ensure each p
        │        │
     Yes│        │No
        ▼        ▼
-   ┌─────┐  ┌─────────┐
-   │Lock │  │ Basic   │
-   │Value│  │ Users   │
-   │ Set │  │ Fallback│
-   └──┬──┘  └────┬────┘
-      │          │
-      └────┬─────┘
+   ┌──────────────────┐  ┌──────────────────────┐
+   │ Acquire          │  │ Shared Users         │
+   │ Value Set        │  │ (Fallback)           │
+   │ from             │  │ from                 │
+   │ pabot_users.dat  │  │ serial_users.robot   │
+   └──┬───────────────┘  └──────┬───────────────┘
+      │                         │
+      └────────────┬────────────┘
            │
            ▼
    ┌──────────────────┐
@@ -65,52 +68,97 @@ The Varaamo test framework uses **tag-based data distribution** to ensure each p
    └──────────────────┘
 ```
 
-### Parallel Mode (Default)
-```
-Test Case → Tags → PabotLib Value Set → Unique User Data
-```
+### Execution Modes
 
-1. **Test starts** with tags: `[Tags] desktop-test-data-set-4 desktop-suite`
-2. **Complete Test Setup From Tags** is called
-3. **Suite units initialized** from tags (loads suite-specific units based on `desktop-suite` tag)
-4. **System reads data set tag** and finds: `desktop-test-data-set-4`
-5. **PabotLib acquires** the value set (reserves it for this test)
-6. **User variables loaded** from `test_value_sets.dat` file: email, name, password, etc.
-7. **Test runs** with isolated data (both units and users)
+The system supports two execution modes (see flow diagram above for visual representation):
 
-### Single Mode (Fallback)
-```
-Test Case → Tags → Basic Users from users.robot
-```
+**Parallel Mode** 🚀
+- **Command**: `pabot --pabotlib --resourcefile pabot_users.dat --processes N`
+- **User Data Source**: `pabot_users.dat` (INI format with value sets)
+- **Behavior**: Each test gets a unique user from 31+ available data sets
+- **Use Case**: CI/CD, fast execution
 
-1. **Same tag setup** as parallel mode
-2. **Complete Test Setup From Tags** is called
-3. **Suite units initialized** from tags (same as parallel mode)
-4. **PabotLib unavailable** → Falls back to basic users
-5. **Default users loaded**:
-   - User tests: Ande AutomaatioTesteri
-   - Admin tests: Tirehtoori Tötterstrom + Kari Kekkonen
-   - Permission tests: Marika Salminen + Kari Kekkonen
+**Sequential Mode** 🌐
+- **Command**: `robot` (or `robot --variable FORCE_SINGLE_USER:True`)
+- **User Data Source**: `serial_users.robot` (Robot Framework variables)
+- **Behavior**: All tests share the same 4 hardcoded users
+- **Shared Users**: Ande AutomaatioTesteri (user), Tirehtoori Tötterstrom + Kari Kekkonen (admin), Marika Salminen (permissions)
+- **Use Case**: Code editor debugging, single test runs, local development
+
+**Automatic Fallback**: The system automatically uses `serial_users.robot` when:
+- Running with `robot` command instead of `pabot`
+- `FORCE_SINGLE_USER=True` is set
+- PabotLib value set acquisition fails
+- PabotLib is unavailable
 
 ## 📋 Required Tags
 
-Each test needs **2 tags**:
+Each test needs **at least 2 tags**:
 
-### 1. Data Set Tag
-Specifies which user data to use:
-- `desktop-test-data-set-0` through `desktop-test-data-set-11` (12 users)
-- `admin-test-data-set-0` through `admin-test-data-set-2` (3 admins)
-- `combined-test-data-set-0` through `combined-test-data-set-1` (2 combined)
-- `mobile-android-data-set-0` through `mobile-android-data-set-5` (6 Android)
-- `mobile-iphone-data-set-0` through `mobile-iphone-data-set-5` (6 iPhone)
+### 1. Data Set Tag (REQUIRED)
+**Purpose**: Links the test to a specific user data set in `pabot_users.dat`
 
-### 2. Suite Type Tag
-Specifies which test environment to load:
-- `desktop-suite` - Desktop user tests
-- `admin-suite` - Admin tests  
-- `combined-suite` - Admin+user tests
-- `android-suite` - Android mobile tests
-- `iphone-suite` - iPhone mobile tests
+**You need BOTH locations for parallel execution to work:**
+
+1. **Test Tag** (in `.robot` file): `[Tags] admin-test-data-set-1 admin-suite`
+   - Declares which data set the test needs
+   - The code reads this tag and extracts `admin-test-data-set-1`
+   - This becomes the value set name to request from PabotLib
+
+2. **Value Set Tag** (in `pabot_users.dat`): `tags=admin-test-data-set-1`
+   - Allows PabotLib to match and find the value set
+   - When `Acquire Value Set admin-test-data-set-1` is called, PabotLib searches for value sets with this tag
+   - **Without this tag**, PabotLib returns: `ValueError: No value set matching given tags exists`
+
+**How it works**: When a test runs, the system:
+1. Reads the data set tag from the test's `[Tags]` line (e.g., `admin-test-data-set-1`)
+2. Calls `Acquire Value Set admin-test-data-set-1` to request the value set from PabotLib
+3. PabotLib matches the request against value sets in `pabot_users.dat` that have `tags=admin-test-data-set-1`
+4. If found, loads the user data (email, HETU, name, etc.) for that test
+5. If not found, falls back to single user mode with shared users
+
+**Available data set tags**:
+
+| Suite Type | Data Sets | Users Available |
+|------------|-----------|-----------------|
+| Desktop User | `desktop-test-data-set-0` to `desktop-test-data-set-11` | 11 unique users (set-6 is unused) |
+| Admin | `admin-test-data-set-0` to `admin-test-data-set-4` | 5 unique admins |
+| Combined | `combined-test-data-set-0` to `combined-test-data-set-2` | 3 user+admin pairs |
+| Android | `mobile-android-data-set-0` to `mobile-android-data-set-5` | 6 unique users |
+| iPhone | `mobile-iphone-data-set-0` to `mobile-iphone-data-set-5` | 6 unique users |
+
+### 2. Suite Type Tag (REQUIRED)
+**Purpose**: Tells the system which test units to use for the test
+
+**How it works**: The system uses this tag to:
+1. Determine which suite-specific units to use
+2. Set the unit variables that tests reference (e.g., `CURRENT_ALWAYS_FREE_UNIT`, `CURRENT_ALWAYS_PAID_UNIT`) - each suite type maps to different unit names:
+   - `desktop-suite`: "Maksuton Mankeli (AUTOMAATIOTESTI ÄLÄ POISTA)"
+   - `android-suite`: "Maksuton Mankeli (AUTOMAATIOTESTI ÄLÄ POISTA) (android)"
+   - `iphone-suite`: "Maksuton Mankeli (AUTOMAATIOTESTI ÄLÄ POISTA) (iphone)"
+
+**Available suite type tags**:
+- `desktop-suite` - Desktop browser tests for regular users
+- `admin-suite` - Desktop browser tests for admin users
+- `combined-suite` - Tests requiring both user and admin accounts
+- `android-suite` - Mobile browser tests on Android emulation
+- `iphone-suite` - Mobile browser tests on iPhone emulation
+
+### 3. Permission Test Tag (REQUIRED)
+**Purpose**: Determines which admin user's permissions will be modified
+
+**How it works**: The system uses this tag to select the correct permission target admin:
+- `general-permissions-test` - Tests general admin role changes
+- `unit-permissions-test` - Tests unit-specific permission changes
+- `unit-group-permissions-test` - Tests unit group permission changes
+
+**Execution mode tags**:
+- `serialonly` - Forces test to run in serial mode only (excluded from parallel runs)
+  - **Why**: Used for notification tests (`Tests_admin_notifications_serial.robot`) because these tests cannot handle being run in parallel when creating notifications simultaneously
+  - **Behavior**: Tests with this tag are automatically excluded from parallel execution (`pabot --exclude serialonly`)
+- `smoke` - Basic smoke test marker (used in CI/CD workflows for filtering)
+  - **Why**: Gates GitHub Actions workflow execution - if smoke tests fail, other tests do not run
+  - **Behavior**: Used in CI/CD to validate basic functionality before running full test suites
 
 ## 📝 Usage Examples
 
@@ -123,31 +171,15 @@ User logs in and out with suomi_fi
     app_common.User logs out
 ```
 
-## 🆕 Adding New Tests
-
-### Step 1: Choose Data Set
-Pick an available data set from `test_value_sets.dat`:
-- Desktop: `desktop-test-data-set-0` to `desktop-test-data-set-11`
-- Admin: `admin-test-data-set-0` to `admin-test-data-set-2`
-- Combined: `combined-test-data-set-0` to `combined-test-data-set-1`
-
-### Step 2: Add Tags
-```robot
-Your New Test
-    [Tags]    desktop-test-data-set-5    desktop-suite    your-feature
-    common_setups_teardowns.Complete Test Setup From Tags
-    # ... your test steps ...
-```
-
 ## ➕ Adding New Data Sets
 
-Need more users? Add new data sets to `test_value_sets.dat`:
+Need more users? Add new data sets to `pabot_users.dat`:
 
 **Example:**
 ```ini
 [desktop-test-data-set-12]
 # TEST: "User makes recurring booking"
-tags=desktop-test-data-set-12,desktop-test-data,user-data,desktop-suite,recurring-booking
+tags=desktop-test-data-set-12
 CURRENT_USER_EMAIL=qfaksi+recurring12@gmail.com
 CURRENT_USER_HETU=123456-789B
 CURRENT_USER_PHONE=+35840123699
@@ -157,26 +189,22 @@ CURRENT_USER_FULLNAME=Recurring Tester
 CURRENT_PASSWORD=User
 ```
 
-Then use it: `[Tags] desktop-test-data-set-12 desktop-suite`
+Then add a test case in the appropriate test suite file (e.g., `Tests_user_desktop_FI.robot`). 
 
+```robot
+Your New Test
+    [Tags]    desktop-test-data-set-12    desktop-suite
+    common_setups_teardowns.Complete Test Setup From Tags
+    # ... your test steps ...
+```
 
-## 🔍 Data Set Reference
-
-| Suite Type | Data Sets | Users Available |
-|------------|-----------|-----------------|
-| Desktop User | `desktop-test-data-set-0` to `desktop-test-data-set-11` | 12 unique users |
-| Admin | `admin-test-data-set-0` to `admin-test-data-set-2` | 3 unique admins |
-| Combined | `combined-test-data-set-0` to `combined-test-data-set-1` | 2 user+admin pairs |
-| Android | `mobile-android-data-set-0` to `mobile-android-data-set-5` | 6 unique users |
-| iPhone | `mobile-iphone-data-set-0` to `mobile-iphone-data-set-5` | 6 unique users |
+**Summary - Two-Step Tag Matching:**
+1. **Test declares need**: `[Tags] desktop-test-data-set-12` → Code extracts `desktop-test-data-set-12`
+2. **PabotLib finds match**: Searches `pabot_users.dat` for value set with `tags=desktop-test-data-set-12`
+3. **If both match**: Value set is acquired and user data is loaded ✅
+4. **If either missing**: Falls back to single user mode ⚠️
 
 ## 🐛 Troubleshooting
-- WIP
 
-## 📁 Key Files
-
-- **`test_value_sets.dat`** - Contains all user data sets
-- **`users.robot`** - Fallback users for single mode
-- **`parallel_test_data.robot`** - Data initialization logic
-- **`suite_unit_selector.robot`** - Unit initialization logic
-- **`common_setups_teardowns.robot`** - Universal setup keyword
+### Common Issues
+ WIP

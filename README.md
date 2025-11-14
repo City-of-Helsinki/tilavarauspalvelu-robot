@@ -94,23 +94,28 @@ Default process counts for parallel execution (configurable in `docker-config.js
 - **Mobile processes**: 3
 - **All suites processes**: 5
 
+📖 **For details on how parallel execution works and data set assignment, see [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md)**
+
 ### How Parallel Testing Works
 
 The test framework uses a **tag-based system** to automatically initialize test data and assign users for parallel execution:
 
 ```
-Test Case with Tags
+Test Case with Tags (e.g., desktop-test-data-set-0, desktop-suite)
     ↓
 Complete Test Setup From Tags
     ↓
     ├─→ Initialize suite units from tags
-    │   └─→ Reads ${TEST TAGS} → Finds suite type → Loads units
+    │   └─→ Reads ${TEST TAGS} → Finds suite type tag → Loads units
     │
     └─→ Initialize Test Data From Tags
-        └─→ Reads ${TEST TAGS} → Finds data set tag
+        └─→ Reads ${TEST TAGS} → Finds data set tag (e.g., desktop-test-data-set-0)
             ↓
-            ├─→ [Parallel Mode] Acquires PabotLib value set
-            └─→ [Single Mode] Uses basic users from users.robot
+            ├─→ **PARALLEL MODE**: Tag matches + Pabot available → Acquires value set from pabot_users.dat
+            │   Result: UNIQUE user per test (parallel execution)
+            │
+            └─→ **SEQUENTIAL MODE**: Tag matches + Pabot NOT available → Falls back to serial_users.robot
+                Result: SHARED users (sequential execution with robot command)
 ```
 
 Each test case is tagged (e.g., `[Tags] desktop-test-data-set-0 desktop-suite`), and the setup automatically:
@@ -118,7 +123,24 @@ Each test case is tagged (e.g., `[Tags] desktop-test-data-set-0 desktop-suite`),
 2. **Assigns isolated user data** to prevent conflicts in parallel execution
 3. **Switches between parallel/single mode** based on execution context
 
-📖 **For detailed information, see [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md)**
+### Execution Modes
+
+| Execution Mode | Command | User Assignment | When to Use |
+|---------------|---------|-----------------|-------------|
+| **Parallel** 🚀 | `pabot --pabotlib --resourcefile pabot_users.dat` | Unique users per test from `pabot_users.dat` | CI/CD, fast execution|
+| **Sequential** 🌐 | `robot` (or `robot --variable FORCE_SINGLE_USER:True`) | Shared users from `serial_users.robot` | VS Code debugging, single test runs, local development |
+
+**Automatic Fallback:** The system automatically uses sequential mode when running with `robot` command, when `FORCE_SINGLE_USER=True` is set, when value set acquisition fails, or when PabotLib is unavailable.
+
+📖 **For detailed information on tags, data sets, flow diagrams, and adding new tests, see [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md)**
+
+### Key Logic Files
+
+The parallel testing system relies on three core files:
+
+- **`parallel_test_data.robot`** - Decides which user data file to use based on execution context (parallel vs sequential)
+- **`suite_unit_selector.robot`** - Unit initialization logic (determines which test units/spaces to use)
+- **`common_setups_teardowns.robot`** - Universal setup keyword that orchestrates the initialization flow
 
 **macOS/Linux:**
 ```bash
@@ -186,7 +208,7 @@ docker run --rm \
   -v "$(pwd)/TestSuites:/opt/robotframework/tests" \
   -v "$(pwd)/output:/opt/robotframework/reports" \
   robotframework-tests \
-  pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
+  pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
 ```
 
 **Note:** 
@@ -224,7 +246,7 @@ docker run --rm `
   -v "${PWD}\TestSuites:/opt/robotframework/tests" `
   -v "${PWD}\output:/opt/robotframework/reports" `
   robotframework-tests `
-  pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
+  pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
 ```
 
 **Note:** 
@@ -444,9 +466,9 @@ For GitHub Actions, add the following secrets to your repository:
 │   │   ├── README_TEST_DATA_SYSTEM.md  # Comprehensive test data system documentation
 │   │   ├── suite_specific_units.robot  # Suite-specific unit configurations for parallel isolation
 │   │   ├── suite_unit_selector.robot   # Dynamic unit assignment logic for different test suites
-│   │   ├── test_value_sets.dat         # PabotLib value sets with user data for parallel execution
+│   │   ├── pabot_users.dat             # PabotLib value sets with user data for parallel execution
 │   │   ├── token_manager.py            # Token management utilities
-│   │   ├── users.robot                 # User management and assignment
+│   │   ├── serial_users.robot          # User management for serial (non-pabot) execution
 │   │   └── downloads/                  # Downloaded files (emails, ICS files)
 │   ├── Tests_user_desktop_FI.robot     # Desktop browser tests (includes recurring reservations)
 │   ├── Tests_admin_desktop_FI.robot    # Admin UI tests

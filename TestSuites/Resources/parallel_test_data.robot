@@ -1,13 +1,29 @@
 *** Settings ***
-Documentation       Parallel test data management using PabotLib
+Documentation       Test data management with parallel and sequential execution support.
 ...
-...                 MODES:
-...                 - PARALLEL: Each test gets dedicated user from value sets
-...                 - SINGLE: All tests use desktop-test-data-set-0 (FORCE_SINGLE_USER=True)
+...                 THIS FILE CONTAINS THE LOGIC that decides which user data to use.
+...                 It imports serial_users.robot to access fallback/shared user data.
+...
+...                 TWO EXECUTION MODES:
+...
+...                 1. PARALLEL MODE:
+...                 Command: pabot --pabotlib --resourcefile pabot_users.dat --processes N
+...                 Data source: pabot_users.dat
+...                 Behavior: Each test gets UNIQUE user, tests run in parallel
+...
+...                 2. SEQUENTIAL MODE (uses serial_users.robot):
+...                 Command: robot --variable FORCE_SINGLE_USER:True
+...                 Data source: serial_users.robot
+...                 Behavior: All tests share same users, tests run one at a time
+...
+...                 WHEN SEQUENTIAL MODE IS TRIGGERED:
+...                 - Explicitly: --variable FORCE_SINGLE_USER:True is set
+...                 - Automatically: Running without pabot (robot command)
+...                 - Fallback: Value set acquisition from pabot_users.dat fails
 
 Library             pabot.PabotLib
 Library             String
-Resource            users.robot
+Resource            serial_users.robot
 
 
 *** Variables ***
@@ -21,15 +37,15 @@ Initialize Test Data From Tags
     ...
     ...    Determines data type and value set from test tags:
     ...    - Data set tag: desktop-test-data-set-0, admin-test-data-set-2, etc.
-    ...    - Falls back to single user mode if no data set tag found
-    ...    Single user mode uses:
+    ...    - Falls back to sequential mode if no pabot or FORCE_SINGLE_USER=True
+    ...    Sequential mode (single user mode) uses:
     ...    - Regular user: Ande AutomaatioTesteri (BASIC_USER_MALE)
     ...    - Admin user: TirehtööriPääkäytäjä Tötterstrom (BASIC_ADMIN_MALE)
     ...    - Django admin (permissions): Kari Kekkonen (BASIC_DJANGO_ADMIN)
     ...    - Permission target admin: Marika Salminen (BASIC_PERMISSION_TARGET_ADMIN)
     ...
-    ...    PARALLEL MODE: Uses PabotLib to acquire value sets by tag
-    ...    SINGLE MODE: Uses basic users from users.robot
+    ...    PARALLEL MODE: Uses PabotLib to acquire value sets by tag → unique users
+    ...    SEQUENTIAL MODE: Uses basic users from serial_users.robot → shared users
     ...
     ...    EXAMPLE TAGS:
     ...    [Tags]    desktop-test-data-set-0    desktop-suite    smoke
@@ -72,7 +88,7 @@ Initialize Test Data From Tags
     # Check if we should force single user mode
     ${force_single}=    Get Variable Value    ${FORCE_SINGLE_USER}    ${FALSE}
     IF    ${force_single}
-        Log    Using FORCE_SINGLE_USER mode - using basic users from users.robot
+        Log    Using FORCE_SINGLE_USER mode - using basic users from serial_users.robot
         Use Single User Mode From Parsed Tags
         ...    ${has_admin}
         ...    ${has_combined}
@@ -155,8 +171,9 @@ Parse Test Tags
     [Documentation]    Parse test tags and return all relevant information
     ...    Returns: data_set_name, has_admin_tag, has_combined_tag, has_permissions_tag, has_user_tag, permission_test_type
     ...    permission_test_type values: 'unit-permissions-test', 'unit-group-permissions-test', 'general-permissions-test', or ${NONE}
+    ...    has_permissions_tag is auto-detected from specific permission type tags (no generic 'permissions' tag needed)
     ...    Example:
-    ...    Tags: ['admin-suite', 'admin-test-data-set-2', 'permissions', 'general-permissions-test']
+    ...    Tags: ['admin-suite', 'admin-test-data-set-2', 'general-permissions-test']
     ...    Returns: 'admin-test-data-set-2', True, False, True, False, 'general-permissions-test'
     [Arguments]    ${tags}
 
@@ -196,13 +213,7 @@ Parse Test Tags
             ${has_user_tag}=    Set Variable    ${TRUE}
         END
 
-        # Check for special tags
-        ${is_permissions}=    Run Keyword And Return Status    Should Start With    ${tag}    permissions
-        IF    ${is_permissions}
-            ${has_permissions_tag}=    Set Variable    ${TRUE}
-        END
-
-        # Check for permission test type tags (more specific)
+        # Check for specific permission test type tags
         IF    '${tag}' == 'unit-permissions-test'
             ${permission_test_type}=    Set Variable    unit-permissions-test
         ELSE IF    '${tag}' == 'unit-group-permissions-test'
@@ -210,6 +221,11 @@ Parse Test Tags
         ELSE IF    '${tag}' == 'general-permissions-test'
             ${permission_test_type}=    Set Variable    general-permissions-test
         END
+    END
+
+    # Auto-detect permission test from specific permission type tags
+    IF    '${permission_test_type}' != '${NONE}'
+        ${has_permissions_tag}=    Set Variable    ${TRUE}
     END
 
     # Log parsed results for easy debugging

@@ -44,11 +44,11 @@ The project implements user isolation system for parallel testing using **PabotL
 
 ### User Allocation by Test Suite
 
-The user allocation is configured in `test_value_sets.dat` for parallel execution:
+The user allocation is configured in `pabot_users.dat` for parallel execution:
 
-- **Desktop Suite**: 12 users (`desktop-test-data-set-0` to `desktop-test-data-set-11`)
-- **Admin Suite**: 2 users (`admin-test-data-set-0` to `admin-test-data-set-1`)
-- **Combined Suite**: 6 users (`combined-test-data-set-0` to `combined-test-data-set-5`)
+- **Desktop Suite**: 11 users (`desktop-test-data-set-0` to `desktop-test-data-set-11`, set-6 is unused)
+- **Admin Suite**: 5 users (`admin-test-data-set-0` to `admin-test-data-set-4`)
+- **Combined Suite**: 3 users (`combined-test-data-set-0` to `combined-test-data-set-2`)
 - **Android Mobile**: 6 users (`mobile-android-data-set-0` to `mobile-android-data-set-5`)
 - **iPhone Mobile**: 6 users (`mobile-iphone-data-set-0` to `mobile-iphone-data-set-5`)
 - **Admin Notifications**: Sequential execution only (uses `FORCE_SINGLE_USER=True`)
@@ -58,7 +58,7 @@ The user allocation is configured in `test_value_sets.dat` for parallel executio
 The project uses test data management system with **PabotLib value sets** to ensure test isolation:
 
 ### **Configuration Files**
-- **`test_value_sets.dat`**: ConfigParser/INI format file containing user data for each test
+- **`pabot_users.dat`**: ConfigParser/INI format file containing user data for each test in pabot parallel execution
 - **`parallel_test_data.robot`**: Robot Framework keywords for test data initialization  
 - **`suite_specific_units.robot`**: Suite-specific unit definitions for parallel isolation
 - **`suite_unit_selector.robot`**: Dynamic unit assignment based on test suite type

@@ -354,7 +354,7 @@ run_pabot() {
         --processes $processes \
         --pabotlib \
         --exclude serialonly \
-        --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat \
+        --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat \
         --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING \
         --outputdir /opt/robotframework/reports \
         /opt/robotframework/tests/$test_file"
@@ -428,7 +428,7 @@ run_all_suites() {
         --processes $ALL_SUITES_PROCESSES \
         --pabotlib \
         --exclude serialonly \
-        --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat \
+        --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat \
         --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING \
         --outputdir /opt/robotframework/reports \
         /opt/robotframework/tests/$SUITE_USER_DESKTOP \

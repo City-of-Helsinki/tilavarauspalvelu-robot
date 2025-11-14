@@ -85,7 +85,7 @@ jobs:
           # Set execution tool and base flags
           if [ "$EXECUTION_MODE" = "parallel" ]; then
             echo "execution_tool=pabot" >> $GITHUB_OUTPUT
-            echo "base_flags=--testlevelsplit --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/test_value_sets.dat $HAR_VARIABLE" >> $GITHUB_OUTPUT
+            echo "base_flags=--testlevelsplit --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat $HAR_VARIABLE" >> $GITHUB_OUTPUT
           else
             echo "execution_tool=robot" >> $GITHUB_OUTPUT
             echo "base_flags=--variable FORCE_SINGLE_USER:True $HAR_VARIABLE" >> $GITHUB_OUTPUT

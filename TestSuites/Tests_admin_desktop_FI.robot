@@ -22,7 +22,7 @@ Admin logs in with suomi_fi
     app_common.Admin logs out
 
 Admin verifies all reservation types and verifies no unavailable reservations exist
-    [Tags]    admin-test-data-set-1    admin-suite    verification
+    [Tags]    admin-test-data-set-1    admin-suite
     common_setups_teardowns.Complete Test Setup From Tags
     Admin logs in with suomi_fi
     app_admin.Admin navigates to own units and selects unit group    ${UNIT_LOCATION}
@@ -41,7 +41,7 @@ Admin verifies all reservation types and verifies no unavailable reservations ex
     app_admin.Admin attempts to make an unavailable reservation
 
 Admin checks permissions
-    [Tags]    admin-test-data-set-2    admin-suite    permissions    general-permissions-test
+    [Tags]    admin-test-data-set-2    admin-suite    general-permissions-test
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.Open django admin in firefox and app admin in chromium    ${URL_DJANGO_ADMIN}    ${URL_ADMIN}
     # Now in Chromium, so switch to Firefox for Django admin operations
@@ -136,7 +136,7 @@ Admin checks permissions
     admin_reservations.Admin closes dialog modal
 
 Admin checks unit permissions
-    [Tags]    admin-test-data-set-3    admin-suite    permissions    unit-permissions-test
+    [Tags]    admin-test-data-set-3    admin-suite    unit-permissions-test
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.Open django admin in firefox and app admin in chromium    ${URL_DJANGO_ADMIN}    ${URL_ADMIN}
     # Now in Chromium, so switch to Firefox for Django admin operations
@@ -232,7 +232,7 @@ Admin checks unit permissions
     admin_reservations.Admin closes dialog modal
 
 Admin checks group unit permissions
-    [Tags]    admin-test-data-set-4    admin-suite    permissions    unit-group-permissions-test
+    [Tags]    admin-test-data-set-4    admin-suite    unit-group-permissions-test
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.Open django admin in firefox and app admin in chromium    ${URL_DJANGO_ADMIN}    ${URL_ADMIN}
     # Now in Chromium, so switch to Firefox for Django admin operations

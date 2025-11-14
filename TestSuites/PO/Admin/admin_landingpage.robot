@@ -1,6 +1,6 @@
 *** Settings ***
 Resource    ../../Resources/variables.robot
-Resource    ../../Resources/users.robot
+Resource    ../../Resources/serial_users.robot
 Library     Browser
 
 

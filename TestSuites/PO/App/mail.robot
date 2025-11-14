@@ -5,7 +5,7 @@ Library     ../../Resources/generate_tokens.py
 Library     ../../Resources/email_tools.py
 Resource    ../../Resources/custom_keywords.robot
 Resource    ../../Resources/data_modification.robot
-Resource    ../../Resources/users.robot
+Resource    ../../Resources/serial_users.robot
 Resource    ../../Resources/variables.robot
 
 

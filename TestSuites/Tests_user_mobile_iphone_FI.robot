@@ -13,14 +13,14 @@ Test Teardown       Complete Test Teardown
 
 *** Test Cases ***
 User logs in and out with suomi_fi
-    [Tags]    mobile-iphone-data-set-0    iphone-suite    login
+    [Tags]    mobile-iphone-data-set-0    iphone-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_common.User logs out mobile
     app_common.User confirms log out mobile
 
 User can make free single booking and modifies it
-    [Tags]    mobile-iphone-data-set-1    iphone-suite    free-booking
+    [Tags]    mobile-iphone-data-set-1    iphone-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
@@ -45,7 +45,7 @@ User can make free single booking and modifies it
     ...    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
 
 User can make paid single booking
-    [Tags]    mobile-iphone-data-set-2    iphone-suite    paid-booking
+    [Tags]    mobile-iphone-data-set-2    iphone-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
@@ -78,7 +78,7 @@ User can make paid single booking
     ...    ${BOOKING_NUM_ONLY}
 
 User can make paid single booking with interrupted checkout
-    [Tags]    mobile-iphone-data-set-3    iphone-suite    interrupted-checkout
+    [Tags]    mobile-iphone-data-set-3    iphone-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
@@ -107,7 +107,7 @@ User can make paid single booking with interrupted checkout
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
 User can make booking that requires handling
-    [Tags]    mobile-iphone-data-set-4    iphone-suite    requires-handling
+    [Tags]    mobile-iphone-data-set-4    iphone-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile
@@ -125,7 +125,7 @@ User can make booking that requires handling
     ...    ${TIME_OF_QUICK_RESERVATION}
 
 User can make subvented single booking that requires handling
-    [Tags]    mobile-iphone-data-set-5    iphone-suite    subvented
+    [Tags]    mobile-iphone-data-set-5    iphone-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User logs in with suomi_fi mobile
     app_user.User navigates to single booking page mobile

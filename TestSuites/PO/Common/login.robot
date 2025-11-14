@@ -1,5 +1,5 @@
 *** Settings ***
-Resource    ../../Resources/users.robot
+Resource    ../../Resources/serial_users.robot
 Resource    ../../Resources/variables.robot
 Resource    ../../Resources/parallel_test_data.robot
 Library     Browser

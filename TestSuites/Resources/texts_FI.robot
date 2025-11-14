@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation       A resource file with all the finnish texts
 
-Resource            users.robot
+Resource            serial_users.robot
 
 
 *** Variables ***

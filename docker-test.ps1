@@ -369,7 +369,7 @@ function Start-Test {
             "--processes", $Processes,
             "--pabotlib",
             "--exclude", "serialonly",
-            "--resourcefile", "/opt/robotframework/tests/Resources/test_value_sets.dat",
+            "--resourcefile", "/opt/robotframework/tests/Resources/pabot_users.dat",
             "--variable", "ENABLE_HAR_RECORDING:$($config.ENABLE_HAR_RECORDING)",
             "--outputdir", "/opt/robotframework/reports",
             "/opt/robotframework/tests/$TestFile"
@@ -436,7 +436,7 @@ function Start-AllSuites {
             "--processes", $ALL_SUITES_PROCESSES,
             "--pabotlib",
             "--exclude", "serialonly",
-            "--resourcefile", "/opt/robotframework/tests/Resources/test_value_sets.dat",
+            "--resourcefile", "/opt/robotframework/tests/Resources/pabot_users.dat",
             "--variable", "ENABLE_HAR_RECORDING:$($config.ENABLE_HAR_RECORDING)",
             "--outputdir", "/opt/robotframework/reports"
         ) + $suites

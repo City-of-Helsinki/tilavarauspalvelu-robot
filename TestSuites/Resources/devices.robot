@@ -18,14 +18,10 @@ ${BROWSER_FOR_MAIL}             firefox
 ${LOCALE}                       en-US
 ${ENABLE_FIRST_NAV_GATE}        ${TRUE}
 
-# OPTIONAL: Global extra HTTP header for all page requests (e.g. WAF bypass)
-# - Enable by setting ${ENABLE_WAF_BYPASS_HEADER} to ${TRUE}
-# - Header name defaults to X-Test-Secret
-# - Secret can be provided via ${WAF_BYPASS_SECRET} or env var WAF_BYPASS_SECRET
-# NOTE: WAF_BYPASS_SECRET should be provided via environment variable for security
+# Set WAF_BYPASS_SECRET in .env or disable via ${ENABLE_WAF_BYPASS_HEADER}
 ${ENABLE_WAF_BYPASS_HEADER}     ${TRUE}
 ${WAF_BYPASS_HEADER_NAME}       X-Test-Secret
-${WAF_BYPASS_SECRET}            ${EMPTY}
+# ${WAF_BYPASS_SECRET} loaded from env_loader.py
 
 
 *** Keywords ***
@@ -74,11 +70,15 @@ Apply Global Header To Context Config
 
     ${waf_header_enabled}=    Get Variable Value    ${ENABLE_WAF_BYPASS_HEADER}    ${TRUE}
     IF    ${waf_header_enabled}
-        # Check if secret exists (loaded by env_loader.py from .env file)
-        IF    "${WAF_BYPASS_SECRET}" != ""
-            # Temporarily suppress logging when using secret
+        # Suppress logging
+        ${original_log_level}=    Set Log Level    NONE
+        ${waf_secret}=    Get Variable Value    ${WAF_BYPASS_SECRET}    ${EMPTY}
+        Set Log Level    ${original_log_level}
+
+        IF    "${waf_secret}" != ""
+            # Re-suppress logging
             ${original_log_level}=    Set Log Level    NONE
-            ${headers}=    Create Dictionary    ${WAF_BYPASS_HEADER_NAME}=${WAF_BYPASS_SECRET}
+            ${headers}=    Create Dictionary    ${WAF_BYPASS_HEADER_NAME}=${waf_secret}
             Set To Dictionary    ${context_config}    extraHTTPHeaders=${headers}
             Set Log Level    ${original_log_level}
 

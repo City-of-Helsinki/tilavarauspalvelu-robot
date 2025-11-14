@@ -4,7 +4,7 @@ Documentation       A resource file with top navigation keywords.
 Library             Browser
 Resource            ../../Resources/custom_keywords.robot
 Resource            ../../Resources/variables.robot
-Resource            ../../Resources/users.robot
+Resource            ../../Resources/serial_users.robot
 Resource            ../User/mybookings.robot
 
 

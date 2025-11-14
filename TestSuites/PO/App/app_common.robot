@@ -1,7 +1,7 @@
 *** Settings ***
 Resource    ../../Resources/devices.robot
 Resource    ../../Resources/variables.robot
-Resource    ../../Resources/users.robot
+Resource    ../../Resources/serial_users.robot
 Resource    ../../Resources/texts_FI.robot
 Resource    ../../Resources/custom_keywords.robot
 Resource    ../../create_data.robot

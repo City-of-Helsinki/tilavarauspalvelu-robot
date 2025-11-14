@@ -22,7 +22,7 @@ Initialize suite units from tags
     ...
     ...    EXAMPLE TAGS:
     ...    [Tags]    desktop-test-data-set-0    desktop-suite    smoke
-    ...    [Tags]    admin-test-data-set-2    admin-suite    permissions
+    ...    [Tags]    admin-test-data-set-2    admin-suite    general-permissions-test
 
     ${test_tags}=    Get Variable Value    ${TEST TAGS}    []
     ${test_name}=    Get Variable Value    ${TEST NAME}    unknown_test

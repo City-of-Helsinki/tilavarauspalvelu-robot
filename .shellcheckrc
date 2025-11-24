@@ -1,0 +1,4 @@
+# ShellCheck Configuration
+
+# Set shell dialect to bash (matches docker-test.sh)
+shell=bash

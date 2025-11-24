@@ -6,7 +6,7 @@ channels:
   - conda-forge
 
 dependencies:
-  - python=3.9.16
+  - python=3.12.3
   - nodejs=22
   - pip=24.3.1
   - tzdata
@@ -15,7 +15,6 @@ dependencies:
       - robotframework==7.3.2
       - robotframework-browser==19.6.2
       - robotframework-requests
-      - robotframework-tidy
       - robotframework-pabot==4.3.2
 
       # Python dependencies
@@ -27,6 +26,10 @@ dependencies:
 
       # Environment management
       - python-dotenv
+
+      # Code Quality and Linting Tools
+      - robotframework-robocop>=6.0.0
+      - ruff>=0.1.0
 
 rccPostInstall:
   - rfbrowser init

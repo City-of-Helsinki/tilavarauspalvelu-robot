@@ -10,7 +10,7 @@ Resource    ../../Resources/variables.robot
 
 
 *** Keywords ***
-Check emails from reservations
+Check Emails From Reservations
     [Arguments]    ${reservation_number}
     Log    ${ATTACHMENT_FILENAME}
     ${texts}=    email_tools.Search Reservations
@@ -27,7 +27,7 @@ Check emails from reservations
         Fail    No emails found with reservation number: ${reservation_number}
     END
 
-Verify reservation confirmation email
+Verify Reservation Confirmation Email
     [Arguments]    ${reservation_number}
     Log    ${EMAIL_FILE_PATH}
     ${result}=    email_tools.Check Email Content
@@ -41,7 +41,7 @@ Verify reservation confirmation email
         Fail    Some required terms are missing in email content
     END
 
-Verify reservation cancellation email
+Verify Reservation Cancellation Email
     [Arguments]    ${reservation_number}
     Log    ${EMAIL_FILE_PATH}
     ${result}=    email_tools.Check Email Content
@@ -55,7 +55,7 @@ Verify reservation cancellation email
         Fail    Some required terms are missing in email content
     END
 
-Verify payment receipt email
+Verify Payment Receipt Email
     [Arguments]    ${reservation_number}
     Log    ${EMAIL_FILE_PATH}
     ${result}=    email_tools.Check Email Content
@@ -69,7 +69,7 @@ Verify payment receipt email
         Fail    Some required terms are missing in email content
     END
 
-Verify refund email for paid reservation
+Verify Refund Email For Paid Reservation
     [Arguments]    ${reservation_number}
     Log    ${EMAIL_FILE_PATH}
     ${result}=    email_tools.Check Email Content
@@ -82,14 +82,14 @@ Verify refund email for paid reservation
         Fail    Some required terms are missing in email content
     END
 
-Format reservation time for email texts and receipts
+Format Reservation Time For Email Texts And Receipts
     [Arguments]    ${time_of_reservation}
 
     # This sets "Alkamisaika: 1.11.2024 klo 11:00" and "Päättymisaika: 1.11.2024 klo 12:00"
     Log    this formats variables "FORMATTED_STARTTIME" and "FORMATTED_ENDTIME"
-    data_modification.Formats reservation time to start and end time    ${time_of_reservation}
+    data_modification.Formats Reservation Time To Start And End Time    ${time_of_reservation}
     Log    this formats variables "RESERVATION_TIME_EMAIL_RECEIPT"
-    data_modification.Format reservation time for email receipt    ${time_of_reservation}
+    data_modification.Format Reservation Time For Email Receipt    ${time_of_reservation}
 
 ###
 ###

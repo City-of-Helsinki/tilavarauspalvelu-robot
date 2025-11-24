@@ -10,7 +10,7 @@ Library     XML
 
 
 *** Keywords ***
-Select the free slot and submits
+Select The Free Slot And Submits
     [Documentation]    This keyword selects a random reservation slot from a list of available slots for quick reservations.
 
     # DEVNOTE
@@ -47,7 +47,7 @@ Select the free slot and submits
     Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}    # Submits selected time
     Click    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
-Select duration
+Select Duration
     [Arguments]    ${duration}
     Log    ${duration}
     # Click    id=quick-reservation >> css=.Select-module_selectAndListContainer__vSJEv
@@ -56,11 +56,11 @@ Select duration
     Click    [role="option"] >> '${duration}'
     Wait For Load State    load    timeout=15s
 
-Click more available slots
+Click More Available Slots
     Click    [data-testid="quick-reservation-next-available-time"]
     Sleep    500ms
 
-Check the quick reservation time
+Check The Quick Reservation Time
     [Documentation]    This keyword/test cannot be run overnight. For now varaamo cannot handle overnight reservations.
     ...    Example -> Su 1.10.2023 klo 23:45-0:45, 1 t != La 30.9.2023 klo 23:45-su 1.10.20230:45, 1 t
     [Arguments]    ${time_of_quick_reservation_slot}
@@ -72,37 +72,37 @@ Check the quick reservation time
     ${reservationtime}=    Get Text    [data-testid="reservation__reservation-info-card__duration"]
     Should Be Equal    ${time_of_quick_reservation_slot}    ${reservationtime}
 
-Check the price of quick reservation
+Check The Price Of Quick Reservation
     [Arguments]    ${price_with_text}
     # TODO Add more robust way to check the final price is loaded
     # Otherwise can getHinta: 40,00 € (sis. alv 25,5%) != Hinta: 0 - 40,00 € (sis. alv 25,5%)
     Sleep    3s    # this sleeps ensures the final price is loaded
     Wait For Load State    load    timeout=10s
-    ${reservation_price}=    Get text    [data-testid="reservation__reservation-info-card__price"]
-    ${normalized_string}=    custom_keywords.Remove non-breaking space    ${reservation_price}
+    ${reservation_price}=    Get Text    [data-testid="reservation__reservation-info-card__price"]
+    ${normalized_string}=    custom_keywords.Remove Non-breaking Space    ${reservation_price}
     Log    expected price string ${price_with_text}
     Should Be Equal    ${normalized_string}    ${price_with_text}
 
-Get booking number
+Get Booking Number
     Sleep    1s
-    ${reservation_number}=    Get text    [data-testid="reservation__reservation-info-card__reservationNumber"]
+    ${reservation_number}=    Get Text    [data-testid="reservation__reservation-info-card__reservationNumber"]
     ${BOOKING_NUM_ONLY}=    Set Variable    ${reservation_number}
     Store Test Data Variable    BOOKING_NUM_ONLY    ${BOOKING_NUM_ONLY}
     Set Test Variable    ${BOOKING_NUM_ONLY}    ${BOOKING_NUM_ONLY}
     Log    ${BOOKING_NUM_ONLY}
 
-Check booking number
+Check Booking Number
     [Arguments]    ${booking_number}
     Wait For Elements State    [data-testid="reservation__reservation-info-card__reservationNumber"]    visible
-    ${quick_booking_num}=    Get text    [data-testid="reservation__reservation-info-card__reservationNumber"]
+    ${quick_booking_num}=    Get Text    [data-testid="reservation__reservation-info-card__reservationNumber"]
     Log    quick_booking_num: ${quick_booking_num}, booking_number: ${booking_number}
     Should Be Equal    ${quick_booking_num}    ${booking_number}
 
-Get access code
+Get Access Code
     [Documentation]    Extracts and saves the numeric access code from the element.
     Wait For Elements State    [data-testid="reservation__reservation-info-card__accessType"]    visible
     Sleep    2s
-    ${access_code_numbers}=    custom_keywords.Get number from element text
+    ${access_code_numbers}=    custom_keywords.Get Number From Element Text
     ...    [data-testid="reservation__reservation-info-card__accessType"]
     # Add # at the end as it's required for access code entry in the system
     ${access_code_with_hash}=    Set Variable    ${access_code_numbers}#
@@ -110,14 +110,14 @@ Get access code
     Set Test Variable    ${ACCESS_CODE}    ${access_code_with_hash}
     Log    Saved access code (with #): ${ACCESS_CODE}
 
-Check access code
+Check Access Code
     # TODO Change here real selector
     [Arguments]    ${access_code}
-    custom_keywords.Check number from text is equal to
+    custom_keywords.Check Number From Text Is Equal To
     ...    [data-testid="reservation__reservation-info-card__accessType"]
     ...    ${access_code}
 
-Confirms date picker opens from quick reservation
+Confirms Date Picker Opens From Quick Reservation
     Wait For Elements State    id=quick-reservation__date    visible
     Click    id=quick-reservation >> [aria-label="Valitse päivämäärä"]
 
@@ -131,7 +131,7 @@ Confirms date picker opens from quick reservation
     # Confirms the select button exists and closes the datepicker dialog window
     Click    id=quick-reservation >> [data-testid="selectButton"]
 
-Get the value from date input
+Get The Value From Date Input
     ${value}=    Browser.Get Attribute    id=quick-reservation__date    value
     Log    The value of the quick reservation date is: ${value}
     RETURN    ${value}
@@ -140,7 +140,7 @@ Get the value from date input
 # MOBILE
 ###
 
-Select duration mobile
+Select Duration Mobile
     # Set to 1h
     [Arguments]    ${duration}
     Wait For Elements State    id=mobile-quick-reservation-duration-toggle-button    visible
@@ -149,7 +149,7 @@ Select duration mobile
     Click    [role="option"] >> '${duration}'
     Wait For Load State    load    timeout=15s
 
-Verify time slot not available
+Verify Time Slot Not Available
     [Documentation]    Verifies that the specified time slot is not available in the list of free slots.
     [Arguments]    ${time_to_check}
     Log    Verifying time slot not available: ${time_to_check}

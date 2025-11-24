@@ -8,38 +8,38 @@ Resource            ../../Resources/serial_users.robot
 
 
 *** Keywords ***
-User selects who is the application created for
+User Selects Who Is The Application Created For
     [Arguments]    ${application_type_element}
     Click    label[for="${application_type_element}"]
 
-User types first name
+User Types First Name
     [Arguments]    ${first_name}
     Fill Text    id=contactPersonFirstName    ${first_name}
 
-User types last name
+User Types Last Name
     [Arguments]    ${last_name}
     Fill Text    id=contactPersonLastName    ${last_name}
 
-User types street address
+User Types Street Address
     [Arguments]    ${street_address}
     Fill Text    id=billingStreetAddress    ${street_address}
 
-User types post code
+User Types Post Code
     [Arguments]    ${post_code}
     Fill Text    id=billingPostCode    ${post_code}
 
-User types city
+User Types City
     [Arguments]    ${city}
     Fill Text    id=billingCity    ${city}
 
-User types phone number
+User Types Phone Number
     [Arguments]    ${phone_number}
     Fill Text    id=contactPersonPhoneNumber    ${phone_number}
 
-User types email
+User Types Email
     [Arguments]    ${email}
     Fill Text    id=contactPersonEmail    ${email}
 
-User types additional information
+User Types Additional Information
     [Arguments]    ${the purpose of the booking}
     Fill Text    id=additionalInformation    ${the purpose of the booking}

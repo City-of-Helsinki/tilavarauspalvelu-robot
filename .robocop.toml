@@ -1,0 +1,58 @@
+# Robocop Configuration for Robot Framework Test Automation
+# Permissive mode - focuses on critical errors, disables overly strict rules
+# Robocop 6.0+ syntax
+
+[tool.robocop]
+exclude = ["output", "browser", "pabot_results", "node_modules", "__pycache__"]
+
+[tool.robocop.lint]
+# Disable rules that are too strict for test automation
+# In Robocop 6.0+, use 'ignore' to disable rules (replaces old --exclude for rules)
+ignore = [
+    "LEN06",  # Too-many-calls-in-test-case
+    "LEN07",  # Too-many-arguments
+    "LEN03",  # Too-many-calls-in-keyword
+    "DOC02",  # Missing-doc-test-case
+    "DOC01",  # Missing-doc-keyword
+    "DOC03",  # Missing-doc-suite
+    "LEN08",  # Line-too-long
+    "LEN01",  # Too-long-keyword
+    "LEN04",  # Too-long-test-case
+    "LEN32",  # Too-long-variable-name
+    "LEN28",  # File-too-long
+    "LEN10",  # Number-of-returned-values
+    "VAR02",  # Unused-variable
+    "VAR06",  # No-test-variable
+    "VAR05",  # No-suite-variable
+    "VAR11",  # Overwriting-reserved-variable
+    "VAR09",  # Hyphen-in-variable-name
+    "VAR10",  # Inconsistent-variable-name
+    "VAR07",  # Non-local-variables-should-be-uppercase
+    "DEPR05",  # Replace-set-variable-with-var (too noisy for existing codebase)
+    "SPC08",  # Bad-indent (too strict, complains about commented code)
+    "SPC18",  # First-argument-in-new-line
+    "COM01",  # Todo-in-comment
+    "COM02",  # Missing-space-after-comment
+    "IMP01",  # Wrong-import-order (import ordering is style, not a bug)
+    "IMP02",  # Builtin-imports-not-sorted
+    "MISC06",  # Can-be-resource-file (false positives for resource files)
+    "MISC13",  # Expression-can-be-simplified
+    "MISC07",  # If-can-be-merged
+    "TAG01",  # Tag-with-space
+    "ARG07",  # Arguments-per-line
+]
+
+[tool.robocop.format]
+# Enable RenameKeywords formatter
+select = ["RenameKeywords"]
+# Configure RenameKeywords parameters
+# remove_underscores=False: Keep underscores in keyword names (don't replace with spaces)
+# ignore_library=True: Ignore library/resource name part - only rename the keyword part
+#   This means "App_admin.Login User" becomes "app_admin.Login User" (keyword renamed, library preserved)
+# keyword_case=capitalize_words: Capitalize each word in keyword name
+configure = [
+    "RenameKeywords.remove_underscores=False",
+    "RenameKeywords.ignore_library=True",
+    "RenameKeywords.keyword_case=capitalize_words"
+]
+

@@ -8,9 +8,9 @@ Resource            ../../Resources/serial_users.robot
 
 
 *** Keywords ***
-User selects a recurring booking round
+User Selects A Recurring Booking Round
     [Arguments]    ${name_of_the_recurring_reservation}
-    custom_keywords.Find and click element in card element by text
+    custom_keywords.Find And Click Element In Card Element By Text
     ...    [data-testid="recurring-lander__application-round-container--active"] >> .card--default
     ...    [data-testid="card__heading"]
     ...    ${name_of_the_recurring_reservation}
@@ -20,9 +20,9 @@ User selects a recurring booking round
     Sleep    2s
     Wait For Load State    load    timeout=15s
 
-User selects the units for recurring reservation
+User Selects The Units For Recurring Reservation
     [Arguments]    ${name_of_the_recurring_unit}
-    custom_keywords.Find and click element in card element by text
+    custom_keywords.Find And Click Element In Card Element By Text
     ...    [class*="Card__CardContent"]
     ...    [data-testid="card__heading"]
     ...    ${name_of_the_recurring_unit}
@@ -31,11 +31,11 @@ User selects the units for recurring reservation
     # For animation
     Sleep    300ms
 
-User checks the count of selected units
+User Checks The Count Of Selected Units
     [Arguments]    ${expected_text}
-    custom_keywords.Check elements text    id=reservationUnitCount    ${expected_text}
+    custom_keywords.Check Elements Text    id=reservationUnitCount    ${expected_text}
 
-User clicks continue button
+User Clicks Continue Button
     Wait For Elements State    id=startApplicationButton    visible
     Click    id=startApplicationButton
 

@@ -4,17 +4,17 @@ Library     Browser
 
 
 *** Keywords ***
-Admin searches own unit and clicks it
+Admin Searches Own Unit And Clicks It
     [Arguments]    ${units_location}
     Sleep    1s
     Wait For Elements State    id=search    visible
     Type Text    id=search    ${units_location}
     Sleep    2s    # Wait for the search results to load
-    custom_keywords.Find and click element with text    td >> a    ${units_location}
+    custom_keywords.Find And Click Element With Text    td >> a    ${units_location}
     Sleep    3s    # long wait for spinner
     Wait For Load State    load    timeout=15s
 
-Admin clicks calendar open in own units
+Admin Clicks Calendar Open In Own Units
     [Arguments]    ${unit_name}
     # This locates the row in the calendar with the title="${unit_name}".
     # It then selects the 26th div within that row's container and clicks it.
@@ -50,10 +50,10 @@ Admin clicks calendar open in own units
 
     Log    ${result}
 
-Admin clicks make reservation
+Admin Clicks Make Reservation
     Click    span:has-text("Tee varaus")
 
-Admin checks make reservation button is disabled
+Admin Checks Make Reservation Button Is Disabled
     ${button_selector}=    Set Variable    button:has-text("Tee varaus")
 
     # Verify button is visible and disabled
@@ -62,10 +62,10 @@ Admin checks make reservation button is disabled
 
     Log    Button is properly disabled for VIEWER role
 
-Admin selects unit from reservation units dropdown
+Admin Selects Unit From Reservation Units Dropdown
     [Arguments]    ${units_location}
     Wait For Elements State    [aria-label*="Varausyksikkö"]    visible
     Click    [aria-label*="Varausyksikkö"]
     Sleep    1s
-    custom_keywords.Find and click element with text    li >> span    ${units_location}
+    custom_keywords.Find And Click Element With Text    li >> span    ${units_location}
     Sleep    1s

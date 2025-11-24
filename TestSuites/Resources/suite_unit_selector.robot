@@ -10,7 +10,7 @@ Resource            variables.robot
 # TAG-BASED SUITE UNIT INITIALIZATION
 # =============================================================================
 
-Initialize suite units from tags
+Initialize Suite Units From Tags
     [Documentation]    Tag-based suite unit initialization
     ...
     ...    Automatically determines which suite units to load based on test tags:
@@ -33,25 +33,25 @@ Initialize suite units from tags
     # Check for suite type tags
     IF    'desktop-suite' in ${test_tags}
         Log    📱 Loading desktop suite units
-        Set desktop suite units
+        Set Desktop Suite Units
     ELSE IF    'admin-suite' in ${test_tags}
         Log    👨‍💼 Loading admin suite units
-        Set admin suite units
+        Set Admin Suite Units
     ELSE IF    'combined-suite' in ${test_tags}
         Log    🔄 Loading combined suite units
-        Set combined suite units
+        Set Combined Suite Units
     ELSE IF    'android-suite' in ${test_tags}
         Log    📱 Loading Android suite units
         Set Android Suite Units
     ELSE IF    'iphone-suite' in ${test_tags}
         Log    📱 Loading iPhone suite units
-        Set iPhone Suite Units
+        Set IPhone Suite Units
     ELSE
         Log    ⚠️ No suite type tag found, using desktop as default
-        Set desktop suite units
+        Set Desktop Suite Units
     END
 
-Set desktop suite units
+Set Desktop Suite Units
     [Documentation]    Set units specific to desktop user tests
     Set Suite Variable    ${CURRENT_ALWAYS_FREE_UNIT}    ${DESKTOP_ALWAYS_FREE_UNIT}
     Set Suite Variable    ${CURRENT_ALWAYS_FREE_UNIT_WITH_LOCATION}    ${DESKTOP_ALWAYS_FREE_UNIT_WITH_LOCATION}
@@ -66,14 +66,14 @@ Set desktop suite units
     Set Suite Variable    ${CURRENT_UNAVAILABLE_UNIT}    ${DESKTOP_UNAVAILABLE_UNIT}
     Set Suite Variable    ${CURRENT_UNAVAILABLE_UNIT_WITH_LOCATION}    ${DESKTOP_UNAVAILABLE_UNIT_WITH_LOCATION}
 
-Set admin suite units
+Set Admin Suite Units
     [Documentation]    Set units specific to admin tests
     Set Suite Variable    ${CURRENT_UNAVAILABLE_UNIT}    ${DESKTOP_UNAVAILABLE_UNIT}
     Set Suite Variable
     ...    ${CURRENT_UNAVAILABLE_UNIT_WITH_LOCATION}
     ...    ${DESKTOP_UNAVAILABLE_UNIT_WITH_LOCATION}
 
-Set combined suite units
+Set Combined Suite Units
     [Documentation]    Set units specific to combined user+admin tests
     Set Suite Variable    ${CURRENT_ALWAYS_PAID_UNIT_SUBVENTED}    ${COMBINED_ALWAYS_PAID_UNIT_SUBVENTED}
     Set Suite Variable
@@ -107,7 +107,7 @@ Set Android Suite Units
     ...    ${CURRENT_UNIT_REQUIRES_ALWAYS_HANDLING_WITH_LOCATION}
     ...    ${ANDROID_UNIT_REQUIRES_ALWAYS_HANDLING_WITH_LOCATION}
 
-Set iPhone Suite Units
+Set IPhone Suite Units
     [Documentation]    Set units specific to iPhone mobile tests
     Set Suite Variable    ${CURRENT_ALWAYS_FREE_UNIT}    ${IPHONE_ALWAYS_FREE_UNIT}
     Set Suite Variable    ${CURRENT_ALWAYS_FREE_UNIT_WITH_LOCATION}    ${IPHONE_ALWAYS_FREE_UNIT_WITH_LOCATION}

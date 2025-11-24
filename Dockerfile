@@ -39,6 +39,8 @@ USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-venv \
     locales \
+    shellcheck \
+    shfmt \
     && echo "Configure Finnish locale for Varaamo" \
     && echo "fi_FI.UTF-8 UTF-8" > /etc/locale.gen \
     && locale-gen \

@@ -7,7 +7,7 @@ Library     BuiltIn
 
 
 *** Keywords ***
-Login Suomi_fi
+Login Suomi Fi
     [Arguments]    ${input_hetu}
     Wait For Load State    load    timeout=15s
     Wait For Elements State    id=social-suomi_fi    visible    timeout=10s
@@ -31,7 +31,7 @@ Login Suomi_fi
     ${fresh_cookie_count}=    Get Length    ${fresh_cookies}
     Log    "🔍 Login cookies after Tunnistamo: ${fresh_cookie_count}"
 
-Login django admin
+Login Django Admin
     [Documentation]    The input_password argument is kept for backward compatibility but is not used
     [Arguments]    ${input_username}    ${input_password}=${EMPTY}
     Wait For Load State    load    timeout=15s
@@ -46,7 +46,7 @@ Login django admin
     Sleep    2s
     Wait For Load State    load    timeout=60s
 
-Login Suomi_fi mobile
+Login Suomi Fi Mobile
     [Arguments]    ${input_hetu}
     Wait For Load State    load    timeout=15s
     Wait For Elements State    id=social-suomi_fi    visible    timeout=15s

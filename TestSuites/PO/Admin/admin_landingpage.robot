@@ -5,7 +5,7 @@ Library     Browser
 
 
 *** Keywords ***
-Checks the admin landing page H1
+Checks The Admin Landing Page H1
     [Arguments]    ${expected_H1_text}
     Sleep    2s    # Wait for the page to render. TODO: remove after frontend is updated
     Wait For Load State    networkidle    timeout=40s
@@ -14,6 +14,6 @@ Checks the admin landing page H1
     Should Contain    ${landingPageH1}    ${expected_H1_text}    strip_spaces=true
     Log    ${expected_H1_text}
 
-Approve cookies
+Approve Cookies
     Wait For Elements State    css=.ch2-btn-text-sm    visible
     Click    css=.ch2-btn-text-sm

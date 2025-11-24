@@ -6,7 +6,7 @@ Library     Browser
 
 
 *** Keywords ***
-Allow all cookies if visible
+Allow All Cookies If Visible
     TRY
         Wait For Elements State    css=button[data-approved="required"]    visible    timeout=5s
         Click    css=button[data-approved="required"]
@@ -15,30 +15,30 @@ Allow all cookies if visible
         Log    Cookie consent button not found, continuing without clicking
     END
 
-Select payment method OP
+Select Payment Method OP
     Wait For Elements State    css=#OP    visible
     Click    css=#OP
 
-Click submit
+Click Submit
     Wait For Elements State    css=.submit    visible
     Click    css=.submit
 
-Click accept terms
+Click Accept Terms
     Wait For Elements State    css=#acceptTerms    visible
     Click    css=#acceptTerms
 
-Check user details in checkout
+Check User Details In Checkout
     # TODO - add more checks here
-    custom_keywords.Find text from elements or fail
+    custom_keywords.Find Text From Elements Or Fail
     ...    css=.customer-details-information >> td
     ...    ${CURRENT_USER_EMAIL}
 
-Check product list has all the info
+Check Product List Has All The Info
     # TODO - add more checks here
-    custom_keywords.Check elements text    css=.product-summary >> span.cart-total.padded
+    custom_keywords.Check Elements Text    css=.product-summary >> span.cart-total.padded
     ...    ${SINGLEBOOKING_PAID_PRICE_CHECKOUT}
 
-In order summary get booking number from product list
+In Order Summary Get Booking Number From Product List
     Wait For Elements State    css=.product-list    visible
 
     # Get the next sibling element containing the reservation number
@@ -59,35 +59,35 @@ In order summary get booking number from product list
 ####
 ####
 
-Check the info in checkout
+Check The Info In Checkout
     Sleep    2s
     Wait For Load State    load    timeout=20s
-    Allow all cookies if visible
+    Allow All Cookies If Visible
     Sleep    1s
     Wait For Load State    load    timeout=15s
-    Select payment method OP
+    Select Payment Method OP
     Sleep    1s
-    Click submit
+    Click Submit
     Sleep    3s
     Wait For Load State    load    timeout=15s
-    Check user details in checkout
-    Check product list has all the info
-    In order summary get booking number from product list
-    Click accept terms
+    Check User Details In Checkout
+    Check Product List Has All The Info
+    In Order Summary Get Booking Number From Product List
+    Click Accept Terms
     Sleep    1s
-    Click submit
+    Click Submit
     Sleep    3s
     Wait For Load State    networkidle    timeout=50s
 
-Interrupted checkout
+Interrupted Checkout
     [Arguments]    ${input_URL}
     Sleep    5s
-    Allow all cookies if visible
+    Allow All Cookies If Visible
     Sleep    1s
     Go To    ${input_URL}
     Wait For Load State    load    timeout=15s
 
-Check the info in checkout with auth validation
+Check The Info In Checkout With Auth Validation
     [Documentation]    Enhanced checkout with authentication validation and timing
 
     # Basic session validation
@@ -99,7 +99,7 @@ Check the info in checkout with auth validation
     Should Not Contain    ${current_url}    403
     Should Not Contain    ${current_url}    forbidden
 
-    Allow all cookies if visible
+    Allow All Cookies If Visible
     Sleep    1s
     Wait For Load State    load    timeout=15s
 
@@ -117,16 +117,16 @@ Check the info in checkout with auth validation
     Should Be True    ${has_session}
     ...    msg=No session cookie found before checkout - authentication may have failed
 
-    Select payment method OP
+    Select Payment Method OP
     Sleep    1s
-    Click submit
+    Click Submit
     Sleep    3s
     Wait For Load State    load    timeout=15s
-    Check user details in checkout
-    Check product list has all the info
-    In order summary get booking number from product list
-    Click accept terms
+    Check User Details In Checkout
+    Check Product List Has All The Info
+    In Order Summary Get Booking Number From Product List
+    Click Accept Terms
     Sleep    1s
-    Click submit
+    Click Submit
     Sleep    3s
     Wait For Load State    networkidle    timeout=50s

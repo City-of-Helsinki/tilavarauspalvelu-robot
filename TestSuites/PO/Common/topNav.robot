@@ -9,40 +9,40 @@ Resource            ../User/mybookings.robot
 
 
 *** Keywords ***
-Click login
+Click Login
     Wait For Elements State    id=login    stable
     Click    id=login
     Sleep    500ms
 
-Click login admin side
+Click Login Admin Side
     Wait For Elements State    h1    visible
     ${LoginElement}=    Browser.Get Element    button >> span:text-is("${LOGIN_TEXT_ADMIN}")
     Click    ${LoginElement}
     Sleep    1s
 
-Click logout
+Click Logout
     Sleep    1s
     Wait For Elements State    css=[aria-label="Kirjaudu ulos"]    stable
     Click    css=[aria-label="Kirjaudu ulos"]
     Wait For Load State    load    timeout=15s
 
-Click logout admin side
+Click Logout Admin Side
     Sleep    1s
     Wait For Elements State    css=[aria-label="signout"]    visible
     Click    css=[aria-label="signout"]
     Wait For Load State    load    timeout=15s
 
-Click user menu
+Click User Menu
     Wait For Elements State    id=user-menu    stable
     Click    id=user-menu
     Sleep    1s
 
-Click close navigation menu
+Click Close Navigation Menu
     Wait For Elements State    id=Menu    stable
     Click    id=Menu
     Sleep    1s
 
-Check dropdown menu has user info
+Check Dropdown Menu Has User Info
     [Arguments]    ${name}
     # DEVNOTE Enable this when the profile bug no longer empties the name info
     ${Topnav_Login_Button_Text}=    Get Text    id=user-menu:text-is("${name}")
@@ -50,26 +50,26 @@ Check dropdown menu has user info
     Log    ${name}
     Should Be Equal    ${Topnav_Login_Button_Text}    ${name}
 
-Navigate to single booking page
+Navigate To Single Booking Page
     Click    header >> [href="/search"]:text-is("${SINGLEBOOKING_FI}")
     Sleep    1s
     Wait For Load State    load    timeout=15s
 
-Navigate to my bookings
+Navigate To My Bookings
     Click    header >> [href="/reservations"]:text-is("${MYBOOKINGS_FI}")
     # wait for load
     Sleep    2s
     Wait For Load State    load    timeout=15s
 
     # Confirms page is loaded
-    mybookings.Check my bookings h1    ${MYBOOKINGS_FI}
+    mybookings.Check My Bookings H1    ${MYBOOKINGS_FI}
 
-Navigate to recurring booking page
+Navigate To Recurring Booking Page
     Click    header >> [href="/recurring"]:text-is("${RECURRING_BOOKINGS_FI}")
     Sleep    200ms
     Wait For Load State    load    timeout=15s
 
-Navigate to my applications
+Navigate To My Applications
     Click    header >> [href="/applications"]:text-is("${MYAPPLICATIONS_FI}")
     Sleep    200ms
     Wait For Load State    load    timeout=15s
@@ -78,26 +78,26 @@ Navigate to my applications
 # MOBILE UI
 ###
 
-Click navigation menu mobile
+Click Navigation Menu Mobile
     Wait For Elements State    id=Menu    visible
     Click    id=Menu
     Sleep    1s
 
-Click user menu mobile
+Click User Menu Mobile
     Click    id=user-menu
     Sleep    1s
 
-Click login mobile
+Click Login Mobile
     Wait For Elements State    id=login    visible
     Click    id=login
     Wait For Load State    load    timeout=15s
 
-Click logout mobile
+Click Logout Mobile
     Wait For Elements State    css=[aria-label="Kirjaudu ulos"]    visible
     Click    css=[aria-label="Kirjaudu ulos"]
     Wait For Load State    load    timeout=15s
 
-Click tablist scroll button to right mobile
+Click Tablist Scroll Button To Right Mobile
     Wait For Elements State    [class*=Tabs-module_scrollButton__]    visible
     Click    [class*=Tabs-module_scrollButton__] >> [aria-label="angle-right"]
     Wait For Load State    load    timeout=15s
@@ -119,11 +119,11 @@ Click tablist scroll button to right mobile
     # ${Topnav_menu_email_element_text}=    Get Text    ${Topnav_menu_email_elements}[1]
     # Should Be Equal    ${Topnav_menu_email_element_text}    ${Expected_email}
 
-Navigate to single booking page mobile
+Navigate To Single Booking Page Mobile
     Click    id=Menu
-    Navigate to single booking page
+    Navigate To Single Booking Page
 
-Navigate to my bookings mobile
-    Click navigation menu mobile
-    Navigate to my bookings
+Navigate To My Bookings Mobile
+    Click Navigation Menu Mobile
+    Navigate To My Bookings
     Wait For Elements State    h1    visible

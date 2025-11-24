@@ -46,6 +46,17 @@ TestSuites/Resources/waf_header_verifier.py
 
 # === HAR Analysis Tools ===
 
+# === Linting Reports and Baselines ===
+# Linting output reports (generated during linting runs)
+linting-*-report.txt
+linting-*.txt
+
+# Linting baseline directory (local tracking, per-developer)
+.linting-baseline/
+
+# Pre-commit cache (local only)
+.pre-commit-cache/
+
 # === Test Data System Documentation ===
 README_TEST_DATA_SYSTEM.md
 PARALLEL_SETUP_GUIDE.md

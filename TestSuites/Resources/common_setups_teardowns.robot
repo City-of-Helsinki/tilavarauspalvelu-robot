@@ -33,7 +33,7 @@ Complete Test Setup From Tags
     Log    🚀 Starting tag-based setup for: ${test_name}
 
     # Initialize suite-specific units from tags
-    Initialize suite units from tags
+    Initialize Suite Units From Tags
 
     # Initialize test data (users) from tags
     Initialize Test Data From Tags

@@ -20,10 +20,10 @@ ${DEFAULT_ENDPOINT}     /v1/create_robot_test_data/
 
 
 *** Keywords ***
-Create robot test data
+Create Robot Test Data
     Log    Disabled until backend data creation is ready
 
-Create robot test data DISABLED
+Create Robot Test Data DISABLED
     [Documentation]    Calls the endpoint to Create robot test data.
     [Timeout]    5 minutes
 

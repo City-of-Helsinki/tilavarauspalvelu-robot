@@ -348,12 +348,22 @@ python har_analyzer.py
 
 **Note:** HAR recording is disabled by default to improve performance. Only enable when debugging network issues.
 
+## 🔍 Code Quality and Linting
+
+This project includes automated linting and formatting for code quality using **Robocop** (Robot Framework linter and formatter - includes Robotidy in 6.0+), **Ruff** (Python linter and formatter), **ShellCheck** (shell script linter), and **shfmt** (shell script formatter).
+
+**Quick access via Docker menu (works with any IDE):**
+
+🤖 Linting runs automatically in GitHub Actions (permissive mode - warnings only, doesn't block builds).
+
+📖 **Note:** Detailed linting documentation will be added to [LINTING.md](LINTING.md) later.
+
 ## 🔧 Browser Settings
 
 Browser configurations and device settings are managed in `TestSuites/Resources/devices.robot`:
 
 - **Browser Types**: Chromium (desktop), WebKit (iPhone), Chromium (Android)
-- **WAF Bypass**: Configured via and `WAF_BYPASS_SECRET` environment variable
+- **WAF Bypass**: Configured via `WAF_BYPASS_SECRET` environment variable
 - **Parallel Execution**: Staggered startup strategy to prevent resource conflicts
 
 📖 **For detailed test coverage and architecture information, see [TEST_ARCHITECTURE.md](TEST_ARCHITECTURE.md)**
@@ -489,12 +499,14 @@ For GitHub Actions, add the following secrets to your repository:
 ├── conda.yaml                          # Conda environment configuration
 ├── robot.yaml                          # RCC configuration
 ├── har_analyzer.py                     # HAR file analysis utilities
+├── LINTING.md                          # Code quality and linting guide
 └── PARALLEL_DATA_SETUP_GUIDE.md        # Tag-based test data initialization and parallel execution flow
 ```
 
 ## 📚 Additional Resources
 
-- [TestSuites/Resources/README_TEST_DATA_SYSTEM.md](TestSuites/Resources/README_TEST_DATA_SYSTEM.md) - Comprehensive test data system documentation
+- [LINTING.md](LINTING.md) - Code quality and linting guide
+- [TestSuites/Resources/README_TEST_DATA_SYSTEM.md](TestSuites/Resources/README_TEST_DATA_SYSTEM.md) - Test data system documentation
 - [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md) - Tag-based test data initialization and parallel execution flow
 - [Robot Framework Documentation](https://docs.robotframework.org/)
 - [Robot Framework Browser Library](https://marketsquare.github.io/robotframework-browser/Browser.html)

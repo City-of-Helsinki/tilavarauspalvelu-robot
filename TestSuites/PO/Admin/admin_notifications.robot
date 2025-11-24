@@ -7,19 +7,19 @@ Library     Browser
 
 
 *** Keywords ***
-Admin clicks create notification button
+Admin Clicks Create Notification Button
     Sleep    1.5s
     Click    [href="/kasittely/notifications/new"]
     Sleep    1.5s
     Wait For Load State    load    timeout=15s
 
-Admin clicks notification name
+Admin Clicks Notification Name
     [Arguments]    ${notification_name}
-    custom_keywords.Find and click element with text    tbody >> a    ${notification_name}
+    custom_keywords.Find And Click Element With Text    tbody >> a    ${notification_name}
     Sleep    2s
     Wait For Load State    load    timeout=15s
 
-Admin verifies notification is not found
+Admin Verifies Notification Is Not Found
     [Documentation]    Verifies that a notification with the specified name is NOT present in the notifications list
     [Arguments]    ${notification_name}
-    custom_keywords.Verify element with text is not found    tbody >> a    ${notification_name}
+    custom_keywords.Verify Element With Text Is Not Found    tbody >> a    ${notification_name}

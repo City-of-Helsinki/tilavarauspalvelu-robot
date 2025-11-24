@@ -3,7 +3,7 @@ Library     Browser
 
 
 *** Keywords ***
-Search units by name
+Search Units By Name
     [Arguments]    ${search_text}
     Sleep    1s
     Type Text    input#search    ${search_text}
@@ -16,7 +16,7 @@ Search units by name
     # TODO Check if actual results are found
     Wait For Elements State    [data-testid="list-with-pagination__list--container"]    visible
 
-Click searched unit
+Click Searched Unit
     [Arguments]    ${searched_text}
     Sleep    2s
     ${searched_list_element}=    Get Text    [data-testid="list-with-pagination__list--container"] >> h2
@@ -24,7 +24,7 @@ Click searched unit
     Should Be Equal    ${searched_list_element}    ${searched_text}
     Click    h2 >> '${searched_text}'
 
-Click advanced search if search not visible
+Click Advanced Search If Search Not Visible
     [Documentation]    Ensures the visibility of the search input by clicking the
     ...    "Advanced Search" toggle button if the search field is not already visible.
 

@@ -10,16 +10,6 @@ tasks:
       [ -f output.xml ] && rm -f output.xml || true
       [ -f report.html ] && rm -f report.html || true
       [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-  # Task names here are used when executing the bots, so renaming these is recommended.
-  Run all tasks:
-    shell: |
-      [ -d output ] && rm -rf output/* || true
-      [ -d pabot_results ] && rm -rf pabot_results/* || true
-      [ -f log.html ] && rm -f log.html || true
-      [ -f output.xml ] && rm -f output.xml || true
-      [ -f report.html ] && rm -f report.html || true
-      [ -f playwright-log.txt ] && rm -f playwright-log.txt || true
-      python -m robot --report NONE --outputdir output --logtitle "Task log" tasks.robot
 
   # Parallel testing tasks with optimal process counts
   Test Desktop Parallel:

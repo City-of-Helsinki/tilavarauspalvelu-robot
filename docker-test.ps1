@@ -319,7 +319,7 @@ function Clear-DockerImages {
 # Function to build Docker image
 function Build-DockerImage {
     Write-Warning "Building Docker image..."
-    docker build -t $IMAGE_NAME .
+    docker build -t "$IMAGE_NAME" .
     if ($LASTEXITCODE -eq 0) {
         Write-Success "[SUCCESS] Docker image built successfully"
     } else {
@@ -539,6 +539,285 @@ function Start-HarAnalyzer {
     return $true
 }
 
+# Function to run Python linting with Ruff
+function Start-PythonLint {
+    Write-Warning "Running Python linting with Ruff..."
+    
+    $currentDir = (Get-Item .).FullName -replace '\\', '/'
+    if ($currentDir -match '^([A-Z]):') {
+        $currentDir = "/$($Matches[1].ToLower())$($currentDir.Substring(2))"
+    }
+    
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${currentDir}:/opt/project",
+        "-w", "/opt/project",
+        "${IMAGE_NAME}:latest",
+        "ruff", "check", "TestSuites/", "*.py"
+    )
+    
+    & docker @dockerArgs | Tee-Object -FilePath "linting-ruff-report.txt"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Success "[SUCCESS] Python linting completed"
+    } else {
+        Write-Warning "[WARNING] Python linting found issues (see linting-ruff-report.txt)"
+    }
+    return $true
+}
+
+# Function to format Python code with Ruff
+function Start-PythonFormat {
+    Write-Warning "Formatting Python code with Ruff..."
+    Write-Warning "This will modify your .py files"
+    $confirm = Read-Host "Continue? (y/n)"
+    
+    if ($confirm -notmatch "^[Yy]$") {
+        Write-Warning "Cancelled"
+        return $false
+    }
+    
+    $currentDir = (Get-Item .).FullName -replace '\\', '/'
+    if ($currentDir -match '^([A-Z]):') {
+        $currentDir = "/$($Matches[1].ToLower())$($currentDir.Substring(2))"
+    }
+    
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${currentDir}:/opt/project",
+        "-w", "/opt/project",
+        "${IMAGE_NAME}:latest",
+        "ruff", "format", "TestSuites/", "*.py"
+    )
+    
+    & docker @dockerArgs
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Success "[SUCCESS] Python code formatted"
+        Write-Info "Review changes with: git diff"
+    } else {
+        Write-Error "[FAILED] Formatting failed"
+        return $false
+    }
+    return $true
+}
+
+# Function to check Python formatting with Ruff
+function Start-PythonFormatCheck {
+    Write-Warning "Checking Python code formatting with Ruff..."
+    
+    $currentDir = (Get-Item .).FullName -replace '\\', '/'
+    if ($currentDir -match '^([A-Z]):') {
+        $currentDir = "/$($Matches[1].ToLower())$($currentDir.Substring(2))"
+    }
+    
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${currentDir}:/opt/project",
+        "-w", "/opt/project",
+        "${IMAGE_NAME}:latest",
+        "ruff", "format", "--check", "TestSuites/", "*.py"
+    )
+    
+    & docker @dockerArgs
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Success "[SUCCESS] Python formatting is correct"
+    } else {
+        Write-Warning "[WARNING] Python formatting issues found. Use the 'Format Python Code' option in the menu to auto-fix."
+    }
+    return $true
+}
+
+# Function to run Robot Framework linting with Robocop
+function Start-RobotLint {
+    Write-Warning "Running Robot Framework linting with Robocop..."
+    
+    $currentDir = (Get-Item .).FullName -replace '\\', '/'
+    if ($currentDir -match '^([A-Z]):') {
+        $currentDir = "/$($Matches[1].ToLower())$($currentDir.Substring(2))"
+    }
+    
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${currentDir}:/opt/project",
+        "-w", "/opt/project",
+        "${IMAGE_NAME}:latest",
+        "robocop", "check", "TestSuites/", "--config", ".robocop.toml", "--reports", "rules_by_id"
+    )
+    
+    & docker @dockerArgs | Tee-Object -FilePath "linting-robocop-report.txt"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Success "[SUCCESS] Robot Framework linting completed"
+    } else {
+        Write-Warning "[WARNING] Robot Framework linting found issues (see linting-robocop-report.txt)"
+    }
+    return $true
+}
+
+# Function to run Shell script linting with ShellCheck
+function Start-ShellLint {
+    Write-Warning "Running Shell script linting with ShellCheck..."
+    
+    $currentDir = (Get-Item .).FullName -replace '\\', '/'
+    if ($currentDir -match '^([A-Z]):') {
+        $currentDir = "/$($Matches[1].ToLower())$($currentDir.Substring(2))"
+    }
+    
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${currentDir}:/opt/project",
+        "-w", "/opt/project",
+        "${IMAGE_NAME}:latest",
+        "shellcheck", "docker-test.sh"
+    )
+    
+    & docker @dockerArgs | Tee-Object -FilePath "linting-shellcheck-report.txt"
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Success "[SUCCESS] Shell script linting completed"
+    } else {
+        Write-Warning "[WARNING] Shell script linting found issues (see linting-shellcheck-report.txt)"
+    }
+    return $true
+}
+
+# Function to format Shell scripts with shfmt
+function Start-ShellFormat {
+    Write-Warning "Formatting Shell scripts with shfmt..."
+    Write-Info "This will format shell scripts to standard style"
+    Write-Host ""
+    Write-Warning "This will modify your shell script files"
+    $confirm = Read-Host "Continue? (y/n)"
+    
+    if ($confirm -notmatch "^[Yy]$") {
+        Write-Warning "Cancelled"
+        return $false
+    }
+    
+    $currentDir = (Get-Item .).FullName -replace '\\', '/'
+    if ($currentDir -match '^([A-Z]):') {
+        $currentDir = "/$($Matches[1].ToLower())$($currentDir.Substring(2))"
+    }
+    
+    Write-Warning "Formatting shell scripts..."
+    
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${currentDir}:/opt/project",
+        "-w", "/opt/project",
+        "${IMAGE_NAME}:latest",
+        "shfmt", "-w", "-i", "4", "-bn", "-sr", "docker-test.sh"
+    )
+    
+    & docker @dockerArgs
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Success "[SUCCESS] Shell scripts formatted"
+        Write-Info "Review changes with: git diff"
+    } else {
+        Write-Error "[FAILED] Formatting failed"
+        return $false
+    }
+    return $true
+}
+
+# Function to run all linters
+function Start-AllLinters {
+    Write-Warning "Running all linters..."
+    Write-Host ""
+    Start-PythonLint
+    Write-Host ""
+    Start-PythonFormatCheck
+    Write-Host ""
+    Start-RobotLint
+    Write-Host ""
+    Start-ShellLint
+    Write-Host ""
+    Write-Info "Linting reports saved to linting-*-report.txt"
+    return $true
+}
+
+# Function to run all formatters
+# Note: PowerShell formatting is intentionally excluded.
+# Use editor with PowerShell formatting
+function Start-AllFormatters {
+    Write-Warning "Running all formatters..."
+    Write-Info "This will format Python, Robot Framework, and Shell scripts"
+    Write-Host ""
+    Write-Warning "This will modify your files"
+    $confirm = Read-Host "Continue? (y/n)"
+    
+    if ($confirm -notmatch "^[Yy]$") {
+        Write-Warning "Cancelled"
+        return $false
+    }
+    
+    Write-Host ""
+    Write-Warning "Formatting Python code..."
+    Start-PythonFormat
+    Write-Host ""
+    Write-Warning "Formatting Robot Framework files..."
+    Start-FormatRobotFiles
+    Write-Host ""
+    Write-Warning "Formatting Shell scripts..."
+    Start-ShellFormat
+    Write-Host ""
+    Write-Success "[SUCCESS] All formatters completed"
+    Write-Info "Review changes with: git diff"
+    return $true
+}
+
+# Function to format Robot Framework files with Robocop
+function Start-FormatRobotFiles {
+    Write-Warning "Formatting Robot Framework files with Robocop..."
+    Write-Info "This will comprehensively format your .robot files:"
+    Write-Info "  • Reorder sections"
+    Write-Info "  • Fix indentation and spacing"
+    Write-Info "  • Sort imports/settings/variables"
+    Write-Info "  • Break long lines"
+    Write-Info "  • Normalize formatting"
+    Write-Info "  • Normalize keyword names (library/resource names preserved)"
+    Write-Host ""
+    Write-Warning "This will modify your .robot files"
+    $confirm = Read-Host "Continue? (y/n)"
+    
+    if ($confirm -notmatch "^[Yy]$") {
+        Write-Warning "Cancelled"
+        return $false
+    }
+    
+    $currentDir = (Get-Item .).FullName -replace '\\', '/'
+    if ($currentDir -match '^([A-Z]):') {
+        $currentDir = "/$($Matches[1].ToLower())$($currentDir.Substring(2))"
+    }
+    
+    Write-Warning "Formatting Robot Framework files..."
+    
+    # Use Robocop's integrated formatter (includes Robotidy functionality in 6.0+)
+    # RenameKeywords is configured in .robocop.toml with ignore_library=True
+    # This ensures only keyword names are normalized, not library/resource names
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${currentDir}:/opt/project",
+        "-w", "/opt/project",
+        "${IMAGE_NAME}:latest",
+        "robocop", "format", "--overwrite", "--config", ".robocop.toml", "TestSuites/"
+    )
+    
+    & docker @dockerArgs
+    
+    if ($LASTEXITCODE -eq 0) {
+        Write-Success "[SUCCESS] Robot Framework files formatted"
+        Write-Info "Review changes with: git diff"
+    } else {
+        Write-Error "[FAILED] Formatting failed"
+        return $false
+    }
+    return $true
+}
+
 # Main menu execution
 if ($Choice) {
     switch ($Choice) {
@@ -560,6 +839,14 @@ if ($Choice) {
         "16" { Start-AllSuites -Parallel $false }
         "17" { Start-HarAnalyzer }
         "18" { Toggle-HarRecording }
+        "19" { Start-PythonLint }
+        "20" { Start-PythonFormat }
+        "22" { Start-RobotLint }
+        "23" { Start-ShellLint }
+        "24" { Start-ShellFormat }
+        "25" { Start-AllLinters }
+        "26" { Start-AllFormatters }
+        "27" { Start-FormatRobotFiles }
         "0" { Write-Success "Goodbye!"; exit 0 }
         default { Write-Error "Invalid choice: $Choice" }
     }
@@ -588,7 +875,7 @@ if ($Choice) {
         Write-Host "2. Erase Docker Image"
         Write-Host "3. Build Docker Image"
         Write-Host ""
-        Write-Host "PARALLEL EXECUTION (pabot) - Multiple processes" -ForegroundColor Yellow
+        Write-Host "PARALLEL (pabot) - Multiple processes" -ForegroundColor Yellow
         Write-Host "=================================================="
         Write-Host "4. $SUITE_USER_DESKTOP ($DESKTOP_PROCESSES processes)"
         Write-Host "5. $SUITE_ADMIN_DESKTOP ($ADMIN_PROCESSES processes)"
@@ -597,7 +884,7 @@ if ($Choice) {
         Write-Host "8. $SUITE_USERS_WITH_ADMIN ($ADMIN_PROCESSES processes)"
         Write-Host "9. All Suites Parallel ($ALL_SUITES_PROCESSES processes)"
         Write-Host ""
-        Write-Host "SINGLE/SEQUENTIAL EXECUTION (robot) - One process" -ForegroundColor Yellow
+        Write-Host "SEQUENTIAL (robot) - One process" -ForegroundColor Yellow
         Write-Host "=================================================="
         Write-Host "10. $SUITE_ADMIN_NOTIFICATIONS (sequential)"
         Write-Host "11. $SUITE_USER_DESKTOP (sequential)"
@@ -614,6 +901,17 @@ if ($Choice) {
         Write-Host "CONFIGURATION - Settings" -ForegroundColor Yellow
         Write-Host "=================================================="
         Write-Host "18. Toggle HAR Recording (Currently: $($harStatus))"
+        Write-Host ""
+        Write-Host "CODE QUALITY - Linting & Formatting" -ForegroundColor Yellow
+        Write-Host "=================================================="
+        Write-Host "19. Lint Python Code (Ruff)"
+        Write-Host "20. Format Python Code (Ruff)"
+        Write-Host "22. Lint Robot Framework Files (Robocop)"
+        Write-Host "23. Lint Shell Scripts (ShellCheck)"
+        Write-Host "24. Format Shell Scripts (shfmt)"
+        Write-Host "25. Run All Linters"
+        Write-Host "26. Run All Formatters"
+        Write-Host "27. Format Robot Framework Files (Robocop - Comprehensive)"
         Write-Host ""
         Write-Host "0. Exit"
         Write-Host "=================================================="

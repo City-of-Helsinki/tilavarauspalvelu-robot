@@ -9,36 +9,36 @@ Library     Browser
 # BOOKING DETAILS
 ###
 
-Type the name of the booking
+Type The Name Of The Booking
     [Arguments]    ${name_of_the_booking}
     Type Text    id=reservation-form-field__name    ${name_of_the_booking}
 
-Select the purpose of the booking
+Select The Purpose Of The Booking
     [Arguments]    ${purpose}
     Click    id=reservation-form-field__purpose-main-button
     Sleep    1s    # wait for dropdown to load
     Wait For Elements State    id=reservation-form-field__purpose-option-2    visible
-    custom_keywords.Find and click element with text    li    ${purpose}
+    custom_keywords.Find And Click Element With Text    li    ${purpose}
 
-Select the number of participants
+Select The Number Of Participants
     [Arguments]    ${number_of_persons}
     Type Text    id=reservation-form-field__numPersons    ${number_of_persons}
 
-Type the description of the booking
+Type The Description Of The Booking
     [Arguments]    ${description_txt}
     Type Text    id=reservation-form-field__description    ${description_txt}
 
-Click to apply for a free booking
+Click To Apply For A Free Booking
     Click    id=reservation-form-field__applyingForFreeOfCharge
 
-Type justification for free of charge
+Type Justification For Free Of Charge
     [Arguments]    ${reason}
     Type Text    id=reservation-form-field__freeOfChargeReason    ${reason}
 
-Click and select AgeGroup Button
+Click And Select AgeGroup Button
     [Arguments]    ${age_group}
     Wait For Elements State    id=reservation-form-field__ageGroup-main-button    visible
     Click    id=reservation-form-field__ageGroup-main-button
     Sleep    1s    # wait for dropdown to load
-    custom_keywords.Find and click element with text    li    ${age_group}
+    custom_keywords.Find And Click Element With Text    li    ${age_group}
     Sleep    1s

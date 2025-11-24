@@ -7,10 +7,10 @@ Library     Browser
 
 
 *** Keywords ***
-Admin selects validity period to immediately
+Admin Selects Validity Period To Immediately
     Click    css=label[for="v-radio1"]
 
-Admin selects notification active until
+Admin Selects Notification Active Until
     # TODO: add date format to data_modification.robot
     [Arguments]    ${date}
     Type Text    id=notification-active-until    ${date}
@@ -32,18 +32,18 @@ Admin selects notification active until
 #    Click    id=notification-active-until-time-minutes
 #    Sleep    500ms
 
-Admin fills notification name
+Admin Fills Notification Name
     [Arguments]    ${name}
     Fill Text    id=notification-name    ${name}
     Sleep    500ms
 
 # Ilmoituksen tyyppi
 
-Admin selects type of notification
+Admin Selects Type Of Notification
     [Arguments]    ${notification_type}
     Click    css=[aria-label*="Ilmoituksen tyyppi."]
     Sleep    500ms
-    custom_keywords.Find and click element with text    form >> li >> span    ${notification_type}
+    custom_keywords.Find And Click Element With Text    form >> li >> span    ${notification_type}
     Sleep    500ms
 
 # Admin selects type of notification warning
@@ -62,64 +62,65 @@ Admin selects type of notification
 
 # Kohderyhmä
 
-Admin selects target group all
+Admin Selects Target Group All
     Click    css=[aria-label*="Kohderyhmä."]
     Sleep    1s
-    custom_keywords.Find and click element with text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_ALL}
+    custom_keywords.Find And Click Element With Text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_ALL}
     Sleep    1s
 
-Admin selects target group admin
+Admin Selects Target Group Admin
     Click    css=[aria-label*="Kohderyhmä."]
     Sleep    1s
-    custom_keywords.Find and click element with text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_ADMIN}
+    custom_keywords.Find And Click Element With Text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_ADMIN}
     Sleep    1s
 
-Admin selects target group user
+Admin Selects Target Group User
     Click    css=[aria-label*="Kohderyhmä."]
     Sleep    1s
-    custom_keywords.Find and click element with text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_USER}
+    custom_keywords.Find And Click Element With Text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_USER}
     Sleep    1s
 
 #
 
 # Viesti
 
-Admin clicks notification text fi container
-    Click    id=notification-text-fi-container
+Admin Clicks Notification Text Fi Container
+    # 
+    Click    [data-testid="Notification__Page--message-fi-input"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s
 
-Admin fills notification text fi
+Admin Fills Notification Text Fi
     [Arguments]    ${text_fi}
-    Fill Text    id=notification-text-fi >> p    ${text_fi}
+    Fill Text    [data-testid="Notification__Page--message-fi-input"] >> p    ${text_fi}
     Sleep    500ms
 
-Admin fills notification text eng
+Admin Fills Notification Text Eng
     [Arguments]    ${text_eng}
-    Fill Text    id=notification-text-eng    ${text_eng}
+    Fill Text    [data-testid="Notification__Page--message-en-input"]    ${text_eng}
     Sleep    500ms
 
-Admin fills notification text en sv
+Admin Fills Notification Text Sv
     [Arguments]    ${text_sv}
-    Fill Text    id=notification-text-sv    ${text_sv}
+    Fill Text    [data-testid="Notification__Page--message-sv-input"]    ${text_sv}
     Sleep    500ms
 
-Admin publishes notification
+Admin Publishes Notification
     Click    [data-testid="Notification__Page--publish-button"]
     Sleep    3s
     Wait For Load State    load    timeout=15s
 
-Admin drafts notification
+Admin Drafts Notification
     Click    [data-testid="Notification__Page--save-draft-button"]
     Sleep    3s
     Wait For Load State    load    timeout=15s
 
-Admin deletes notification
-    custom_keywords.Find and click element with text    button    ${DELETE_NOTIFICATION_BUTTON_TEXT}
+Admin Deletes Notification
+    custom_keywords.Find And Click Element With Text    button    ${DELETE_NOTIFICATION_BUTTON_TEXT}
     Sleep    3s
     Wait For Load State    load    timeout=15s
 
-Admin verifies notification is not found
+Admin Verifies Notification Is Not Found
     [Documentation]    Verifies that a notification with the specified name is NOT present in the notifications list
     [Arguments]    ${notification_name}
-    custom_keywords.Verify element with text is not found    tbody >> a    ${notification_name}
+    custom_keywords.Verify Element With Text Is Not Found    tbody >> a    ${notification_name}

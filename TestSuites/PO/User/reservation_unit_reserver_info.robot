@@ -6,25 +6,25 @@ Library     Browser
 
 
 *** Keywords ***
-Enter first name
+Enter First Name
     [Arguments]    ${firstname}
     Type Text    id=reservation-form-field__reserveeFirstName    ${firstname}
 
-Enter last name
+Enter Last Name
     [Arguments]    ${lastname}
     Type Text    id=reservation-form-field__reserveeLastName    ${lastname}
 
-Enter email
+Enter Email
     [Arguments]    ${email}
     Type Text    id=reservation-form-field__reserveeEmail    ${email}
 
-Enter phone number
+Enter Phone Number
     [Arguments]    ${phonenumber}
     Type Text    id=reservation-form-field__reserveePhone    ${phonenumber}
 
-Select home city
+Select Home City
     [Arguments]    ${homecity}
     Click    id=reservation-form-field__municipality-main-button
     Sleep    500ms    # Wait for animation
-    custom_keywords.Find and click element with text    li    ${homecity}
+    custom_keywords.Find And Click Element With Text    li    ${homecity}
     Sleep    1.5s    # Wait for animation

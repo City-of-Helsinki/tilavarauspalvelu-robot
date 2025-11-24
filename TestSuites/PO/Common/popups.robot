@@ -3,7 +3,7 @@ Library     Browser
 
 
 *** Keywords ***
-User accepts cookies if dialog is visible
+User Accepts Cookies If Dialog Is Visible
     [Documentation]    Ensures the visibility of the button with the specified text inside a dialog.
     ...    If the dialog with role="dialog" is visible, clicks the button.
     ...    Otherwise, continues the test without failing.
@@ -25,7 +25,7 @@ User accepts cookies if dialog is visible
         Log    Dialog is not visible. Continuing the test.
     END
 
-Close notification banner if visible
+Close Notification Banner If Visible
     [Documentation]    Closes all notification banners by clicking close button
     ...    and refreshing until no notifications are visible
 
@@ -55,7 +55,7 @@ Close notification banner if visible
         Sleep    1s
         Log    Clicked close button on notification
 
-        Reload page
+        Reload Page
         ${attempt}=    Evaluate    ${attempt} + 1
     END
     # If we reach here and success is False, we couldn't close all notifications
@@ -63,7 +63,7 @@ Close notification banner if visible
         Fail    Too many notification banners! Please delete extra notifications from admin side.
     END
 
-Reload page
+Reload Page
     Reload
     Sleep    500ms
     Wait For Load State    networkidle    timeout=30s

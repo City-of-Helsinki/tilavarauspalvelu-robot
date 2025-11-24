@@ -3,37 +3,37 @@ Library     Browser
 
 
 *** Keywords ***
-Admin navigates to requested reservations
+Admin Navigates To Requested Reservations
     Click    [href="/kasittely/reservations/requested"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s
 
-Admin navigates to reservations
+Admin Navigates To Reservations
     Click    [href="/kasittely/reservations"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s
 
-Admin navigates to application rounds
+Admin Navigates To Application Rounds
     Click    [href="/kasittely/application-rounds"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s
 
-Admin navigates to reservation units
+Admin Navigates To Reservation Units
     Click    [href="/kasittely/reservation-units"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s
 
-Admin navigates to units
+Admin Navigates To Units
     Click    [href="/kasittely/units"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s
 
-Admin navigates to my units
+Admin Navigates To My Units
     Click    [href="/kasittely/my-units"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s
 
-Admin navigates to notifications
+Admin Navigates To Notifications
     Click    [href="/kasittely/notifications"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s

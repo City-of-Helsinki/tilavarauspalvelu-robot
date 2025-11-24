@@ -1,0 +1,109 @@
+name: Code Quality Check
+
+on:
+  push:
+    branches: [main, develop, feature/**]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    name: 🔍 Linting
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install linting tools
+        run: |
+          pip install --upgrade pip
+          pip install ruff robotframework-robocop
+
+      - name: Python Linting (Ruff)
+        continue-on-error: true
+        run: |
+          echo "### 🐍 Python Linting Results (Ruff)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          ruff check . --output-format=github >> $GITHUB_STEP_SUMMARY 2>&1 || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** Linting is informational only and does not block the workflow." >> $GITHUB_STEP_SUMMARY
+
+      - name: Python Formatting Check (Ruff)
+        continue-on-error: true
+        run: |
+          echo "### 🎨 Python Formatting Check (Ruff)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          ruff format --check --diff . >> $GITHUB_STEP_SUMMARY 2>&1 || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** Formatting check is informational only." >> $GITHUB_STEP_SUMMARY
+
+      - name: Robot Framework Linting (Robocop)
+        continue-on-error: true
+        run: |
+          echo "### 🤖 Robot Framework Linting (Robocop)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check if TestSuites directory exists
+          if [ -d "TestSuites" ]; then
+            robocop check TestSuites/ --config .robocop.toml --reports rules_by_id >> $GITHUB_STEP_SUMMARY 2>&1 || true
+          else
+            # Fallback to finding .robot files
+            robot_files=$(find . -name "*.robot" -type f 2>/dev/null | head -5)
+            if [ -n "$robot_files" ]; then
+              robocop check . --config .robocop.toml >> $GITHUB_STEP_SUMMARY 2>&1 || true
+            else
+              echo "No Robot Framework files found." >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** Robot Framework linting is informational only." >> $GITHUB_STEP_SUMMARY
+
+      - name: Shell Script Check (ShellCheck)
+        continue-on-error: true
+        run: |
+          sudo apt-get update && sudo apt-get install -y shellcheck
+          echo "### 🐚 Shell Script Check (ShellCheck)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Find and check all shell scripts
+          shell_files=$(find . -type f \( -name "*.sh" -o -name "*.bash" \) 2>/dev/null)
+
+          if [ -n "$shell_files" ]; then
+            for file in $shell_files; do
+              echo "**Checking: $file**" >> $GITHUB_STEP_SUMMARY
+              shellcheck "$file" >> $GITHUB_STEP_SUMMARY 2>&1 || true
+              echo "" >> $GITHUB_STEP_SUMMARY
+            done
+          else
+            echo "No shell scripts found to check." >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** Shell script linting is informational only." >> $GITHUB_STEP_SUMMARY
+
+      - name: Linting Summary
+        if: always()
+        run: |
+          echo "## ✅ Code Quality Check Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All linting checks have completed. Results are shown above." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**This workflow does not block merges** - all checks are informational." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "To run tests, use the manual workflow: **Varaamo Robot Framework Tests**" >> $GITHUB_STEP_SUMMARY

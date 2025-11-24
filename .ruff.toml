@@ -1,0 +1,31 @@
+# Ruff Python Linter and Formatter Configuration - Permissive Mode
+# Targets Python 3.12+ with Robot Framework test automation
+
+target-version = "py312"
+line-length = 120
+
+exclude = [
+    "output/",
+    "browser/",
+    "node_modules/",
+    "__pycache__/",
+    "pabot_results/",
+    ".venv/",
+    ".git/",
+]
+
+[lint]
+# Essential errors and warnings only
+select = ["E", "F", "W"]
+ignore = [
+    "E501",  # Line too long - handled by formatter
+    "F401",  # Unused imports - common in test fixtures
+]
+
+[format]
+# Ruff formatter configuration
+# Uses same line length as linting configuration (120)
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

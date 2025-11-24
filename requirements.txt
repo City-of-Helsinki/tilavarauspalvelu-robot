@@ -19,3 +19,12 @@ beautifulsoup4==4.13.3
 
 # HTTP requests library for Robot Framework API testing
 robotframework-requests==0.9.7
+
+# =============================================================================
+# Code Quality and Linting Tools
+# =============================================================================
+# Robot Framework linter and formatter
+robotframework-robocop>=6.0.0
+
+# Python linter
+ruff>=0.1.0

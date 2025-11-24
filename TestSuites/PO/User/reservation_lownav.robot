@@ -3,7 +3,7 @@ Library     Browser
 
 
 *** Keywords ***
-Click submit button continue
+Click Submit Button Continue
     # DEVNOTE Ui selectors have changed so lets change to use only one submit/continue here
     Sleep    500ms
     # TODO wait for enabled here

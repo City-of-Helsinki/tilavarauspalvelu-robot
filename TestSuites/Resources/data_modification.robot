@@ -12,12 +12,12 @@ Library             python_keywords.py
 
 
 *** Keywords ***
-Formats reservation number and name for admin side
+Formats Reservation Number And Name For Admin Side
     ${bookingNumber_and_NameOfTheBooking}=    Catenate    ${BOOKING_NUM_ONLY},    ${SINGLEBOOKING_NAME}
     Store Test Data Variable    BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED    ${bookingNumber_and_NameOfTheBooking}
     Set Test Variable    ${BOOKING_NUM_ONLY_BOOKING_NAME_SUBVENTED}    ${bookingNumber_and_NameOfTheBooking}
 
-Formats tagline for admin side
+Formats Tagline For Admin Side
     [Documentation]    Formats the given information as "Ma 25.11.2024 22:30–23:30, 1 t | Aina käsiteltävä kellarikerros (AUTOMAATIOTESTI ÄLÄ POISTA), Harakka, piilokoju"
     [Arguments]    ${info_card_time_of_reservation}    ${name_of_reservationunit}
 
@@ -55,7 +55,7 @@ Formats tagline for admin side
     # Log the final formatted tagline
     Log    ${RESERVATION_TAGLINE}
 
-Formats calendar event content
+Formats Calendar Event Content
     # TODO add documentation example here
     [Arguments]
     ...    ${firstname_used_in_reservation_by_admin}
@@ -66,7 +66,7 @@ Formats calendar event content
     Log    Generated string: ${result}
     RETURN    ${result}
 
-Convert finnish short day to english
+Convert Finnish Short Day To English
     [Documentation]    Converts Finnish short weekday (e.g. "Su") from a datetime string into full English name.
     [Arguments]    ${finnish_datetime}
     Log    Finnish datetime: ${finnish_datetime}
@@ -97,7 +97,7 @@ Convert finnish short day to english
     Store Test Data Variable    ENGLISH_DAY    ${english_day}
     Set Test Variable    ${ENGLISH_DAY}    ${english_day}
 
-Compute reservation time slot
+Compute Reservation Time Slot
     [Documentation]    Given a start time (HH:MM) and duration (e.g. "60 min"), formats to "HH:MM-HH:MM".
     ...    Durations over 90 min (like '1t 45min') are not supported.
     [Arguments]
@@ -177,7 +177,7 @@ Compute reservation time slot
     Store Test Data Variable    CALENDAR_TIMESLOT    ${full_slot}
     Set Test Variable    ${CALENDAR_TIMESLOT}    ${full_slot}
 
-Get modified date and time
+Get Modified Date And Time
     [Documentation]    Advances the current date by 1–15 days and adjusts start/end hours by random offsets between 1 and 5.
 
     # Get the current date and time
@@ -205,7 +205,7 @@ Get modified date and time
 
     RETURN    ${date_plus_x_days}    ${start_hour}    ${end_hour}
 
-Formats reservation time to start and end time
+Formats Reservation Time To Start And End Time
     [Documentation]    Sets format "Pe 1.11.2024 klo 11:00–12:00"
     ...    to "Alkamisaika: 1.11.2024 klo 11:00" and "Päättymisaika: 1.11.2024 klo 12:00"
     ...    It adds "Alkamisaika:" and "Päättymisaika:"
@@ -218,7 +218,7 @@ Formats reservation time to start and end time
     # This uses en dash (–)
 
     # Validate the format of the original time string --> "Pe 1.11.2024 klo 11:00–12:00"
-    ${time_format_is_valid}=    python_keywords.validate_timeformat    ${time_of_the_reservation}
+    ${time_format_is_valid}=    python_keywords.Validate Timeformat    ${time_of_the_reservation}
 
     # Extract the weekday, date, and time range
     ${weekday}    ${date}    ${time_range}=    Split String    ${time_of_the_reservation}    ${SPACE}    2
@@ -243,7 +243,7 @@ Formats reservation time to start and end time
     Log    ${FORMATTED_STARTTIME_EMAIL}
     Log    ${FORMATTED_ENDTIME_EMAIL}
 
-Format reservation time for email receipt
+Format Reservation Time For Email Receipt
     [Documentation]    This keyword reformats a reservation time string from the format
     ...    "Pe 1.11.2024 klo 11:00–12:00" to "Pe 1.11.2024 11:00-12:00".
     ...    It removes the word "klo" and replaces the en dash (–) with a hyphen (-),
@@ -261,7 +261,7 @@ Format reservation time for email receipt
 
     Set Suite Variable    ${RESERVATION_TIME_EMAIL_RECEIPT}    ${reservation_time_email_receipt}
 
-Set info card duration time info
+Set Info Card Duration Time Info
     [Documentation]    Format the Finnish date and time into the desired format
     ...    HH:MM WITH ":" "–" "Ti 5.12.2023 klo 11:30–12:30".
     ...    this keyword uses hard coded formatting to assume that reservation duration is 60min
@@ -314,14 +314,14 @@ Set info card duration time info
     # Return the formatted strings
     RETURN    ${formatted_date}    ${formatted_date_minus_t}
 
-Generate random letter and number
+Generate Random Letter And Number
     ${letter}=    Generate Random String    1    [LETTERS]
     ${number}=    Generate Random String    1    [NUMBERS]
     ${random_string}=    Set Variable    ${letter}${number}
     Log    Generated random string: ${random_string}
     RETURN    ${random_string}
 
-Get date plus 60 days
+Get Date Plus 60 Days
     [Documentation]    Sets the current date plus 60 days in format d.M.yyyy (e.g. 12.2.2012).
     ${current_date}=    Get Current Date    result_format=%Y-%m-%d
     ${date_plus_60_days}=    Add Time To Date    ${current_date}    60 days    result_format=%d.%m.%Y

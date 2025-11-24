@@ -4,23 +4,23 @@ from robot.api import logger  # Import Robot Framework logger
 
 
 SCOPES = [
-    'https://mail.google.com/',
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/gmail.modify',
-    'https://www.googleapis.com/auth/gmail.compose',
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'openid'
+    "https://mail.google.com/",
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/gmail.modify",
+    "https://www.googleapis.com/auth/gmail.compose",
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "openid",
 ]
 
-def generate_tokens():
 
+def generate_tokens():
     # Determine the directory where the current file is located.
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Construct the path to the client_secret.json file, assumed to be in the parent directory.
     client_secrets_file = os.path.join(base_dir, "..", "client_secret.json")
-    
+
     if not os.path.exists(client_secrets_file):
         logger.error(f"client_secret.json not found at '{client_secrets_file}'")
         return
@@ -41,5 +41,6 @@ def generate_tokens():
     except Exception as e:
         logger.error(f"Failed to update .env file: {e}")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     generate_tokens()

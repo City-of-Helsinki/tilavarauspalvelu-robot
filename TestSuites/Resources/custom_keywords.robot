@@ -12,7 +12,7 @@ Library             Collections
 
 
 *** Keywords ***
-Find and click element with text
+Find And Click Element With Text
     [Documentation]    This keyword searches for an element containing the specified text within a list of elements identified by the given selector.
     [Arguments]    ${element_with_text}    ${wanted_text}
 
@@ -37,7 +37,7 @@ Find and click element with text
     # Fail the test if no element was found
     IF    not ${found}    Fail    Element with text "${wanted_text}" not found
 
-Verify element with text is not found
+Verify Element With Text Is Not Found
     [Documentation]    This keyword verifies that an element containing the specified text is NOT found within a list of elements identified by the given selector.
     [Arguments]    ${element_with_text}    ${wanted_text}
 
@@ -63,7 +63,7 @@ Verify element with text is not found
         Fail    Element with text "${wanted_text}" was found but should not be present
     END
 
-Verify element is not found
+Verify Element Is Not Found
     [Documentation]    This keyword verifies that an element identified by the given selector is NOT found on the page.
     [Arguments]    ${element_selector}
 
@@ -78,7 +78,7 @@ Verify element is not found
 
     Log    Element "${element_selector}" is correctly not present on the page
 
-Verify element is found
+Verify Element Is Found
     [Documentation]    This keyword verifies that an element identified by the given selector IS found on the page.
     [Arguments]    ${element_selector}
 
@@ -93,7 +93,7 @@ Verify element is found
 
     Log    Element "${element_selector}" is correctly present on the page (count: ${element_count})
 
-Find and click element with exact text using JS
+Find And Click Element With Exact Text Using JS
     [Arguments]    ${element_with_text}    ${wanted_text}
     Log    Searching for element with text: ${wanted_text}
     ${elements_with_text}=    Browser.Get Elements    ${element_with_text}
@@ -115,7 +115,7 @@ Find and click element with exact text using JS
     # Fail the test if no element was found
     IF    not ${found}    Fail    Element with text "${wanted_text}" not found
 
-Find and click element with partial text using JS
+Find And Click Element With Partial Text Using JS
     [Documentation]    Finds an element containing the specified partial text and clicks it using JavaScript.
     [Arguments]    ${element}    ${partial_text}
 
@@ -132,7 +132,7 @@ Find and click element with partial text using JS
         ${text}=    Browser.Get Text    ${e}
 
         # Remove non-breaking spaces for accurate text comparison
-        ${clean_text}=    custom_keywords.Remove non-breaking space    ${text}
+        ${clean_text}=    custom_keywords.Remove Non-breaking Space    ${text}
 
         # Log for troubleshooting
         Log    Cleaned Text: ${clean_text}
@@ -153,7 +153,7 @@ Find and click element with partial text using JS
         Log    No element with text '${partial_text}' was found to click.
     END
 
-Find and click element in card element by text
+Find And Click Element In Card Element By Text
     [Documentation]    For each element matching ${card_element}, checks if it contains a child
     ...    ${text_element} with text ${text}. If so, clicks ${element_to_click} inside that card.
     [Arguments]    ${card_element}    ${text_element}    ${text}    ${element_to_click}
@@ -192,7 +192,7 @@ Find and click element in card element by text
         Fail    No card element found with text '${text}' in '${text_element}'
     END
 
-Find and click button in group with matching conditions
+Find And Click Button In Group With Matching Conditions
     [Documentation]    Finds a group wrapper containing specified text, then searches for card elements
     ...    within that group. For each card, checks if the heading and tags elements contain
     ...    specified text. If both conditions are met, clicks the specified button.
@@ -247,7 +247,7 @@ Find and click button in group with matching conditions
     ${found_match}=    Set Variable    False
 
     FOR    ${card}    IN    @{card_contents}
-        ${is_match}=    custom_keywords.Card matches
+        ${is_match}=    custom_keywords.Card Matches
         ...    ${card}
         ...    ${heading_text}
         ...    ${tags_text}
@@ -265,27 +265,27 @@ Find and click button in group with matching conditions
     END
 
     # Click the button in the matching card
-    custom_keywords.Click button in card    ${matching_card}    ${button_text}
+    custom_keywords.Click Button In Card    ${matching_card}    ${button_text}
 
-Card matches
+Card Matches
     [Documentation]    Check if a card matches both heading and tags text criteria
     [Arguments]    ${card}    ${heading_text}    ${tags_text}
 
     # Check heading text contains the expected text
-    ${heading_contains}=    Check element contains text
+    ${heading_contains}=    Check Element Contains Text
     ...    ${card} >> [data-testid="card__heading"]
     ...    ${heading_text}
     ...    return_status=True
     IF    not ${heading_contains}    RETURN    False
 
     # Check tags text contains the expected text
-    ${tags_contains}=    Check element contains text
+    ${tags_contains}=    Check Element Contains Text
     ...    ${card} >> [data-testid="card__tags"]
     ...    ${tags_text}
     ...    return_status=True
     RETURN    ${tags_contains}
 
-Click button in card
+Click Button In Card
     [Documentation]    Helper keyword to find and click a button with specific text in a card
     [Arguments]    ${card}    ${button_text}
 
@@ -294,7 +294,7 @@ Click button in card
     Log    Found ${button_count} buttons in card
 
     FOR    ${button}    IN    @{buttons}
-        ${text_matches}=    Check elements text    ${button}    ${button_text}    return_status=True
+        ${text_matches}=    Check Elements Text    ${button}    ${button_text}    return_status=True
         IF    ${text_matches}
             Click    ${button}
             Log    Clicked "${button_text}" button successfully
@@ -304,7 +304,7 @@ Click button in card
 
     Fail    No "${button_text}" button found in card
 
-Verify card not found in group with matching conditions
+Verify Card Not Found In Group With Matching Conditions
     [Documentation]    Verifies that a specific empty state message is displayed in the application.
     ...
     ...    0. Before test runs: User data is set so there are NO other applications - everything is empty
@@ -350,7 +350,7 @@ Verify card not found in group with matching conditions
     Fail
     ...    Expected empty state message "${empty_state_message}" not found. This indicates applications still exist after cancellation, but none should remain.
 
-Find text from elements or fail
+Find Text From Elements Or Fail
     [Arguments]    ${element_with_text}    ${wanted_text}
     Log    Searching for text: ${wanted_text}
     ${elements_with_text}=    Browser.Get Elements    ${element_with_text}
@@ -373,7 +373,7 @@ Find text from elements or fail
         Fail    "Text '${wanted_text}' not found in any given elements."
     END
 
-Find text element from elements
+Find Text Element From Elements
     # TODO check if can use Get Element By    selection_strategy    text
     [Arguments]    ${element_with_text}    ${wanted_text}
 
@@ -399,7 +399,7 @@ Find text element from elements
         RETURN    False
     END
 
-Remove non-breaking space
+Remove Non-breaking Space
     [Arguments]    ${string}
     Log    Original string: '${string}'
     ${string}=    Evaluate    re.sub(r'[\xa0\u200b\u200c\u200d\u202f]', ' ', '''${string}''').strip()    re
@@ -407,12 +407,12 @@ Remove non-breaking space
     Log    Normalized string: '${string}'
     RETURN    ${string}
 
-Check number from text is equal to
+Check Number From Text Is Equal To
     [Documentation]    Verifies if a number extracted from the specified text element matches the expected value.
     [Arguments]    ${text_element}    ${number_equalTo}
     Log    ${number_equalTo}
     Wait For Elements State    ${text_element}    visible
-    ${number_element_string}=    Get text    ${text_element}
+    ${number_element_string}=    Get Text    ${text_element}
     Log    ${number_element_string}
     ${number_element_string_num_only}=    Replace String Using Regexp    ${number_element_string}    [^0-9]    ${EMPTY}
 
@@ -420,12 +420,12 @@ Check number from text is equal to
     Log    ${NUM_FROM_TXT}
     Should Be Equal    ${NUM_FROM_TXT}    ${number_equalTo}
 
-Check number from text is not equal to
+Check Number From Text Is Not Equal To
     [Documentation]    Verifies if a number extracted from the specified text element does NOT match the expected value.
     [Arguments]    ${text_element}    ${number_notEqualTo}
     Log    Expected number should NOT be: ${number_notEqualTo}
     Wait For Elements State    ${text_element}    visible
-    ${number_element_string}=    Get text    ${text_element}
+    ${number_element_string}=    Get Text    ${text_element}
     Log    Original text from element: ${number_element_string}
     ${number_element_string_num_only}=    Replace String Using Regexp    ${number_element_string}    [^0-9]    ${EMPTY}
     ${NUM_FROM_TXT}=    Set Variable    ${number_element_string_num_only}
@@ -433,18 +433,18 @@ Check number from text is not equal to
     Should Not Be Equal    ${NUM_FROM_TXT}    ${number_notEqualTo}
     Log    ✓ Numbers are different: ${NUM_FROM_TXT} != ${number_notEqualTo}
 
-Get number from element text
+Get Number From Element Text
     [Documentation]    Extracts only numeric characters from an element's text and returns the number.
     ...    Returns empty string if no numbers are found.
     [Arguments]    ${text_element}
     Wait For Elements State    ${text_element}    visible
-    ${element_text}=    Get text    ${text_element}
+    ${element_text}=    Get Text    ${text_element}
     Log    Original text: ${element_text}
     ${numbers_only}=    Replace String Using Regexp    ${element_text}    [^0-9]    ${EMPTY}
     Log    Extracted numbers: ${numbers_only}
     RETURN    ${numbers_only}
 
-Check elements text with remove non-breaking space
+Check Elements Text With Remove Non-breaking Space
     [Arguments]    ${Element}    ${Expected text}
 
     Sleep    2s
@@ -458,12 +458,12 @@ Check elements text with remove non-breaking space
     ${Elements_text}=    Get Text    ${Element}
 
     # Normalize the element's text by removing non-breaking spaces
-    ${Elements_text}=    custom_keywords.Remove non-breaking space    ${Elements_text}
+    ${Elements_text}=    custom_keywords.Remove Non-breaking Space    ${Elements_text}
 
     # Final text comparison
     Should Be Equal    ${Elements_text}    ${Expected text}
 
-Check text of element with normalization and logging to file
+Check Text Of Element With Normalization And Logging To File
     [Documentation]    Compares the text content of an element with the expected text
     ...    normalizes it, and logs differences if mismatched.
     [Arguments]    ${Element}    ${Expected text}
@@ -497,7 +497,7 @@ Check text of element with normalization and logging to file
     Log    Texts do not match. Attempting normalization.
 
     # Normalize the actual elements text by removing non-breaking spaces
-    ${Elements_text}=    custom_keywords.Remove non-breaking space    ${Elements_text}
+    ${Elements_text}=    custom_keywords.Remove Non-breaking Space    ${Elements_text}
 
     Log    After normalization, actual text: ${Elements_text}, expected text: ${Expected text}
 
@@ -519,7 +519,7 @@ Check text of element with normalization and logging to file
     Log    Texts still do not match after normalization.
 
     # Log differences using the Python function
-    ${differences}=    python_keywords.log_differences    ${Elements_text}    ${Expected text}
+    ${differences}=    python_keywords.Log Differences    ${Elements_text}    ${Expected text}
 
     # Get the timestamp
     ${timestamp}=    Get Time    format=timestamp
@@ -540,7 +540,7 @@ Check text of element with normalization and logging to file
     # Fail the test with a descriptive message
     Fail    Texts still do not match after normalization. Differences logged to debug_${TEST NAME}.txt.
 
-Check elements text
+Check Elements Text
     [Documentation]    Checks element text with automatic space stripping and flexible comparison options
     [Arguments]
     ...    ${Element}
@@ -572,7 +572,7 @@ Check elements text
         ...    msg=Element text does not match. Element: ${Element}
     END
 
-Check element contains text
+Check Element Contains Text
     [Documentation]    Checks if element text contains expected text using Should Contain
     [Arguments]
     ...    ${Element}
@@ -608,7 +608,7 @@ Check element contains text
 # Calendar extraction
 ###
 
-Convert booking time to ICS format
+Convert Booking Time To ICS Format
     [Documentation]    Converts a booking time string to ICS format with time zone information.
     [Arguments]    ${time_string}
 
@@ -661,7 +661,7 @@ Extract Start And End Time From ICS File
     Log    Start datetime: ${START_TIME_FROM_ICS}
     Log    End datetime: ${END_TIME_FROM_ICS}
 
-Verify reservation slot exists
+Verify Reservation Slot Exists
     [Documentation]    Checks that a given weekday's column in the calendar contains
     ...    an event label exactly matching the specified time.
     [Arguments]    ${TIME_TO_CHECK}    ${DAY_TO_CHECK}

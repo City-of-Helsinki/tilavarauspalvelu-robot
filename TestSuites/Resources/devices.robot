@@ -128,7 +128,7 @@ Apply Staggered Startup Strategy
         Log    "✅ Single execution delay completed"
     END
 
-Set up chromium desktop browser and open url
+Set Up Chromium Desktop Browser And Open Url
     [Documentation]    Sets up Chromium desktop browser
     [Arguments]    ${input_URL}    ${DOWNLOAD_DIR}
 
@@ -199,10 +199,10 @@ Set up chromium desktop browser and open url
     ${cookies_after}=    Get Cookies    return_type=string
     Log    "🍪 Post-navigation cookies: ${cookies_after}"
 
-    Log current time
+    Log Current Time
     Log    🎉 BROWSER SETUP COMPLETED
 
-Set up firefox desktop browser and open url
+Set Up Firefox Desktop Browser And Open Url
     # DEVNOTE: This is used for mail testing and is not currently used
     [Documentation]    Sets up Firefox browser
     [Arguments]    ${input_URL}    ${DOWNLOAD_DIR}
@@ -251,10 +251,10 @@ Set up firefox desktop browser and open url
     END
     Log    ✅ Page loaded successfully
 
-    Log current time
+    Log Current Time
     Log    🎉 BROWSER SETUP COMPLETED
 
-Set up iphone 14 and open url
+Set Up Iphone 14 And Open Url
     [Documentation]    Sets up iPhone 14 simulation
     [Arguments]    ${input_URL}
     ${iphone}=    Get Device    iPhone 14
@@ -309,12 +309,12 @@ Set up iphone 14 and open url
     Should Be Equal As Integers    ${viewport["height"]}    664
     Log    ✅ Viewport validation passed: 390x664
 
-    Log current time
+    Log Current Time
     Log    ================================================================================
     Log    🎉 IPHONE 14 SETUP COMPLETED
     Log    ================================================================================
 
-Set up android pixel 5 and open url
+Set Up Android Pixel 5 And Open Url
     [Documentation]    Sets up Android Pixel 5 simulation
     [Arguments]    ${input_URL}
     ${pixel}=    Get Device    Pixel 5
@@ -384,18 +384,18 @@ Set up android pixel 5 and open url
     Should Be Equal As Integers    ${viewport["height"]}    727    msg=The viewport height is not as expected.
     Log    ✅ Viewport validation passed: 393x727
 
-    Log current time
+    Log Current Time
     Log    ================================================================================
     Log    🎉 ANDROID PIXEL 5 SETUP COMPLETED
     Log    ================================================================================
 
-Log current time
+Log Current Time
     # Log only current local time (HH:MM:SS)
     ${now_ts}=    Get Current Date
     ${current_time}=    Convert Date    ${now_ts}    result_format=%H:%M:%S
     Log    Current local time: ${current_time}
 
-Log current cookies
+Log Current Cookies
     Sleep    4s
     ${fresh_cookies}=    Get Cookies    return_type=string
     Log    "🔍 cookies: ${fresh_cookies}"

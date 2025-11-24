@@ -10,7 +10,7 @@ Resource    ../User/recurring_applications_page2.robot
 Resource    ../User/recurring_applications_page3.robot
 Resource    ../User/recurring_applications_page_preview.robot
 Resource    ../User/recurring_applications_page_sent.robot
-Resource    ../Common/topNav.robot
+Resource    ../Common/topnav.robot
 Resource    ../Common/checkout.robot
 Resource    ../Common/popups.robot
 Resource    ../User/reservation_calendar.robot
@@ -31,14 +31,14 @@ Library     OperatingSystem
 # Front page
 ###
 
-User navigates to single booking page
-    topNav.Navigate to single booking page
+User Navigates To Single Booking Page
+    topnav.Navigate To Single Booking Page
 
-User navigates to my bookings
-    topNav.Navigate to my bookings
+User Navigates To My Bookings
+    topnav.Navigate To My Bookings
 
-User navigates to recurring booking page
-    topNav.Navigate to recurring booking page
+User Navigates To Recurring Booking Page
+    topnav.Navigate To Recurring Booking Page
     Wait For Load State    load    timeout=15s
 
 ###
@@ -47,10 +47,10 @@ User navigates to recurring booking page
 # Payment notification banner
 ###
 
-User accepts payment to checkout
+User Accepts Payment To Checkout
     Log    This clicks approve button from notification banner
     Sleep    1.5s    # Wait for banner to load
-    user_landingpage.Approve interrupted payment
+    user_landingpage.Approve Interrupted Payment
 
 ###
 
@@ -58,33 +58,33 @@ User accepts payment to checkout
 # Checkout
 ###
 
-User checks info in paid checkout and confirms booking
+User Checks Info In Paid Checkout And Confirms Booking
     Log    This step gets the reservation number
-    checkout.Check the info in checkout
+    checkout.Check The Info In Checkout
 
-User interrupts paid checkout
+User Interrupts Paid Checkout
     [Arguments]    ${input_URL}
-    checkout.Interrupted checkout    ${input_URL}
+    checkout.Interrupted Checkout    ${input_URL}
     Sleep    1s
-    user_landingpage.Check the user landing page h1    ${USER_LANDING_PAGE_H1_TEXT}
+    user_landingpage.Check The User Landing Page H1    ${USER_LANDING_PAGE_H1_TEXT}
 ###
 
 ###
 # Singlebooking
 ###
 
-User uses search to find right unit
+User Uses Search To Find Right Unit
     [Arguments]    ${nameoftheunit}
 
     # This checks if the search element is visible; if it isn’t, it clicks the "advanced search" toggle button to make it visible.
-    singlebooking.Click advanced search if search not visible
-    singlebooking.Search units by name    ${nameoftheunit}
+    singlebooking.Click Advanced Search If Search Not Visible
+    singlebooking.Search Units By Name    ${nameoftheunit}
 
     # Waiting results to load
     Sleep    2s
     Wait For Load State    load    timeout=10s
 
-    custom_keywords.Find and click element with text
+    custom_keywords.Find And Click Element With Text
     ...    [data-testid="list-with-pagination__list--container"] >> [data-testid="card__heading"]
     ...    ${nameoftheunit}
 
@@ -92,28 +92,28 @@ User uses search to find right unit
     Sleep    2s
     Wait For Load State    load    timeout=10s
 
-User selects the time with quick reservation
+User Selects The Time With Quick Reservation
     [Documentation]    here is keyword --> data_modification.Set info card duration time info
     ...    that sets $TIME_OF_QUICK_RESERVATION and $TIME_OF_QUICK_RESERVATION_MINUS_T
 
     Sleep    1s
     Wait For Elements State    id=quick-reservation    visible
-    quick_reservation.Select duration    ${QUICK_RESERVATION_DURATION}
+    quick_reservation.Select Duration    ${QUICK_RESERVATION_DURATION}
 
     # Checks that calendar opens and has all the buttons inside
-    quick_reservation.Confirms date picker opens from quick reservation
+    quick_reservation.Confirms Date Picker Opens From Quick Reservation
 
-    ${quick_reservation_current_date_value}=    quick_reservation.Get the value from date input
+    ${quick_reservation_current_date_value}=    quick_reservation.Get The Value From Date Input
 
     # This sets ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
-    quick_reservation.Select the free slot and submits
+    quick_reservation.Select The Free Slot And Submits
 
     # Wait for load
     Sleep    1.5s
     Wait For Load State    load    timeout=50s
     Log    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
 
-    ${formatted_date}    ${formatted_date_minus_t}=    data_modification.Set info card duration time info
+    ${formatted_date}    ${formatted_date_minus_t}=    data_modification.Set Info Card Duration Time Info
     ...    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
     ...    ${quick_reservation_current_date_value}
 
@@ -125,273 +125,273 @@ User selects the time with quick reservation
     Log    ${TIME_OF_QUICK_RESERVATION}
     Log    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
-User checks that quick reservation does not have reserved time
+User Checks That Quick Reservation Does Not Have Reserved Time
     [Arguments]    ${reservationtime}
     Wait For Load State    load    timeout=15s
     Log    ${reservationtime}
-    quick_reservation.Verify time slot not available    ${reservationtime}
+    quick_reservation.Verify Time Slot Not Available    ${reservationtime}
 
-User checks that reservation calendar does not have reserved time slot available
+User Checks That Reservation Calendar Does Not Have Reserved Time Slot Available
     [Documentation]    This keyword uses data_modification.Convert finnish short day to english and
     ...    data_modification.Compute reservation timeslot to set variables
 
     Log    This keyword sets the variable '${ENGLISH_DAY}'
-    data_modification.Convert finnish short day to english    ${TIME_OF_QUICK_RESERVATION}
+    data_modification.Convert Finnish Short Day To English    ${TIME_OF_QUICK_RESERVATION}
 
     Log    This keyword sets the variable '${CALENDAR_TIMESLOT}'
-    data_modification.Compute reservation time slot
+    data_modification.Compute Reservation Time Slot
     ...    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
     ...    ${QUICK_RESERVATION_DURATION}
 
-    custom_keywords.Verify reservation slot exists    ${CALENDAR_TIMESLOT}    ${ENGLISH_DAY}
+    custom_keywords.Verify Reservation Slot Exists    ${CALENDAR_TIMESLOT}    ${ENGLISH_DAY}
 
-User fills the reservation info for always free unit
+User Fills The Reservation Info For Always Free Unit
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
-    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
-    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
-    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_reserver_info.Enter First Name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter Last Name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter Email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter Phone Number    ${CURRENT_USER_PHONE}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
 
-User fills the reservation info for unit with payment
+User Fills The Reservation Info For Unit With Payment
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
-    reservation_unit_booking_details.Type the name of the booking    ${SINGLEBOOKING_NAME}
-    reservation_unit_booking_details.Select the purpose of the booking    ${PURPOSE_OF_THE_BOOKING}
-    reservation_unit_booking_details.Select the number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
-    reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
-    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
-    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
-    reservation_unit_reserver_info.Select home city    ${HOME_CITY}
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_booking_details.Type The Name Of The Booking    ${SINGLEBOOKING_NAME}
+    reservation_unit_booking_details.Select The Purpose Of The Booking    ${PURPOSE_OF_THE_BOOKING}
+    reservation_unit_booking_details.Select The Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    reservation_unit_booking_details.Type The Description Of The Booking    ${SINGLEBOOKING_DESCRIPTION}
+    reservation_unit_reserver_types.Select Reserver Type    ${RESERVATION_INDIVIDUAL}
+    reservation_unit_reserver_info.Enter First Name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter Last Name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter Email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter Phone Number    ${CURRENT_USER_PHONE}
+    reservation_unit_reserver_info.Select Home City    ${HOME_CITY}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
 
-User fills subvented booking details as individual
+User Fills Subvented Booking Details As Individual
     [Arguments]    ${justification_for_not_paying}
 
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
-    reservation_unit_booking_details.Type the name of the booking    ${SINGLEBOOKING_NAME}
-    reservation_unit_booking_details.Select the purpose of the booking    ${PURPOSE_OF_THE_BOOKING}
-    reservation_unit_booking_details.Select the number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    reservation_unit_booking_details.Click and select AgeGroup Button    ${AGEGROUP_OF_PERSONS}
-    reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
-    reservation_unit_booking_details.Click to apply for a free booking
-    reservation_unit_booking_details.Type justification for free of charge    ${justification_for_not_paying}
-    reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
-    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
-    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
-    reservation_unit_reserver_info.Select home city    ${HOME_CITY}
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_booking_details.Type The Name Of The Booking    ${SINGLEBOOKING_NAME}
+    reservation_unit_booking_details.Select The Purpose Of The Booking    ${PURPOSE_OF_THE_BOOKING}
+    reservation_unit_booking_details.Select The Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    reservation_unit_booking_details.Click And Select AgeGroup Button    ${AGEGROUP_OF_PERSONS}
+    reservation_unit_booking_details.Type The Description Of The Booking    ${SINGLEBOOKING_DESCRIPTION}
+    reservation_unit_booking_details.Click To Apply For A Free Booking
+    reservation_unit_booking_details.Type Justification For Free Of Charge    ${justification_for_not_paying}
+    reservation_unit_reserver_types.Select Reserver Type    ${RESERVATION_INDIVIDUAL}
+    reservation_unit_reserver_info.Enter First Name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter Last Name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter Email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter Phone Number    ${CURRENT_USER_PHONE}
+    reservation_unit_reserver_info.Select Home City    ${HOME_CITY}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
 
-User fills noncancelable booking details as individual
+User Fills Noncancelable Booking Details As Individual
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
-    reservation_unit_booking_details.Select the number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
-    reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
-    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
-    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_booking_details.Select The Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    reservation_unit_booking_details.Type The Description Of The Booking    ${SINGLEBOOKING_DESCRIPTION}
+    reservation_unit_reserver_types.Select Reserver Type    ${RESERVATION_INDIVIDUAL}
+    reservation_unit_reserver_info.Enter First Name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter Last Name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter Email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter Phone Number    ${CURRENT_USER_PHONE}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
 
-User fills info for unit that is always handled as individual
+User Fills Info For Unit That Is Always Handled As Individual
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
-    reservation_unit_booking_details.Type the name of the booking    ${SINGLEBOOKING_NAME}
-    reservation_unit_booking_details.Select the purpose of the booking    ${PURPOSE_OF_THE_BOOKING}
-    reservation_unit_booking_details.Select the number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
-    reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
-    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
-    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_booking_details.Type The Name Of The Booking    ${SINGLEBOOKING_NAME}
+    reservation_unit_booking_details.Select The Purpose Of The Booking    ${PURPOSE_OF_THE_BOOKING}
+    reservation_unit_booking_details.Select The Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    reservation_unit_booking_details.Type The Description Of The Booking    ${SINGLEBOOKING_DESCRIPTION}
+    reservation_unit_reserver_types.Select Reserver Type    ${RESERVATION_INDIVIDUAL}
+    reservation_unit_reserver_info.Enter First Name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter Last Name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter Email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter Phone Number    ${CURRENT_USER_PHONE}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
 
-User fills booking details as individual for reservation with access code
+User Fills Booking Details As Individual For Reservation With Access Code
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
-    reservation_unit_booking_details.Type the name of the booking    ${SINGLEBOOKING_NAME}
-    reservation_unit_booking_details.Select the purpose of the booking    ${PURPOSE_OF_THE_BOOKING}
-    reservation_unit_booking_details.Select the number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    reservation_unit_booking_details.Click and select AgeGroup Button    ${AGEGROUP_OF_PERSONS}
-    reservation_unit_booking_details.Type the description of the booking    ${SINGLEBOOKING_DESCRIPTION}
-    reservation_unit_reserver_types.Select reserver type    ${RESERVATION_INDIVIDUAL}
-    reservation_unit_reserver_info.Enter first name    ${CURRENT_USER_FIRST_NAME}
-    reservation_unit_reserver_info.Enter last name    ${CURRENT_USER_LAST_NAME}
-    reservation_unit_reserver_info.Enter email    ${CURRENT_USER_EMAIL}
-    reservation_unit_reserver_info.Enter phone number    ${CURRENT_USER_PHONE}
-    reservation_unit_reserver_info.Select home city    ${HOME_CITY}
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_booking_details.Type The Name Of The Booking    ${SINGLEBOOKING_NAME}
+    reservation_unit_booking_details.Select The Purpose Of The Booking    ${PURPOSE_OF_THE_BOOKING}
+    reservation_unit_booking_details.Select The Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    reservation_unit_booking_details.Click And Select AgeGroup Button    ${AGEGROUP_OF_PERSONS}
+    reservation_unit_booking_details.Type The Description Of The Booking    ${SINGLEBOOKING_DESCRIPTION}
+    reservation_unit_reserver_types.Select Reserver Type    ${RESERVATION_INDIVIDUAL}
+    reservation_unit_reserver_info.Enter First Name    ${CURRENT_USER_FIRST_NAME}
+    reservation_unit_reserver_info.Enter Last Name    ${CURRENT_USER_LAST_NAME}
+    reservation_unit_reserver_info.Enter Email    ${CURRENT_USER_EMAIL}
+    reservation_unit_reserver_info.Enter Phone Number    ${CURRENT_USER_PHONE}
+    reservation_unit_reserver_info.Select Home City    ${HOME_CITY}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
 
-User checks unit that is always handled details are right
-    reservation_unit_reservation_receipt.Check single booking info
-    reservation_unit_reservation_receipt.Check reservation user info
-    quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
-    reservation_unit_reservation_receipt.Click the checkbox accepted terms
-    reservation_unit_reservation_receipt.Click the checkbox generic terms
+User Checks Unit That Is Always Handled Details Are Right
+    reservation_unit_reservation_receipt.Check Single Booking Info
+    reservation_unit_reservation_receipt.Check Reservation User Info
+    quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
+    reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
+    reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
     #
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
-    quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
-    quick_reservation.Get booking number
-    reservation_unit_reservation_receipt.Check the reservation status message
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
+    quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
+    quick_reservation.Get Booking Number
+    reservation_unit_reservation_receipt.Check The Reservation Status Message
     ...    ${RESERVATION_STATUS_REQUIRESHANDLING_MSG_FI}
 
-User checks the free single booking details are right
-    reservation_unit_reservation_receipt.Check free single booking info
-    reservation_unit_reservation_receipt.Check reservation user info
-    quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
-    reservation_unit_reservation_receipt.Click the checkbox accepted terms
-    reservation_unit_reservation_receipt.Click the checkbox generic terms
-    reservation_lownav.Click submit button continue
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
-    quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
-    quick_reservation.Get booking number
-    reservation_unit_reservation_receipt.Check the reservation status message
+User Checks The Free Single Booking Details Are Right
+    reservation_unit_reservation_receipt.Check Free Single Booking Info
+    reservation_unit_reservation_receipt.Check Reservation User Info
+    quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
+    reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
+    reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
+    reservation_lownav.Click Submit Button Continue
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
+    quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
+    quick_reservation.Get Booking Number
+    reservation_unit_reservation_receipt.Check The Reservation Status Message
     ...    ${RESERVATION_STATUS_REQUIRESHANDLING_MSG_FI}
 
-User checks the paid reservation info is right and submits
-    reservation_unit_reservation_receipt.Check reservation user info
-    reservation_unit_reservation_receipt.Click the checkbox accepted terms
-    reservation_unit_reservation_receipt.Click the checkbox generic terms
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+User Checks The Paid Reservation Info Is Right And Submits
+    reservation_unit_reservation_receipt.Check Reservation User Info
+    reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
+    reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
 
-User checks the subvented reservation info is right and submits
-    reservation_unit_reservation_receipt.Check reservation user info
-    reservation_unit_reservation_receipt.Click the checkbox accepted terms
-    reservation_unit_reservation_receipt.Click the checkbox generic terms
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
-    quick_reservation.Check the price of quick reservation
+User Checks The Subvented Reservation Info Is Right And Submits
+    reservation_unit_reservation_receipt.Check Reservation User Info
+    reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
+    reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
+    quick_reservation.Check The Price Of Quick Reservation
     ...    ${SINGLEBOOKING_SUBVENTED_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
 
-User checks the subvented reservation info is right after submitting
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
-    quick_reservation.Check the price of quick reservation
+User Checks The Subvented Reservation Info Is Right After Submitting
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
+    quick_reservation.Check The Price Of Quick Reservation
     ...    ${SINGLEBOOKING_SUBVENTED_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
-    quick_reservation.Get booking number
+    quick_reservation.Get Booking Number
 
-User checks the paid reservation that requires handling info is right and submits
-    reservation_unit_reservation_receipt.Check reservation user info
-    reservation_unit_reservation_receipt.Click the checkbox accepted terms
-    reservation_unit_reservation_receipt.Click the checkbox generic terms
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
+User Checks The Paid Reservation That Requires Handling Info Is Right And Submits
+    reservation_unit_reservation_receipt.Check Reservation User Info
+    reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
+    reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     #
-    reservation_lownav.Click submit button continue
-    reservation_unit_reservation_receipt.Check the reservation status message
+    reservation_lownav.Click Submit Button Continue
+    reservation_unit_reservation_receipt.Check The Reservation Status Message
     ...    ${RESERVATION_STATUS_REQUIRESHANDLING_MSG_FI}
-    quick_reservation.Get booking number
+    quick_reservation.Get Booking Number
 
-User checks the paid reservation info is right after checkout
+User Checks The Paid Reservation Info Is Right After Checkout
     # devnote confirmation page is different than review page
     # TODO fix the paging
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
-    reservation_unit_reservation_receipt.Check the reservation status message    ${RESERVATION_STATUS_MSG_FI}
-    quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
-    quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_reservation_receipt.Check The Reservation Status Message    ${RESERVATION_STATUS_MSG_FI}
+    quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
+    quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
 
-User checks the reservation info is right
-    reservation_unit_reservation_receipt.Check reservation user info
-    reservation_unit_reservation_receipt.Click the checkbox accepted terms
-    reservation_unit_reservation_receipt.Click the checkbox generic terms
+User Checks The Reservation Info Is Right
+    reservation_unit_reservation_receipt.Check Reservation User Info
+    reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
+    reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
     # TODO Let's split these checks by different pages and move submit to a higher level
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
-    reservation_unit_reservation_receipt.Check the reservation status message    ${RESERVATION_STATUS_MSG_FI}
-    quick_reservation.Get booking number
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_reservation_receipt.Check The Reservation Status Message    ${RESERVATION_STATUS_MSG_FI}
+    quick_reservation.Get Booking Number
 
-User checks the reservation info is right with access code
-    reservation_unit_reservation_receipt.Check reservation user info
-    reservation_unit_reservation_receipt.Click the checkbox accepted terms
-    reservation_unit_reservation_receipt.Click the checkbox generic terms
+User Checks The Reservation Info Is Right With Access Code
+    reservation_unit_reservation_receipt.Check Reservation User Info
+    reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
+    reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
     #
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
     # TODO Let's split these checks by different pages and move submit to a higher level
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
-    reservation_unit_reservation_receipt.Check the reservation status message    ${RESERVATION_STATUS_MSG_FI}
-    quick_reservation.Get booking number
-    quick_reservation.Get access code
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_reservation_receipt.Check The Reservation Status Message    ${RESERVATION_STATUS_MSG_FI}
+    quick_reservation.Get Booking Number
+    quick_reservation.Get Access Code
 
-User checks the noncancelable reservation info is right
-    reservation_unit_reservation_receipt.Check reservation user info
-    reservation_unit_reservation_receipt.Check noncancelable booking info
-    reservation_unit_reservation_receipt.Click the checkbox accepted terms
-    reservation_unit_reservation_receipt.Click the checkbox generic terms
+User Checks The Noncancelable Reservation Info Is Right
+    reservation_unit_reservation_receipt.Check Reservation User Info
+    reservation_unit_reservation_receipt.Check Noncancelable Booking Info
+    reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
+    reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
     #
-    reservation_lownav.Click submit button continue
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
-    reservation_unit_reservation_receipt.Check the reservation status message    ${RESERVATION_STATUS_MSG_FI}
-    quick_reservation.Get booking number
+    reservation_lownav.Click Submit Button Continue
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
+    reservation_unit_reservation_receipt.Check The Reservation Status Message    ${RESERVATION_STATUS_MSG_FI}
+    quick_reservation.Get Booking Number
 
-User checks the modified reservation info is right
-    reservation_unit_reservation_receipt.Click the checkbox accepted terms
-    reservation_unit_reservation_receipt.Click the checkbox generic terms
+User Checks The Modified Reservation Info Is Right
+    reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
+    reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
     #
     Log    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
     # TODO: Separate the submit and the next page check into their own keywords
-    reservation_lownav.Click submit button continue
+    reservation_lownav.Click Submit Button Continue
     # Wait for page to load
     Sleep    2s
 
     Log    This check is done in reservations page
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
 
-User cancel booking in reservations and checks it got cancelled
-    mybookings.User cancel booking
-    mybookings.Click reason for cancellation
-    mybookings.Select reason for cancellation    ${REASON_FOR_CANCELLATION}
-    mybookings.Click cancel button
+User Cancel Booking In Reservations And Checks It Got Cancelled
+    mybookings.User Cancel Booking
+    mybookings.Click Reason For Cancellation
+    mybookings.Select Reason For Cancellation    ${REASON_FOR_CANCELLATION}
+    mybookings.Click Cancel Button
     #
-    mybookings.Check reservation status    ${IN_RESERVATIONS_STATUS_CANCELED}
-    quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
+    mybookings.Check Reservation Status    ${IN_RESERVATIONS_STATUS_CANCELED}
+    quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
 
-User modifies booking and verifies the changes
-    mybookings.User click change time
+User Modifies Booking And Verifies The Changes
+    mybookings.User Click Change Time
     # This opens calendar controls
     # TODO change this to reservation_calendar
-    mybookings.User click reservation calendar toggle button
+    mybookings.User Click Reservation Calendar Toggle Button
 
-    reservation_calendar.Select duration calendar    ${QUICK_RESERVATION_DURATION}
+    reservation_calendar.Select Duration Calendar    ${QUICK_RESERVATION_DURATION}
 
     # This sets ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
-    reservation_calendar.Click and store free reservation time
+    reservation_calendar.Click And Store Free Reservation Time
 
-    ${date_value_from_calendar}=    reservation_calendar.Get current date from datepicker
+    ${date_value_from_calendar}=    reservation_calendar.Get Current Date From Datepicker
 
     # Formats modified date from variables like 15.30 and 15.6.2024. formatting uses 1h duration
-    ${formatted_date}    ${formatted_date_minus_t}=    data_modification.Set info card duration time info
+    ${formatted_date}    ${formatted_date_minus_t}=    data_modification.Set Info Card Duration Time Info
     ...    ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
     ...    ${date_value_from_calendar}
 
@@ -406,58 +406,58 @@ User modifies booking and verifies the changes
 
     Log    If the continue button is not enabled, verify that the reservation time was actually modified
     Wait For Elements State    [data-testid="reservation__button--continue"]    enabled    timeout=3s
-    reservation_calendar.Click continue button
+    reservation_calendar.Click Continue Button
 
-User checks cancelled booking is found
+User Checks Cancelled Booking Is Found
     [Arguments]    ${unitname_mybookings}    ${time_of_quick_reservation_minusT}
 
     Log    This checks the canceled booking is not found in upcoming reservations
 
-    mybookings.Check unitname and reservation are not found
+    mybookings.Check Unitname And Reservation Are Not Found
     ...    ${unitname_mybookings}
     ...    ${time_of_quick_reservation_minusT}
 
     # Wait for load
     Sleep    3s
-    mybookings.Navigate to cancelled bookings
+    mybookings.Navigate To Cancelled Bookings
 
     # Wait for load
     Sleep    2s
-    mybookings.Check unitname and reservation time and click show
+    mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname_mybookings}
     ...    ${time_of_quick_reservation_minusT}
 
-User can see upcoming booking in list and clicks it
+User Can See Upcoming Booking In List And Clicks It
     [Arguments]    ${unitname}    ${reservationtime}
     Sleep    1s
     Log    ${unitname}
     Log    ${reservationtime}
-    mybookings.Check unitname and reservation time and click show
+    mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname}
     ...    ${reservationtime}
     Sleep    1s
     Wait For Load State    load    timeout=15s
 
-User can see upcoming noncancelable booking in list and clicks it
+User Can See Upcoming Noncancelable Booking In List And Clicks It
     [Arguments]    ${unitname}    ${reservationtime}
     Sleep    2s
     Log    ${unitname}
     Log    ${reservationtime}
-    mybookings.Check my bookings h1    ${MYBOOKINGS_FI}
+    mybookings.Check My Bookings H1    ${MYBOOKINGS_FI}
     # TODO lets split these two checks to their own keywords, matching the keywords better
-    mybookings.Check unitname and reservation time and verify no cancel button    ${unitname}    ${reservationtime}
-    mybookings.Check unitname and reservation time and click show
+    mybookings.Check Unitname And Reservation Time And Verify No Cancel Button    ${unitname}    ${reservationtime}
+    mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname}
     ...    ${reservationtime}
 
-User Navigates to unit from bookings list
-    topNav.Navigate to my bookings
+User Navigates To Unit From Bookings List
+    topnav.Navigate To My Bookings
 
 ###
 # Reservations
 ###
 
-User checks the paid reservation info is right in reservations
+User Checks The Paid Reservation Info Is Right In Reservations
     [Arguments]
     ...    ${booking_status}
     ...    ${payment_status}
@@ -467,151 +467,151 @@ User checks the paid reservation info is right in reservations
 
     Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     #
-    quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
-    quick_reservation.Check the price of quick reservation    ${booking_price}
-    mybookings.Check reservation status    ${booking_status}
-    mybookings.Check reservations payment status    ${payment_status}
-    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
-    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
-    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
-    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
-    mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
-    mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    mybookings.Check reservation purpose    ${PURPOSE_OF_THE_BOOKING}
-    mybookings.Check reservation number from h1 text    ${reservation_number}
+    quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
+    quick_reservation.Check The Price Of Quick Reservation    ${booking_price}
+    mybookings.Check Reservation Status    ${booking_status}
+    mybookings.Check Reservations Payment Status    ${payment_status}
+    mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
+    mybookings.Check Reservation Booker First Name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check Reservation Booker Last Name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check Reservation Booker Phone    ${CURRENT_USER_PHONE}
+    mybookings.Check Reservation Description    ${SINGLEBOOKING_DESCRIPTION}
+    mybookings.Check Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    mybookings.Check Reservation Purpose    ${PURPOSE_OF_THE_BOOKING}
+    mybookings.Check Reservation Number From H1 Text    ${reservation_number}
 
-User checks booking info in reservations with number of participants and description and purpose
+User Checks Booking Info In Reservations With Number Of Participants And Description And Purpose
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}
 
     Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     #
-    quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
-    quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
-    quick_reservation.Check the price of quick reservation    ${booking_price}
+    quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
+    quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
+    quick_reservation.Check The Price Of Quick Reservation    ${booking_price}
 
-    mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
-    mybookings.Check reservation status    ${booking_status}
-    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
-    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
-    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
-    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
-    mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
-    mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    mybookings.Check reservation purpose    ${PURPOSE_OF_THE_BOOKING}
+    mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
+    mybookings.Check Reservation Status    ${booking_status}
+    mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
+    mybookings.Check Reservation Booker First Name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check Reservation Booker Last Name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check Reservation Booker Phone    ${CURRENT_USER_PHONE}
+    mybookings.Check Reservation Description    ${SINGLEBOOKING_DESCRIPTION}
+    mybookings.Check Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    mybookings.Check Reservation Purpose    ${PURPOSE_OF_THE_BOOKING}
 
-User checks booking info in reservations
+User Checks Booking Info In Reservations
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}
 
     Wait For Elements State    [data-testid="reservation__reservation-info-card__content"]    visible
     #
-    quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
-    quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
-    quick_reservation.Check the price of quick reservation    ${booking_price}
+    quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
+    quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
+    quick_reservation.Check The Price Of Quick Reservation    ${booking_price}
 
-    mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
-    mybookings.Check reservation status    ${booking_status}
-    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
-    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
-    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
-    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
+    mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
+    mybookings.Check Reservation Status    ${booking_status}
+    mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
+    mybookings.Check Reservation Booker First Name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check Reservation Booker Last Name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check Reservation Booker Phone    ${CURRENT_USER_PHONE}
 
-User checks booking info in reservations with access code
+User Checks Booking Info In Reservations With Access Code
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}    ${access_code}
 
     Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     #
-    quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
-    quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
-    quick_reservation.Check the price of quick reservation    ${booking_price}
+    quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
+    quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
+    quick_reservation.Check The Price Of Quick Reservation    ${booking_price}
 
-    mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
-    mybookings.Check reservation status    ${booking_status}
-    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
-    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
-    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
-    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
-    mybookings.Check reservation access code    ${access_code}
+    mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
+    mybookings.Check Reservation Status    ${booking_status}
+    mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
+    mybookings.Check Reservation Booker First Name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check Reservation Booker Last Name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check Reservation Booker Phone    ${CURRENT_USER_PHONE}
+    mybookings.Check Reservation Access Code    ${access_code}
 
-User checks booking info in reservations with all reservation info
+User Checks Booking Info In Reservations With All Reservation Info
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}
 
     Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     #
-    quick_reservation.Check the quick reservation time    ${time_in_quickreservations}
-    quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
+    quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
+    quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
 
-    mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
-    mybookings.Check reservation status    ${MYBOOKINGS_STATUS_PROCESSED}
-    mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
-    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
-    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
-    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
-    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
-    mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
-    mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    mybookings.Check reservation purpose    ${PURPOSE_OF_THE_BOOKING}
-    mybookings.Check reservation age group    ${AGEGROUP_OF_PERSONS}
+    mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
+    mybookings.Check Reservation Status    ${MYBOOKINGS_STATUS_PROCESSED}
+    mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
+    mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
+    mybookings.Check Reservation Booker First Name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check Reservation Booker Last Name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check Reservation Booker Phone    ${CURRENT_USER_PHONE}
+    mybookings.Check Reservation Description    ${SINGLEBOOKING_DESCRIPTION}
+    mybookings.Check Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    mybookings.Check Reservation Purpose    ${PURPOSE_OF_THE_BOOKING}
+    mybookings.Check Reservation Age Group    ${AGEGROUP_OF_PERSONS}
 
-User checks booking info in reservations for noncancelable booking
+User Checks Booking Info In Reservations For Noncancelable Booking
     Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
 
-    mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
-    mybookings.Check reservation status    ${MYBOOKINGS_STATUS_CONFIRMED}
-    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
-    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
-    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
-    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
-    mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
-    mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    mybookings.Check cancel button is not found in reservations
-    quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_NO_PAYMENT}
+    mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
+    mybookings.Check Reservation Status    ${MYBOOKINGS_STATUS_CONFIRMED}
+    mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
+    mybookings.Check Reservation Booker First Name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check Reservation Booker Last Name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check Reservation Booker Phone    ${CURRENT_USER_PHONE}
+    mybookings.Check Reservation Description    ${SINGLEBOOKING_DESCRIPTION}
+    mybookings.Check Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    mybookings.Check Cancel Button Is Not Found In Reservations
+    quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_NO_PAYMENT}
 
-User verifies details of subvented reservation after admin approval without payment
-    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
-    Log
-    ...    If the booking number comparison fails, verify that there are no duplicate times in the upcoming bookings list.
-
-    quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
-    quick_reservation.Check the quick reservation time    ${ADMIN_MODIFIES_TIME_OF_INFO_CARD}
-    quick_reservation.Check the price of quick reservation    ${SINGLEBOOKING_NO_PAYMENT}
-    mybookings.Check reservation status    ${MYBOOKINGS_STATUS_CONFIRMED}
-    #
-    mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
-    mybookings.Check reservation purpose    ${PURPOSE_OF_THE_BOOKING}
-    mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    mybookings.Check reservation age group    ${AGEGROUP_OF_PERSONS}
-    mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
-    #
-    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
-    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
-    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
-    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
-
-User checks the rejected reservation info is right after admin handling
+User Verifies Details Of Subvented Reservation After Admin Approval Without Payment
     Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
     Log
     ...    If the booking number comparison fails, verify that there are no duplicate times in the upcoming bookings list.
 
-    quick_reservation.Check booking number    ${BOOKING_NUM_ONLY}
-    quick_reservation.Check the quick reservation time    ${TIME_OF_QUICK_RESERVATION}
-    quick_reservation.Check the price of quick reservation    ${ALWAYS_REQUESTED_UNIT_PAID_PRICE_VAT_INCL}
-    mybookings.Check reservation status    ${MYBOOKINGS_STATUS_REJECTED}
+    quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
+    quick_reservation.Check The Quick Reservation Time    ${ADMIN_MODIFIES_TIME_OF_INFO_CARD}
+    quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_NO_PAYMENT}
+    mybookings.Check Reservation Status    ${MYBOOKINGS_STATUS_CONFIRMED}
     #
-    mybookings.Check reservation number from h1 text    ${BOOKING_NUM_ONLY}
-    mybookings.Check reservation purpose    ${PURPOSE_OF_THE_BOOKING}
-    mybookings.Check number of participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
-    mybookings.Check reservation description    ${SINGLEBOOKING_DESCRIPTION}
+    mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
+    mybookings.Check Reservation Purpose    ${PURPOSE_OF_THE_BOOKING}
+    mybookings.Check Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    mybookings.Check Reservation Age Group    ${AGEGROUP_OF_PERSONS}
+    mybookings.Check Reservation Description    ${SINGLEBOOKING_DESCRIPTION}
     #
-    mybookings.Check reservation booker first name    ${CURRENT_USER_FIRST_NAME}
-    mybookings.Check reservation booker last name    ${CURRENT_USER_LAST_NAME}
-    mybookings.Check reservation booker phone    ${CURRENT_USER_PHONE}
-    mybookings.Check reservation booker email    ${CURRENT_USER_EMAIL}
+    mybookings.Check Reservation Booker First Name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check Reservation Booker Last Name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check Reservation Booker Phone    ${CURRENT_USER_PHONE}
+    mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
+
+User Checks The Rejected Reservation Info Is Right After Admin Handling
+    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
+    Log
+    ...    If the booking number comparison fails, verify that there are no duplicate times in the upcoming bookings list.
+
+    quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
+    quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
+    quick_reservation.Check The Price Of Quick Reservation    ${ALWAYS_REQUESTED_UNIT_PAID_PRICE_VAT_INCL}
+    mybookings.Check Reservation Status    ${MYBOOKINGS_STATUS_REJECTED}
+    #
+    mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
+    mybookings.Check Reservation Purpose    ${PURPOSE_OF_THE_BOOKING}
+    mybookings.Check Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
+    mybookings.Check Reservation Description    ${SINGLEBOOKING_DESCRIPTION}
+    #
+    mybookings.Check Reservation Booker First Name    ${CURRENT_USER_FIRST_NAME}
+    mybookings.Check Reservation Booker Last Name    ${CURRENT_USER_LAST_NAME}
+    mybookings.Check Reservation Booker Phone    ${CURRENT_USER_PHONE}
+    mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
 
 ###
 # Calendar usage
 ###
 
-User saves file and formats booking time to ICS
+User Saves File And Formats Booking Time To ICS
     [Documentation]    This formats example like Ti 1.10.2024 klo 10:30–11:30
     ...    to DTSTART;TZID=Europe/Helsinki:20241001T103000, DTEND;TZID=Europe/Helsinki:20241001T113000
     [Arguments]    ${file_path}
@@ -622,7 +622,7 @@ User saves file and formats booking time to ICS
     Sleep    1s
     Directory Should Exist    ${file_path}
 
-    custom_keywords.Convert booking time to ICS format    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
+    custom_keywords.Convert Booking Time To ICS Format    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
     # Create a promise that waits for the download to complete, using the specified file path
     ${download_promise}=    Promise To Wait For Download    wait_for_finished=True
@@ -643,10 +643,10 @@ User saves file and formats booking time to ICS
 
     # Extracts the DTSTART and DTEND timestamps from an ICS file's text
     # example --> DTSTART;TZID=Europe/Helsinki:20241003T083000 and DTEND;TZID=Europe/Helsinki:20241003T093000
-    custom_keywords.Extract start and end time from ICS file    ${ICS_TEXT_FROM_FILE}
+    custom_keywords.Extract Start And End Time From ICS File    ${ICS_TEXT_FROM_FILE}
     Log    ${ICS_TEXT}
 
-User checks that calendar file matches booking time
+User Checks That Calendar File Matches Booking Time
     # Log for verification
     Log    Checking if ICS times match with booking times...
     Log    ICS Start Time: ${FORMATTED_START_TO_ICS}
@@ -683,78 +683,78 @@ User checks that calendar file matches booking time
 # Recurring
 ###
 
-User fills in the application details for recurring application
-    recurring_applications.User selects the default time period for the recurring reservation
+User Fills In The Application Details For Recurring Application
+    recurring_applications.User Selects The Default Time Period For The Recurring Reservation
     #
-    recurring_applications.User fills the recurring reservation name
+    recurring_applications.User Fills The Recurring Reservation Name
     ...    ${RECURRING_BOOKING_NAME}
-    recurring_applications.User fills the number of people in the recurring reservation
+    recurring_applications.User Fills The Number Of People In The Recurring Reservation
     ...    ${RECURRING_BOOKING_SIZE_OF_GROUP}
-    recurring_applications.User fills the age group in the recurring reservation
+    recurring_applications.User Fills The Age Group In The Recurring Reservation
     ...    ${RECURRING_BOOKING_AGE_GROUP_TEXT}
-    recurring_applications.User chooses the purpose of the recurring reservation
+    recurring_applications.User Chooses The Purpose Of The Recurring Reservation
     ...    ${RECURRING_BOOKING_PURPOSE_TEXT}
     #
-    recurring_applications.User selects the minimum length for the recurring reservation
+    recurring_applications.User Selects The Minimum Length For The Recurring Reservation
     ...    ${RECURRING_BOOKING_MIN_LENGTH_TEXT}
-    recurring_applications.User selects the maximum length for the recurring reservation
+    recurring_applications.User Selects The Maximum Length For The Recurring Reservation
     ...    ${RECURRING_BOOKING_MAX_LENGTH_TEXT}
-    recurring_applications.User selects the amount of reservations per week
+    recurring_applications.User Selects The Amount Of Reservations Per Week
     ...    ${RECURRING_BOOKING_RESERVATION_PER_WEEK}
     #
-    recurring_applications.User clicks continue button
+    recurring_applications.User Clicks Continue Button
 
-User selects times for recurring application
-    recurring_applications_page2.User selects type of the booking request
+User Selects Times For Recurring Application
+    recurring_applications_page2.User Selects Type Of The Booking Request
     ...    ${RECURRING_BOOKING_TYPE_OF_BOOKING_REQUEST_PRIMARY}
     #
-    recurring_applications_page2.User clicks available seasonal booking times for
+    recurring_applications_page2.User Clicks Available Seasonal Booking Times For
     ...    ${RECURRING_BOOKING_UNIT_NAME_KESKUSTA}
     #
-    recurring_applications_page2.User selects the times for recurring application
+    recurring_applications_page2.User Selects The Times For Recurring Application
     ...    ${RECURRING_THU_22_23_OTHER}
-    recurring_applications_page2.User selects the times for recurring application
+    recurring_applications_page2.User Selects The Times For Recurring Application
     ...    ${RECURRING_THU_23_24_OTHER}
     #
-    recurring_applications_page2.User clicks available seasonal booking times for
+    recurring_applications_page2.User Clicks Available Seasonal Booking Times For
     ...    ${RECURRING_BOOKING_UNIT_NAME_MALMI}
     #
-    recurring_applications_page2.User selects type of the booking request
+    recurring_applications_page2.User Selects Type Of The Booking Request
     ...    ${RECURRING_BOOKING_TYPE_OF_BOOKING_REQUEST_SECONDARY}
     #
-    recurring_applications_page2.User selects the times for recurring application
+    recurring_applications_page2.User Selects The Times For Recurring Application
     ...    ${RECURRING_THU_09_10_PREFERRED}
-    recurring_applications_page2.User selects the times for recurring application
+    recurring_applications_page2.User Selects The Times For Recurring Application
     ...    ${RECURRING_THU_10_11_PREFERRED}
     #
-    recurring_applications_page2.User clicks continue button
+    recurring_applications_page2.User Clicks Continue Button
 
-User fills in the application user info details
-    recurring_applications_page3.User selects who is the application created for    INDIVIDUAL
+User Fills In The Application User Info Details
+    recurring_applications_page3.User Selects Who Is The Application Created For    INDIVIDUAL
     #
-    recurring_applications_page3.User types first name    ${RECURRING_BOOKING_FIRST_NAME}
-    recurring_applications_page3.User types last name    ${RECURRING_BOOKING_LAST_NAME}
-    recurring_applications_page3.User types street address    ${RECURRING_BOOKING_STREET_ADDRESS}
-    recurring_applications_page3.User types post code    ${RECURRING_BOOKING_POST_CODE}
-    recurring_applications_page3.User types city    ${RECURRING_BOOKING_CITY}
-    recurring_applications_page3.User types phone number    ${RECURRING_BOOKING_PHONE_NUMBER}
-    recurring_applications_page3.User types email    ${RECURRING_BOOKING_EMAIL}
-    recurring_applications_page3.User types additional information    ${RECURRING_BOOKING_ADDITIONAL_INFO}
-    recurring_applications_page2.User clicks continue button
+    recurring_applications_page3.User Types First Name    ${RECURRING_BOOKING_FIRST_NAME}
+    recurring_applications_page3.User Types Last Name    ${RECURRING_BOOKING_LAST_NAME}
+    recurring_applications_page3.User Types Street Address    ${RECURRING_BOOKING_STREET_ADDRESS}
+    recurring_applications_page3.User Types Post Code    ${RECURRING_BOOKING_POST_CODE}
+    recurring_applications_page3.User Types City    ${RECURRING_BOOKING_CITY}
+    recurring_applications_page3.User Types Phone Number    ${RECURRING_BOOKING_PHONE_NUMBER}
+    recurring_applications_page3.User Types Email    ${RECURRING_BOOKING_EMAIL}
+    recurring_applications_page3.User Types Additional Information    ${RECURRING_BOOKING_ADDITIONAL_INFO}
+    recurring_applications_page2.User Clicks Continue Button
 
-User accepts terms of use and clicks submit
-    recurring_applications_page_preview.User clicks the accept terms of use checkbox
-    recurring_applications_page_preview.User clicks the specific terms of use checkbox
-    recurring_applications_page_preview.User clicks the submit button
+User Accepts Terms Of Use And Clicks Submit
+    recurring_applications_page_preview.User Clicks The Accept Terms Of Use Checkbox
+    recurring_applications_page_preview.User Clicks The Specific Terms Of Use Checkbox
+    recurring_applications_page_preview.User Clicks The Submit Button
 
-User checks the sent page
-    recurring_applications_page_sent.User checks h1 of the sent page
+User Checks The Sent Page
+    recurring_applications_page_sent.User Checks H1 Of The Sent Page
 
-User checks the recurring reservation is sent state and cancels it
+User Checks The Recurring Reservation Is Sent State And Cancels It
     [Documentation]    This is a workaround to cancel the recurring reservation with given name in
     ...    [data-testid="card__heading"]
     ...    it cancels the last reservation in the list so they won't pile up
-    custom_keywords.Find and click button in group with matching conditions
+    custom_keywords.Find And Click Button In Group With Matching Conditions
     ...    [data-testid="applications__group--wrapper"]
     ...    Vastaanotettu
     ...    [class*="Card__CardContent"]
@@ -766,28 +766,28 @@ User checks the recurring reservation is sent state and cancels it
 
     # Wait for animation
     Sleep    1s
-    custom_keywords.Find and click element with text    id=application-card-modal >> span    Kyllä
+    custom_keywords.Find And Click Element With Text    id=application-card-modal >> span    Kyllä
 
-User verifies the recurring reservation is cancelled
+User Verifies The Recurring Reservation Is Cancelled
     [Documentation]    Verifies that the recurring reservation with the given name is no longer found
     ...    in the applications list. Fails if the reservation is still present.
-    custom_keywords.Verify card not found in group with matching conditions
+    custom_keywords.Verify Card Not Found In Group With Matching Conditions
     ...    ${EMPTY_STATE_MESSAGE_RECURRING_APPLICATIONS}
 
 ###
 ### MOBILE
 ###
 
-User navigates to single booking page mobile
-    topNav.Navigate to single booking page mobile
+User Navigates To Single Booking Page Mobile
+    topnav.Navigate To Single Booking Page Mobile
 
-User checks cancelled booking is found mobile
+User Checks Cancelled Booking Is Found Mobile
     [Arguments]    ${unitname_mybookings}    ${time_of_quick_reservation_minusT}
-    topNav.Click tablist scroll button to right mobile
-    mybookings.Check unitname and reservation are not found
+    topnav.Click Tablist Scroll Button To Right Mobile
+    mybookings.Check Unitname And Reservation Are Not Found
     ...    ${unitname_mybookings}
     ...    ${time_of_quick_reservation_minusT}
-    mybookings.Navigate to cancelled bookings
-    mybookings.Check unitname and reservation time and click show
+    mybookings.Navigate To Cancelled Bookings
+    mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname_mybookings}
     ...    ${time_of_quick_reservation_minusT}

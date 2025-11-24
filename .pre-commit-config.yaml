@@ -1,0 +1,43 @@
+# OPTIONAL Git Pre-commit Hooks
+# ================================
+# Developers can enable this locally for immediate feedback:
+#   pip install pre-commit
+#   pre-commit install
+#
+# To bypass occasionally: git commit --no-verify
+# To disable completely: pre-commit uninstall
+#
+# These hooks match the GitHub Actions CI/CD linting workflow
+
+repos:
+  # Python linting (matches CI)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.0
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        # Only checks staged Python files
+
+      - id: ruff-format
+        # Checks Python formatting (matches CI)
+
+  # Robot Framework linting (matches CI)
+  # Note: This can be slow on large codebases
+  - repo: https://github.com/MarketSquare/robotframework-robocop
+    rev: v6.11.0
+    hooks:
+      - id: robocop
+        args: [--config, .robocop.toml]
+        # Only checks staged .robot files
+        files: \.robot$
+
+  # Shell script linting (matches CI)
+  # Windows users: ShellCheck may not work. You can skip it with:
+  #   SKIP=shellcheck git commit
+  # Or install WSL/Git Bash for full compatibility
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        # Only checks staged shell scripts
+        files: \.(sh|bash)$

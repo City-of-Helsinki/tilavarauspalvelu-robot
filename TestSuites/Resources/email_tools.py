@@ -10,7 +10,8 @@ from robot.api import logger  # For logging
 ###
 #   EMAIL PART
 ###
-    
+
+
 def clean_and_save_emails(email_texts, output_file="emails_cleaned.json"):
     """
     Clean, format, and save email texts to a structured JSON file, including attachment status of
@@ -32,14 +33,16 @@ def clean_and_save_emails(email_texts, output_file="emails_cleaned.json"):
 
             # Clean and format content
             cleaned_content = content.replace("\n", " ")  # Replace \n with space
-            cleaned_content = re.sub(r'\s+', ' ', cleaned_content.strip())  # Normalize spaces
+            cleaned_content = re.sub(r"\s+", " ", cleaned_content.strip())  # Normalize spaces
 
             # Include attachment status if available
-            cleaned_emails.append({
-                "uid": uid,
-                "content": cleaned_content,
-                "general_terms_attachment": details.get("general_terms_attachment", False)  # Updated key
-            })
+            cleaned_emails.append(
+                {
+                    "uid": uid,
+                    "content": cleaned_content,
+                    "general_terms_attachment": details.get("general_terms_attachment", False),  # Updated key
+                }
+            )
 
     # Save the cleaned and formatted emails to a JSON file
     try:
@@ -65,7 +68,7 @@ def search_reservations(email_address, reservation_num, attachment_filename, dow
     Returns:
         list: A list of extracted email texts with attachment information.
     """
-    imap_ssl_host = 'imap.gmail.com'
+    imap_ssl_host = "imap.gmail.com"
     imap_ssl_port = 993
 
     access_token = get_access_token()
@@ -81,11 +84,11 @@ def search_reservations(email_address, reservation_num, attachment_filename, dow
         mail = imaplib.IMAP4_SSL(imap_ssl_host, imap_ssl_port)
 
         logger.info("Authenticating using XOAUTH2...")
-        auth_string = f'user={email_address}\1auth=Bearer {access_token}\1\1'
-        mail.authenticate('XOAUTH2', lambda x: auth_string)
+        auth_string = f"user={email_address}\1auth=Bearer {access_token}\1\1"
+        mail.authenticate("XOAUTH2", lambda x: auth_string)
 
         logger.info("Selecting the inbox...")
-        status, data = mail.select('inbox')
+        status, data = mail.select("inbox")
         if status != "OK":
             logger.error("Failed to select the inbox. Check access permissions or inbox availability.")
             raise Exception("Failed to select inbox.")
@@ -99,17 +102,19 @@ def search_reservations(email_address, reservation_num, attachment_filename, dow
 
         for num in data[0].split():
             logger.info(f"Fetching email with UID: {num.decode()}")
-            status, email_data = mail.fetch(num, '(RFC822)')
+            status, email_data = mail.fetch(num, "(RFC822)")
             if status != "OK":
                 logger.error(f"Failed to fetch email with UID: {num.decode()}")
                 continue
 
             for response_part in email_data:
-                if isinstance(response_part, tuple):    # Ensure valid email response
+                if isinstance(response_part, tuple):  # Ensure valid email response
                     msg = email.message_from_bytes(response_part[1])
-                    extracted_content = extract_email_content(msg, attachment_filename) # This checks if the general terms attachment is present
+                    extracted_content = extract_email_content(
+                        msg, attachment_filename
+                    )  # This checks if the general terms attachment is present
                     unique_id = f"Email-{num.decode()}"
-                    email_texts.append({unique_id: extracted_content})   # Store extracted content
+                    email_texts.append({unique_id: extracted_content})  # Store extracted content
 
         logger.info(f"Total matched emails: {len(email_texts)}")
 
@@ -181,10 +186,7 @@ def extract_email_content(msg, attachment_filename):
             html_text = msg.get_payload(decode=True).decode()
 
     email_content = plain_text.strip() if plain_text else clean_html(html_text) if html_text else "No content found."
-    return {
-        "content": email_content,
-        "general_terms_attachment": general_terms_attachment
-    }
+    return {"content": email_content, "general_terms_attachment": general_terms_attachment}
 
 
 def clean_html(html):
@@ -209,7 +211,7 @@ def clean_html(html):
 
 def check_email_content(file_path, *required_terms):
     """
-    Check if all required terms are present in at least one entry's content, 
+    Check if all required terms are present in at least one entry's content,
     and verify the attachment status if provided.
 
     Args:
@@ -264,15 +266,19 @@ def check_email_content(file_path, *required_terms):
         missing_terms = [term for term in required_terms if term.lower().strip() not in content.lower().strip()]
 
         # Check attachment status
-        if not missing_terms and (expected_attachment_status is None or attachment_status == expected_attachment_status):
-            logger.info(f"✅ Email UID {uid} passed with all terms and attachment status: {attachment_status}.")
+        if not missing_terms and (
+            expected_attachment_status is None or attachment_status == expected_attachment_status
+        ):
             found_uid = uid
+            logger.info(f"✅ Email UID {found_uid} passed with all terms and attachment status: {attachment_status}.")
             all_terms_found = True
             break  # Stop checking once we find a match
         else:
             missing_terms_summary[uid] = missing_terms
             if expected_attachment_status is not None and attachment_status != expected_attachment_status:
-                missing_terms_summary[uid].append(f"Expected attachment status: {expected_attachment_status}, found: {attachment_status}")
+                missing_terms_summary[uid].append(
+                    f"Expected attachment status: {expected_attachment_status}, found: {attachment_status}"
+                )
 
     if not all_terms_found:
         logger.error("❌ No email contains all required terms with the expected attachment status.")

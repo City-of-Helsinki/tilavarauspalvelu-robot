@@ -4,36 +4,36 @@ Resource    ../../Resources/custom_keywords.robot
 
 
 *** Keywords ***
-Check my bookings h1
+Check My Bookings H1
     [Arguments]    ${bookingstatus}
     # Wait for load
     Sleep    2s
-    custom_keywords.Check elements text    h1    ${bookingstatus}
+    custom_keywords.Check Elements Text    h1    ${bookingstatus}
 
 ###
 # Cancel
 ###
 
-User cancel booking
+User Cancel Booking
     Wait For Elements State    data-testid=reservation-detail__button--cancel    visible
     Click    data-testid=reservation-detail__button--cancel
     Sleep    1s
     Wait For Load State    load    timeout=15s
 
-Click reason for cancellation
+Click Reason For Cancellation
     # Wait For Elements State    data-testid=reservation-detail__button--cancel    visible
     # Click    id=reason-toggle-button
     Wait For Elements State    id=reservation-cancel__reason-label
     Click    id=reservation-cancel__reason-main-button
     Sleep    1s
 
-Select reason for cancellation
+Select Reason For Cancellation
     [Arguments]    ${reason}
     # Wait For Elements State    id=reason-item-0    visible
     Wait For Elements State    id=reservation-cancel__reason-option-2    visible
-    custom_keywords.Find and click element with text    li    ${reason}
+    custom_keywords.Find And Click Element With Text    li    ${reason}
 
-Click cancel button
+Click Cancel Button
     Sleep    1s
     Wait For Elements State    [data-testid="reservation-cancel__button--cancel"]    enabled
     Click    [data-testid="reservation-cancel__button--cancel"]
@@ -41,7 +41,7 @@ Click cancel button
     Sleep    2s
     Wait For Load State    load    timeout=15s
 
-Check cancel button is not found in reservations
+Check Cancel Button Is Not Found In Reservations
     Sleep    1s
     Wait For Elements State
     ...    [data-testid="reservation-detail__button--cancel"]
@@ -57,13 +57,13 @@ Check cancel button is not found in reservations
 # Modify booking
 ###
 
-User click change time
+User Click Change Time
     Wait For Elements State    data-testid=reservation-detail__button--edit    visible
     Click    data-testid=reservation-detail__button--edit
     Sleep    1s    # Wait for animation
     Wait For Load State    load    timeout=15s
 
-User click reservation calendar toggle button
+User Click Reservation Calendar Toggle Button
     Click    [data-testid="calendar-controls__toggle-button"]
     Sleep    1s    # Wait for animation
     Wait For Load State    load    timeout=15s
@@ -72,83 +72,83 @@ User click reservation calendar toggle button
 # Reservations page
 ###
 
-Check reservation status
+Check Reservation Status
     [Arguments]    ${reservation_status}
 
     Wait For Elements State    [data-testid="reservation__content"]    visible
-    custom_keywords.Check elements text    [data-testid="reservation__status"]    ${reservation_status}
+    custom_keywords.Check Elements Text    [data-testid="reservation__status"]    ${reservation_status}
 
-Check reservations payment status
+Check Reservations Payment Status
     [Arguments]    ${reservation_payment_status}
 
     Wait For Elements State    [data-testid="reservation__content"]    visible
-    custom_keywords.Check elements text    [data-testid="reservation__payment-status"]    ${reservation_payment_status}
+    custom_keywords.Check Elements Text    [data-testid="reservation__payment-status"]    ${reservation_payment_status}
 
-Check reservation number from h1 text
+Check Reservation Number From H1 Text
     [Arguments]    ${booking_num}
-    custom_keywords.Check number from text is equal to    [data-testid="reservation__content"] >> h1    ${booking_num}
+    custom_keywords.Check Number From Text Is Equal To    [data-testid="reservation__content"] >> h1    ${booking_num}
 
-Check number of participants
+Check Number Of Participants
     [Arguments]    ${reservation_number_participants}
-    custom_keywords.Check elements text
+    custom_keywords.Check Elements Text
     ...    [data-testid="reservation__summary-fields__numPersons"]
     ...    ${reservation_number_participants}
 
-Check reservation time
+Check Reservation Time
     [Arguments]    ${reservation_time}
-    custom_keywords.Check elements text    [data-testid="reservation__time"]    ${reservation_time}
+    custom_keywords.Check Elements Text    [data-testid="reservation__time"]    ${reservation_time}
 
-Check reservation description
+Check Reservation Description
     [Arguments]    ${reservation_description}
-    custom_keywords.Check elements text
+    custom_keywords.Check Elements Text
     ...    [data-testid="reservation__summary-fields__description"]
     ...    ${reservation_description}
 
- Check reservation booker name
+Check Reservation Booker Name
     [Arguments]    ${reservation_bookerName}
-    custom_keywords.Check elements text
+    custom_keywords.Check Elements Text
     ...    [data-testid="reservation__summary-fields__reservee-name"]
     ...    ${reservation_bookerName}
 
-Check reservation booker first name
+Check Reservation Booker First Name
     [Arguments]    ${reservation_bookerFirstName}
-    custom_keywords.Check elements text
+    custom_keywords.Check Elements Text
     ...    [data-testid="reservation__summary-fields__reserveeFirstName"]
     ...    ${reservation_bookerFirstName}
 
-Check reservation booker last name
+Check Reservation Booker Last Name
     [Arguments]    ${reservation_bookerLastName}
-    custom_keywords.Check elements text
+    custom_keywords.Check Elements Text
     ...    [data-testid="reservation__summary-fields__reserveeLastName"]
     ...    ${reservation_bookerLastName}
 
-Check reservation booker phone
+Check Reservation Booker Phone
     [Arguments]    ${reservation_bookerPhone}
-    custom_keywords.Check elements text
+    custom_keywords.Check Elements Text
     ...    [data-testid="reservation__summary-fields__reserveePhone"]
     ...    ${reservation_bookerPhone}
 
-Check reservation booker email
+Check Reservation Booker Email
     [Arguments]    ${reservation_bookerEmail}
-    custom_keywords.Check elements text
+    custom_keywords.Check Elements Text
     ...    [data-testid="reservation__summary-fields__reserveeEmail"]
     ...    ${reservation_bookerEmail}
 
-Check reservation purpose
+Check Reservation Purpose
     [Arguments]    ${reservation_purpose}
-    custom_keywords.Check elements text
+    custom_keywords.Check Elements Text
     ...    [data-testid="reservation__summary-fields__purpose"]
     ...    ${reservation_purpose}
 
-Check reservation age group
+Check Reservation Age Group
     [Arguments]    ${age_group}
-    custom_keywords.Check elements text
+    custom_keywords.Check Elements Text
     ...    [data-testid="reservation__summary-fields__ageGroup"]
     ...    ${age_group}
 
-Check reservation access code
+Check Reservation Access Code
     [Arguments]    ${access_code}
-    custom_keywords.Check element contains text
+    custom_keywords.Check Element Contains Text
     ...    [data-testid="reservation__reservation-info-card__accessType"]
     ...    ${access_code}
 
@@ -156,15 +156,15 @@ Check reservation access code
 # Tablist
 ###
 
-Navigate to cancelled bookings
+Navigate To Cancelled Bookings
     # TODO ask/fix better selectors here
     Click    id=tab-2-button
 
-Navigate to past bookings
+Navigate To Past Bookings
     # TODO ask/fix better selectors here
     Click    id=tab-1-button
 
-Navigate to upcoming bookings
+Navigate To Upcoming Bookings
     # TODO ask/fix better selectors here
     Click    id=tab-0-button
 
@@ -172,7 +172,7 @@ Navigate to upcoming bookings
 # Additional checks
 ###
 
-Validate reservations are not for today or later
+Validate Reservations Are Not For Today Or Later
     Log
     ...    This step assumes that there are reservations in the list. Disabling strict mode here to make sure that selector exists.
 
@@ -225,7 +225,7 @@ Validate reservations are not for today or later
     # Log a success message if no invalid reservations are found
     Log    Validation completed successfully: No reservations found for today or later.
 
-Check unitname and reservation time and click show
+Check Unitname And Reservation Time And Click Show
     [Documentation]    This keyword verifies if a reservation card with a specified unit name and reservation time is present in the list,
     ...    and clicks the "Show" button on the matching card if found.
     ...    If multiple matches exist, selects the last matching card.
@@ -293,7 +293,7 @@ Click Show Button
     Click    ${button_element}
     Log    Successfully clicked the show button
 
-Check unitname and reservation time and verify no cancel button
+Check Unitname And Reservation Time And Verify No Cancel Button
     [Documentation]    This keyword validates that a reservation card with the specified
     ...    unit name and time exists and fails the test if a cancel button is present.
     [Arguments]    ${unitname}    ${reservation_time}
@@ -355,7 +355,7 @@ Check unitname and reservation time and verify no cancel button
 
     Log    Completed validation for reservation card.
 
-Check unitname and reservation are found
+Check Unitname And Reservation Are Found
     [Arguments]    ${unitname}    ${reservation_time}
     Log
     ...    Starting validation for reservation card with unit name: ${unitname} and reservation time: ${reservation_time}
@@ -421,7 +421,7 @@ Check unitname and reservation are found
     END
     Log    Completed validation for reservation card.
 
-Check unitname and reservation are not found
+Check Unitname And Reservation Are Not Found
     [Arguments]    ${unitname}    ${reservation_time}
     # Log the start of the validation process for ensuring the absence of specific reservation details
     Log

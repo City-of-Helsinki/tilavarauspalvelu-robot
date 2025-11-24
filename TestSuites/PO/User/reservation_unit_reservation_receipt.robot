@@ -7,7 +7,7 @@ Library     Browser
 
 
 *** Keywords ***
-Check reservation user info
+Check Reservation User Info
     [Documentation]    Validates the reservation details of the user.
     Wait For Elements State    [data-testid="reservation__summary-fields__reserveePhone"]    visible
 #
@@ -23,7 +23,7 @@ Check reservation user info
     ${confirmed_phone}    Get Text    [data-testid="reservation__summary-fields__reserveePhone"]
     Should Contain    ${confirmed_phone}    ${CURRENT_USER_PHONE}
 
-Check free single booking info
+Check Free Single Booking Info
     [Documentation]    Validates details for a free single booking.
     Wait For Elements State    [data-testid="reservation__summary-fields__reserveePhone"]    visible
 #
@@ -42,7 +42,7 @@ Check free single booking info
     ${confirmed_number_of_persons}    Get Text    [data-testid="reservation__summary-fields__numPersons"]
     Should Contain    ${confirmed_number_of_persons}    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
 
-Check single booking info
+Check Single Booking Info
     [Documentation]    Validates details for a single booking.
     Wait For Elements State    [data-testid="reservation__summary-fields__reserveePhone"]    visible
 #
@@ -58,7 +58,7 @@ Check single booking info
     ${confirmed_number_of_persons}    Get Text    [data-testid="reservation__summary-fields__numPersons"]
     Should Contain    ${confirmed_number_of_persons}    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
 
-Check noncancelable booking info
+Check Noncancelable Booking Info
     [Documentation]    Validates details for a non-cancelable booking.
     Wait For Elements State    [data-testid="reservation__summary-fields__description"]    visible
 #
@@ -72,7 +72,7 @@ Check noncancelable booking info
 # VALIDATION MESSAGES
 ###
 
-Check the reservation status message
+Check The Reservation Status Message
     [Arguments]    ${expected_reservation_message}
     ${confirmation_text}    Get Text    [data-testid="reservation__status-notification"]
     Should Contain    ${confirmation_text}    ${expected_reservation_message}
@@ -82,8 +82,8 @@ Check the reservation status message
 # TERMS AND CONDITIONS
 ###
 
-Click the checkbox accepted terms
+Click The Checkbox Accepted Terms
     Click    [for="cancellation-and-payment-terms-terms-accepted"]
 
-Click the checkbox generic terms
+Click The Checkbox Generic Terms
     Click    [for="generic-and-service-specific-terms-terms-accepted"]

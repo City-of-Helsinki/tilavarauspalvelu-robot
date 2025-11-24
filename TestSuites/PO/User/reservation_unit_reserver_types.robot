@@ -7,6 +7,6 @@ Library     Browser
 # BOOKING DETAILS
 ###
 
-Select reserver type
+Select Reserver Type
     [Arguments]    ${reserver_type}
     Click    ${reserver_type}

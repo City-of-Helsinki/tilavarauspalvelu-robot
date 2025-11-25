@@ -1,4 +1,4 @@
-# Varaamo Robot Framework Tests
+# Varaamo Robot Framework Tests 
 
 > **⚠️ WIP (Work In Progress):** This README is currently being updated and may contain incomplete or outdated information.  
 > Email authentication system is being refactored. Setup requirements may change in future versions. 
@@ -26,15 +26,15 @@ Chrome, Firefox, Safari via Playwright.
 
 Before running tests, you need to acquire these secrets:
 
-- **Google OAuth Credentials** (for email verification tests)
 - **WAF Bypass Secret** for web application firewall
 - **Robot API Token** for test data creation endpoint
+- **Django Admin Password** for admin operations
 
 📖 **See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed setup instructions**
 
 ## 🚀 Quick Start (5 minutes)
 1. Clone repo: `git clone [repo-url]`
-2. Set up secrets: `cp .env.example TestSuites/Resources/.env` and fill values
+2. Set up secrets: Create `TestSuites/Resources/.env` file with required secrets (see [SETUP_GUIDE.md](SETUP_GUIDE.md))
 3. Build: `docker build -t robotframework-tests .`
 OR
 4. Run: `./docker-test.sh` (Mac/Linux) or `.\docker-test.ps1` (Windows)
@@ -66,9 +66,7 @@ The Docker container is based on Microsoft's Playwright image and includes:
 docker build --no-cache -t robotframework-tests .
 ```
 
-## Interactive Docker Runner
-
-# 🏃‍♂️ Running Tests
+## 🏃‍♂️ Running Tests
 
 This provides a menu with options for:
 - **Parallel execution** (pabot) with configurable process counts
@@ -169,27 +167,18 @@ To view the reports, open the `report.html` HTML file in your browser after test
 
 ## Manual Docker Commands
 
-> **⚠️ WIP (Work In Progress)**: Email authentication system is being refactored. The current `.env` file structure and email-related environment variables may change in future versions.
-
-**📧 Note**: All secrets (`ACCESS_TOKEN`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`, `WAF_BYPASS_SECRET`, `ROBOT_API_TOKEN`) are loaded from your `.env` file using Docker's `--env-file` parameter.
+**📧 Note**: All secrets (`WAF_BYPASS_SECRET`, `ROBOT_API_TOKEN`, `DJANGO_ADMIN_PASSWORD`) are loaded from your `.env` file using Docker's `--env-file` parameter.
 
 ## 🔑 Environment File (.env) Location
 
 **⚠️ Important**: The `.env` file **must** be located at `TestSuites/Resources/.env` for proper functionality.
 
 **📍 Why this location?**
-- Python scripts (`generate_tokens.py`, `token_manager.py`) write and read from this fixed location
-- Ensures consistency between token generation and usage
-- Prevents path-related issues when running from different directories
+- The `env_loader.py` script automatically loads environment variables from this location
 
 📖 **For detailed setup instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md)**
 
-**Building the Docker image:**
-```bash
-docker build --no-cache -t robotframework-tests .
-```
-
-# Manual Docker Commands (Mac/Linux)
+## Manual Docker Commands (Mac/Linux)
 
 **Sequential Robot Framework execution:**
 ```bash
@@ -412,12 +401,9 @@ When HAR recording is enabled in the workflow:
 For GitHub Actions, add the following secrets to your repository:
 1. Go to **Settings** → **Secrets and variables** → **Actions**
 2. Add these repository secrets:
-   - `ACCESS_TOKEN`
-   - `REFRESH_TOKEN` 
-   - `CLIENT_ID`
-   - `CLIENT_SECRET`
    - `WAF_BYPASS_SECRET`
    - `ROBOT_API_TOKEN`
+   - `DJANGO_ADMIN_PASSWORD`
 
 ## 📁 Project Structure
 
@@ -464,6 +450,7 @@ For GitHub Actions, add the following secrets to your repository:
 │   │       └── user_landingpage.robot  # Landing page checks and payment notifications
 │   ├── Resources/                      # Shared resources and configuration
 │   │   ├── variables.robot             # Global variables (URLs, test data)
+│   │   ├── env_loader.py               # Environment variable loader from .env file
 │   │   ├── texts_FI.robot              # Finnish language texts for verification
 │   │   ├── texts_ENG.robot             # English language texts for verification
 │   │   ├── common_setups_teardowns.robot # Test setup and teardown procedures
@@ -477,7 +464,8 @@ For GitHub Actions, add the following secrets to your repository:
 │   │   ├── suite_specific_units.robot  # Suite-specific unit configurations for parallel isolation
 │   │   ├── suite_unit_selector.robot   # Dynamic unit assignment logic for different test suites
 │   │   ├── pabot_users.dat             # PabotLib value sets with user data for parallel execution
-│   │   ├── token_manager.py            # Token management utilities
+│   │   ├── robot_email_test_tool.py    # Email testing library (backend cache API)
+│   │   ├── email_verification.robot    # Email verification keywords for Robot Framework
 │   │   ├── serial_users.robot          # User management for serial (non-pabot) execution
 │   │   └── downloads/                  # Downloaded files (emails, ICS files)
 │   ├── Tests_user_desktop_FI.robot     # Desktop browser tests (includes recurring reservations)

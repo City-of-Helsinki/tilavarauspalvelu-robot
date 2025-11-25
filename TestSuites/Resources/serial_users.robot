@@ -49,8 +49,8 @@ ${PERMISSION_TARGET_ADMIN_FULLNAME}             ${EMPTY}
 ###############################################################################
 
 # USER 0 (Index 0): Ande AutomaatioTesteri - Male
-# ASSIGNED TEST: tests_user_desktop_fi.robot -> "User logs in and out with suomi_fi"
-${BASIC_USER_MALE_EMAIL}                        qfaksi+ande@gmail.com
+# ASSIGNED TEST: Tests_user_desktop_FI.robot -> "User logs in and out with suomi_fi"
+${BASIC_USER_MALE_EMAIL}                        django_email_robot@mailiposti.com    #qfaksi+ande@gmail.com
 ${BASIC_USER_MALE_HETU}                         180674-907T
 ${BASIC_USER_MALE_PHONE}                        +35840123654
 ${BASIC_USER_MALE_FIRSTNAME}                    Ande

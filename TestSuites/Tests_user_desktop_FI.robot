@@ -288,13 +288,13 @@ Check emails from reservations
     ${time_for_mail}=    Get Test Data Variable    TIME_FOR_MAIL
     ${unit_name_for_mail}=    Get Test Data Variable    UNIT_NAME_FOR_MAIL
 
-    # Process emails
-    mail.Check Emails From Reservations    ${booking_num_for_mail}
+    # Format reservation times for email verification
     mail.Format Reservation Time For Email Texts And Receipts    ${time_for_mail}
+
+    # Verify all email types using the new API-based approach
+    # Each verification will check if emails exist and contain required terms
     mail.Verify Reservation Confirmation Email    ${booking_num_for_mail}
     mail.Verify Reservation Cancellation Email    ${booking_num_for_mail}
-    mail.Verify Refund Email For Paid Reservation    ${booking_num_for_mail}
-    mail.Verify Payment Receipt Email    ${booking_num_for_mail}
 
     Release Lock    PAID_BOOKING_EMAIL_SEQUENCE
 

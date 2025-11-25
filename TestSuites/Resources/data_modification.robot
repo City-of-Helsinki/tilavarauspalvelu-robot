@@ -243,24 +243,6 @@ Formats Reservation Time To Start And End Time
     Log    ${FORMATTED_STARTTIME_EMAIL}
     Log    ${FORMATTED_ENDTIME_EMAIL}
 
-Format Reservation Time For Email Receipt
-    [Documentation]    This keyword reformats a reservation time string from the format
-    ...    "Pe 1.11.2024 klo 11:00–12:00" to "Pe 1.11.2024 11:00-12:00".
-    ...    It removes the word "klo" and replaces the en dash (–) with a hyphen (-),
-    [Arguments]    ${time_of_the_reservation}
-
-    Log
-    ...    Formatting reservation time from '${time_of_the_reservation}' to remove 'klo' and replace en dash with hyphen.
-
-    # Remove 'klo ' and replace the en dash with a hyphen
-    ${reservation_time_email_receipt}=    Evaluate
-    ...    '''${time_of_the_reservation}'''.replace('klo ', '').replace('–', '-')
-
-    # Log the formatted result
-    Log    Formatted reservation time: ${reservation_time_email_receipt}
-
-    Set Suite Variable    ${RESERVATION_TIME_EMAIL_RECEIPT}    ${reservation_time_email_receipt}
-
 Set Info Card Duration Time Info
     [Documentation]    Format the Finnish date and time into the desired format
     ...    HH:MM WITH ":" "–" "Ti 5.12.2023 klo 11:30–12:30".

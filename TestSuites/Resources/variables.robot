@@ -27,6 +27,12 @@ ${URL_MAIL}                                             https://www.google.com/i
 # System
 ${DOWNLOAD_DIR}                                         ${CURDIR}${/}downloads
 ${EMAIL_FILE_PATH}                                      ${CURDIR}${/}downloads${/}cleaned_emails.json
+
+# Email Testing (New Cache-based API)
+${ROBOT_EMAIL}                                          django_email_robot@mailiposti.com
+${DJANGO_ROBO_MAIL}                                     https://varaamo.test.hel.ninja/v1/robot_email_cache/
+${WAIT_FOR_EMAIL_SECONDS}                               5
+
 ###
 #
 ###

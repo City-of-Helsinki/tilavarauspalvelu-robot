@@ -17,13 +17,6 @@ dependencies:
       - robotframework-requests
       - robotframework-pabot==4.3.2
 
-      # Python dependencies
-      - beautifulsoup4
-
-      # Google Auth
-      - google-auth
-      - google-auth-oauthlib
-
       # Environment management
       - python-dotenv
 

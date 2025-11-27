@@ -48,7 +48,7 @@ function Validate-EnvSecrets {
     
     Write-Info "Validating secrets in .env file..."
     
-    $requiredVars = @("WAF_BYPASS_SECRET", "ACCESS_TOKEN", "REFRESH_TOKEN", "CLIENT_ID", "CLIENT_SECRET", "ROBOT_API_TOKEN", "DJANGO_ADMIN_PASSWORD")
+    $requiredVars = @("WAF_BYPASS_SECRET", "ROBOT_API_TOKEN", "DJANGO_ADMIN_PASSWORD")
     $missing = @()
     $found = @()
     
@@ -107,7 +107,7 @@ function Get-DockerConfig {
     $configFile = "docker-config.json"
     
     if (-not (Test-Path $configFile)) {
-        Write-Error "Error: docker-config.json not found"
+        Write-Error "[FAILED] docker-config.json not found"
         Write-Warning "Using default values..."
         
         # Return default configuration
@@ -230,6 +230,17 @@ function Ensure-OutputDirectory {
     }
 }
 
+# Function to validate Docker image exists
+function Test-DockerImage {
+    $imageExists = docker images --format "{{.Repository}}:{{.Tag}}" | Select-String "^${IMAGE_NAME}:latest$"
+    if (-not $imageExists) {
+        Write-Error "[FAILED] Docker image '$IMAGE_NAME:latest' not found"
+        Write-Warning "Please build the image first"
+        return $false
+    }
+    return $true
+}
+
 # Check Docker availability
 try {
     docker --version | Out-Null
@@ -293,7 +304,7 @@ function Clear-DockerImages {
         Write-Info "Removing $IMAGE_NAME:latest..."
         docker image rm "${IMAGE_NAME}:latest" -f
         if ($LASTEXITCODE -eq 0) {
-            Write-Success "[SUCCESS] Successfully removed $IMAGE_NAME:latest"
+            Write-Success "[SUCCESS] Removed $IMAGE_NAME:latest"
         } else {
             Write-Error "[FAILED] Failed to remove $IMAGE_NAME:latest (exit code: $LASTEXITCODE)"
         }
@@ -341,6 +352,11 @@ function Start-Test {
     $mode = if ($Parallel -and $Processes -gt 0) { "parallel with $Processes processes" } else { "sequential" }
     Write-Warning "Running $TaskName ($mode)..."
     
+    # Validate Docker image exists
+    if (-not (Test-DockerImage)) {
+        return $false
+    }
+    
     # Validate .env file exists before running
     if (-not (Test-Path $DOCKER_ENV_FILE)) {
         Write-Error "[FAILED] .env file not found: $DOCKER_ENV_FILE"
@@ -370,7 +386,7 @@ function Start-Test {
             "--pabotlib",
             "--exclude", "serialonly",
             "--resourcefile", "/opt/robotframework/tests/Resources/pabot_users.dat",
-            "--variable", "ENABLE_HAR_RECORDING:$($config.ENABLE_HAR_RECORDING)",
+            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
             "--outputdir", "/opt/robotframework/reports",
             "/opt/robotframework/tests/$TestFile"
         )
@@ -379,7 +395,7 @@ function Start-Test {
         $dockerArgs += @(
             "robot",
             "--variable", "FORCE_SINGLE_USER:True",
-            "--variable", "ENABLE_HAR_RECORDING:$($config.ENABLE_HAR_RECORDING)",
+            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
             "--outputdir", "/opt/robotframework/reports",
             "/opt/robotframework/tests/$TestFile"
         )
@@ -400,8 +416,13 @@ function Start-Test {
 function Start-AllSuites {
     param([bool]$Parallel = $true)
     
-    $mode = if ($Parallel) { "parallel" } else { "sequential" }
+    $mode = if ($Parallel) { "parallel + sequential" } else { "sequential" }
     Write-Warning "Running all test suites in $mode..."
+    
+    # Validate Docker image exists
+    if (-not (Test-DockerImage)) {
+        return $false
+    }
     
     # Validate .env file exists before running
     if (-not (Test-Path $DOCKER_ENV_FILE)) {
@@ -412,52 +433,156 @@ function Start-AllSuites {
     
     Ensure-OutputDirectory
     
-    $dockerArgs = @(
-        "run", "--rm",
-        "--env-file", $DOCKER_ENV_FILE,
-        "-v", "${TEST_DIR}:/opt/robotframework/tests",
-        "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
-        "-v", "${OUTPUT_DIR}:/opt/robotframework/output",
-        "${IMAGE_NAME}:latest"
-    )
-    
-    $suites = @(
+    # Define suites that can run in parallel
+    $parallelSuites = @(
         "/opt/robotframework/tests/$SUITE_USER_DESKTOP",
         "/opt/robotframework/tests/$SUITE_ADMIN_DESKTOP",
-        "/opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS",
         "/opt/robotframework/tests/$SUITE_USERS_WITH_ADMIN",
         "/opt/robotframework/tests/$SUITE_MOBILE_ANDROID",
         "/opt/robotframework/tests/$SUITE_MOBILE_IPHONE"
     )
     
+    # All suites including notifications
+    $allSuites = $parallelSuites + @("/opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS")
+    
     if ($Parallel) {
-        $dockerArgs += @(
+        # First, run parallel suites with pabot
+        Write-Info "Phase 1: Running parallel test suites..."
+        
+        $dockerArgs = @(
+            "run", "--rm",
+            "--env-file", $DOCKER_ENV_FILE,
+            "-v", "${TEST_DIR}:/opt/robotframework/tests",
+            "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
+            "-v", "${OUTPUT_DIR}:/opt/robotframework/output",
+            "${IMAGE_NAME}:latest",
             "pabot",
             "--processes", $ALL_SUITES_PROCESSES,
             "--pabotlib",
             "--exclude", "serialonly",
             "--resourcefile", "/opt/robotframework/tests/Resources/pabot_users.dat",
-            "--variable", "ENABLE_HAR_RECORDING:$($config.ENABLE_HAR_RECORDING)",
-            "--outputdir", "/opt/robotframework/reports"
-        ) + $suites
-    } else {
-        $dockerArgs += @(
+            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
+            "--outputdir", "/opt/robotframework/reports",
+            "--output", "parallel-output.xml",
+            "--log", "parallel-log.html",
+            "--report", "parallel-report.html"
+        ) + $parallelSuites
+        
+        & docker @dockerArgs
+        $parallelExitCode = $LASTEXITCODE
+        
+        if ($parallelExitCode -eq 0) {
+            Write-Success "[SUCCESS] Parallel suites completed successfully"
+        } else {
+            Write-Error "[FAILED] Parallel suites execution failed with exit code: $parallelExitCode"
+        }
+        
+        # Second, run notifications test sequentially
+        Write-Info "Phase 2: Running sequential notification tests..."
+        
+        $dockerArgs = @(
+            "run", "--rm",
+            "--env-file", $DOCKER_ENV_FILE,
+            "-v", "${TEST_DIR}:/opt/robotframework/tests",
+            "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
+            "-v", "${OUTPUT_DIR}:/opt/robotframework/output",
+            "${IMAGE_NAME}:latest",
             "robot",
             "--variable", "FORCE_SINGLE_USER:True",
-            "--variable", "ENABLE_HAR_RECORDING:$($config.ENABLE_HAR_RECORDING)",
-            "--outputdir", "/opt/robotframework/reports"
-        ) + $suites
-    }
-    
-    & docker @dockerArgs
-    if ($LASTEXITCODE -eq 0) {
-        Write-Success "[SUCCESS] All suites completed successfully"
+            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
+            "--outputdir", "/opt/robotframework/reports",
+            "--output", "notifications-output.xml",
+            "--log", "notifications-log.html",
+            "--report", "notifications-report.html",
+            "/opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS"
+        )
+        
+        & docker @dockerArgs
+        $notificationsExitCode = $LASTEXITCODE
+        
+        if ($notificationsExitCode -eq 0) {
+            Write-Success "[SUCCESS] Notifications suite completed successfully"
+        } else {
+            Write-Error "[FAILED] Notifications suite execution failed with exit code: $notificationsExitCode"
+        }
+        
+        # Combine the results using rebot
+        Write-Info "Phase 3: Combining test results..."
+        
+        # Check if output files exist before combining (use relative path for PowerShell)
+        $parallelOutputExists = Test-Path "output\parallel-output.xml"
+        $notificationsOutputExists = Test-Path "output\notifications-output.xml"
+        
+        if (-not $parallelOutputExists) {
+            Write-Warning "[WARNING] Parallel output file not found, skipping result combination"
+        } elseif (-not $notificationsOutputExists) {
+            Write-Warning "[WARNING] Notifications output file not found, skipping result combination"
+        } else {
+            $dockerArgs = @(
+                "run", "--rm",
+                "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
+                "${IMAGE_NAME}:latest",
+                "rebot",
+                "--outputdir", "/opt/robotframework/reports",
+                "--output", "output.xml",
+                "--log", "log.html",
+                "--report", "report.html",
+                "--name", "All Suites",
+                "/opt/robotframework/reports/parallel-output.xml",
+                "/opt/robotframework/reports/notifications-output.xml"
+            )
+            
+            & docker @dockerArgs
+            $rebotExitCode = $LASTEXITCODE
+            
+            # Rebot returns exit codes 0-250 where the code indicates number of failed tests
+            # Exit codes > 250 indicate actual rebot errors
+            if ($rebotExitCode -le 250) {
+                if ($rebotExitCode -eq 0) {
+                    Write-Success "[SUCCESS] Results combined successfully (all tests passed)"
+                } else {
+                    Write-Success "[SUCCESS] Results combined successfully ($rebotExitCode test(s) failed - see combined report)"
+                }
+            } else {
+                Write-Error "[FAILED] Result combination failed with exit code: $rebotExitCode"
+            }
+        }
+        
+        # Overall success if both test runs succeeded
+        if ($parallelExitCode -eq 0 -and $notificationsExitCode -eq 0) {
+            Write-Success "[SUCCESS] All suites completed successfully"
+            return $true
+        } else {
+            Write-Error "[FAILED] One or more test suites failed"
+            Write-Warning "Check the output above for detailed error information"
+            return $false
+        }
+        
     } else {
-        Write-Error "[FAILED] All suites execution failed with exit code: $LASTEXITCODE"
-        Write-Warning "Check the output above for detailed error information"
-        return $false
+        # Run all suites sequentially with robot
+        $dockerArgs = @(
+            "run", "--rm",
+            "--env-file", $DOCKER_ENV_FILE,
+            "-v", "${TEST_DIR}:/opt/robotframework/tests",
+            "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
+            "-v", "${OUTPUT_DIR}:/opt/robotframework/output",
+            "${IMAGE_NAME}:latest",
+            "robot",
+            "--variable", "FORCE_SINGLE_USER:True",
+            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
+            "--outputdir", "/opt/robotframework/reports"
+        ) + $allSuites
+        
+        & docker @dockerArgs
+        if ($LASTEXITCODE -eq 0) {
+            Write-Success "[SUCCESS] All suites completed successfully"
+            return $true
+        } else {
+            Write-Error "[FAILED] All suites execution failed with exit code: $LASTEXITCODE"
+            Write-Warning "Check the output above for detailed error information"
+            return $false
+        }
     }
-    return $true
 }
 
 # Function to toggle HAR recording setting
@@ -472,6 +597,17 @@ function Toggle-HarRecording {
     try {
         # Read current configuration
         $json = Get-Content $configFile | ConvertFrom-Json
+        
+        # Validate JSON structure
+        if (-not $json.PSObject.Properties.Name.Contains('robot_variables')) {
+            Write-Error "[FAILED] Invalid JSON structure: 'robot_variables' section missing"
+            return $false
+        }
+        
+        if (-not $json.robot_variables.PSObject.Properties.Name.Contains('enable_har_recording')) {
+            Write-Error "[FAILED] Invalid JSON structure: 'enable_har_recording' property missing"
+            return $false
+        }
         
         # Toggle the HAR recording setting
         $currentState = $json.robot_variables.enable_har_recording
@@ -553,7 +689,7 @@ function Start-PythonLint {
         "-v", "${currentDir}:/opt/project",
         "-w", "/opt/project",
         "${IMAGE_NAME}:latest",
-        "ruff", "check", "TestSuites/", "*.py"
+        "ruff", "check", "."
     )
     
     & docker @dockerArgs | Tee-Object -FilePath "linting-ruff-report.txt"
@@ -568,13 +704,18 @@ function Start-PythonLint {
 
 # Function to format Python code with Ruff
 function Start-PythonFormat {
-    Write-Warning "Formatting Python code with Ruff..."
-    Write-Warning "This will modify your .py files"
-    $confirm = Read-Host "Continue? (y/n)"
+    param([bool]$SkipConfirmation = $false)
     
-    if ($confirm -notmatch "^[Yy]$") {
-        Write-Warning "Cancelled"
-        return $false
+    Write-Warning "Formatting Python code with Ruff..."
+    
+    if (-not $SkipConfirmation) {
+        Write-Warning "This will modify your .py files"
+        $confirm = Read-Host "Continue? (y/n)"
+        
+        if ($confirm -notmatch "^[Yy]$") {
+            Write-Warning "Cancelled"
+            return $false
+        }
     }
     
     $currentDir = (Get-Item .).FullName -replace '\\', '/'
@@ -587,7 +728,7 @@ function Start-PythonFormat {
         "-v", "${currentDir}:/opt/project",
         "-w", "/opt/project",
         "${IMAGE_NAME}:latest",
-        "ruff", "format", "TestSuites/", "*.py"
+        "ruff", "format", "."
     )
     
     & docker @dockerArgs
@@ -616,7 +757,7 @@ function Start-PythonFormatCheck {
         "-v", "${currentDir}:/opt/project",
         "-w", "/opt/project",
         "${IMAGE_NAME}:latest",
-        "ruff", "format", "--check", "TestSuites/", "*.py"
+        "ruff", "format", "--check", "."
     )
     
     & docker @dockerArgs
@@ -659,6 +800,8 @@ function Start-RobotLint {
 # Function to run Shell script linting with ShellCheck
 function Start-ShellLint {
     Write-Warning "Running Shell script linting with ShellCheck..."
+    Write-Warning "[NOTE] Shell script linting is designed for Mac/Linux. For best results, use the docker-test.sh runner on Mac/Linux systems."
+    Write-Host ""
     
     $currentDir = (Get-Item .).FullName -replace '\\', '/'
     if ($currentDir -match '^([A-Z]):') {
@@ -685,15 +828,20 @@ function Start-ShellLint {
 
 # Function to format Shell scripts with shfmt
 function Start-ShellFormat {
+    param([bool]$SkipConfirmation = $false)
+    
     Write-Warning "Formatting Shell scripts with shfmt..."
     Write-Info "This will format shell scripts to standard style"
     Write-Host ""
-    Write-Warning "This will modify your shell script files"
-    $confirm = Read-Host "Continue? (y/n)"
     
-    if ($confirm -notmatch "^[Yy]$") {
-        Write-Warning "Cancelled"
-        return $false
+    if (-not $SkipConfirmation) {
+        Write-Warning "This will modify your shell script files"
+        $confirm = Read-Host "Continue? (y/n)"
+        
+        if ($confirm -notmatch "^[Yy]$") {
+            Write-Warning "Cancelled"
+            return $false
+        }
     }
     
     $currentDir = (Get-Item .).FullName -replace '\\', '/'
@@ -741,7 +889,7 @@ function Start-AllLinters {
 
 # Function to run all formatters
 # Note: PowerShell formatting is intentionally excluded.
-# Use editor with PowerShell formatting
+# Use an editor with PowerShell formatting support instead.
 function Start-AllFormatters {
     Write-Warning "Running all formatters..."
     Write-Info "This will format Python, Robot Framework, and Shell scripts"
@@ -756,13 +904,13 @@ function Start-AllFormatters {
     
     Write-Host ""
     Write-Warning "Formatting Python code..."
-    Start-PythonFormat
+    Start-PythonFormat -SkipConfirmation $true
     Write-Host ""
     Write-Warning "Formatting Robot Framework files..."
-    Start-FormatRobotFiles
+    Start-FormatRobotFiles -SkipConfirmation $true
     Write-Host ""
     Write-Warning "Formatting Shell scripts..."
-    Start-ShellFormat
+    Start-ShellFormat -SkipConfirmation $true
     Write-Host ""
     Write-Success "[SUCCESS] All formatters completed"
     Write-Info "Review changes with: git diff"
@@ -771,21 +919,26 @@ function Start-AllFormatters {
 
 # Function to format Robot Framework files with Robocop
 function Start-FormatRobotFiles {
+    param([bool]$SkipConfirmation = $false)
+    
     Write-Warning "Formatting Robot Framework files with Robocop..."
     Write-Info "This will comprehensively format your .robot files:"
-    Write-Info "  • Reorder sections"
-    Write-Info "  • Fix indentation and spacing"
-    Write-Info "  • Sort imports/settings/variables"
-    Write-Info "  • Break long lines"
-    Write-Info "  • Normalize formatting"
-    Write-Info "  • Normalize keyword names (library/resource names preserved)"
+    Write-Info "  - Reorder sections"
+    Write-Info "  - Fix indentation and spacing"
+    Write-Info "  - Sort imports/settings/variables"
+    Write-Info "  - Break long lines"
+    Write-Info "  - Normalize formatting"
+    Write-Info "  - Normalize keyword names (library/resource names preserved)"
     Write-Host ""
-    Write-Warning "This will modify your .robot files"
-    $confirm = Read-Host "Continue? (y/n)"
     
-    if ($confirm -notmatch "^[Yy]$") {
-        Write-Warning "Cancelled"
-        return $false
+    if (-not $SkipConfirmation) {
+        Write-Warning "This will modify your .robot files"
+        $confirm = Read-Host "Continue? (y/n)"
+        
+        if ($confirm -notmatch "^[Yy]$") {
+            Write-Warning "Cancelled"
+            return $false
+        }
     }
     
     $currentDir = (Get-Item .).FullName -replace '\\', '/'
@@ -841,6 +994,7 @@ if ($Choice) {
         "18" { Toggle-HarRecording }
         "19" { Start-PythonLint }
         "20" { Start-PythonFormat }
+        "21" { Start-PythonFormatCheck }
         "22" { Start-RobotLint }
         "23" { Start-ShellLint }
         "24" { Start-ShellFormat }
@@ -865,8 +1019,8 @@ if ($Choice) {
         }
         
         # Show HAR recording status
-        $harStatus = if ($config.ENABLE_HAR_RECORDING -eq "`${TRUE}") { "[ENABLED]" } else { "[DISABLED]" }
-        $harColor = if ($config.ENABLE_HAR_RECORDING -eq "`${TRUE}") { "Green" } else { "Yellow" }
+        $harStatus = if ($config["ENABLE_HAR_RECORDING"] -eq "`${TRUE}") { "[ENABLED]" } else { "[DISABLED]" }
+        $harColor = if ($config["ENABLE_HAR_RECORDING"] -eq "`${TRUE}") { "Green" } else { "Yellow" }
         Write-Host "HAR Recording: " -NoNewline
         Write-Host $harStatus -ForegroundColor $harColor
         
@@ -882,7 +1036,7 @@ if ($Choice) {
         Write-Host "6. $SUITE_MOBILE_ANDROID ($MOBILE_PROCESSES processes)"
         Write-Host "7. $SUITE_MOBILE_IPHONE ($MOBILE_PROCESSES processes)"
         Write-Host "8. $SUITE_USERS_WITH_ADMIN ($ADMIN_PROCESSES processes)"
-        Write-Host "9. All Suites Parallel ($ALL_SUITES_PROCESSES processes)"
+        Write-Host "9. All Suites (Parallel + Notifications Sequential)"
         Write-Host ""
         Write-Host "SEQUENTIAL (robot) - One process" -ForegroundColor Yellow
         Write-Host "=================================================="
@@ -906,9 +1060,10 @@ if ($Choice) {
         Write-Host "=================================================="
         Write-Host "19. Lint Python Code (Ruff)"
         Write-Host "20. Format Python Code (Ruff)"
+        Write-Host "21. Check Python Formatting (Ruff)"
         Write-Host "22. Lint Robot Framework Files (Robocop)"
-        Write-Host "23. Lint Shell Scripts (ShellCheck)"
-        Write-Host "24. Format Shell Scripts (shfmt)"
+        Write-Host "23. Lint Shell Scripts (ShellCheck) (mac/linux)"
+        Write-Host "24. Format Shell Scripts (shfmt) (mac/linux)"
         Write-Host "25. Run All Linters"
         Write-Host "26. Run All Formatters"
         Write-Host "27. Format Robot Framework Files (Robocop - Comprehensive)"
@@ -923,7 +1078,7 @@ if ($Choice) {
             break
         }
         
-        & $PSCommandPath -Choice $choice
+        & "$PSCommandPath" -Choice $choice
         
         # If HAR recording toggle was used, reload configuration
         if ($choice -eq "18") {

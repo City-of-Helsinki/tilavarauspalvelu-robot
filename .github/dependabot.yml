@@ -1,0 +1,85 @@
+version: 2
+updates:
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+      timezone: "Europe/Helsinki"
+    open-pull-requests-limit: 5
+    groups:
+      robot-framework:
+        patterns:
+          - "robotframework*"
+        update-types:
+          - "minor"
+          - "patch"
+      testing-tools:
+        patterns:
+          - "requests"
+          - "python-dotenv"
+          - "robotframework-requests"
+        update-types:
+          - "minor"
+          - "patch"
+      linting:
+        patterns:
+          - "ruff"
+          - "robotframework-robocop"
+        update-types:
+          - "minor"
+          - "patch"
+    labels:
+      - "dependencies"
+      - "python"
+      - "automated"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    ignore:
+      # Don't auto-update major versions of core Robot Framework
+      - dependency-name: "robotframework"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "robotframework-browser"
+        update-types: ["version-update:semver-major"]
+      # Keep python-dotenv pinned to avoid breaking changes
+      - dependency-name: "python-dotenv"
+        update-types: ["version-update:semver-major"]
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "04:00"
+      timezone: "Europe/Helsinki"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "automated"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    ignore:
+      # Be cautious with Playwright base image major version updates
+      - dependency-name: "mcr.microsoft.com/playwright"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
+    schedule:
+      interval: "monthly"
+      day: "wednesday"
+      time: "04:00"
+      timezone: "Europe/Helsinki"
+    labels:
+      - "dependencies"
+      - "ci/cd"
+      - "automated"
+    commit-message:
+      prefix: "ci"
+      include: "scope"

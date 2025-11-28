@@ -252,6 +252,7 @@ Admin Fills Reservation Details Behalf
     Type Text    [name="reserveeEmail"]    ${BASIC_ADMIN_MALE_EMAIL}
     Sleep    500ms
     Type Text    [name="reserveePhone"]    ${ADMIN_BEHALF_PHONE_FI}
+    Sleep    500ms
 
 Admin Enters Reservation Time And Type Of Reservation
     [Documentation]    This keyword changes the time with date and hours and minutes.

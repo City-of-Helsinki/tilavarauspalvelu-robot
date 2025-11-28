@@ -2,7 +2,7 @@
 robotframework==7.3.2
 
 # Browser automation library for Robot Framework (uses Playwright)
-robotframework-browser==19.6.2
+robotframework-browser==19.11.0
 
 # Parallel execution for Robot Framework
 robotframework-pabot==4.3.2

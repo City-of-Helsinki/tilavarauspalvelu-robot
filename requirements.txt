@@ -8,10 +8,10 @@ robotframework-browser==19.6.2
 robotframework-pabot==4.3.2
 
 # Environment variable loading from .env files
-python-dotenv==1.0.1
+python-dotenv==1.2.1
 
 # HTTP requests library for API testing
-requests==2.32.3
+requests==2.32.5
 
 # HTTP requests library for Robot Framework API testing
 robotframework-requests==0.9.7

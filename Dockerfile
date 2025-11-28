@@ -12,7 +12,7 @@
 # 
 # Note: Base image timezone is America/Los_Angeles (we override to UTC)
 # FROM mcr.microsoft.com/playwright:v1.50.0-noble
-FROM mcr.microsoft.com/playwright:v1.53.2-noble
+FROM mcr.microsoft.com/playwright:v1.57.0-noble
 
 # =============================================================================
 # Environment Configuration

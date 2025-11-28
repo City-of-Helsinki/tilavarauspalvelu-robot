@@ -5,7 +5,7 @@ robotframework==7.3.2
 robotframework-browser==19.6.2
 
 # Parallel execution for Robot Framework
-robotframework-pabot==4.3.2
+robotframework-pabot==5.1.0
 
 # Environment variable loading from .env files
 python-dotenv==1.0.1

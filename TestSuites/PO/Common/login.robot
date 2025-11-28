@@ -37,14 +37,23 @@ Login Django Admin
     Wait For Load State    load    timeout=15s
     Wait For Elements State    id=id_username    visible    timeout=10s
     Type Text    id=id_username    ${input_username}
+    # Verify that the username was actually typed
+    ${typed_username}=    Get Property    id=id_username    value
+    Should Be Equal    ${typed_username}    ${input_username}
+    Sleep    100ms
+
     # Use password from Robot Framework variable (loaded by env_loader.py)
     # Suppress logging when typing password
     ${original_log_level}=    Set Log Level    WARN
     Type Text    id=id_password    ${DJANGO_ADMIN_PASSWORD}
+    # Verify that the password was actually typed (without logging the value)
+    ${typed_password}=    Get Property    id=id_password    value
+    Should Be Equal    ${typed_password}    ${DJANGO_ADMIN_PASSWORD}
     Set Log Level    ${original_log_level}
     Click    [type="submit"]
     Sleep    2s
     Wait For Load State    load    timeout=60s
+    Wait For Elements State    id=id_password    hidden    timeout=5s    message=Check that login credentials are correct and match the backend data.
 
 Login Suomi Fi Mobile
     [Arguments]    ${input_hetu}

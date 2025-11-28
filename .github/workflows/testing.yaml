@@ -6,11 +6,11 @@ on:
       test_suite:
         description: "Select which test suite to run"
         required: true
-        default: "All"
+        default: "All Tests"
         type: choice
         options:
           - Smoke
-          - All
+          - All Tests
           - Tests_user_desktop_FI
           - Tests_user_mobile_iphone_FI
           - Tests_user_mobile_android_FI
@@ -38,10 +38,6 @@ jobs:
     timeout-minutes: 60 # Prevent hanging tests
     env:
       TZ: Europe/Helsinki # Ensure consistent timezone for tests
-      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-      CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       WAF_BYPASS_SECRET: ${{ secrets.WAF_BYPASS_SECRET }}
       ROBOT_API_TOKEN: ${{ secrets.ROBOT_API_TOKEN }}
       DJANGO_ADMIN_PASSWORD: ${{ secrets.DJANGO_ADMIN_PASSWORD }}
@@ -101,11 +97,12 @@ jobs:
               fi
               echo "run_type=smoke_only" >> $GITHUB_OUTPUT
               ;;
-            All)
-              # For "All": first run smoke tests, then full suite if smoke passes
+            "All Tests")
+              # For "All Tests": first run smoke tests, then full suite if smoke passes
               if [ "$EXECUTION_MODE" = "parallel" ]; then
                 echo "smoke_args=--processes 2 --outputdir /opt/robotframework/reports/smoke --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
-                echo "full_args=--processes $ALL_SUITES_PROCESSES --outputdir /opt/robotframework/reports/full --nostatusrc --name \"All Test Suites\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot /opt/robotframework/tests/Tests_admin_notifications_serial.robot /opt/robotframework/tests/Tests_users_with_admin_desktop.robot /opt/robotframework/tests/Tests_user_mobile_android_FI.robot /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+                # For parallel mode: run parallel-safe suites (excluding notifications)
+                echo "parallel_args=--processes $ALL_SUITES_PROCESSES --outputdir /opt/robotframework/reports/full --output parallel-output.xml --log parallel-log.html --report parallel-report.html --nostatusrc --name \"Parallel Suites\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot /opt/robotframework/tests/Tests_users_with_admin_desktop.robot /opt/robotframework/tests/Tests_user_mobile_android_FI.robot /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
               else
                 echo "smoke_args=--outputdir /opt/robotframework/reports/smoke --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
                 echo "full_args=--outputdir /opt/robotframework/reports/full --nostatusrc --name \"All Test Suites\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot /opt/robotframework/tests/Tests_admin_notifications_serial.robot /opt/robotframework/tests/Tests_users_with_admin_desktop.robot /opt/robotframework/tests/Tests_user_mobile_android_FI.robot /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
@@ -186,7 +183,7 @@ jobs:
           echo "🚀 Starting smoke tests with ${{ steps.config.outputs.execution_tool }}..."
           set +e  # Don't exit on error
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
+            -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
@@ -217,17 +214,112 @@ jobs:
           fi
 
       # Run full test suite only if smoke tests executed successfully
-      - name: Run Full Test Suite
-        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true'
+      # For parallel mode: Phase 1 - Run parallel-safe suites
+      - name: Run Parallel Test Suites (Phase 1)
+        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true' && github.event.inputs.execution_mode == 'parallel'
         run: |
-          echo "🚀 Smoke tests succeeded; running full test suite with ${{ steps.config.outputs.execution_tool }}..."
+          echo "🚀 Phase 1: Running parallel test suites..."
           set +e  # Don't exit on error to ensure we can collect results
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
+            -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
-            robotframework-tests:latest ${{ steps.config.outputs.execution_tool }} \
+            robotframework-tests:latest pabot \
+            ${{ steps.config.outputs.base_flags }} \
+            ${{ steps.config.outputs.parallel_args }}
+
+          PARALLEL_EXIT_CODE=$?
+          echo "PARALLEL_EXIT_CODE=$PARALLEL_EXIT_CODE" >> $GITHUB_ENV
+          echo "✅ Parallel suites completed with exit code: $PARALLEL_EXIT_CODE"
+
+      # For parallel mode: Phase 2 - Run notifications sequentially
+      - name: Run Notifications Suite (Phase 2)
+        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true' && github.event.inputs.execution_mode == 'parallel'
+        run: |
+          echo "🚀 Phase 2: Running sequential notification tests..."
+          set +e  # Don't exit on error to ensure we can collect results
+
+          # Determine HAR variable for robot command (not pabot)
+          if [ "${{ github.event.inputs.enable_har_recording }}" = "true" ]; then
+            HAR_VAR="--variable ENABLE_HAR_RECORDING:True"
+          else
+            HAR_VAR="--variable ENABLE_HAR_RECORDING:False"
+          fi
+
+          docker run --rm \
+            -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
+            -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
+            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            -v "${{ github.workspace }}/output:/opt/robotframework/output" \
+            robotframework-tests:latest robot \
+            --variable FORCE_SINGLE_USER:True \
+            $HAR_VAR \
+            --outputdir /opt/robotframework/reports/full \
+            --output notifications-output.xml \
+            --log notifications-log.html \
+            --report notifications-report.html \
+            --nostatusrc \
+            /opt/robotframework/tests/Tests_admin_notifications_serial.robot
+
+          NOTIFICATIONS_EXIT_CODE=$?
+          echo "NOTIFICATIONS_EXIT_CODE=$NOTIFICATIONS_EXIT_CODE" >> $GITHUB_ENV
+          echo "✅ Notifications suite completed with exit code: $NOTIFICATIONS_EXIT_CODE"
+
+      # For parallel mode: Phase 3 - Combine results with rebot
+      - name: Combine Test Results (Phase 3)
+        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true' && github.event.inputs.execution_mode == 'parallel'
+        run: |
+          echo "🚀 Phase 3: Combining test results..."
+
+          # Check if both output files exist
+          if [ ! -f "Reports/full/parallel-output.xml" ]; then
+            echo "::warning title=Missing Results::Parallel output file not found, skipping result combination"
+            exit 0
+          fi
+
+          if [ ! -f "Reports/full/notifications-output.xml" ]; then
+            echo "::warning title=Missing Results::Notifications output file not found, skipping result combination"
+            exit 0
+          fi
+
+          # Combine results using rebot
+          docker run --rm \
+            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            robotframework-tests:latest rebot \
+            --outputdir /opt/robotframework/reports/full \
+            --output output.xml \
+            --log log.html \
+            --report report.html \
+            --name "All Test Suites" \
+            /opt/robotframework/reports/full/parallel-output.xml \
+            /opt/robotframework/reports/full/notifications-output.xml
+
+          REBOT_EXIT_CODE=$?
+
+          # Rebot returns exit codes 0-250 where the code indicates number of failed tests
+          if [ $REBOT_EXIT_CODE -le 250 ]; then
+            if [ $REBOT_EXIT_CODE -eq 0 ]; then
+              echo "✅ Results combined successfully (all tests passed)"
+            else
+              echo "✅ Results combined successfully ($REBOT_EXIT_CODE test(s) failed - see combined report)"
+            fi
+          else
+            echo "::error title=Rebot Failed::Result combination failed with exit code: $REBOT_EXIT_CODE"
+          fi
+
+      # For sequential mode: Run all suites together
+      - name: Run Full Test Suite (Sequential)
+        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true' && github.event.inputs.execution_mode == 'sequential'
+        run: |
+          echo "🚀 Smoke tests succeeded; running full test suite sequentially..."
+          set +e  # Don't exit on error to ensure we can collect results
+          docker run --rm \
+            -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
+            -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
+            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            -v "${{ github.workspace }}/output:/opt/robotframework/output" \
+            robotframework-tests:latest robot \
             ${{ steps.config.outputs.base_flags }} \
             ${{ steps.config.outputs.full_args }}
 
@@ -240,7 +332,7 @@ jobs:
         run: |
           echo "🚀 Running ${{ github.event.inputs.test_suite }} with ${{ steps.config.outputs.execution_tool }} (${{ github.event.inputs.execution_mode }} mode)..."
           docker run --rm \
-            -e ACCESS_TOKEN -e REFRESH_TOKEN -e CLIENT_ID -e CLIENT_SECRET -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
+            -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
@@ -262,15 +354,15 @@ jobs:
               all_output_files = glob.glob("Reports/**/output.xml", recursive=True)
               # Filter out pabot worker results - only use the main consolidated output.xml
               candidate_files = [f for f in all_output_files if 'pabot_results' not in f]
-              
+
               print(f"Found {len(all_output_files)} total output.xml files")
               print(f"Found {len(candidate_files)} main output files (excluding pabot worker files)")
               for f in candidate_files:
                   print(f"  - {f}")
-              
-              # For "All" suite execution, prioritize full results over smoke results
+
+              # For "All Tests" suite execution, prioritize full results over smoke results
               test_suite = "${{ github.event.inputs.test_suite }}"
-              if test_suite == 'All' and len(candidate_files) > 1:
+              if test_suite == 'All Tests' and len(candidate_files) > 1:
                   # Look for 'full' directory results first, then any non-smoke results
                   full_files = [f for f in candidate_files if '/full/' in f]
                   if full_files:
@@ -283,7 +375,7 @@ jobs:
               else:
                   output_files = candidate_files
                   print(f"Using all available results: {output_files}")
-              
+
               if not output_files:
                   print("::warning title=No Results::No Robot Framework output.xml files found")
                   # Create a basic summary even when no results are found
@@ -295,23 +387,23 @@ jobs:
                   summary += "3. Robot Framework execution failed before generating output files\n"
                   summary += "4. Volume mounting issues between host and container\n\n"
                   summary += "Check the step logs above for more detailed error information.\n"
-                  
+
                   with open(os.environ['GITHUB_STEP_SUMMARY'], 'w') as f:
                       f.write(summary)
                   return
-              
+
               total_passed = 0
               total_failed = 0
               failed_tests = []
               passed_tests = []
-              
+
               # Check if we're in smoke-first mode and determine execution status
               test_suite = "${{ github.event.inputs.test_suite }}"
               smoke_execution_failed = os.environ.get('SMOKE_EXECUTION_FAILED', '') == 'true'
-              
+
               # Determine if full suite actually ran by checking for multiple output files or full suite patterns
               full_suite_ran = False
-              if test_suite == 'All':
+              if test_suite == 'All Tests':
                   # Check if we have results that indicate full suite execution
                   if len(output_files) > 1 or any('full' in f for f in output_files):
                       full_suite_ran = True
@@ -328,18 +420,18 @@ jobs:
                                   break
                           except:
                               pass
-              
+
               # Parse each output.xml file
               for output_file in output_files:
                   try:
                       tree = ET.parse(output_file)
                       root = tree.getroot()
-                      
+
                       # Extract individual test results
                       for test in root.findall('.//test'):
                           test_name = test.get('name', 'Unknown Test')
                           status = test.find('status')
-                          
+
                           if status is not None:
                               if status.get('status') == 'PASS':
                                   total_passed += 1
@@ -348,15 +440,15 @@ jobs:
                                   total_failed += 1
                                   error_msg = status.text or 'No error message'
                                   failed_tests.append(f"{test_name}: {error_msg}")
-                  
+
                   except Exception as e:
                       print(f"::warning title=Parse Error::Could not parse {output_file}: {e}")
-              
+
               # Create GitHub Actions summary with test results
               summary = f"## 🤖 Test Results Summary\n\n"
-              
+
               # Add execution mode information
-              if test_suite == 'All':
+              if test_suite == 'All Tests':
                   if smoke_execution_failed:
                       summary += "🛑 **SMOKE TESTS FAILED** - Full test suite was blocked\n\n"
                       summary += "📋 **Next Steps**: Fix the failing smoke tests and re-run the workflow\n\n"
@@ -364,16 +456,16 @@ jobs:
                       summary += "✅ **FULL TEST SUITE EXECUTED** - All smoke tests passed, full suite completed\n\n"
                       if total_failed > 0:
                           summary += f"⚠️ Note: {total_failed} test cases failed in the full suite\n\n"
-              
+
               summary += f"- ✅ **Passed**: {total_passed}\n"
               summary += f"- ❌ **Failed**: {total_failed}\n"
               summary += f"- 📊 **Total**: {total_passed + total_failed}\n\n"
-              
+
               # Show failed tests (limit to 10 for readability)
               if failed_tests:
-                  if test_suite == 'All' and smoke_execution_failed:
+                  if test_suite == 'All Tests' and smoke_execution_failed:
                       summary += "### 🚨 Smoke Test Execution Errors\n"
-                  elif test_suite == 'All' and not full_suite_ran:
+                  elif test_suite == 'All Tests' and not full_suite_ran:
                       summary += "### 🚨 Failed Smoke Tests\n"
                   else:
                       summary += "### ❌ Failed Tests\n"
@@ -382,10 +474,10 @@ jobs:
                   if len(failed_tests) > 10:
                       summary += f"... and {len(failed_tests) - 10} more\n"
                   summary += "\n"
-              
+
               # Show some passed tests (limit to 5)
               if passed_tests:
-                  if test_suite == 'All' and not full_suite_ran:
+                  if test_suite == 'All Tests' and not full_suite_ran:
                       summary += "### ✅ Passed Smoke Tests\n"
                   else:
                       summary += "### ✅ Passed Tests\n"
@@ -393,14 +485,14 @@ jobs:
                       summary += f"{i}. `{test}`\n"
                   if len(passed_tests) > 5:
                       summary += f"... and {len(passed_tests) - 5} more\n"
-              
+
               # Write summary to GitHub Actions page
               with open(os.environ['GITHUB_STEP_SUMMARY'], 'w') as f:
                   f.write(summary)
-              
+
               # Skip creating annotations here - let the final step handle all messaging
               # The summary will still show detailed results
-              
+
               # Export the failure count for use in final step
               with open(os.environ['GITHUB_ENV'], 'a') as f:
                   f.write(f"TEST_FAILURE_COUNT={total_failed}\n")
@@ -424,11 +516,11 @@ jobs:
               -w /opt/project \
               robotframework-tests:latest \
               python3 har_analyzer.py | tee har_analysis_detailed.txt
-            
+
             # Debug: Check what files were created
             echo "📁 Files in workspace root:"
             ls -la har_analysis_*.txt || echo "No har_analysis_*.txt files found in root"
-            
+
             # Check if analysis output was created
             if [ -f har_analysis_summary.txt ]; then
               echo "" >> $GITHUB_STEP_SUMMARY

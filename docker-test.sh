@@ -97,14 +97,14 @@ export OUTPUT_DIR="$DOCKER_PWD/output"
 if [ -f "$DOCKER_ENV_FILE" ]; then
     echo "Loading environment variables from $DOCKER_ENV_FILE..."
     while IFS= read -r line; do
-        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT|DJANGO_ADMIN_PASSWORD)= ]]; then
+        if [[ $line =~ ^(WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT|DJANGO_ADMIN_PASSWORD)= ]]; then
             eval "export $line"
         fi
     done < <(grep -v '^#' "$DOCKER_ENV_FILE")
 elif [ -f .env ]; then
     echo "Loading environment variables from .env file..."
     while IFS= read -r line; do
-        if [[ $line =~ ^(ACCESS_TOKEN|REFRESH_TOKEN|CLIENT_ID|CLIENT_SECRET|WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT|DJANGO_ADMIN_PASSWORD)= ]]; then
+        if [[ $line =~ ^(WAF_BYPASS_SECRET|ROBOT_API_TOKEN|ROBOT_API_ENDPOINT|DJANGO_ADMIN_PASSWORD)= ]]; then
             eval "export $line"
         fi
     done < <(grep -v '^#' .env)
@@ -116,6 +116,16 @@ echo "  Desktop processes: $DESKTOP_PROCESSES"
 echo "  Admin processes: $ADMIN_PROCESSES"
 echo "  Mobile processes: $MOBILE_PROCESSES"
 echo "  All suites processes: $ALL_SUITES_PROCESSES"
+
+# Function to test if Docker image exists
+test_docker_image() {
+    if ! docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "^$IMAGE_NAME:latest$"; then
+        echo -e "${RED}❌ Docker image '$IMAGE_NAME:latest' not found${NC}"
+        echo -e "${YELLOW}⚠️  Please build the image first using option 3${NC}"
+        return 1
+    fi
+    return 0
+}
 
 # Function to validate required environment variables
 validate_required_vars() {
@@ -150,7 +160,7 @@ validate_env_secrets() {
 
     echo "Validating secrets in .env file..."
 
-    local required_vars=("WAF_BYPASS_SECRET" "ACCESS_TOKEN" "REFRESH_TOKEN" "CLIENT_ID" "CLIENT_SECRET" "ROBOT_API_TOKEN" "DJANGO_ADMIN_PASSWORD")
+    local required_vars=("WAF_BYPASS_SECRET" "ROBOT_API_TOKEN" "DJANGO_ADMIN_PASSWORD")
     local missing=()
     local found=()
 
@@ -358,6 +368,18 @@ run_pabot() {
 
     echo -e "${YELLOW}🚀 Running $task_name with $processes processes...${NC}"
 
+    # Validate Docker image exists
+    if ! test_docker_image; then
+        return 1
+    fi
+
+    # Validate .env file exists
+    if [ ! -f "$DOCKER_ENV_FILE" ]; then
+        echo -e "${RED}❌ .env file not found: $DOCKER_ENV_FILE${NC}"
+        echo -e "${YELLOW}⚠️  Tests may fail without proper environment configuration${NC}"
+        return 1
+    fi
+
     # Ensure output directory exists
     ensure_output_directory
 
@@ -400,6 +422,18 @@ run_robot() {
 
     echo -e "${YELLOW}🚀 Running $task_name (sequential)...${NC}"
 
+    # Validate Docker image exists
+    if ! test_docker_image; then
+        return 1
+    fi
+
+    # Validate .env file exists
+    if [ ! -f "$DOCKER_ENV_FILE" ]; then
+        echo -e "${RED}❌ .env file not found: $DOCKER_ENV_FILE${NC}"
+        echo -e "${YELLOW}⚠️  Tests may fail without proper environment configuration${NC}"
+        return 1
+    fi
+
     # Ensure output directory exists
     ensure_output_directory
 
@@ -433,7 +467,19 @@ run_robot() {
 
 # Function to run all suites in parallel with proper .env handling
 run_all_suites() {
-    echo -e "${YELLOW}🚀 Running all test suites in parallel...${NC}"
+    echo -e "${YELLOW}🚀 Running all test suites in parallel + sequential...${NC}"
+
+    # Validate Docker image exists
+    if ! test_docker_image; then
+        return 1
+    fi
+
+    # Validate .env file exists
+    if [ ! -f "$DOCKER_ENV_FILE" ]; then
+        echo -e "${RED}❌ .env file not found: $DOCKER_ENV_FILE${NC}"
+        echo -e "${YELLOW}⚠️  Tests may fail without proper environment configuration${NC}"
+        return 1
+    fi
 
     ensure_output_directory
 
@@ -441,7 +487,8 @@ run_all_suites() {
     local docker_args
     docker_args=$(get_docker_run_args)
 
-    # Build the complete Docker command
+    # Phase 1: Run parallel suites (excluding notifications)
+    echo -e "${BLUE}Phase 1: Running parallel test suites...${NC}"
     local docker_cmd="docker run --rm $docker_args \"$IMAGE_NAME:latest\""
 
     docker_cmd="$docker_cmd pabot \
@@ -451,9 +498,11 @@ run_all_suites() {
         --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat \
         --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING \
         --outputdir /opt/robotframework/reports \
+        --output parallel-output.xml \
+        --log parallel-log.html \
+        --report parallel-report.html \
         /opt/robotframework/tests/$SUITE_USER_DESKTOP \
         /opt/robotframework/tests/$SUITE_ADMIN_DESKTOP \
-        /opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS \
         /opt/robotframework/tests/$SUITE_USERS_WITH_ADMIN \
         /opt/robotframework/tests/$SUITE_MOBILE_ANDROID \
         /opt/robotframework/tests/$SUITE_MOBILE_IPHONE"
@@ -464,9 +513,92 @@ run_all_suites() {
     echo ""
 
     if eval "$docker_cmd"; then
-        echo -e "${GREEN}✅ All suites completed successfully${NC}"
+        echo -e "${GREEN}✅ Parallel suites completed successfully${NC}"
+        local parallel_exit_code=0
     else
-        echo -e "${RED}❌ Some suites failed${NC}"
+        echo -e "${RED}❌ Parallel suites failed${NC}"
+        local parallel_exit_code=1
+    fi
+
+    # Phase 2: Run notifications test sequentially
+    echo ""
+    echo -e "${BLUE}Phase 2: Running sequential notification tests...${NC}"
+    docker_cmd="docker run --rm $docker_args \"$IMAGE_NAME:latest\""
+
+    docker_cmd="$docker_cmd robot \
+        --variable FORCE_SINGLE_USER:True \
+        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING \
+        --outputdir /opt/robotframework/reports \
+        --output notifications-output.xml \
+        --log notifications-log.html \
+        --report notifications-report.html \
+        /opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS"
+
+    echo -e "${BLUE}Executing Docker command:${NC}"
+    # shellcheck disable=SC2001  # sed is appropriate for newline insertion in display formatting
+    echo "$docker_cmd" | sed 's/ -/\n  -/g'
+    echo ""
+
+    if eval "$docker_cmd"; then
+        echo -e "${GREEN}✅ Notifications suite completed successfully${NC}"
+        local notifications_exit_code=0
+    else
+        echo -e "${RED}❌ Notifications suite failed${NC}"
+        local notifications_exit_code=1
+    fi
+
+    # Phase 3: Combine the results using rebot
+    echo ""
+    echo -e "${BLUE}Phase 3: Combining test results...${NC}"
+
+    # Check if output files exist before combining
+    if [ ! -f "$OUTPUT_DIR/parallel-output.xml" ]; then
+        echo -e "${YELLOW}⚠️  Parallel output file not found, skipping result combination${NC}"
+    elif [ ! -f "$OUTPUT_DIR/notifications-output.xml" ]; then
+        echo -e "${YELLOW}⚠️  Notifications output file not found, skipping result combination${NC}"
+    else
+        docker_cmd="docker run --rm \
+            -v \"$OUTPUT_DIR:/opt/robotframework/reports\" \
+            \"$IMAGE_NAME:latest\" \
+            rebot \
+            --outputdir /opt/robotframework/reports \
+            --output output.xml \
+            --log log.html \
+            --report report.html \
+            --name \"All Suites\" \
+            /opt/robotframework/reports/parallel-output.xml \
+            /opt/robotframework/reports/notifications-output.xml"
+
+        echo -e "${BLUE}Executing rebot command:${NC}"
+        # shellcheck disable=SC2001  # sed is appropriate for newline insertion in display formatting
+        echo "$docker_cmd" | sed 's/ -/\n  -/g'
+        echo ""
+
+        if eval "$docker_cmd"; then
+            local rebot_exit_code=$?
+            # Rebot returns exit codes 0-250 where the code indicates number of failed tests
+            # Exit codes > 250 indicate actual rebot errors
+            if [ $rebot_exit_code -le 250 ]; then
+                if [ $rebot_exit_code -eq 0 ]; then
+                    echo -e "${GREEN}✅ Results combined successfully (all tests passed)${NC}"
+                else
+                    echo -e "${GREEN}✅ Results combined successfully ($rebot_exit_code test(s) failed - see combined report)${NC}"
+                fi
+            else
+                echo -e "${RED}❌ Result combination failed with exit code: $rebot_exit_code${NC}"
+            fi
+        else
+            echo -e "${RED}❌ Result combination failed${NC}"
+        fi
+    fi
+
+    # Overall success if both test runs succeeded
+    if [ $parallel_exit_code -eq 0 ] && [ $notifications_exit_code -eq 0 ]; then
+        echo -e "${GREEN}✅ All suites completed successfully${NC}"
+        return 0
+    else
+        echo -e "${RED}❌ One or more test suites failed${NC}"
+        echo -e "${YELLOW}Check the output above for detailed error information${NC}"
         return 1
     fi
 }
@@ -474,6 +606,18 @@ run_all_suites() {
 # Function to run all suites sequentially
 run_all_suites_sequential() {
     echo -e "${YELLOW}🚀 Running all test suites sequentially...${NC}"
+
+    # Validate Docker image exists
+    if ! test_docker_image; then
+        return 1
+    fi
+
+    # Validate .env file exists
+    if [ ! -f "$DOCKER_ENV_FILE" ]; then
+        echo -e "${RED}❌ .env file not found: $DOCKER_ENV_FILE${NC}"
+        echo -e "${YELLOW}⚠️  Tests may fail without proper environment configuration${NC}"
+        return 1
+    fi
 
     ensure_output_directory
 
@@ -518,6 +662,27 @@ toggle_har_recording() {
     fi
 
     echo -e "${YELLOW}🔄 Toggling HAR recording setting...${NC}"
+
+    # Validate JSON structure first
+    if command -v jq &> /dev/null; then
+        if ! jq -e '.robot_variables' "$config_file" > /dev/null 2>&1; then
+            echo -e "${RED}❌ Invalid JSON structure: 'robot_variables' section missing${NC}"
+            return 1
+        fi
+        if ! jq -e '.robot_variables.enable_har_recording' "$config_file" > /dev/null 2>&1; then
+            echo -e "${RED}❌ Invalid JSON structure: 'enable_har_recording' property missing${NC}"
+            return 1
+        fi
+    else
+        if ! python3 -c "import json; cfg=json.load(open('$config_file')); assert 'robot_variables' in cfg" 2> /dev/null; then
+            echo -e "${RED}❌ Invalid JSON structure: 'robot_variables' section missing${NC}"
+            return 1
+        fi
+        if ! python3 -c "import json; cfg=json.load(open('$config_file')); assert 'enable_har_recording' in cfg['robot_variables']" 2> /dev/null; then
+            echo -e "${RED}❌ Invalid JSON structure: 'enable_har_recording' property missing${NC}"
+            return 1
+        fi
+    fi
 
     # Read current state
     local current_state
@@ -811,6 +976,7 @@ execute_option() {
     18) toggle_har_recording ;;
     19) run_python_lint ;;
     20) run_python_format ;;
+    21) run_python_format_check ;;
     22) run_robot_lint ;;
     23) run_shell_lint ;;
     24) run_shell_format ;;
@@ -859,7 +1025,7 @@ show_menu() {
     echo "6. $SUITE_MOBILE_ANDROID ($MOBILE_PROCESSES processes)"
     echo "7. $SUITE_MOBILE_IPHONE ($MOBILE_PROCESSES processes)"
     echo "8. $SUITE_USERS_WITH_ADMIN ($ADMIN_PROCESSES processes)"
-    echo "9. All Suites Parallel ($ALL_SUITES_PROCESSES processes)"
+    echo "9. All Suites (Parallel + Notifications Sequential)"
     echo ""
     echo -e "${YELLOW}╔══════════════════════════════════════════════╗${NC}"
     echo -e "${YELLOW}║ 🌐 SEQUENTIAL (robot) - One process          ║${NC}"
@@ -887,6 +1053,7 @@ show_menu() {
     echo -e "${YELLOW}╚══════════════════════════════════════════════╝${NC}"
     echo "19. Lint Python Code (Ruff)"
     echo "20. Format Python Code (Ruff)"
+    echo "21. Check Python Formatting (Ruff)"
     echo "22. Lint Robot Framework Files (Robocop)"
     echo "23. Lint Shell Scripts (ShellCheck)"
     echo "24. Format Shell Scripts (shfmt)"

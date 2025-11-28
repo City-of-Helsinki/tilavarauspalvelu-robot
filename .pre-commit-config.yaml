@@ -22,7 +22,6 @@ repos:
         # Checks Python formatting (matches CI)
 
   # Robot Framework linting (matches CI)
-  # Note: This can be slow on large codebases
   - repo: https://github.com/MarketSquare/robotframework-robocop
     rev: v6.11.0
     hooks:

@@ -61,11 +61,9 @@ User Logs In With Suomi Fi
     popups.User Accepts Cookies If Dialog Is Visible    ${COOKIETEXT}
     Log Current Cookies
 
-    Log    Enable dropdown menu has user info when the profile bug is fixed and name info is no longer empty
-
-    # Confirms the user info is present
-    # TODO enable these steps when the dropdown has user info again
-    # topnav.Check dropdown menu has user info    ${BASIC_USER_MALE_FULLNAME}
+User Checks Dropdown Menu Has User Info (NOT IN USE)
+    [Documentation]    This information comes from tunnistamo and is not always available
+    topnav.Check dropdown menu has user info    ${BASIC_USER_MALE_FULLNAME}
 
 User Goes To Landing Page
     Go To    ${URL_TEST}

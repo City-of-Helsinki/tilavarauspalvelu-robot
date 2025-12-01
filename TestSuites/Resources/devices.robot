@@ -189,7 +189,7 @@ Set Up Chromium Desktop Browser And Open Url
     ${fresh_cookies}=    Get Cookies    return_type=string
     Log    "🔍 Fresh context cookies: ${fresh_cookies}"
 
-    Set Browser Timeout    40s    scope=Global
+    Set Browser Timeout    ${BROWSER_TIMEOUT_GLOBAL}    scope=Global
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
         Go To    ${input_URL}
@@ -242,7 +242,7 @@ Set Up Firefox Desktop Browser And Open Url
     Log    ✅ Firefox Context Created
 
     # Navigate to the test URL - this will generate HAR network activity
-    Set Browser Timeout    40s    scope=Global
+    Set Browser Timeout    ${BROWSER_TIMEOUT_GLOBAL}    scope=Global
     Log    🌐 Navigating to: ${input_URL}
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
@@ -294,7 +294,7 @@ Set Up Iphone 14 And Open Url
 
     Log    ✅ iPhone 14 Context Created
 
-    Set Browser Timeout    40s    scope=Global
+    Set Browser Timeout    ${BROWSER_TIMEOUT_GLOBAL}    scope=Global
     Log    🌐 Navigating to: ${input_URL}
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
@@ -369,7 +369,7 @@ Set Up Android Pixel 5 And Open Url
 
     Log    ✅ Android Pixel 5 Context Created
 
-    Set Browser Timeout    40s    scope=Global
+    Set Browser Timeout    ${BROWSER_TIMEOUT_GLOBAL}    scope=Global
     Log    🌐 Navigating to: ${input_URL}
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}

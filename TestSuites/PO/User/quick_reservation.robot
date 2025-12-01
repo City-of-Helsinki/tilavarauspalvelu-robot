@@ -166,8 +166,8 @@ Verify Time Slot Not Available
         Fail    No slots found at all. Cannot verify exclusion of ${time_to_check}
     END
 
-    # 3 Lower Browser’s default timeout to 1 second
-    Set Browser Timeout    1 second    scope=Test
+    # 3 Lower Browser's default timeout
+    Set Browser Timeout    3s    scope=Test
 
     # 4 Iterate, swallowing any Get Text failures and skipping blanks
     ${slot_texts}=    Create List
@@ -183,7 +183,7 @@ Verify Time Slot Not Available
     END
 
     # 5 Restore the original timeout
-    Set Browser Timeout    60s    scope=Global
+    Set Browser Timeout    ${BROWSER_TIMEOUT_GLOBAL}    scope=Global
 
     Log    Collected slots: ${slot_texts}
 

@@ -431,9 +431,13 @@ Check Unitname And Reservation Are Not Found
     Log    Current reservation time being validated: ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
     # Retrieve all reservation card containers by their test IDs and count them
+    # Set a shorter timeout to avoid long waits when no elements are found
+    Set Browser Timeout    1.5s    scope=Test
     ${containers}=    Browser.Get Elements    [data-testid="reservation-card__container"]
     ${count}=    Get Length    ${containers}
     Log    Found ${count} reservation card containers.
+    # Restore the original timeout
+    Set Browser Timeout    ${BROWSER_TIMEOUT_GLOBAL}    scope=Global
 
     # Initialize a flag to detect any unwanted matches
     ${match_found}=    Set Variable    False

@@ -23,7 +23,6 @@ User logs in and out with suomi_fi
     [Tags]    desktop-test-data-set-0    desktop-suite    smoke
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
-
     app_common.User Logs Out
     app_common.User Confirms Log Out
 

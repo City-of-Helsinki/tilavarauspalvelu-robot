@@ -27,6 +27,7 @@ ${URL_MAIL}                                             https://www.google.com/i
 # System
 ${DOWNLOAD_DIR}                                         ${CURDIR}${/}downloads
 ${EMAIL_FILE_PATH}                                      ${CURDIR}${/}downloads${/}cleaned_emails.json
+${BROWSER_TIMEOUT_GLOBAL}                               40s
 
 # Email Testing (New Cache-based API)
 ${ROBOT_EMAIL}                                          django_email_robot@mailiposti.com

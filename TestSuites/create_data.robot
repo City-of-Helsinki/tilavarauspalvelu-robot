@@ -5,6 +5,7 @@ Documentation       Create robot test data for Harakka via API endpoint.
 Library             RequestsLibrary
 Library             Collections
 Library             OperatingSystem
+Variables           Resources/env_loader.py
 
 
 *** Variables ***
@@ -33,7 +34,7 @@ Create Robot Test Data DISABLED
     # Retrieve token from Robot Framework variables (loaded by env_loader.py)
     # Priority: $TOKEN (if defined) > $ROBOT_API_TOKEN from env_loader.py > empty
     ${token}=    Get Variable Value    $TOKEN    ${EMPTY}
-    ${token}=    Set Variable If    "${token}"==""    $ROBOT_API_TOKEN    ${token}
+    ${token}=    Set Variable If    "${token}"==""    ${ROBOT_API_TOKEN}    ${token}
 
     # Create headers with token
     ${headers}=    Create Dictionary
@@ -51,7 +52,7 @@ Create Robot Test Data DISABLED
     # Get endpoint from Robot Framework variables or use default
     # Priority: $ENDPOINT (if defined) > $ROBOT_API_ENDPOINT from env_loader.py > DEFAULT_ENDPOINT
     ${endpoint}=    Get Variable Value    $ENDPOINT    ${EMPTY}
-    ${endpoint}=    Set Variable If    "${endpoint}"==""    $ROBOT_API_ENDPOINT    ${endpoint}
+    ${endpoint}=    Set Variable If    "${endpoint}"==""    ${ROBOT_API_ENDPOINT}    ${endpoint}
     ${endpoint}=    Set Variable If    "${endpoint}"!=""    ${endpoint}    ${DEFAULT_ENDPOINT}
 
     Log    Creating robot test data

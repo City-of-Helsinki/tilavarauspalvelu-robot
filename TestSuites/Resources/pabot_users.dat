@@ -30,7 +30,8 @@
 tags=desktop-test-data-set-0
 # TEST: "User logs in and out with suomi_fi"
 # DESCRIPTION: Basic login/logout smoke test
-CURRENT_USER_EMAIL=qfaksi+ande@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+ande@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=180674-907T
 CURRENT_USER_PHONE=+35840123654
 CURRENT_USER_FIRST_NAME=Ande
@@ -42,7 +43,8 @@ CURRENT_PASSWORD=AutomaatioTesteri
 tags=desktop-test-data-set-1
 # TEST: "User can make free single booking and modifies it"
 # DESCRIPTION: Free booking creation, modification, and cancellation
-CURRENT_USER_EMAIL=qfaksi+mikael@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+mikael@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=150382-901W
 CURRENT_USER_PHONE=+35840123655
 CURRENT_USER_FIRST_NAME=Mikael
@@ -54,7 +56,8 @@ CURRENT_PASSWORD=Virtanen
 tags=desktop-test-data-set-2
 # TEST: "User can create non-cancelable booking"
 # DESCRIPTION: Non-cancelable booking test
-CURRENT_USER_EMAIL=qfaksi+jukka@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+jukka@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=220990-903Y
 CURRENT_USER_PHONE=+35840123656
 CURRENT_USER_FIRST_NAME=Jukka
@@ -66,7 +69,8 @@ CURRENT_PASSWORD=Korhonen
 tags=desktop-test-data-set-3
 # TEST: "User can make paid single booking with interrupted checkout"
 # DESCRIPTION: Paid booking with payment interruption
-CURRENT_USER_EMAIL=qfaksi+petri@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+petri@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=070785-905A
 CURRENT_USER_PHONE=+35840123657
 CURRENT_USER_FIRST_NAME=Petri
@@ -78,7 +82,8 @@ CURRENT_PASSWORD=Makinen
 tags=desktop-test-data-set-4
 # TEST: "User can make paid single booking"
 # DESCRIPTION: Standard paid booking with email verification
-CURRENT_USER_EMAIL=qfaksi+antti@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+antti@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=111276-907U
 CURRENT_USER_PHONE=+35840123658
 CURRENT_USER_FIRST_NAME=Antti
@@ -90,7 +95,8 @@ CURRENT_PASSWORD=Nieminen
 tags=desktop-test-data-set-5
 # TEST: "User can make subvented single booking that requires handling"
 # DESCRIPTION: Subvented booking requiring manual handling
-CURRENT_USER_EMAIL=qfaksi+matti@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+matti@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=040689-907H
 CURRENT_USER_PHONE=+35840123659
 CURRENT_USER_FIRST_NAME=Matti
@@ -102,7 +108,8 @@ CURRENT_PASSWORD=Mäkelä
 tags=desktop-test-data-set-7
 # TEST: "User checks that reserved time is not available anymore"
 # DESCRIPTION: Time availability verification test
-CURRENT_USER_EMAIL=qfaksi+sanna@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+sanna@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=250592-934X
 CURRENT_USER_PHONE=+35840123660
 CURRENT_USER_FIRST_NAME=Sanna
@@ -114,7 +121,8 @@ CURRENT_PASSWORD=Hämäläinen
 tags=desktop-test-data-set-8
 # TEST: "User checks that there are not current dates in the past bookings"
 # DESCRIPTION: Past bookings validation
-CURRENT_USER_EMAIL=qfaksi+paivi@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+paivi@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=160691-936L
 CURRENT_USER_PHONE=+35840123675
 CURRENT_USER_FIRST_NAME=Päivi
@@ -126,7 +134,8 @@ CURRENT_PASSWORD=Mustonen
 tags=desktop-test-data-set-9
 # TEST: "User can make free single booking and check info from downloaded calendar file"
 # DESCRIPTION: Calendar file download and verification
-CURRENT_USER_EMAIL=qfaksi+kirsi@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+kirsi@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=030679-938F
 CURRENT_USER_PHONE=+35840123662
 CURRENT_USER_FIRST_NAME=Kirsi
@@ -138,7 +147,8 @@ CURRENT_PASSWORD=Heikkinen
 tags=desktop-test-data-set-10
 # TEST: "Check emails from reservations"
 # DESCRIPTION: Email verification for reservation workflows
-CURRENT_USER_EMAIL=qfaksi+marja@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+marja@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=290384-932W
 CURRENT_USER_PHONE=+35840123663
 CURRENT_USER_FIRST_NAME=Marja
@@ -150,7 +160,8 @@ CURRENT_PASSWORD=Koskinen
 tags=desktop-test-data-set-11
 # TEST: "User makes recurring reservation"
 # DESCRIPTION: Recurring reservation application
-CURRENT_USER_EMAIL=qfaksi+tiina@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+tiina@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=180293-934P
 CURRENT_USER_PHONE=+35840123664
 CURRENT_USER_FIRST_NAME=Tiina
@@ -166,7 +177,8 @@ CURRENT_PASSWORD=Järvinen
 tags=admin-test-data-set-0
 # TEST: "Admin logs in with suomi_fi"
 # DESCRIPTION: Admin login verification
-ADMIN_CURRENT_USER_EMAIL=qfaksi+tirehtoori@gmail.com
+# Old email: ADMIN_CURRENT_USER_EMAIL=qfaksi+tirehtoori@gmail.com
+ADMIN_CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 ADMIN_CURRENT_USER_HETU=120869-9332
 ADMIN_CURRENT_USER_FIRST_NAME=Tirehtoori
 ADMIN_CURRENT_USER_LAST_NAME=Tötterstrom
@@ -178,7 +190,8 @@ CURRENT_PASSWORD=Tötterstrom
 tags=admin-test-data-set-1
 # TEST: "Admin verifies all reservation types and verifies no unavailable reservations exist"
 # DESCRIPTION: Admin reservation verification
-ADMIN_CURRENT_USER_EMAIL=qfaksi+pekka@gmail.com
+# Old email: ADMIN_CURRENT_USER_EMAIL=qfaksi+pekka@gmail.com
+ADMIN_CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 ADMIN_CURRENT_USER_HETU=220685-934K
 ADMIN_CURRENT_USER_FIRST_NAME=Pekka
 ADMIN_CURRENT_USER_LAST_NAME=Virtanen
@@ -191,13 +204,15 @@ tags=admin-test-data-set-2
 # TEST: "Admin checks permissions" (Tests_admin_desktop_FI.robot)
 # DESCRIPTION: Django admin modifies admin user's permissions to notification manager role
 # Permission target admin - the admin whose permissions are being modified
-PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+marika@gmail.com
+# Old email: PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+marika@gmail.com
+PERMISSION_TARGET_ADMIN_EMAIL=django_email_robot@mailiposti.com
 PERMISSION_TARGET_ADMIN_HETU=140785-932R
 PERMISSION_TARGET_ADMIN_FIRST_NAME=Marika
 PERMISSION_TARGET_ADMIN_LAST_NAME=Salminen
 PERMISSION_TARGET_ADMIN_FULLNAME=Marika Salminen
 # Django admin who performs the permission changes
-DJANGO_ADMIN_EMAIL=qfaksi+kari@gmail.com
+# Old email: DJANGO_ADMIN_EMAIL=qfaksi+kari@gmail.com
+DJANGO_ADMIN_EMAIL=django_email_robot@mailiposti.com
 DJANGO_ADMIN_HETU=150875-9345
 DJANGO_ADMIN_FIRST_NAME=Kari
 DJANGO_ADMIN_LAST_NAME=Kekkonen
@@ -210,13 +225,15 @@ tags=admin-test-data-set-3
 # DESCRIPTION: Django admin modifies admin user's unit permissions
 # Permission target admin - the admin whose permissions are being modified
 # NOTE: This user must have unit permissions set by default (set in data setup phase)
-PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+niko@gmail.com
+# Old email: PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+niko@gmail.com
+PERMISSION_TARGET_ADMIN_EMAIL=django_email_robot@mailiposti.com
 PERMISSION_TARGET_ADMIN_HETU=150785-907H
 PERMISSION_TARGET_ADMIN_FIRST_NAME=Niko
 PERMISSION_TARGET_ADMIN_LAST_NAME=Selänne
 PERMISSION_TARGET_ADMIN_FULLNAME=Niko Selänne
 # Django admin who performs the permission changes
-DJANGO_ADMIN_EMAIL=qfaksi+ari@gmail.com
+# Old email: DJANGO_ADMIN_EMAIL=qfaksi+ari@gmail.com
+DJANGO_ADMIN_EMAIL=django_email_robot@mailiposti.com
 DJANGO_ADMIN_HETU=190684-907F
 DJANGO_ADMIN_FIRST_NAME=Ari
 DJANGO_ADMIN_LAST_NAME=Laine
@@ -229,13 +246,15 @@ tags=admin-test-data-set-4
 # DESCRIPTION: Django admin modifies admin user's unit group permissions
 # Permission target admin - the admin whose permissions are being modified
 # NOTE: This user must have unit permissions set by default (set in data setup phase)
-PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+mikko@gmail.com
+# Old email: PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+mikko@gmail.com
+PERMISSION_TARGET_ADMIN_EMAIL=django_email_robot@mailiposti.com
 PERMISSION_TARGET_ADMIN_HETU=200685-907K
 PERMISSION_TARGET_ADMIN_FIRST_NAME=Mikko
 PERMISSION_TARGET_ADMIN_LAST_NAME=Mäkinen
 PERMISSION_TARGET_ADMIN_FULLNAME=Mikko Mäkinen
 # Django admin who performs the permission changes
-DJANGO_ADMIN_EMAIL=qfaksi+nieminen@gmail.com
+# Old email: DJANGO_ADMIN_EMAIL=qfaksi+nieminen@gmail.com
+DJANGO_ADMIN_EMAIL=django_email_robot@mailiposti.com
 DJANGO_ADMIN_HETU=160776-934M
 DJANGO_ADMIN_FIRST_NAME=Timo
 DJANGO_ADMIN_LAST_NAME=Nieminen
@@ -251,7 +270,8 @@ DJANGO_ADMIN_FULLNAME=Timo Nieminen
 tags=combined-test-data-set-0
 # TEST: "User creates and Admin accepts single booking that requires handling"
 # DESCRIPTION: User-admin booking acceptance workflow
-CURRENT_USER_EMAIL=qfaksi+hannu@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+hannu@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=101281-907D
 CURRENT_USER_PHONE=+35840123667
 CURRENT_USER_FIRST_NAME=Hannu
@@ -259,7 +279,8 @@ CURRENT_USER_LAST_NAME=Rantala
 CURRENT_USER_FULLNAME=Hannu Rantala
 CURRENT_PASSWORD=Rantala
 # Admin assignment for this test
-ADMIN_CURRENT_USER_EMAIL=qfaksi+seppo@gmail.com
+# Old email: ADMIN_CURRENT_USER_EMAIL=qfaksi+seppo@gmail.com
+ADMIN_CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 ADMIN_CURRENT_USER_HETU=280677-905Y
 ADMIN_CURRENT_USER_FIRST_NAME=Seppo
 ADMIN_CURRENT_USER_LAST_NAME=Korhonen
@@ -270,7 +291,8 @@ ADMIN_CURRENT_USER_PASSWORD=Korhonen
 tags=combined-test-data-set-1
 # TEST: "User creates and Admin declines single booking that requires handling"
 # DESCRIPTION: User-admin booking decline workflow
-CURRENT_USER_EMAIL=qfaksi+risto@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+risto@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=051093-905L
 CURRENT_USER_PHONE=+35840123668
 CURRENT_USER_FIRST_NAME=Risto
@@ -278,7 +300,8 @@ CURRENT_USER_LAST_NAME=Hakkarainen
 CURRENT_USER_FULLNAME=Risto Hakkarainen
 CURRENT_PASSWORD=Hakkarainen
 # Admin assignment for this test
-ADMIN_CURRENT_USER_EMAIL=qfaksi+erkki@gmail.com
+# Old email: ADMIN_CURRENT_USER_EMAIL=qfaksi+erkki@gmail.com
+ADMIN_CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 ADMIN_CURRENT_USER_HETU=141082-907K
 ADMIN_CURRENT_USER_FIRST_NAME=Erkki
 ADMIN_CURRENT_USER_LAST_NAME=Nieminen
@@ -290,7 +313,8 @@ tags=combined-test-data-set-2
 # TEST: "User can make reservation with access code and admin changes the code"
 # DESCRIPTION: User creates reservation with access code, admin modifies the code
 # Used by: Tests_users_with_admin_desktop.robot
-CURRENT_USER_EMAIL=qfaksi+tabitah@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+tabitah@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=090481-9386
 CURRENT_USER_PHONE=+35840123653
 CURRENT_USER_FIRST_NAME=Tabitah
@@ -298,7 +322,8 @@ CURRENT_USER_LAST_NAME=Testitar
 CURRENT_USER_FULLNAME=Tabitah Testitar
 CURRENT_PASSWORD=Testitar
 # Admin assignment for this test
-ADMIN_CURRENT_USER_EMAIL=qfaksi+antero@gmail.com
+# Old email: ADMIN_CURRENT_USER_EMAIL=qfaksi+antero@gmail.com
+ADMIN_CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 ADMIN_CURRENT_USER_HETU=221175-907B
 ADMIN_CURRENT_USER_FIRST_NAME=Antero
 ADMIN_CURRENT_USER_LAST_NAME=Salonen
@@ -313,7 +338,8 @@ ADMIN_CURRENT_USER_PASSWORD=Salonen
 tags=mobile-android-data-set-0
 # TEST: "User logs in and out with suomi_fi mobile"
 # DESCRIPTION: Mobile Android login test
-CURRENT_USER_EMAIL=qfaksi+anna@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+anna@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=050576-932R
 CURRENT_USER_PHONE=+35840123673
 CURRENT_USER_FIRST_NAME=Anna
@@ -325,7 +351,8 @@ CURRENT_PASSWORD=Korhonen
 tags=mobile-android-data-set-1
 # TEST: "User can make a free single booking and modifies it mobile"
 # DESCRIPTION: Mobile Android free booking
-CURRENT_USER_EMAIL=qfaksi+mari@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+mari@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=240189-938D
 CURRENT_USER_PHONE=+35840123674
 CURRENT_USER_FIRST_NAME=Mari
@@ -337,7 +364,8 @@ CURRENT_PASSWORD=Leppänen
 tags=mobile-android-data-set-2
 # TEST: "User can make paid single booking mobile"
 # DESCRIPTION: Mobile Android paid booking
-CURRENT_USER_EMAIL=qfaksi+elina@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+elina@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=131188-936A
 CURRENT_USER_PHONE=+35840123661
 CURRENT_USER_FIRST_NAME=Elina
@@ -349,7 +377,8 @@ CURRENT_PASSWORD=Laine
 tags=mobile-android-data-set-3
 # TEST: "User can make paid single booking with interrupted checkout mobile"
 # DESCRIPTION: Mobile Android interrupted checkout
-CURRENT_USER_EMAIL=qfaksi+kaisa@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+kaisa@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=121287-938M
 CURRENT_USER_PHONE=+35840123676
 CURRENT_USER_FIRST_NAME=Kaisa
@@ -361,7 +390,8 @@ CURRENT_PASSWORD=Rantanen
 tags=mobile-android-data-set-4
 # TEST: "User can make single booking that requires handling mobile"
 # DESCRIPTION: Mobile Android booking requiring handling
-CURRENT_USER_EMAIL=qfaksi+ulla@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+ulla@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=030888-932N
 CURRENT_USER_PHONE=+35840123677
 CURRENT_USER_FIRST_NAME=Ulla
@@ -373,7 +403,8 @@ CURRENT_PASSWORD=Hakala
 tags=mobile-android-data-set-5
 # TEST: "User can make subvented single booking that requires handling mobile"
 # DESCRIPTION: Mobile Android subvented booking
-CURRENT_USER_EMAIL=qfaksi+riitta@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+riitta@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=300474-932P
 CURRENT_USER_PHONE=+35840123678
 CURRENT_USER_FIRST_NAME=Riitta
@@ -389,7 +420,8 @@ CURRENT_PASSWORD=Lindström
 tags=mobile-iphone-data-set-0
 # TEST: "User logs in and out with suomi_fi"
 # DESCRIPTION: Mobile iPhone login test
-CURRENT_USER_EMAIL=qfaksi+tuula@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+tuula@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=180685-934T
 CURRENT_USER_PHONE=+35840123679
 CURRENT_USER_FIRST_NAME=Tuula
@@ -401,7 +433,8 @@ CURRENT_PASSWORD=Aaltonen
 tags=mobile-iphone-data-set-1
 # TEST: "User can make free single booking and modifies it"
 # DESCRIPTION: Mobile iPhone free booking
-CURRENT_USER_EMAIL=qfaksi+merja@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+merja@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=250792-936H
 CURRENT_USER_PHONE=+35840123680
 CURRENT_USER_FIRST_NAME=Merja
@@ -413,7 +446,8 @@ CURRENT_PASSWORD=Kangas
 tags=mobile-iphone-data-set-2
 # TEST: "User can make paid single booking"
 # DESCRIPTION: Mobile iPhone paid booking
-CURRENT_USER_EMAIL=qfaksi+helena@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+helena@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=081184-938K
 CURRENT_USER_PHONE=+35840123681
 CURRENT_USER_FIRST_NAME=Helena
@@ -425,7 +459,8 @@ CURRENT_PASSWORD=Hiltunen
 tags=mobile-iphone-data-set-3
 # TEST: "User can make paid single booking with interrupted checkout"
 # DESCRIPTION: Mobile iPhone interrupted checkout
-CURRENT_USER_EMAIL=qfaksi+seija@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+seija@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=141279-932S
 CURRENT_USER_PHONE=+35840123682
 CURRENT_USER_FIRST_NAME=Seija
@@ -437,7 +472,8 @@ CURRENT_PASSWORD=Mäenpää
 tags=mobile-iphone-data-set-4
 # TEST: "User can make booking that requires handling"
 # DESCRIPTION: Mobile iPhone booking requiring handling
-CURRENT_USER_EMAIL=qfaksi+maija@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+maija@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=230986-934L
 CURRENT_USER_PHONE=+35840123683
 CURRENT_USER_FIRST_NAME=Maija
@@ -449,7 +485,8 @@ CURRENT_PASSWORD=Peltonen
 tags=mobile-iphone-data-set-5
 # TEST: "User can make subvented single booking that requires handling"
 # DESCRIPTION: Mobile iPhone subvented booking
-CURRENT_USER_EMAIL=qfaksi+liisa@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+liisa@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=070591-934B
 CURRENT_USER_PHONE=+35840123684
 CURRENT_USER_FIRST_NAME=Liisa
@@ -465,7 +502,8 @@ CURRENT_PASSWORD=Koivisto
 tags=unused-test-data-set-0
 # TEST: Reserved for future use
 # DESCRIPTION: Additional test user data
-CURRENT_USER_EMAIL=qfaksi+antti@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+antti@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=180892-936M
 CURRENT_USER_PHONE=+35840123688
 CURRENT_USER_FIRST_NAME=Antti
@@ -477,7 +515,8 @@ CURRENT_PASSWORD=Koskinen
 tags=unused-test-data-set-1
 # TEST: Reserved for future use
 # DESCRIPTION: Additional test user data
-CURRENT_USER_EMAIL=qfaksi+ari@gmail.com
+# Old email: CURRENT_USER_EMAIL=qfaksi+ari@gmail.com
+CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 CURRENT_USER_HETU=190684-907F
 CURRENT_USER_PHONE=+35840123669
 CURRENT_USER_FIRST_NAME=Ari
@@ -489,7 +528,8 @@ CURRENT_PASSWORD=Laine
 tags=unused-admin-data-set-1
 # TEST: Reserved for future use
 # DESCRIPTION: Additional admin user data
-ADMIN_CURRENT_USER_EMAIL=qfaksi+pertti@gmail.com
+# Old email: ADMIN_CURRENT_USER_EMAIL=qfaksi+pertti@gmail.com
+ADMIN_CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
 ADMIN_CURRENT_USER_HETU=120885-934A
 ADMIN_CURRENT_USER_FIRST_NAME=Pertti
 ADMIN_CURRENT_USER_LAST_NAME=Kallio

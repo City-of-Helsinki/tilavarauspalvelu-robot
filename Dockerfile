@@ -1,18 +1,17 @@
 # =============================================================================
 # Robot Framework Test Environment with Playwright
 # =============================================================================
-# Based on Microsoft's Playwright image (mcr.microsoft.com/playwright:v1.53.2-noble)
+# Based on Microsoft's Playwright image (mcr.microsoft.com/playwright:v1.57.0-noble)
 # This base image includes:
 # - Ubuntu 24.04 Noble Numbat as the OS base
-# - Node.js 22.x with npm and yarn pre-installed
+# - Node.js 24.x (v24.11.1) with npm and yarn pre-installed
 # - Python 3.12.3 pre-installed (but without venv module)
-# - Pre-installed Playwright browsers in /ms-playwright directory
-# - Playwright core package and dependencies pre-configured
+# - Pre-installed Playwright browser binaries in /ms-playwright directory
+# - System dependencies required for Playwright browsers pre-configured
 # - Multi-architecture support (amd64/arm64)
 # 
-# Note: Base image timezone is America/Los_Angeles (we override to UTC)
-# FROM mcr.microsoft.com/playwright:v1.50.0-noble
-FROM mcr.microsoft.com/playwright:v1.53.2-noble
+# Note: We override base image timezone to Europe/Helsinki
+FROM mcr.microsoft.com/playwright:v1.57.0-noble
 
 # =============================================================================
 # Environment Configuration
@@ -118,7 +117,7 @@ WORKDIR ${ROBOT_WORK_DIR}
 # =============================================================================
 # Add metadata labels
 LABEL description="Robot Framework test environment with Playwright" \
-      base-image="mcr.microsoft.com/playwright:v1.53.2-noble"
+      base-image="mcr.microsoft.com/playwright:v1.57.0-noble"
 
 # =============================================================================
 # Default Execution Command

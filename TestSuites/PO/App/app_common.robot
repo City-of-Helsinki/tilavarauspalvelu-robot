@@ -63,7 +63,7 @@ User Logs In With Suomi Fi
 
 User Checks Dropdown Menu Has User Info (NOT IN USE)
     [Documentation]    This information comes from tunnistamo and is not always available
-    topnav.Check dropdown menu has user info    ${BASIC_USER_MALE_FULLNAME}
+    topnav.Check Dropdown Menu Has User Info    ${BASIC_USER_MALE_FULLNAME}
 
 User Goes To Landing Page
     Go To    ${URL_TEST}

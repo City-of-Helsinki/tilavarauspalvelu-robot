@@ -2,25 +2,25 @@
 robotframework==7.3.2
 
 # Browser automation library for Robot Framework (uses Playwright)
-robotframework-browser==19.6.2
+robotframework-browser==19.12.0
 
 # Parallel execution for Robot Framework
-robotframework-pabot==4.3.2
+robotframework-pabot==5.1.0
 
 # Environment variable loading from .env files
-python-dotenv==1.0.1
+python-dotenv==1.2.1
 
-# HTTP requests library for API testing
-requests==2.32.3
+# HTTP requests library for email testing (used in robot_email_test_tool.py)
+requests==2.32.5
 
-# HTTP requests library for Robot Framework API testing
+# HTTP requests library for creating robot test data (used in create_data.robot)
 robotframework-requests==0.9.7
 
 # =============================================================================
 # Code Quality and Linting Tools
 # =============================================================================
 # Robot Framework linter and formatter
-robotframework-robocop>=6.0.0
+robotframework-robocop==6.13.0
 
 # Python linter
-ruff>=0.1.0
+ruff==0.14.7

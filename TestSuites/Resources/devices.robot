@@ -135,26 +135,26 @@ Set Up Chromium Desktop Browser And Open Url
     Apply Staggered Startup Strategy    CHROMIUM DESKTOP    ${input_URL}    ${DOWNLOAD_DIR}
 
     @{chrome_args}=    Create List
-    ...    --no-default-browser-check
-    ...    --disable-background-timer-throttling
-    ...    --disable-renderer-backgrounding
-    ...    --disable-backgrounding-occluded-windows
-    ...    --password-store=basic
-    ...    --use-mock-keychain
-    ...    --disable-component-extensions-with-background-pages
-    ...    --disable-default-apps
-    ...    --disable-extensions
-    ...    --no-sandbox
-    ...    --disable-dev-shm-usage
-    ...    --no-first-run
-    ...    --disable-sync
-    ...    --disable-translate
-    ...    --disable-features=TranslateUI
-    ...    --disable-popup-blocking
-    ...    --disable-prompt-on-repost
-    ...    --disable-hang-monitor
-    ...    --disable-blink-features=AutomationControlled
-    ...    --disable-web-security
+    ...    --no-default-browser-check    # Disables default browser check dialog
+    ...    --disable-background-timer-throttling    # Prevents throttling of timer tasks from background pages
+    ...    --disable-renderer-backgrounding    # Prevents renderer process backgrounding
+    ...    --disable-backgrounding-occluded-windows    # Disables backgrounding renders for occluded windows
+    ...    --password-store=basic    # Uses basic password storage backend (kwallet/kwallet5/kwallet6/gnome-libsecret/basic)
+    ...    --use-mock-keychain    # Uses mock keychain for testing
+    ...    --disable-component-extensions-with-background-pages    # Disables default component extensions with background pages
+    ...    --disable-default-apps    # Disables installation of default apps on first run
+    ...    --disable-extensions    # Disables all extensions
+    ...    --no-sandbox    # Disables sandbox for all process types (testing only)
+    ...    --disable-dev-shm-usage    # Workaround for small /dev/shm in VM environments
+    ...    --no-first-run    # Skips First Run tasks and dialogs
+    ...    --disable-sync    # Disables sync functionality
+    ...    --disable-translate    # Disables translate functionality
+    ...    --disable-features=TranslateUI    # Disables Translate UI feature
+    ...    --disable-popup-blocking    # Disables pop-up blocking
+    ...    --disable-prompt-on-repost    # Disables prompt when navigating to POST result pages
+    ...    --disable-hang-monitor    # Suppresses hang monitor dialogs in renderer processes
+    ...    --disable-blink-features=AutomationControlled    # Disables AutomationControlled blink feature
+    ...    --disable-web-security    # Disables same-origin policy (testing only)
 
     Log    🔧 Chrome Arguments: ${chrome_args}
     Log    🌍 Locale: ${LOCALE}
@@ -203,15 +203,15 @@ Set Up Chromium Desktop Browser And Open Url
     Log    🎉 BROWSER SETUP COMPLETED
 
 Set Up Firefox Desktop Browser And Open Url
-    # DEVNOTE: This is used for mail testing and is not currently used
-    [Documentation]    Sets up Firefox browser
+    # DEVNOTE: This is used for permission tests
+    [Documentation]    Sets up Firefox browser for permission tests - separate session from Django admin and Admin UI
     [Arguments]    ${input_URL}    ${DOWNLOAD_DIR}
 
     Apply Staggered Startup Strategy    FIREFOX DESKTOP    ${input_URL}    ${DOWNLOAD_DIR}
 
     # Firefox arguments
     @{firefox_args}=    Create List
-    ...    --no-remote
+    ...    --no-remote    # Prevents Firefox from connecting to a running instance
 
     Log    🔧 Firefox Arguments: ${firefox_args}
     Log    🌍 Locale: ${LOCALE}
@@ -322,24 +322,24 @@ Set Up Android Pixel 5 And Open Url
     Apply Staggered Startup Strategy    ANDROID PIXEL 5    ${input_URL}
 
     @{chrome_args}=    Create List
-    ...    --no-default-browser-check
-    ...    --disable-background-timer-throttling
-    ...    --disable-renderer-backgrounding
-    ...    --disable-backgrounding-occluded-windows
-    ...    --password-store=basic
-    ...    --use-mock-keychain
-    ...    --disable-component-extensions-with-background-pages
-    ...    --disable-default-apps
-    ...    --disable-extensions
-    ...    --no-sandbox
-    ...    --disable-dev-shm-usage
-    ...    --no-first-run
-    ...    --disable-sync
-    ...    --disable-translate
-    ...    --disable-features=TranslateUI
-    ...    --disable-popup-blocking
-    ...    --disable-web-security
-    ...    --disable-blink-features=AutomationControlled
+    ...    --no-default-browser-check    # Disables default browser check dialog
+    ...    --disable-background-timer-throttling    # Prevents throttling of timer tasks from background pages
+    ...    --disable-renderer-backgrounding    # Prevents renderer process backgrounding
+    ...    --disable-backgrounding-occluded-windows    # Disables backgrounding renders for occluded windows
+    ...    --password-store=basic    # Uses basic password storage backend (kwallet/kwallet5/kwallet6/gnome-libsecret/basic)
+    ...    --use-mock-keychain    # Uses mock keychain for testing
+    ...    --disable-component-extensions-with-background-pages    # Disables default component extensions with background pages
+    ...    --disable-default-apps    # Disables installation of default apps on first run
+    ...    --disable-extensions    # Disables all extensions
+    ...    --no-sandbox    # Disables sandbox for all process types (testing only)
+    ...    --disable-dev-shm-usage    # Workaround for small /dev/shm in VM environments
+    ...    --no-first-run    # Skips First Run tasks and dialogs
+    ...    --disable-sync    # Disables sync functionality
+    ...    --disable-translate    # Disables translate functionality
+    ...    --disable-features=TranslateUI    # Disables Translate UI feature
+    ...    --disable-popup-blocking    # Disables pop-up blocking
+    ...    --disable-web-security    # Disables same-origin policy (testing only)
+    ...    --disable-blink-features=AutomationControlled    # Disables AutomationControlled blink feature
 
     Log    🔧 Chrome Arguments: ${chrome_args}
     Log    📱 Device: Pixel 5

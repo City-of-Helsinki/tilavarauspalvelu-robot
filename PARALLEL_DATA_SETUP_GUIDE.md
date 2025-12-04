@@ -1,10 +1,18 @@
 # Parallel Test Data Setup Guide
 
-> **📖 This is the comprehensive guide for parallel testing.** For a quick overview, see [README.md](README.md). This guide covers all technical details, flow diagrams, tag requirements, and how to add new tests or data sets.
+> **📖 This is the guide for parallel testing.** For a quick overview, see [README.md](README.md). This guide covers all technical details, flow diagrams, tag requirements, and how to add new tests or data sets.
 
 ## 🎯 Overview
 
 The Varaamo test framework uses **tag-based data distribution** to ensure each parallel test gets unique user data, preventing conflicts and enabling reliable parallel execution.
+
+### Key Logic Files
+
+The parallel testing system relies on three core files:
+
+- **`parallel_test_data.robot`** - Decides which user data file to use based on execution context (parallel vs sequential)
+- **`suite_unit_selector.robot`** - Unit initialization logic (determines which test units/spaces to use)
+- **`common_setups_teardowns.robot`** - Universal setup keyword that orchestrates the initialization flow
 
 ## 🔄 How Data Setup Works
 
@@ -93,7 +101,7 @@ The system supports two execution modes (see flow diagram above for visual repre
 
 ## 📋 Required Tags
 
-Each test needs **at least 2 tags**:
+Each test needs **at least 2 tags** (Data Set Tag and Suite Type Tag):
 
 ### 1. Data Set Tag (REQUIRED)
 **Purpose**: Links the test to a specific user data set in `pabot_users.dat`
@@ -144,7 +152,7 @@ Each test needs **at least 2 tags**:
 - `android-suite` - Mobile browser tests on Android emulation
 - `iphone-suite` - Mobile browser tests on iPhone emulation
 
-### 3. Permission Test Tag (REQUIRED)
+### 3. Permission Test Tag (Required only for permission tests)
 **Purpose**: Determines which admin user's permissions will be modified
 
 **How it works**: The system uses this tag to select the correct permission target admin:
@@ -189,7 +197,7 @@ CURRENT_USER_FULLNAME=Recurring Tester
 CURRENT_PASSWORD=User
 ```
 
-Then add a test case in the appropriate test suite file (e.g., `Tests_user_desktop_FI.robot`). 
+Then add a test case in the appropriate test suite file (e.g., `Tests_user_desktop_FI.robot`):
 
 ```robot
 Your New Test
@@ -207,4 +215,5 @@ Your New Test
 ## 🐛 Troubleshooting
 
 ### Common Issues
- WIP
+
+> **⚠️ WIP (Work In Progress)**: Troubleshooting section is being developed.

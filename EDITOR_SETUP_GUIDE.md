@@ -21,6 +21,8 @@ The Robocorp Code extension handles ALL Python/environment setup automatically.
 
 This automatically installs Python, Robot Framework, and all dependencies!
 
+📖 **More info:** [Robocorp Quickstart Guide](https://sema4.ai/docs/automation/quickstart-guide)
+
 ### Step 2: Open Project in IDE
 
 ```bash
@@ -79,8 +81,22 @@ After tests run, click **"View Log"** in the notification popup, or open `output
 - **Browser doesn't appear?** - Check that `headless=false` is set in `TestSuites/Resources/devices.robot`
 - **Tests fail to start?** - Wait for **"Environment ready"** notification
 
+## ⌨️ Useful Command Palette Commands
+
+Open command palette: **Cmd+Shift+P** (Mac) or **Ctrl+Shift+P** (Windows/Linux)
+
+Useful commands for troubleshooting and development:
+
+1. **Robocorp: Clear Robocorp (RCC) environments and restart Robocorp Code**
+   - Clears RCC environments and restarts the Robocorp extension
+   - Use when environment setup seems corrupted or extension behaves unexpectedly
+
+2. **Robocorp: Terminal with Task Package (Robot) environment**
+   - Opens a terminal with the Robot Framework environment activated
+   - Useful for running Robot Framework commands manually or debugging
+
 ## 📚 Related Documentation
 
 - [SETUP_GUIDE.md](SETUP_GUIDE.md) - Detailed setup instructions and secret acquisition
-- [PARALLEL_SETUP_GUIDE.md](PARALLEL_SETUP_GUIDE.md) - Running tests in parallel
+- [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md) - Running tests in parallel
 - [TEST_ARCHITECTURE.md](TEST_ARCHITECTURE.md) - Understanding the test structure

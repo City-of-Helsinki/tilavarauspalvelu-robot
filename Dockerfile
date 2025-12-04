@@ -4,8 +4,8 @@
 # Based on Microsoft's Playwright image (mcr.microsoft.com/playwright:v1.57.0-noble)
 # This base image includes:
 # - Ubuntu 24.04 Noble Numbat as the OS base
-# - Node.js 24.x (v24.11.1) with npm and yarn pre-installed
-# - Python 3.12.3 pre-installed (but without venv module)
+# - Node.js 24.11.1 with npm and yarn pre-installed
+# - Python 3.12.3 pre-installed (base image lacks venv module, installed during build)
 # - Pre-installed Playwright browser binaries in /ms-playwright directory
 # - System dependencies required for Playwright browsers pre-configured
 # - Multi-architecture support (amd64/arm64)

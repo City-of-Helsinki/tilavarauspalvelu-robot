@@ -7,7 +7,7 @@ channels:
 
 dependencies:
   - python=3.12.3
-  - nodejs=22
+  - nodejs=24
   - pip=24.3.1
   - tzdata
   - pip:
@@ -19,6 +19,9 @@ dependencies:
 
       # Environment management
       - python-dotenv==1.2.1
+
+      # HTTP requests library for email testing (used in robot_email_test_tool.py)
+      - requests==2.32.5
 
       # Code Quality and Linting Tools
       - robotframework-robocop==6.13.0

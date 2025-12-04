@@ -1,14 +1,19 @@
-# Varaamo Robot Framework Tests 
+# Varaamo Robot Framework Tests
 
-> **⚠️ WIP (Work In Progress):** This README is currently being updated and may contain incomplete or outdated information.  
-> Email authentication system is being refactored. Setup requirements may change in future versions. 
+> **⚠️ WIP (Work In Progress):** This README is currently being updated and may contain incomplete or outdated information.
+> Email authentication system is being refactored. Setup requirements may change in future versions.
 
-This repository contains automated test suites for the Varaamo booking system using Robot Framework with the Browser Library (Playwright). The project supports both Docker-based execution and local development with parallel testing capabilities.
+## About Varaamo
+
+**Varaamo** is the space and resource reservation platform for City of Helsinki, where citizens can make reservations for spaces and resources owned by the City of Helsinki.
+
+🔗 **Main Application Repository**: [tilavarauspalvelu-core](https://github.com/City-of-Helsinki/tilavarauspalvelu-core)
+
+This repository contains automated test suites for the Varaamo booking system using Robot Framework with the Browser Library (Playwright). The project supports Docker-based execution, local development, and GitHub Actions CI/CD with parallel testing capabilities.
 
 ## 🚀 Features
 
-- **Multi-platform Testing**: Desktop, mobile (Android/iOS), and admin interface testing.
-Chrome, Firefox, Safari via Playwright.
+- **Multi-platform Testing**: Desktop, mobile (Android/iOS), and admin interface testing. Chrome, Firefox, Safari via Playwright.
 - **Parallel Execution**: Support for concurrent test execution using pabot
 - **Docker Integration**: Containerized test environment for consistent execution
 - **CI/CD Pipeline**: GitHub Actions workflow with configurable test suites
@@ -20,12 +25,11 @@ Chrome, Firefox, Safari via Playwright.
 
 | Component | Purpose |
 |-----------|---------|
-| Robot Framework | Keyword-driven test automation framework |
-| Robot Framework Browser Library | Cross-browser web automation (Playwright-based) |
+| Robot Framework | Test automation framework |
+| Robot Framework Browser Library | Chromium, Firefox, WebKit (Playwright-based) |
 | Pabot | Parallel test execution |
-| Playwright | Browser automation (Chromium, Firefox, WebKit) |
-| Python | Runtime environment (3.10+ required) |
-| python-dotenv | Environment variable management from `.env` files |
+| Python | Custom keywords used for email and ICS file testing|
+| Python-dotenv | Environment variable management from `.env` files |
 | Requests & Robot Framework Requests | Data creation and email testing via API |
 | Robocop | Robot Framework linting and formatting |
 | Ruff | Python linting and formatting |
@@ -46,7 +50,6 @@ Before running tests, you need to acquire these secrets:
 1. Clone repo: `git clone [repo-url]`
 2. Set up secrets: Create `TestSuites/Resources/.env` file with required secrets (see [SETUP_GUIDE.md](SETUP_GUIDE.md))
 3. Build: `docker build -t robotframework-tests .`
-OR
 4. Run: `./docker-test.sh` (Mac/Linux) or `.\docker-test.ps1` (Windows)
 5. View results: Open `output/report.html`
 
@@ -66,7 +69,7 @@ Docker-related files:
 The Docker container is based on Microsoft's Playwright image and includes:
 - **Ubuntu 24.04** with Finnish locale support
 - **Python 3.12.3** with virtual environment
-- **Node.js 22** with Playwright browsers
+- **Node.js 24.11.1** with Playwright browsers
 - **Robot Framework 7.3.2** with Browser library
 - **Parallel execution support** via pabot
 
@@ -76,16 +79,38 @@ The Docker container is based on Microsoft's Playwright image and includes:
 docker build --no-cache -t robotframework-tests .
 ```
 
-## 🏃‍♂️ Running Tests
+## 🚀 Running Tests
 
-This provides a menu with options for:
+### Quick Start
+
+Use the interactive test runner to select and execute tests:
+
+**macOS/Linux:**
+```bash
+./docker-test.sh
+```
+
+**Windows:**
+```powershell
+# PowerShell blocks script execution by default for security
+# Choose one option to allow the script to run:
+
+# Option 1: Set Execution Policy Once (Recommended)
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+.\docker-test.ps1
+
+# Option 2: Bypass for Single Execution
+powershell -ExecutionPolicy Bypass -File docker-test.ps1
+```
+
+The interactive menu provides options for:
 - **Parallel execution** (pabot) with configurable process counts
 - **Sequential execution** for single-user scenarios
 - **Individual test suites** or **all suites**
 - **Docker image management** (build, clean)
 - **HAR analyzer** for network traffic analysis
 
-## 📋 Available Test Suites
+### Available Test Suites
 
 - **`Tests_user_desktop_FI.robot`** - Desktop browser tests (includes recurring reservations)
 - **`Tests_admin_desktop_FI.robot`** - Admin user tests
@@ -94,15 +119,17 @@ This provides a menu with options for:
 - **`Tests_user_mobile_android_FI.robot`** - Mobile Android tests
 - **`Tests_user_mobile_iphone_FI.robot`** - Mobile iPhone tests
 
-### Process Configuration (Parallel Testing)
+### Execution Modes
 
-Default process counts for parallel execution (configurable in `docker-config.json`):
-- **Desktop processes**: 8
-- **Admin processes**: 2
-- **Mobile processes**: 3
-- **All suites processes**: 5
+| Execution Mode | Command | User Assignment | When to Use |
+|---------------|---------|-----------------|-------------|
+| **Parallel** 🚀 | `pabot --pabotlib --resourcefile pabot_users.dat` | Unique users per test from `pabot_users.dat` | CI/CD, fast execution |
+| **Sequential** 🌐 | `robot` (or `robot --variable FORCE_SINGLE_USER:True`) | Shared users from `serial_users.robot` | Single test runs, local development |
 
-📖 **For details on how parallel execution works and data set assignment, see [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md)**
+**Automatic Fallback:** The system automatically uses sequential mode when running with `robot` command, when `FORCE_SINGLE_USER=True` is set, when value set acquisition fails, or when PabotLib is unavailable.
+
+**Process Configuration:** Default parallel process counts (configurable in `docker-config.json`):
+- Desktop: 8 | Admin: 2 | Mobile: 3 | All suites: 5
 
 ### How Parallel Testing Works
 
@@ -131,39 +158,8 @@ Each test case is tagged (e.g., `[Tags] desktop-test-data-set-0 desktop-suite`),
 2. **Assigns isolated user data** to prevent conflicts in parallel execution
 3. **Switches between parallel/single mode** based on execution context
 
-### Execution Modes
-
-| Execution Mode | Command | User Assignment | When to Use |
-|---------------|---------|-----------------|-------------|
-| **Parallel** 🚀 | `pabot --pabotlib --resourcefile pabot_users.dat` | Unique users per test from `pabot_users.dat` | CI/CD, fast execution|
-| **Sequential** 🌐 | `robot` (or `robot --variable FORCE_SINGLE_USER:True`) | Shared users from `serial_users.robot` | VS Code debugging, single test runs, local development |
-
-**Automatic Fallback:** The system automatically uses sequential mode when running with `robot` command, when `FORCE_SINGLE_USER=True` is set, when value set acquisition fails, or when PabotLib is unavailable.
-
 📖 **For detailed information on tags, data sets, flow diagrams, and adding new tests, see [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md)**
 
-### Key Logic Files
-
-The parallel testing system relies on three core files:
-
-- **`parallel_test_data.robot`** - Decides which user data file to use based on execution context (parallel vs sequential)
-- **`suite_unit_selector.robot`** - Unit initialization logic (determines which test units/spaces to use)
-- **`common_setups_teardowns.robot`** - Universal setup keyword that orchestrates the initialization flow
-
-**macOS/Linux:**
-```bash
-./docker-test.sh
-```
-
-**Windows:**
-```powershell
-# Option 1: Set Execution Policy Once (Recommended)
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-.\docker-test.ps1
-
-# Option 2: Bypass for Single Execution
-powershell -ExecutionPolicy Bypass -File docker-test.ps1
-```
 ## 📈 Test Reports
 
 After running tests, reports are generated in the `output` directory:
@@ -178,11 +174,6 @@ After running tests, reports are generated in the `output` directory:
 - **To view the reports, open the `report.html` HTML file in your browser after test execution completes.**
 - **When the tests are run in GitHub Actions, the result is marked in the job summary.**
 
-
-## Manual Docker Commands
-
-**📧 Note**: All secrets (`WAF_BYPASS_SECRET`, `ROBOT_API_TOKEN`, `DJANGO_ADMIN_PASSWORD`) are loaded from your `.env` file using Docker's `--env-file` parameter.
-
 ## 🔑 Environment File (.env) Location
 
 **⚠️ Important**: The `.env` file **must** be located at `TestSuites/Resources/.env` for proper functionality.
@@ -192,7 +183,11 @@ After running tests, reports are generated in the `output` directory:
 
 📖 **For detailed setup instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md)**
 
-## Manual Docker Commands (Mac/Linux)
+## Manual Docker Commands
+
+**📧 Note**: All secrets (`WAF_BYPASS_SECRET`, `ROBOT_API_TOKEN`, `DJANGO_ADMIN_PASSWORD`) are loaded from your `.env` file using Docker's `--env-file` parameter.
+
+### Manual Docker Commands (Mac/Linux)
 
 **Sequential Robot Framework execution:**
 ```bash
@@ -218,7 +213,7 @@ docker run --rm \
 - To run a different test suite, replace `Tests_user_desktop_FI.robot` with your desired suite name (e.g., `Tests_admin_desktop_FI.robot`, `Tests_user_mobile_android_FI.robot`).
 - `--processes 6` is the number of tests run simultaneously
 
-## Manual Docker Commands (Windows PowerShell)
+### Manual Docker Commands (Windows PowerShell)
 
 **Sequential Robot Framework execution:**
 ```powershell
@@ -252,12 +247,11 @@ docker run --rm `
   pabot --testlevelsplit --processes 6 --pabotlib --exclude serialonly --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat --outputdir /opt/robotframework/reports /opt/robotframework/tests/Tests_user_desktop_FI.robot
 ```
 
-**Note:** 
+**Note:**
 - To run a different test suite, replace `Tests_user_desktop_FI.robot` with your desired suite name (e.g., `Tests_admin_desktop_FI.robot`, `Tests_user_mobile_android_FI.robot`).
 - `--processes 6` is the number of tests run simultaneously
 
-
-#### Running Individual Test Cases
+### Running Individual Test Cases
 
 To run a specific test case from a suite, add the test case name with the `-t` flag:
 
@@ -273,7 +267,7 @@ docker run --rm `
   /opt/robotframework/tests/Tests_user_desktop_FI.robot
 ```
 
-**macOS/Linux**
+**macOS/Linux:**
 ```bash
 docker run --rm \
   --env-file TestSuites/Resources/.env \
@@ -287,7 +281,7 @@ docker run --rm \
 
 ### HAR Recording Control
 
-HAR files can be recorded during test execution for network traffic analysis:
+HAR files can be recorded during test execution for network traffic analysis. These options can be configured through the interactive test runners (`docker-test.sh` / `docker-test.ps1`) or manually:
 
 **Enable/Disable HAR Recording:**
 
@@ -369,7 +363,7 @@ Browser configurations and device settings are managed in `TestSuites/Resources/
 - **WAF Bypass**: Configured via `WAF_BYPASS_SECRET` environment variable
 - **Parallel Execution**: Staggered startup strategy to prevent resource conflicts
 
-📖 **For detailed test coverage and architecture information, see [TEST_ARCHITECTURE.md](TEST_ARCHITECTURE.md)**
+📖 **For detailed test flow and architecture information, see [TEST_ARCHITECTURE.md](TEST_ARCHITECTURE.md)**
 
 ## 🐛 Debugging
 
@@ -383,18 +377,11 @@ For debugging with a visible browser, use a code editor (Cursor or VS Code) with
 
 ## 🚀 GitHub Actions
 
-This project includes GitHub Actions workflow that automatically runs tests when:
+This project includes a GitHub Actions workflow that runs tests when manually triggered via the GitHub Actions UI.
 
-- Manually triggered via the GitHub Actions UI
-
-📖 **For detailed test execution instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md#-test-execution)**
+📖 **For detailed test execution instructions, see [SETUP_GUIDE.md](SETUP_GUIDE.md)**
 
 ## 📁 Project Structure
-
-> **Color Reference**: Only key sections are colored for quick scanning
-> - <span style="color: #22863a;">Green</span> - App/Common page objects
-> - <span style="color: #005cc5;">Blue</span> - User interface files  
-> - <span style="color: #e36209;">Orange</span> - Resources/utilities
 
 <pre>
 .
@@ -404,13 +391,13 @@ This project includes GitHub Actions workflow that automatically runs tests when
 │           # CI/CD workflow with test suite selection options
 │
 ├── TestSuites/
-│   <span style="color: #6a737d;"># Test suite directory</span>
+│   # Test suite directory
 │   │
 │   ├── PO/
-│   │   <span style="color: #6a737d;"># Page Objects (PO) for separation of test logic and UI elements</span>
+│   │   # Page Objects (PO) for separation of test logic and UI elements
 │   │   │
 │   │   ├── Admin/
-│   │   │   <span style="color: #6a737d;"># Admin interface page objects</span>
+│   │   │   # Admin interface page objects
 │   │   │   ├── admin_landingpage.robot
 │   │   │   ├── admin_my_units.robot
 │   │   │   ├── admin_navigation_menu.robot
@@ -420,94 +407,102 @@ This project includes GitHub Actions workflow that automatically runs tests when
 │   │   │   └── django_admin.robot
 │   │   │
 │   │   ├── App/
-│   │   │   <span style="color: #6a737d;"># Application-specific page objects</span>
-│   │   │   ├── app_admin.robot          <span style="color: #22863a;"># Admin actions and workflows</span>
-│   │   │   ├── app_common.robot         <span style="color: #22863a;"># Shared functionality across user types</span>
-│   │   │   ├── app_user.robot           <span style="color: #22863a;"># User-specific actions</span>
-│   │   │   └── mail.robot                <span style="color: #22863a;"># Email verification functionality</span>
+│   │   │   # Application-specific page objects
+│   │   │   ├── app_admin.robot
+│   │   │   │   # Admin actions and workflows
+│   │   │   ├── app_common.robot
+│   │   │   │   # Shared functionality across user types
+│   │   │   ├── app_user.robot
+│   │   │   │   # User-specific actions
+│   │   │   └── mail.robot
+│   │   │       # Email verification functionality
 │   │   │
 │   │   ├── Common/
-│   │   │   <span style="color: #6a737d;"># Shared UI components and patterns</span>
-│   │   │   ├── checkout.robot           <span style="color: #22863a;"># Payment and checkout flows</span>
-│   │   │   ├── login.robot               <span style="color: #22863a;"># Authentication handling</span>
-│   │   │   ├── popups.robot              <span style="color: #22863a;"># Popup handling (cookies, confirmations)</span>
-│   │   │   └── topnav.robot              <span style="color: #22863a;"># Top navigation elements</span>
+│   │   │   # Shared UI components and patterns
+│   │   │   ├── checkout.robot
+│   │   │   │   # Payment and checkout flows
+│   │   │   ├── login.robot
+│   │   │   │   # Authentication handling
+│   │   │   ├── popups.robot
+│   │   │   │   # Popup handling (cookies, confirmations)
+│   │   │   └── topnav.robot
+│   │   │       # Top navigation elements
 │   │   │
 │   │   └── User/
-│   │       <span style="color: #6a737d;"># User interface page objects</span>
+│   │       # User interface page objects
 │   │       ├── mybookings.robot
-│   │       │   <span style="color: #005cc5;"># My Bookings page actions</span>
+│   │       │   # My Bookings page actions
 │   │       ├── quick_reservation.robot
-│   │       │   <span style="color: #005cc5;"># Quick booking slot selection</span>
+│   │       │   # Quick booking slot selection
 │   │       ├── recurring.robot
-│   │       │   <span style="color: #005cc5;"># Recurring booking round and unit selection</span>
+│   │       │   # Recurring booking round and unit selection
 │   │       ├── recurring_applications.robot
-│   │       │   <span style="color: #005cc5;"># Recurring app form (name, people, age, purpose, times)</span>
+│   │       │   # Recurring app form (name, people, age, purpose, times)
 │   │       ├── recurring_applications_page2.robot
-│   │       │   <span style="color: #005cc5;"># Recurring app time preferences and availability</span>
+│   │       │   # Recurring app time preferences and availability
 │   │       ├── recurring_applications_page3.robot
-│   │       │   <span style="color: #005cc5;"># Recurring app contact and billing information</span>
+│   │       │   # Recurring app contact and billing information
 │   │       ├── recurring_applications_page_preview.robot
-│   │       │   <span style="color: #005cc5;"># Terms acceptance before submission</span>
+│   │       │   # Terms acceptance before submission
 │   │       ├── recurring_applications_page_sent.robot
-│   │       │   <span style="color: #005cc5;"># Application submission confirmation</span>
+│   │       │   # Application submission confirmation
 │   │       ├── reservation_calendar.robot
-│   │       │   <span style="color: #005cc5;"># Calendar duration and time slot selection</span>
+│   │       │   # Calendar duration and time slot selection
 │   │       ├── reservation_lownav.robot
-│   │       │   <span style="color: #005cc5;"># Continue/submit button actions</span>
+│   │       │   # Continue/submit button actions
 │   │       ├── reservation_unit_booking_details.robot
-│   │       │   <span style="color: #005cc5;"># Booking form (name, purpose, etc)</span>
+│   │       │   # Booking form (name, purpose, etc)
 │   │       ├── reservation_unit_reservation_receipt.robot
-│   │       │   <span style="color: #005cc5;"># Reservation confirmation validation</span>
+│   │       │   # Reservation confirmation validation
 │   │       ├── reservation_unit_reserver_info.robot
-│   │       │   <span style="color: #005cc5;"># Contact information form fields</span>
+│   │       │   # Contact information form fields
 │   │       ├── reservation_unit_reserver_types.robot
-│   │       │   <span style="color: #005cc5;"># Individual/company reserver selection</span>
+│   │       │   # Individual/company reserver selection
 │   │       ├── singlebooking.robot
-│   │       │   <span style="color: #005cc5;"># Unit search and advanced search toggle</span>
+│   │       │   # Unit search and advanced search toggle
 │   │       └── user_landingpage.robot
-│   │           <span style="color: #005cc5;"># Landing page checks and payment notifications</span>
+│   │           # Landing page checks and payment notifications
 │   │
 │   ├── Resources/
-│   │   <span style="color: #e36209;"># Shared resources and configuration</span>
+│   │   # Shared resources and configuration
 │   │   ├── variables.robot
-│   │   │   <span style="color: #e36209;"># Global variables (URLs, test data)</span>
+│   │   │   # Global variables (URLs, test data)
 │   │   ├── env_loader.py
-│   │   │   <span style="color: #e36209;"># Environment variable loader from .env file</span>
+│   │   │   # Environment variable loader from .env file
 │   │   ├── texts_FI.robot
-│   │   │   <span style="color: #e36209;"># Finnish language texts for verification</span>
+│   │   │   # Finnish language texts for verification
 │   │   ├── texts_ENG.robot
-│   │   │   <span style="color: #e36209;"># English language texts for verification</span>
+│   │   │   # English language texts for verification
 │   │   ├── common_setups_teardowns.robot
-│   │   │   <span style="color: #e36209;"># Test setup and teardown procedures</span>
+│   │   │   # Test setup and teardown procedures
 │   │   ├── custom_keywords.robot
-│   │   │   <span style="color: #e36209;"># Custom Robot Framework keywords</span>
+│   │   │   # Custom Robot Framework keywords
 │   │   ├── data_modification.robot
-│   │   │   <span style="color: #e36209;"># Data manipulation utilities</span>
+│   │   │   # Data manipulation utilities
 │   │   ├── devices.robot
-│   │   │   <span style="color: #e36209;"># Device-specific configurations</span>
+│   │   │   # Device-specific configurations
 │   │   ├── har_recording.robot
-│   │   │   <span style="color: #e36209;"># HAR file recording utilities</span>
+│   │   │   # HAR file recording utilities
 │   │   ├── parallel_test_data.robot
-│   │   │   <span style="color: #e36209;"># Test data initialization and user assignment logic</span>
+│   │   │   # Test data initialization and user assignment logic
 │   │   ├── python_keywords.py
-│   │   │   <span style="color: #e36209;"># Python-based custom keywords</span>
+│   │   │   # Python-based custom keywords
 │   │   ├── README_TEST_DATA_SYSTEM.md
-│   │   │   <span style="color: #e36209;"># Comprehensive test data system documentation</span>
+│   │   │   # Comprehensive test data system documentation
 │   │   ├── suite_specific_units.robot
-│   │   │   <span style="color: #e36209;"># Suite-specific unit configurations for parallel isolation</span>
+│   │   │   # Suite-specific unit configurations for parallel isolation
 │   │   ├── suite_unit_selector.robot
-│   │   │   <span style="color: #e36209;"># Dynamic unit assignment logic for different test suites</span>
+│   │   │   # Dynamic unit assignment logic for different test suites
 │   │   ├── pabot_users.dat
-│   │   │   <span style="color: #e36209;"># PabotLib value sets with user data for parallel execution</span>
+│   │   │   # PabotLib value sets with user data for parallel execution
 │   │   ├── robot_email_test_tool.py
-│   │   │   <span style="color: #e36209;"># Email testing library (backend cache API)</span>
+│   │   │   # Email testing library (backend cache API)
 │   │   ├── email_verification.robot
-│   │   │   <span style="color: #e36209;"># Email verification keywords for Robot Framework</span>
+│   │   │   # Email verification keywords for Robot Framework
 │   │   ├── serial_users.robot
-│   │   │   <span style="color: #e36209;"># User management for serial (non-pabot) execution</span>
+│   │   │   # User management for serial (non-pabot) execution
 │   │   └── downloads/
-│   │       <span style="color: #e36209;"># Downloaded ICS calendar files</span>
+│   │       # Downloaded ICS calendar files
 │   │
 │   ├── Tests_user_desktop_FI.robot
 │   ├── Tests_admin_desktop_FI.robot
@@ -517,22 +512,36 @@ This project includes GitHub Actions workflow that automatically runs tests when
 │   └── Tests_admin_notifications_serial.robot
 │
 ├── output/
-│   <span style="color: #6a737d;"># Test reports (created at runtime)</span>
-│   ├── log.html                          # Detailed execution logs
-│   ├── report.html                       # Test result summary
-│   ├── output.xml                        # XML output file
-│   └── screenshots/                       # Captured screenshots from test failures
+│   # Test reports (created at runtime)
+│   ├── log.html
+│   │   # Detailed execution logs
+│   ├── report.html
+│   │   # Test result summary
+│   ├── output.xml
+│   │   # XML output file
+│   └── screenshots/
+│       # Captured screenshots from test failures
 │
-├── Dockerfile                            # Docker image definition
-├── docker-config.json                    # Test configuration (process counts, test suites)
-├── docker-test.sh                        # Interactive test runner for Linux/macOS
-├── docker-test.ps1                      # Interactive test runner for Windows
-├── requirements.txt                      # Python dependencies
-├── conda.yaml                            # Conda environment configuration
-├── robot.yaml                            # RCC configuration
-├── har_analyzer.py                        # HAR file analysis utilities
-├── create_robot_test_data_new.py         # Test data creation script
-├── LINTING.md                             # Code quality and linting guide
+├── Dockerfile
+│   # Docker image definition
+├── docker-config.json
+│   # Test configuration (process counts, test suites)
+├── docker-test.sh
+│   # Interactive test runner for Linux/macOS
+├── docker-test.ps1
+│   # Interactive test runner for Windows
+├── requirements.txt
+│   # Python dependencies
+├── conda.yaml
+│   # Robocorp RCC environment packages (Python, Node.js, Robot Framework dependencies)
+├── robot.yaml
+│   # Robocorp RCC project config (tasks, environment setup for local execution)
+├── har_analyzer.py
+│   # HAR file analysis utilities
+├── create_robot_test_data_new.py
+│   # Test data creation script
+├── LINTING.md
+│   # Code quality and linting guide
 └── PARALLEL_DATA_SETUP_GUIDE.md
     # Tag-based test data initialization and parallel execution flow
 </pre>
@@ -546,9 +555,8 @@ This project includes GitHub Actions workflow that automatically runs tests when
 - [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md) - Tag-based test data initialization and parallel execution flow
 - [Robot Framework Documentation](https://docs.robotframework.org/)
 - [Robot Framework Browser Library](https://marketsquare.github.io/robotframework-browser/Browser.html)
-- [Playwright Documentation](https://playwright.dev/)
 - [PabotLib Documentation](https://pabot.org/) - Parallel execution library
-
+- [Robocorp Documentation](https://sema4.ai/docs/automation/quickstart-guide) - IDE extension and local development setup
 
 ## 📄 License
 

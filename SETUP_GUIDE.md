@@ -11,12 +11,14 @@ Before running tests, you need to acquire these secrets:
 - **WAF Bypass Secret** (`WAF_BYPASS_SECRET`)
   - The test environment's Application Gateway and its WAF may impose traffic limits
   - During Robot Framework parallel execution, a large number of requests originate from the same source address, which can trigger WAF rate-limiting
+  - **Without this secret, you will encounter many 403 (Forbidden) errors** during test execution
   - The WAF bypass secret ensures that parallel test runs can proceed without interruptions
 - **Robot API Token** (`ROBOT_API_TOKEN`) for test data creation
 - **Django Admin Password** (`DJANGO_ADMIN_PASSWORD`) for admin operations
 
 **📝 Where to get these secrets:**
 https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8368848910/Robot+Framework+automaatiotestit#Passwords
+
 ## 🔑 Environment File (.env) Location
 
 **⚠️ Important**: The `.env` file **must** be located at `TestSuites/Resources/.env` for proper functionality.
@@ -26,36 +28,46 @@ https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8368848910/Ro
 - Ensures consistency across all test runs
 - Prevents path-related issues when running from different directories
 
-## 🔧 Setup Steps
+### Automatic .env Loading
 
-### Manual .env Setup
-Create `TestSuites/Resources/.env` manually with:
+**For Local Execution:**
+- `env_loader.py` automatically loads `.env` from `TestSuites/Resources/.env` when tests run
+- No manual configuration needed - just create the file and run tests
 
-```bash
-# Required secrets
-WAF_BYPASS_SECRET=your_waf_bypass_secret_here
-ROBOT_API_TOKEN=your_robot_api_token_here
-DJANGO_ADMIN_PASSWORD=your_django_admin_password_here
-```
+**For Docker Execution:**
+- Docker scripts automatically discover and load the `.env` file
+- **PowerShell script** searches 5 locations (including parent dir, home dir, custom path)
+- **Bash script** searches 2 locations (TestSuites/Resources/.env, then project root)
+- See Docker Execution section below for details
 
-### 🔍 Automatic .env Discovery (Docker Scripts)
+**🚫 Common Mistakes**:
+- ❌ Don't manually place `.env` in the root directory
+- ✅ Place it at `TestSuites/Resources/.env` (recommended, works everywhere)
 
-> **📝 Note for Future Development:** This automatic discovery feature is designed for future development flexibility, allowing developers to place `.env` files in various locations based on their workflow preferences.
+## 🐳 Docker Execution
 
-The interactive Docker scripts (`docker-test.ps1` and `docker-test.sh`) include smart `.env` file discovery that searches multiple locations:
+### .env File Discovery
 
-**Search order**:
+The Docker scripts have different search behaviors:
+
+**PowerShell (`docker-test.ps1`)** - Smart multi-location search:
 1. `TestSuites/Resources/.env` (recommended)
 2. `./.env` (project root)
 3. `../.env` (parent directory)
-4. `$HOME/.varaamo/.env` (user home directory)
-5. Custom path via `ENV_FILE` environment variable
+4. `$env:USERPROFILE/.varaamo/.env` (user home directory)
+5. Custom path via `$env:ENV_FILE` environment variable
 
-**🚫 Common Mistakes**: 
-- ❌ Don't manually place `.env` in the root directory
-- ✅ Place it at `TestSuites/Resources/.env`
+**Bash (`docker-test.sh`)** - Simple 2-location search:
+1. `TestSuites/Resources/.env` (can be configured in `docker-config.json`)
+2. `./.env` (project root) - fallback only
 
-## 🚀 Next Steps
+**Loaded variables** (both scripts):
+- `WAF_BYPASS_SECRET`
+- `ROBOT_API_TOKEN`
+- `ROBOT_API_ENDPOINT`
+- `DJANGO_ADMIN_PASSWORD`
+
+## 🚀 Running Tests in Docker
 
 After setting up your `.env` file:
 
@@ -63,9 +75,38 @@ After setting up your `.env` file:
 2. Run the interactive Docker scripts (`docker-test.ps1` or `docker-test.sh`)
 3. The scripts will automatically discover and validate your `.env` file
 
-## 🚀 Test Execution
+The interactive test runner will allow you to select and execute tests.
 
-### Running Tests via GitHub Actions
+## 🖥️ Local Execution With Robocorp Extension
+
+**Prerequisites**: Install Robot Framework and Browser library. See [EDITOR_SETUP_GUIDE.md](EDITOR_SETUP_GUIDE.md) for editor setup with Robocorp extension.
+
+### Create .env File
+
+Create `TestSuites/Resources/.env` manually with the required secrets (see Required Secrets section above).
+
+## 🚀 Running Tests Locally
+
+After creating your `.env` file, you can run tests using your IDE's Robot Framework extension or command line.
+
+## ☁️ GitHub Actions Execution
+
+### Setup
+
+For GitHub Actions, add the following secrets to your repository:
+
+**📝 Where to get these secrets:**
+https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8368848910/Robot+Framework+automaatiotestit#Passwords
+
+1. Go to **Settings** → **Secrets and variables** → **Actions**
+2. Add these repository secrets:
+   - `WAF_BYPASS_SECRET`
+   - `ROBOT_API_TOKEN`
+   - `DJANGO_ADMIN_PASSWORD`
+
+### Running Tests in GitHub Actions
+
+### Manual Workflow Trigger
 
 To manually run tests via GitHub Actions:
 
@@ -96,32 +137,9 @@ When HAR recording is enabled in the workflow:
 2. **Post-Test Analysis**: HAR analyzer runs automatically after tests complete
 3. **Results Integration**: Analysis summary appears in the workflow summary page
 
-### GitHub Actions Setup
-
-For GitHub Actions, add the following secrets to your repository:
-
-**📝 Where to get these secrets:**
-https://helsinkisolutionoffice.atlassian.net/wiki/spaces/KAN/pages/8368848910/Robot+Framework+automaatiotestit#Passwords
-
-1. Go to **Settings** → **Secrets and variables** → **Actions**
-2. Add these repository secrets:
-   - `WAF_BYPASS_SECRET`
-   - `ROBOT_API_TOKEN`
-   - `DJANGO_ADMIN_PASSWORD`
-
 ## 🔧 Troubleshooting
 
-### Common Issues
-
-**Environment Variables Not Found**:
-- Confirm `.env` file is at `TestSuites/Resources/.env`
-- Check that all required variables are present and have values
-- Use the Docker scripts' validation features to verify secrets
-
-**Docker Scripts Can't Find .env**:
-- The scripts search multiple locations automatically
-- Check the console output for which `.env` file was found
-- Use `ENV_FILE` environment variable to specify a custom path
+### Common Issues (All Execution Modes)
 
 **Email Tests Failing**:
 - Verify the backend email cache endpoint is available at `${TEST_BASE_URL}/v1/robot_email_cache/`

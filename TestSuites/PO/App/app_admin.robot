@@ -54,6 +54,8 @@ Admin Checks The Info And Cancels Reservation
     ...    ${ADMIN_REASON_REJECTED}
 
 Admin Returns Reservation To Handling State From Rejected State
+    # When UI is scrolled down, a sticky header appears with the same selector name
+    # Using nth=-1 to target the last element
     admin_reservations.Admin Clicks Button In Reservation Page
     ...    [data-testid="approval-buttons__return-to-handling-button"] >> nth=-1
     Sleep    1s

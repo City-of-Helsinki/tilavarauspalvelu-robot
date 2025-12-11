@@ -16,8 +16,7 @@ Click Login
 
 Click Login Admin Side
     Wait For Elements State    h1    visible
-    ${LoginElement}=    Browser.Get Element    button >> span:text-is("${LOGIN_TEXT_ADMIN}")
-    Click    ${LoginElement}
+    Click    button >> span:text-is("${LOGIN_TEXT_ADMIN}") >> nth=-1
     Sleep    1s
 
 Click Logout

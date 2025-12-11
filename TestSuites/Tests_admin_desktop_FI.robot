@@ -47,7 +47,7 @@ Admin checks permissions
     # Now in Chromium, so switch to Firefox for Django admin operations
     Switch Browser    ${BROWSER_ADMIN_SIDE}
 
-    login.Login Django Admin    ${DJANGO_ADMIN_FIRST_NAME}
+    login.Login Django Admin    ${DJANGO_ADMIN_DJANGO_USERNAME}
 
     Log    Django admin changes permissions for admin user to notification manager
     django_admin.Admin Navigates To General Role Page
@@ -139,39 +139,28 @@ Admin checks unit permissions
     [Tags]    admin-test-data-set-3    admin-suite    unit-permissions-test
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.Open Django Admin In Firefox And App Admin In Chromium    ${URL_DJANGO_ADMIN}    ${URL_ADMIN}
+
     # Now in Chromium, so switch to Firefox for Django admin operations
     Switch Browser    ${BROWSER_ADMIN_SIDE}
 
-    login.Login Django Admin    ${DJANGO_ADMIN_FIRST_NAME}
+    login.Login Django Admin    ${DJANGO_ADMIN_DJANGO_USERNAME}
 
-    # TODO Setting this role will be removed from django
-    Log    Django admin changes permissions for admin user to notification manager
+    Log    Django admin checks that notification manager permission is not present
     django_admin.Admin Navigates To Unit Role Page
     django_admin.Admin Searches The User By Email    ${PERMISSION_TARGET_ADMIN_EMAIL}
     django_admin.Admin Clicks First User
-    django_admin.Admin Changes Permissions    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
-    django_admin.Admin Saves Changes
-
-    # Switch to Chromium browser for app admin checks
-    Switch Browser    ${BROWSER_USER_SIDE}
-    Log    Checking permissions
-    app_common.Permission Target Admin Logs In With Suomi Fi
-    app_admin.Admin Checks Top Navigation For Notification Manager With Unit Permissions
-
-    #
-    Switch Browser    ${BROWSER_ADMIN_SIDE}
-    #
+    django_admin.Admin checks permission is not present    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
 
     Log    Django admin changes permissions to viewer
-    django_admin.Admin Searches The User By Email    ${PERMISSION_TARGET_ADMIN_EMAIL}
-    django_admin.Admin Clicks First User
     django_admin.Admin Changes Permissions    ${ADMIN_ROLE_VIEWER}
     django_admin.Admin Saves Changes
     #
+    # Switch to Chromium browser for app admin checks
     Switch Browser    ${BROWSER_USER_SIDE}
-    app_common.Reload Page
+
+    Log    Checking permissions for viewer
+    app_common.Permission Target Admin Logs In With Suomi Fi
     #
-    Log    Checking permissions
     app_admin.Admin Checks Top Navigation For Viewer With Unit Permissions
     app_admin.Admin Navigates To Own Units And Selects Unit Group    ${UNIT_LOCATION}
     app_admin.Admin Checks That Reservation Cannot Be Made
@@ -235,39 +224,29 @@ Admin checks group unit permissions
     [Tags]    admin-test-data-set-4    admin-suite    unit-group-permissions-test
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.Open Django Admin In Firefox And App Admin In Chromium    ${URL_DJANGO_ADMIN}    ${URL_ADMIN}
+
     # Now in Chromium, so switch to Firefox for Django admin operations
     Switch Browser    ${BROWSER_ADMIN_SIDE}
 
-    login.Login Django Admin    ${DJANGO_ADMIN_FIRST_NAME}
+    login.Login Django Admin    ${DJANGO_ADMIN_DJANGO_USERNAME}
 
-    # TODO Setting this role will be removed from django
-    Log    Django admin changes permissions for admin user to notification manager
+    Log    Django admin checks that notification manager permission is not present
     django_admin.Admin Navigates To Unit Role Page
     django_admin.Admin Searches The User By Email    ${PERMISSION_TARGET_ADMIN_EMAIL}
     django_admin.Admin Clicks First User
-    django_admin.Admin Changes Permissions    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
-    django_admin.Admin Saves Changes
+    django_admin.Admin checks permission is not present    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
 
     # Switch to Chromium browser for app admin checks
-    Switch Browser    ${BROWSER_USER_SIDE}
-    Log    Checking permissions
-    app_common.Permission Target Admin Logs In With Suomi Fi
-    app_admin.Admin Checks Top Navigation For Notification Manager With Group Unit Permissions
-
-    #
-    Switch Browser    ${BROWSER_ADMIN_SIDE}
-    #
-
     Log    Django admin changes permissions to viewer
-    django_admin.Admin Searches The User By Email    ${PERMISSION_TARGET_ADMIN_EMAIL}
-    django_admin.Admin Clicks First User
     django_admin.Admin Changes Permissions    ${ADMIN_ROLE_VIEWER}
     django_admin.Admin Saves Changes
     #
+    # Switch to Chromium browser for app admin checks
     Switch Browser    ${BROWSER_USER_SIDE}
-    app_common.Reload Page
+
+    Log    Checking permissions for viewer
+    app_common.Permission Target Admin Logs In With Suomi Fi
     #
-    Log    Checking permissions
     app_admin.Admin Checks Top Navigation For Viewer With Group Unit Permissions
     app_admin.Admin Navigates To Own Units And Selects Unit Group    ${UNIT_LOCATION}
     app_admin.Admin Checks That Reservation Cannot Be Made

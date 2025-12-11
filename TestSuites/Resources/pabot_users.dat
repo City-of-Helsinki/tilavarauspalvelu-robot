@@ -38,6 +38,7 @@ CURRENT_USER_FIRST_NAME=Ande
 CURRENT_USER_LAST_NAME=AutomaatioTesteri
 CURRENT_USER_FULLNAME=Ande AutomaatioTesteri
 CURRENT_PASSWORD=AutomaatioTesteri
+DJANGO_USERNAME=u-5ubvcxgrxzdf5nj7y4sbjnvyeq
 
 [desktop-test-data-set-1]
 tags=desktop-test-data-set-1
@@ -51,6 +52,7 @@ CURRENT_USER_FIRST_NAME=Mikael
 CURRENT_USER_LAST_NAME=Virtanen
 CURRENT_USER_FULLNAME=Mikael Virtanen
 CURRENT_PASSWORD=Virtanen
+DJANGO_USERNAME=u-os5gt6upb5echkmmocu6g2ujr4
 
 [desktop-test-data-set-2]
 tags=desktop-test-data-set-2
@@ -64,6 +66,7 @@ CURRENT_USER_FIRST_NAME=Jukka
 CURRENT_USER_LAST_NAME=Korhonen
 CURRENT_USER_FULLNAME=Jukka Korhonen
 CURRENT_PASSWORD=Korhonen
+DJANGO_USERNAME=u-3fvnhmmwe5hg7alebt4caji7zi
 
 [desktop-test-data-set-3]
 tags=desktop-test-data-set-3
@@ -77,6 +80,7 @@ CURRENT_USER_FIRST_NAME=Petri
 CURRENT_USER_LAST_NAME=Makinen
 CURRENT_USER_FULLNAME=Petri Makinen
 CURRENT_PASSWORD=Makinen
+DJANGO_USERNAME=u-754c5vvdzzbk5jgsjfh5hcfzc4
 
 [desktop-test-data-set-4]
 tags=desktop-test-data-set-4
@@ -90,6 +94,7 @@ CURRENT_USER_FIRST_NAME=Antti
 CURRENT_USER_LAST_NAME=Nieminen
 CURRENT_USER_FULLNAME=Antti Nieminen
 CURRENT_PASSWORD=Nieminen
+DJANGO_USERNAME=u-4ghz53zzivd4bnpo6x7ef57q4q
 
 [desktop-test-data-set-5]
 tags=desktop-test-data-set-5
@@ -103,6 +108,7 @@ CURRENT_USER_FIRST_NAME=Matti
 CURRENT_USER_LAST_NAME=Mäkelä
 CURRENT_USER_FULLNAME=Matti Mäkelä
 CURRENT_PASSWORD=Mäkelä
+DJANGO_USERNAME=u-crag6mljcfgtthi4y2eflvmk4i
 
 [desktop-test-data-set-7]
 tags=desktop-test-data-set-7
@@ -116,6 +122,7 @@ CURRENT_USER_FIRST_NAME=Sanna
 CURRENT_USER_LAST_NAME=Hämäläinen
 CURRENT_USER_FULLNAME=Sanna Hämäläinen
 CURRENT_PASSWORD=Hämäläinen
+DJANGO_USERNAME=u-eplnxl7s3baungvx4cvjsjb6ge
 
 [desktop-test-data-set-8]
 tags=desktop-test-data-set-8
@@ -129,6 +136,7 @@ CURRENT_USER_FIRST_NAME=Päivi
 CURRENT_USER_LAST_NAME=Mustonen
 CURRENT_USER_FULLNAME=Päivi Mustonen
 CURRENT_PASSWORD=Mustonen
+DJANGO_USERNAME=u-uslsa3ewcvcmbcfyub5b26lfmu
 
 [desktop-test-data-set-9]
 tags=desktop-test-data-set-9
@@ -142,6 +150,7 @@ CURRENT_USER_FIRST_NAME=Kirsi
 CURRENT_USER_LAST_NAME=Heikkinen
 CURRENT_USER_FULLNAME=Kirsi Heikkinen
 CURRENT_PASSWORD=Heikkinen
+DJANGO_USERNAME=u-3zqtvhpzhbevrdcej7prbobe2i
 
 [desktop-test-data-set-10]
 tags=desktop-test-data-set-10
@@ -155,6 +164,7 @@ CURRENT_USER_FIRST_NAME=Marja
 CURRENT_USER_LAST_NAME=Koskinen
 CURRENT_USER_FULLNAME=Marja Koskinen
 CURRENT_PASSWORD=Koskinen
+DJANGO_USERNAME=u-lelgrutpxffxra7r6z7cmc5ksu
 
 [desktop-test-data-set-11]
 tags=desktop-test-data-set-11
@@ -168,6 +178,7 @@ CURRENT_USER_FIRST_NAME=Tiina
 CURRENT_USER_LAST_NAME=Järvinen
 CURRENT_USER_FULLNAME=Tiina Järvinen
 CURRENT_PASSWORD=Järvinen
+DJANGO_USERNAME=u-n76joq6monajzlqxzoff4ore4i
 
 # =============================================================================
 # ADMIN TESTS - Tests_admin_desktop_FI.robot (2 tests)
@@ -185,6 +196,7 @@ ADMIN_CURRENT_USER_LAST_NAME=Tötterstrom
 ADMIN_CURRENT_USER_FULLNAME=Tirehtoori Tötterstrom
 ADMIN_CURRENT_USER_PASSWORD=Tötterstrom
 CURRENT_PASSWORD=Tötterstrom
+DJANGO_USERNAME=u-j7tps34mlvhzhkr4zgq5hltxhu
 
 [admin-test-data-set-1]
 tags=admin-test-data-set-1
@@ -198,18 +210,19 @@ ADMIN_CURRENT_USER_LAST_NAME=Virtanen
 ADMIN_CURRENT_USER_FULLNAME=Pekka Virtanen
 ADMIN_CURRENT_USER_PASSWORD=Virtanen
 CURRENT_PASSWORD=Virtanen
+DJANGO_USERNAME=u-smv3dohm6jhf5dt2fpvpqvsitu
 
 [admin-test-data-set-2]
 tags=admin-test-data-set-2
 # TEST: "Admin checks permissions" (Tests_admin_desktop_FI.robot)
 # DESCRIPTION: Django admin modifies admin user's permissions to notification manager role
 # Permission target admin - the admin whose permissions are being modified
-# Old email: PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+marika@gmail.com
-PERMISSION_TARGET_ADMIN_EMAIL=django_email_robot@mailiposti.com
+PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+marika@gmail.com
 PERMISSION_TARGET_ADMIN_HETU=140785-932R
 PERMISSION_TARGET_ADMIN_FIRST_NAME=Marika
 PERMISSION_TARGET_ADMIN_LAST_NAME=Salminen
 PERMISSION_TARGET_ADMIN_FULLNAME=Marika Salminen
+PERMISSION_TARGET_DJANGO_USERNAME=u-ftm3qi35knfdxoysmn24qpz3ce
 # Django admin who performs the permission changes
 # Old email: DJANGO_ADMIN_EMAIL=qfaksi+kari@gmail.com
 DJANGO_ADMIN_EMAIL=django_email_robot@mailiposti.com
@@ -217,6 +230,7 @@ DJANGO_ADMIN_HETU=150875-9345
 DJANGO_ADMIN_FIRST_NAME=Kari
 DJANGO_ADMIN_LAST_NAME=Kekkonen
 DJANGO_ADMIN_FULLNAME=Kari Kekkonen
+DJANGO_ADMIN_DJANGO_USERNAME=u-synoynteknhu5f4oky5komlxz4
 # NOTE: Password is read from DJANGO_ADMIN_PASSWORD environment variable
 
 [admin-test-data-set-3]
@@ -225,12 +239,12 @@ tags=admin-test-data-set-3
 # DESCRIPTION: Django admin modifies admin user's unit permissions
 # Permission target admin - the admin whose permissions are being modified
 # NOTE: This user must have unit permissions set by default (set in data setup phase)
-# Old email: PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+niko@gmail.com
-PERMISSION_TARGET_ADMIN_EMAIL=django_email_robot@mailiposti.com
+PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+niko@gmail.com
 PERMISSION_TARGET_ADMIN_HETU=150785-907H
 PERMISSION_TARGET_ADMIN_FIRST_NAME=Niko
 PERMISSION_TARGET_ADMIN_LAST_NAME=Selänne
 PERMISSION_TARGET_ADMIN_FULLNAME=Niko Selänne
+PERMISSION_TARGET_DJANGO_USERNAME=u-hzt64qcjsbb2lnmk7li7tqc4ve
 # Django admin who performs the permission changes
 # Old email: DJANGO_ADMIN_EMAIL=qfaksi+ari@gmail.com
 DJANGO_ADMIN_EMAIL=django_email_robot@mailiposti.com
@@ -238,6 +252,7 @@ DJANGO_ADMIN_HETU=190684-907F
 DJANGO_ADMIN_FIRST_NAME=Ari
 DJANGO_ADMIN_LAST_NAME=Laine
 DJANGO_ADMIN_FULLNAME=Ari Laine
+DJANGO_ADMIN_DJANGO_USERNAME=u-6gyudis5vrex7eoyoofsyg7e7m
 # NOTE: Password is read from DJANGO_ADMIN_PASSWORD environment variable
 
 [admin-test-data-set-4]
@@ -246,12 +261,12 @@ tags=admin-test-data-set-4
 # DESCRIPTION: Django admin modifies admin user's unit group permissions
 # Permission target admin - the admin whose permissions are being modified
 # NOTE: This user must have unit permissions set by default (set in data setup phase)
-# Old email: PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+mikko@gmail.com
-PERMISSION_TARGET_ADMIN_EMAIL=django_email_robot@mailiposti.com
+PERMISSION_TARGET_ADMIN_EMAIL=qfaksi+mikko@gmail.com
 PERMISSION_TARGET_ADMIN_HETU=200685-907K
 PERMISSION_TARGET_ADMIN_FIRST_NAME=Mikko
 PERMISSION_TARGET_ADMIN_LAST_NAME=Mäkinen
 PERMISSION_TARGET_ADMIN_FULLNAME=Mikko Mäkinen
+PERMISSION_TARGET_DJANGO_USERNAME=u-lloau4zl65c3lpbpgamxa3edoa
 # Django admin who performs the permission changes
 # Old email: DJANGO_ADMIN_EMAIL=qfaksi+nieminen@gmail.com
 DJANGO_ADMIN_EMAIL=django_email_robot@mailiposti.com
@@ -259,6 +274,7 @@ DJANGO_ADMIN_HETU=160776-934M
 DJANGO_ADMIN_FIRST_NAME=Timo
 DJANGO_ADMIN_LAST_NAME=Nieminen
 DJANGO_ADMIN_FULLNAME=Timo Nieminen
+DJANGO_ADMIN_DJANGO_USERNAME=u-ztjwmkfnabdghga73muxgh7bua
 # NOTE: Password is read from DJANGO_ADMIN_PASSWORD environment variable
 
 # =============================================================================
@@ -278,6 +294,7 @@ CURRENT_USER_FIRST_NAME=Hannu
 CURRENT_USER_LAST_NAME=Rantala
 CURRENT_USER_FULLNAME=Hannu Rantala
 CURRENT_PASSWORD=Rantala
+DJANGO_USERNAME=u-ueeszbvcujh6tehct5qobqdv44
 # Admin assignment for this test
 # Old email: ADMIN_CURRENT_USER_EMAIL=qfaksi+seppo@gmail.com
 ADMIN_CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
@@ -286,6 +303,7 @@ ADMIN_CURRENT_USER_FIRST_NAME=Seppo
 ADMIN_CURRENT_USER_LAST_NAME=Korhonen
 ADMIN_CURRENT_USER_FULLNAME=Seppo Korhonen
 ADMIN_CURRENT_USER_PASSWORD=Korhonen
+ADMIN_DJANGO_USERNAME=u-k36o5lcn5rg6db23hqlb6jhxn4
 
 [combined-test-data-set-1]
 tags=combined-test-data-set-1
@@ -299,6 +317,7 @@ CURRENT_USER_FIRST_NAME=Risto
 CURRENT_USER_LAST_NAME=Hakkarainen
 CURRENT_USER_FULLNAME=Risto Hakkarainen
 CURRENT_PASSWORD=Hakkarainen
+DJANGO_USERNAME=u-sdgkcz427jgyxg2gawa7qcy74q
 # Admin assignment for this test
 # Old email: ADMIN_CURRENT_USER_EMAIL=qfaksi+erkki@gmail.com
 ADMIN_CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
@@ -307,6 +326,7 @@ ADMIN_CURRENT_USER_FIRST_NAME=Erkki
 ADMIN_CURRENT_USER_LAST_NAME=Nieminen
 ADMIN_CURRENT_USER_FULLNAME=Erkki Nieminen
 ADMIN_CURRENT_USER_PASSWORD=Nieminen
+ADMIN_DJANGO_USERNAME=u-khucobukjjh67huofgq4xmcopi
 
 [combined-test-data-set-2]
 tags=combined-test-data-set-2
@@ -321,6 +341,7 @@ CURRENT_USER_FIRST_NAME=Tabitah
 CURRENT_USER_LAST_NAME=Testitar
 CURRENT_USER_FULLNAME=Tabitah Testitar
 CURRENT_PASSWORD=Testitar
+DJANGO_USERNAME=u-u6rsbwp6hfedrjz4ttdgk36sz4
 # Admin assignment for this test
 # Old email: ADMIN_CURRENT_USER_EMAIL=qfaksi+antero@gmail.com
 ADMIN_CURRENT_USER_EMAIL=django_email_robot@mailiposti.com
@@ -329,6 +350,7 @@ ADMIN_CURRENT_USER_FIRST_NAME=Antero
 ADMIN_CURRENT_USER_LAST_NAME=Salonen
 ADMIN_CURRENT_USER_FULLNAME=Antero Salonen
 ADMIN_CURRENT_USER_PASSWORD=Salonen
+ADMIN_DJANGO_USERNAME=u-5l6cnmgeandejout7uktzsqgim
 
 # =============================================================================
 # MOBILE ANDROID TESTS - Tests_user_mobile_android_FI.robot (6 tests)
@@ -346,6 +368,7 @@ CURRENT_USER_FIRST_NAME=Anna
 CURRENT_USER_LAST_NAME=Korhonen
 CURRENT_USER_FULLNAME=Anna Korhonen
 CURRENT_PASSWORD=Korhonen
+DJANGO_USERNAME=u-ie2b7oqmcvdhjd456rcm7x7tuy
 
 [mobile-android-data-set-1]
 tags=mobile-android-data-set-1
@@ -359,6 +382,7 @@ CURRENT_USER_FIRST_NAME=Mari
 CURRENT_USER_LAST_NAME=Leppänen
 CURRENT_USER_FULLNAME=Mari Leppänen
 CURRENT_PASSWORD=Leppänen
+DJANGO_USERNAME=u-ggoljyfcwbf27i53qwzjq55rya
 
 [mobile-android-data-set-2]
 tags=mobile-android-data-set-2
@@ -372,6 +396,7 @@ CURRENT_USER_FIRST_NAME=Elina
 CURRENT_USER_LAST_NAME=Laine
 CURRENT_USER_FULLNAME=Elina Laine
 CURRENT_PASSWORD=Laine
+DJANGO_USERNAME=u-3ubdbnexc5cotcl623jagjbzni
 
 [mobile-android-data-set-3]
 tags=mobile-android-data-set-3
@@ -385,6 +410,7 @@ CURRENT_USER_FIRST_NAME=Kaisa
 CURRENT_USER_LAST_NAME=Rantanen
 CURRENT_USER_FULLNAME=Kaisa Rantanen
 CURRENT_PASSWORD=Rantanen
+DJANGO_USERNAME=u-xabra2s6gbgf5nh7ss46gbsblq
 
 [mobile-android-data-set-4]
 tags=mobile-android-data-set-4
@@ -398,6 +424,7 @@ CURRENT_USER_FIRST_NAME=Ulla
 CURRENT_USER_LAST_NAME=Hakala
 CURRENT_USER_FULLNAME=Ulla Hakala
 CURRENT_PASSWORD=Hakala
+DJANGO_USERNAME=u-fxwut2vtubfuxpnmbqdjpqmwou
 
 [mobile-android-data-set-5]
 tags=mobile-android-data-set-5
@@ -411,6 +438,7 @@ CURRENT_USER_FIRST_NAME=Riitta
 CURRENT_USER_LAST_NAME=Lindström
 CURRENT_USER_FULLNAME=Riitta Lindström
 CURRENT_PASSWORD=Lindström
+DJANGO_USERNAME=u-lj6ejffcxbcn3j6lnpjjz2x5oe
 
 # =============================================================================
 # MOBILE iPHONE TESTS - Tests_user_mobile_iphone_FI.robot (6 tests)
@@ -428,6 +456,7 @@ CURRENT_USER_FIRST_NAME=Tuula
 CURRENT_USER_LAST_NAME=Aaltonen
 CURRENT_USER_FULLNAME=Tuula Aaltonen
 CURRENT_PASSWORD=Aaltonen
+DJANGO_USERNAME=u-buahccmtg5dedcvalbogbmiktq
 
 [mobile-iphone-data-set-1]
 tags=mobile-iphone-data-set-1
@@ -441,6 +470,7 @@ CURRENT_USER_FIRST_NAME=Merja
 CURRENT_USER_LAST_NAME=Kangas
 CURRENT_USER_FULLNAME=Merja Kangas
 CURRENT_PASSWORD=Kangas
+DJANGO_USERNAME=u-d7wshr3wqrfsdjcyprfvklq3lu
 
 [mobile-iphone-data-set-2]
 tags=mobile-iphone-data-set-2
@@ -454,6 +484,7 @@ CURRENT_USER_FIRST_NAME=Helena
 CURRENT_USER_LAST_NAME=Hiltunen
 CURRENT_USER_FULLNAME=Helena Hiltunen
 CURRENT_PASSWORD=Hiltunen
+DJANGO_USERNAME=u-b6phfq5wmbcjljuqoveb3mqsni
 
 [mobile-iphone-data-set-3]
 tags=mobile-iphone-data-set-3
@@ -467,6 +498,7 @@ CURRENT_USER_FIRST_NAME=Seija
 CURRENT_USER_LAST_NAME=Mäenpää
 CURRENT_USER_FULLNAME=Seija Mäenpää
 CURRENT_PASSWORD=Mäenpää
+DJANGO_USERNAME=u-a73qe2rmajavvmpb2kvwdcjajq
 
 [mobile-iphone-data-set-4]
 tags=mobile-iphone-data-set-4
@@ -480,6 +512,7 @@ CURRENT_USER_FIRST_NAME=Maija
 CURRENT_USER_LAST_NAME=Peltonen
 CURRENT_USER_FULLNAME=Maija Peltonen
 CURRENT_PASSWORD=Peltonen
+DJANGO_USERNAME=u-bqawevrs2vbhniuprp3wdfv2gu
 
 [mobile-iphone-data-set-5]
 tags=mobile-iphone-data-set-5
@@ -493,6 +526,7 @@ CURRENT_USER_FIRST_NAME=Liisa
 CURRENT_USER_LAST_NAME=Koivisto
 CURRENT_USER_FULLNAME=Liisa Koivisto
 CURRENT_PASSWORD=Koivisto
+DJANGO_USERNAME=u-jtvjms5shnhpbplyknv7jcac4q
 
 # =============================================================================
 # UNUSED TEST DATA - Reserved for future test scenarios
@@ -523,6 +557,7 @@ CURRENT_USER_FIRST_NAME=Ari
 CURRENT_USER_LAST_NAME=Laine
 CURRENT_USER_FULLNAME=Ari Laine
 CURRENT_PASSWORD=Laine
+DJANGO_USERNAME=u-6gyudis5vrex7eoyoofsyg7e7m
 
 [unused-admin-data-set-1]
 tags=unused-admin-data-set-1
@@ -535,3 +570,4 @@ ADMIN_CURRENT_USER_FIRST_NAME=Pertti
 ADMIN_CURRENT_USER_LAST_NAME=Kallio
 ADMIN_CURRENT_USER_FULLNAME=Pertti Kallio
 ADMIN_CURRENT_USER_PASSWORD=Kallio
+DJANGO_USERNAME=u-j7q3jatunrf2rdria5cjgpcv4u

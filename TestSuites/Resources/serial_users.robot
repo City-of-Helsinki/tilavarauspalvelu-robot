@@ -95,6 +95,7 @@ ${BASIC_DJANGO_ADMIN_FIRSTNAME}                 Kari
 ${BASIC_DJANGO_ADMIN_LASTNAME}                  Kekkonen
 ${BASIC_DJANGO_ADMIN_FULLNAME}                  ${BASIC_DJANGO_ADMIN_FIRSTNAME} ${BASIC_DJANGO_ADMIN_LASTNAME}
 ${BASIC_DJANGO_ADMIN_PASSWORD}                  Kekkonen
+${BASIC_DJANGO_ADMIN_DJANGO_USERNAME}           u-synoynteknhu5f4oky5komlxz4
 
 # DEVNOTE: Registered user information
 # Kari Kekkonen (Django Admin User)

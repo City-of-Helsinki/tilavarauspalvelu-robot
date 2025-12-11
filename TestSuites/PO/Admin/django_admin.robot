@@ -12,6 +12,14 @@ Admin Changes Permissions
     Select Options By    id=id_role    value    ${role_value}
     Sleep    1s
 
+Admin checks permission is not present
+    [Arguments]    ${role_value}
+    Click    id=id_role
+    # Wait for the dropdown to open
+    Sleep    1s
+    ${option_count}=    Browser.Get Element Count    id=id_role >> option[value="${role_value}"]
+    Should Be Equal As Numbers    ${option_count}    0    msg=Option with value "${role_value}" should not be present
+
 Admin Saves Changes
     Click    input[value="Tallenna ja poistu"]
     Sleep    1s

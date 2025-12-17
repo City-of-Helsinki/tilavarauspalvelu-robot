@@ -11,7 +11,7 @@ Resource            ${CURDIR}/Resources/common_setups_teardowns.robot
 Resource            ${CURDIR}/PO/Common/topnav.robot
 Resource            ${CURDIR}/PO/Admin/admin_notifications.robot
 Resource            ${CURDIR}/PO/Admin/admin_notifications_create_page.robot
-
+Resource            ${CURDIR}/Resources/graphql_commands.robot
 Suite Setup         Run Only Once    create_data.Create Robot Test Data
 Test Setup          User Opens Desktop Browser To Landing Page
 Test Teardown       Complete Test Teardown
@@ -31,10 +31,13 @@ Admin creates normal notifications for both sides
 
     Log    Test cleanup
     # This is for test cleanup if the last run failed
-    popups.Close Notification Banner If Visible
+    graphql_commands.Draft All Banner Notifications
+    Sleep    2s
+    graphql_commands.Delete Notifications By Name Pattern    ${NOTIFICATION_BANNER_CLEANUP_PATTERN}
     #
     Log    Admin creates normal notification for both sides
     admin_navigation_menu.Admin Navigates To Notifications
+    graphql_commands.Draft All Banner Notifications
     app_admin.Admin Creates Normal Notification For User And Admin Side
     app_common.Reload Page
 
@@ -105,7 +108,9 @@ Admin creates warning notifications for both sides
 
     Log    Test cleanup
     # This is for test cleanup if the last run failed
-    popups.Close Notification Banner If Visible
+    graphql_commands.Draft All Banner Notifications
+    Sleep    2s
+    graphql_commands.Delete Notifications By Name Pattern    ${NOTIFICATION_BANNER_CLEANUP_PATTERN}
     #
     Log    Admin creates warning notification for both sides
     admin_navigation_menu.Admin Navigates To Notifications
@@ -178,7 +183,9 @@ Admin creates error notifications for both sides
 
     Log    Test cleanup
     # This is for test cleanup if the last run failed
-    popups.Close Notification Banner If Visible
+    graphql_commands.Draft All Banner Notifications
+    Sleep    2s
+    graphql_commands.Delete Notifications By Name Pattern    ${NOTIFICATION_BANNER_CLEANUP_PATTERN}
     #
     Log    Admin creates error notification for both sides
     admin_navigation_menu.Admin Navigates To Notifications
@@ -254,7 +261,9 @@ Admin creates notification and archive and deletes notification for both sides
 
     Log    Test cleanup
     # This is for test cleanup if the last run failed
-    popups.Close Notification Banner If Visible
+    graphql_commands.Draft All Banner Notifications
+    Sleep    2s
+    graphql_commands.Delete Notifications By Name Pattern    ${NOTIFICATION_BANNER_CLEANUP_PATTERN}
     #
     Log    Admin creates normal notification
     admin_navigation_menu.Admin Navigates To Notifications

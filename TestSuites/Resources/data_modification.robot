@@ -56,7 +56,7 @@ Formats Tagline For Admin Side
     Log    ${RESERVATION_TAGLINE}
 
 Formats Calendar Event Content
-    # TODO add documentation example here
+    # This formats string like Puolesta| Puolesta a6
     [Arguments]
     ...    ${firstname_used_in_reservation_by_admin}
     ...    ${lastname_used_in_reservation_by_admin}
@@ -84,8 +84,8 @@ Convert Finnish Short Day To English
     Log    Normalized key ➔ ${cleaned_shortday}
 
     # 4: Define parallel lists of Finnish abbreviations and English full names
-    ${fi_days}=    Create List    ma    ti    ke    to    pe    la    su
-    ${en_days}=    Create List    Monday    Tuesday    Wednesday    Thursday    Friday    Saturday    Sunday
+    VAR    @{fi_days}    ma    ti    ke    to    pe    la    su
+    VAR    @{en_days}    Monday    Tuesday    Wednesday    Thursday    Friday    Saturday    Sunday
 
     # 5: Look up the index of the Finnish short day
     ${idx}=    Get Index From List    ${fi_days}    ${cleaned_shortday}
@@ -262,7 +262,7 @@ Set Info Card Duration Time Info
     ${formatted_time}=    Replace String Using Regexp    ${Timeslot_to_format}    [.:]    :
 
     # Combine date and time into a single datetime string
-    ${date_time_string}=    Catenate    SEPARATOR=    ${formatted_date} ${formatted_time}
+    ${date_time_string}=    Catenate    SEPARATOR=${EMPTY}    ${formatted_date} ${formatted_time}
 
     # Strip any extra whitespace or hidden characters from the datetime string
     ${date_time_string}=    Strip String    ${date_time_string}
@@ -285,12 +285,12 @@ Set Info Card Duration Time Info
     # Format the Finnish date and time into the desired format
     # HH:MM WITH ":" "–" "Ti 5.12.2023 klo 11:30–12:30"
     # 1t comes from duration of the reservation that is set in this test to 1h / 60min
-    ${finnish_date}=    Catenate    SEPARATOR=    ${day}.${month}.${year}
+    ${finnish_date}=    Catenate    SEPARATOR=${EMPTY}    ${day}.${month}.${year}
     ${formatted_date}=    Catenate
-    ...    SEPARATOR=
+    ...    SEPARATOR=${EMPTY}
     ...    ${finnish_day} ${finnish_date} klo ${hour}:${minute}–${end_hour}:${minute}, 1 t
     ${formatted_date_minus_t}=    Catenate
-    ...    SEPARATOR=
+    ...    SEPARATOR=${EMPTY}
     ...    ${finnish_day} ${finnish_date} klo ${hour}:${minute}–${end_hour}:${minute}
 
     # Return the formatted strings

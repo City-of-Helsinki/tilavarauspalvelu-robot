@@ -4,7 +4,7 @@ Resource    ../../Resources/variables.robot
 Resource    ../../Resources/serial_users.robot
 Resource    ../../Resources/texts_FI.robot
 Resource    ../../Resources/custom_keywords.robot
-Resource    ../../create_data.robot
+Resource    ../../Resources/create_data.robot
 Resource    ../User/user_landingpage.robot
 Resource    ../Admin/admin_landingpage.robot
 Resource    ../Common/topnav.robot

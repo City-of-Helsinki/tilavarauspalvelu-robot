@@ -249,7 +249,9 @@ Find And Click Button In Group With Matching Conditions
     FOR    ${card}    IN    @{card_contents}
         ${is_match}=    custom_keywords.Card Matches
         ...    ${card}
+        ...    ${heading_selector}
         ...    ${heading_text}
+        ...    ${tags_selector}
         ...    ${tags_text}
         IF    ${is_match}
             ${matching_card}=    Set Variable    ${card}
@@ -269,18 +271,18 @@ Find And Click Button In Group With Matching Conditions
 
 Card Matches
     [Documentation]    Check if a card matches both heading and tags text criteria
-    [Arguments]    ${card}    ${heading_text}    ${tags_text}
+    [Arguments]    ${card}    ${heading_selector}    ${heading_text}    ${tags_selector}    ${tags_text}
 
     # Check heading text contains the expected text
     ${heading_contains}=    Check Element Contains Text
-    ...    ${card} >> [data-testid="card__heading"]
+    ...    ${card} >> ${heading_selector}
     ...    ${heading_text}
     ...    return_status=True
     IF    not ${heading_contains}    RETURN    False
 
     # Check tags text contains the expected text
     ${tags_contains}=    Check Element Contains Text
-    ...    ${card} >> [data-testid="card__tags"]
+    ...    ${card} >> ${tags_selector}
     ...    ${tags_text}
     ...    return_status=True
     RETURN    ${tags_contains}
@@ -374,7 +376,6 @@ Find Text From Elements Or Fail
     END
 
 Find Text Element From Elements
-    # TODO check if can use Get Element By    selection_strategy    text
     [Arguments]    ${element_with_text}    ${wanted_text}
 
     Log    Searching for text: ${wanted_text}
@@ -673,7 +674,7 @@ Verify Reservation Slot Exists
     Log    Normalized search ➔ ${normTime}
 
     # pick correct column index
-    ${days}=    Create List    Monday    Tuesday    Wednesday    Thursday    Friday    Saturday    Sunday
+    VAR    @{days}    Monday    Tuesday    Wednesday    Thursday    Friday    Saturday    Sunday
     ${dayIdx}=    Get Index From List    ${days}    ${DAY_TO_CHECK}
     Should Be True    ${dayIdx} >= 0    msg=Day "${DAY_TO_CHECK}" not found
     Log    Checking column index ${dayIdx + 2}

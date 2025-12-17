@@ -92,7 +92,7 @@ User Uses Search To Find Right Unit
     Sleep    2s
     Wait For Load State    load    timeout=10s
 
-User Selects The Time With Quick Reservation
+User Selects The Time With Quick Reservation And Sets Time Variables
     [Documentation]    here is keyword --> data_modification.Set info card duration time info
     ...    that sets $TIME_OF_QUICK_RESERVATION and $TIME_OF_QUICK_RESERVATION_MINUS_T
 
@@ -106,7 +106,7 @@ User Selects The Time With Quick Reservation
     ${quick_reservation_current_date_value}=    quick_reservation.Get The Value From Date Input
 
     # This sets ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
-    quick_reservation.Select The Free Slot And Submits
+    quick_reservation.Select The Free Slot From Quick Reservation
 
     # Wait for load
     Sleep    1.5s
@@ -249,15 +249,14 @@ User Fills Booking Details As Individual For Reservation With Access Code
     #
     reservation_lownav.Click Submit Button Continue
 
-User Checks Unit That Is Always Handled Details Are Right
+User Checks Unit That Is Always Handled Details Are Right Before Submit
     reservation_unit_reservation_receipt.Check Single Booking Info
     reservation_unit_reservation_receipt.Check Reservation User Info
     quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
     reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
     reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
-    #
-    reservation_lownav.Click Submit Button Continue
-    #
+
+User Checks Unit That Is Always Handled Details Are Right After Submit
     quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_PAID_PRICE_NEEDS_TO_BE_HANDLED_VAT_INCL}
     quick_reservation.Get Booking Number
@@ -313,48 +312,45 @@ User Checks The Paid Reservation That Requires Handling Info Is Right And Submit
     quick_reservation.Get Booking Number
 
 User Checks The Paid Reservation Info Is Right After Checkout
-    # devnote confirmation page is different than review page
-    # TODO fix the paging
     quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     reservation_unit_reservation_receipt.Check The Reservation Status Message    ${RESERVATION_STATUS_MSG_FI}
     quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
     quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
 
-User Checks The Reservation Info Is Right
+User Checks The Reservation Info Is Right Before Submit
     reservation_unit_reservation_receipt.Check Reservation User Info
     reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
     reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
     #
-    reservation_lownav.Click Submit Button Continue
-    # TODO Let's split these checks by different pages and move submit to a higher level
+
+User Checks The Reservation Info Is Right After Submit
     quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     reservation_unit_reservation_receipt.Check The Reservation Status Message    ${RESERVATION_STATUS_MSG_FI}
     quick_reservation.Get Booking Number
 
-User Checks The Reservation Info Is Right With Access Code
+User Checks The Reservation Info Is Right Before Submit With Access Code
     reservation_unit_reservation_receipt.Check Reservation User Info
     reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
     reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
-    #
-    reservation_lownav.Click Submit Button Continue
-    # TODO Let's split these checks by different pages and move submit to a higher level
+
+User Checks The Reservation Info Is Right After Submit With Access Code
     quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     reservation_unit_reservation_receipt.Check The Reservation Status Message    ${RESERVATION_STATUS_MSG_FI}
     quick_reservation.Get Booking Number
     quick_reservation.Get Access Code
 
-User Checks The Noncancelable Reservation Info Is Right
+User Checks The Noncancelable Reservation Info Is Right Before Submit
     reservation_unit_reservation_receipt.Check Reservation User Info
     reservation_unit_reservation_receipt.Check Noncancelable Booking Info
     reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
     reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
-    #
-    reservation_lownav.Click Submit Button Continue
+
+User Checks The Noncancelable Reservation Info Is Right After Submit
     quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION}
     reservation_unit_reservation_receipt.Check The Reservation Status Message    ${RESERVATION_STATUS_MSG_FI}
     quick_reservation.Get Booking Number
 
-User Checks The Modified Reservation Info Is Right
+User Checks The Modified Reservation Info Is Right And Clicks Continue
     reservation_unit_reservation_receipt.Click The Checkbox Accepted Terms
     reservation_unit_reservation_receipt.Click The Checkbox Generic Terms
     #
@@ -444,7 +440,6 @@ User Can See Upcoming Noncancelable Booking In List And Clicks It
     Log    ${unitname}
     Log    ${reservationtime}
     mybookings.Check My Bookings H1    ${MYBOOKINGS_FI}
-    # TODO lets split these two checks to their own keywords, matching the keywords better
     mybookings.Check Unitname And Reservation Time And Verify No Cancel Button    ${unitname}    ${reservationtime}
     mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname}
@@ -539,9 +534,10 @@ User Checks Booking Info In Reservations With All Reservation Info
     #
     quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
     quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
+    quick_reservation.Check The Price Of Quick Reservation    ${booking_price}
 
     mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
-    mybookings.Check Reservation Status    ${MYBOOKINGS_STATUS_PROCESSED}
+    mybookings.Check Reservation Status    ${booking_status}
     mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
     mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
     mybookings.Check Reservation Booker First Name    ${CURRENT_USER_FIRST_NAME}

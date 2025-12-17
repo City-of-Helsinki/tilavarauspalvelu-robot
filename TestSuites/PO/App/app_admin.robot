@@ -88,14 +88,9 @@ Admin Edits Reservation Time
     admin_reservations.Admin Checks Reservation Status    ${MYBOOKINGS_STATUS_CONFIRMED}
 
 Admin Navigates To Own Units And Selects Unit Group
-    # TODO: separate this to two keywords
     [Arguments]    ${unit_group_name}
     admin_navigation_menu.Admin Navigates To My Units
     admin_my_units.Admin Searches Own Unit And Clicks It    ${unit_group_name}
-    # TODO: old version for using calendar UI
-    # admin_my_units.Admin clicks calendar open in own units    ${unit_name}
-    # admin_my_units.Admin clicks make reservation
-    # admin_my_units.Admin selects unit from reservation units dropdown    ${unit_name}
 
 Admin Opens Make Reservation Modal And Selects Unit
     [Arguments]    ${unit_name}
@@ -301,15 +296,16 @@ Admin Checks Top Navigation For Admin With Group Unit Permissions
 ##
 ##
 
-Admin Navigates To Reservations By Units And Checks Reservation Info
-    # TODO lets fix this to better keyword
-    ${ByUnitsElement}=    Browser.Get Element    css=[role="tablist"] >> span:text-is("${RESERVATIONS_BY_UNITS_FI}")
-    Click    ${ByUnitsElement}
-    admin_reservations.Admin Selects Reservation Unit    ${ALWAYS_FREE_UNIT}
-    admin_reservations.Admin Finds Reservation And Clicks It    ${CALENDAR_EVENT_NAME}
-    app_common.Switch To New Tab From Current Page
-    admin_reservations.Admin Checks Reservation Title Tagline    ${RESERVATION_TAGLINE}
-    admin_reservations.Admin Checks Reservation User Info
+# Not currently in use
+# This was used to navigate to reservations through calendar view
+# Admin Navigates To Reservations By Units And Checks Reservation Info
+#     ${ByUnitsElement}=    Browser.Get Element    css=[role="tablist"] >> span:text-is("${RESERVATIONS_BY_UNITS_FI}")
+#     Click    ${ByUnitsElement}
+#     admin_reservations.Admin Selects Reservation Unit    ${ALWAYS_FREE_UNIT}
+#     admin_reservations.Admin Finds Reservation And Clicks It    ${CALENDAR_EVENT_NAME}
+#     app_common.Switch To New Tab From Current Page
+#     admin_reservations.Admin Checks Reservation Title Tagline    ${RESERVATION_TAGLINE}
+#     admin_reservations.Admin Checks Reservation User Info
 
 Admin Clicks Make Reservation And Checks Dialog Opens
     admin_my_units.Admin Clicks Make Reservation
@@ -441,7 +437,7 @@ Admin Creates Normal Notification For User And Admin Side
     ${randomvalue}=    data_modification.Generate Random Letter And Number
     Set Suite Variable
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
-    ...    ${NOTIFICATION_BANNER_MESSAGE_NORMAL} ${randomvalue}
+    ...    ${NOTIFICATION_BANNER_MESSAGE_NORMAL} ${NOTIFICATION_BANNER_CLEANUP_PATTERN} ${randomvalue}
     #
     admin_notifications_create_page.Admin Fills Notification Text Fi    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     #
@@ -473,7 +469,7 @@ Admin Creates Warning Notification For User And Admin Side
     ${randomvalue}=    data_modification.Generate Random Letter And Number
     Set Suite Variable
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
-    ...    ${NOTIFICATION_BANNER_MESSAGE_WARNING} ${randomvalue}
+    ...    ${NOTIFICATION_BANNER_MESSAGE_WARNING} ${NOTIFICATION_BANNER_CLEANUP_PATTERN} ${randomvalue}
     #
     admin_notifications_create_page.Admin Fills Notification Text Fi    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     #
@@ -506,7 +502,7 @@ Admin Creates Error Notification For User And Admin Side
     ${randomvalue}=    data_modification.Generate Random Letter And Number
     Set Suite Variable
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
-    ...    ${NOTIFICATION_BANNER_MESSAGE_ERROR} ${randomvalue}
+    ...    ${NOTIFICATION_BANNER_MESSAGE_ERROR} ${NOTIFICATION_BANNER_CLEANUP_PATTERN} ${randomvalue}
     #
     admin_notifications_create_page.Admin Fills Notification Text Fi    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     #

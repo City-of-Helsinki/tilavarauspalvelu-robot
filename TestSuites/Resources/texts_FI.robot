@@ -60,6 +60,12 @@ ${NOTIFICATION_BANNER_MESSAGE_NORMAL}                               Normaali (si
 ${NOTIFICATION_BANNER_MESSAGE_ERROR}                                Poikkeus (punainen)
 ${NOTIFICATION_BANNER_MESSAGE_WARNING}                              Varoitus (keltainen)
 
+${NOTIFICATION_BANNER_MESSAGE_TEXT_FI_NORMAL}                       ${EMPTY}    # Example: Normaali (sininen) ROBOTTINEN g4
+${NOTIFICATION_BANNER_MESSAGE_TEXT_FI_ERROR}                        ${EMPTY}    # Example: Poikkeus (punainen) ROBOVIESTI g4
+${NOTIFICATION_BANNER_MESSAGE_TEXT_FI_WARNING}                      ${EMPTY}    # Example: Varoitus (keltainen) ROBOVIESTI g4
+
+${NOTIFICATION_BANNER_CLEANUP_PATTERN}                              ROBOVIESTI
+
 ###
 # NOTIFICATION BANNER TARGET GROUP
 ###
@@ -206,7 +212,8 @@ ${ADMIN_BEHALF_FIRSTNAME_FI}                                        Puolesta
 ${ADMIN_BEHALF_PHONE_FI}                                            9876543210
 
 # This is set in Admin fills reservation details behalf
-${CALENDAR_EVENT_NAME}                                              ${EMPTY}
+# Devnote: Not currently used
+${CALENDAR_EVENT_NAME}                                              ${EMPTY}    # Puolesta| Puolesta a6
 
 ###
 #

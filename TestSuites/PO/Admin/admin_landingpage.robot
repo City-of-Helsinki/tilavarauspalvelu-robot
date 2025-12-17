@@ -7,7 +7,7 @@ Library     Browser
 *** Keywords ***
 Checks The Admin Landing Page H1
     [Arguments]    ${expected_H1_text}
-    Sleep    2s    # Wait for the page to render. TODO: remove after frontend is updated
+    Sleep    2s    # Wait for the page to render.
     Wait For Load State    networkidle    timeout=40s
     Wait For Elements State    css=H1    stable
     ${landingPageH1}=    Get Text    css=H1

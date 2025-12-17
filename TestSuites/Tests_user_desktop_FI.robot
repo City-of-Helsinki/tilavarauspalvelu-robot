@@ -22,7 +22,11 @@ Test Teardown       Complete Test Teardown
 User logs in and out with suomi_fi
     [Tags]    desktop-test-data-set-0    desktop-suite    smoke
     common_setups_teardowns.Complete Test Setup From Tags
+
+    Log    User logs in with Suomi.fi
     app_common.User Logs In With Suomi Fi
+
+    Log    User logs out
     app_common.User Logs Out
     app_common.User Confirms Log Out
 
@@ -34,9 +38,12 @@ User can make free single booking and modifies it
     Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_FREE_UNIT}
-    app_user.User Selects The Time With Quick Reservation
+    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
     app_user.User Fills The Reservation Info For Always Free Unit
-    app_user.User Checks The Reservation Info Is Right    # TODO add submit here in the middle
+    app_user.User Checks The Reservation Info Is Right Before Submit
+    reservation_lownav.Click Submit Button Continue
+    app_user.User Checks The Reservation Info Is Right After Submit
     #
     topnav.Navigate To My Bookings
     app_user.User Can See Upcoming Booking In List And Clicks It
@@ -45,7 +52,7 @@ User can make free single booking and modifies it
 
     Log    User modifies reservation
     app_user.User Modifies Booking And Verifies The Changes
-    app_user.User Checks The Modified Reservation Info Is Right
+    app_user.User Checks The Modified Reservation Info Is Right And Clicks Continue
 
     Log    User cancels reservation
     app_user.User Cancel Booking In Reservations And Checks It Got Cancelled
@@ -69,9 +76,12 @@ User can create non-cancelable booking
     Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_FREE_UNIT_NO_CANCEL}
-    app_user.User Selects The Time With Quick Reservation
+    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
     app_user.User Fills Noncancelable Booking Details As Individual
-    app_user.User Checks The Noncancelable Reservation Info Is Right    # TODO add submit here in the middle
+    app_user.User Checks The Noncancelable Reservation Info Is Right Before Submit
+    reservation_lownav.Click Submit Button Continue
+    app_user.User Checks The Noncancelable Reservation Info Is Right After Submit
 
     Log    User checks reservation cannot be canceled
     topnav.Navigate To My Bookings
@@ -88,7 +98,8 @@ User can make paid single booking with interrupted checkout
     Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT}
-    app_user.User Selects The Time With Quick Reservation
+    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
     app_user.User Fills The Reservation Info For Unit With Payment
     app_user.User Checks The Paid Reservation Info Is Right And Submits
 
@@ -113,9 +124,10 @@ User can make paid single booking with interrupted checkout
     Log    User cancel booking
     app_user.User Cancel Booking In Reservations And Checks It Got Cancelled
 
-    Log    waiting for the status payment to change
+    Log    Waiting for the status payment to change
     Sleep    10s
 
+    Log    User verifies cancelled booking is found
     topnav.Navigate To My Bookings
     app_user.User Checks Cancelled Booking Is Found
     ...    ${CURRENT_ALWAYS_PAID_UNIT_WITH_LOCATION}
@@ -132,13 +144,19 @@ User can make paid single booking
         common_setups_teardowns.Complete Test Setup From Tags
         app_common.User Logs In With Suomi Fi
 
+        Log    User creates paid reservation
         app_user.User Navigates To Single Booking Page
         app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT}
-        app_user.User Selects The Time With Quick Reservation
+        app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+        quick_reservation.User Clicks Submit Button In Quick Reservation
         app_user.User Fills The Reservation Info For Unit With Payment
         app_user.User Checks The Paid Reservation Info Is Right And Submits
+
+        Log    User pays the reservation
         app_user.User Checks Info In Paid Checkout And Confirms Booking
         app_user.User Checks The Paid Reservation Info Is Right After Checkout
+
+        Log    User verifies paid reservation in my bookings and paid status
         topnav.Navigate To My Bookings
         app_user.User Can See Upcoming Booking In List And Clicks It
         ...    ${CURRENT_ALWAYS_PAID_UNIT_WITH_LOCATION}
@@ -149,8 +167,12 @@ User can make paid single booking
         ...    ${SINGLEBOOKING_PAID_PRICE_VAT_INCL}
         ...    ${TIME_OF_QUICK_RESERVATION}
         ...    ${BOOKING_NUM_ONLY}
+
+        Log    User cancels paid booking
         app_user.User Cancel Booking In Reservations And Checks It Got Cancelled
         Sleep    10s    # Waiting for the status payment to change
+
+        Log    User verifies cancellation and refund status
         topnav.Navigate To My Bookings
         app_user.User Checks Cancelled Booking Is Found
         ...    ${CURRENT_ALWAYS_PAID_UNIT_WITH_LOCATION}
@@ -183,11 +205,15 @@ User can make subvented single booking that requires handling
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
+    Log    User creates subvented reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT_SUBVENTED}
-    app_user.User Selects The Time With Quick Reservation
+    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
     app_user.User Fills Subvented Booking Details As Individual    ${JUSTIFICATION_FOR_SUBVENTION}
     app_user.User Checks The Paid Reservation That Requires Handling Info Is Right And Submits
+
+    Log    User verifies reservation requires handling
     topnav.Navigate To My Bookings
     app_user.User Can See Upcoming Booking In List And Clicks It
     ...    ${CURRENT_ALWAYS_PAID_UNIT_SUBVENTED_WITH_LOCATION}
@@ -202,28 +228,28 @@ User checks that reserved time is not available anymore
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
+    Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_UNAVAILABLE_UNIT}
-    app_user.User Selects The Time With Quick Reservation
+    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
     app_user.User Fills The Reservation Info For Always Free Unit
-    app_user.User Checks The Reservation Info Is Right
+    app_user.User Checks The Reservation Info Is Right Before Submit
+    reservation_lownav.Click Submit Button Continue
+    app_user.User Checks The Reservation Info Is Right After Submit
+
+    Log    User verifies reserved time is no longer available
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_UNAVAILABLE_UNIT}
     app_user.User Checks That Quick Reservation Does Not Have Reserved Time    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
     app_user.User Checks That Reservation Calendar Does Not Have Reserved Time Slot Available
-    topnav.Navigate To My Bookings
-    app_user.User Can See Upcoming Booking In List And Clicks It
-    ...    ${CURRENT_UNAVAILABLE_UNIT_WITH_LOCATION}
-    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
-    Log    User cancels reservation
-    app_user.User Cancel Booking In Reservations And Checks It Got Cancelled
-    Log    No further checks are needed here
 
 User checks that there are not current dates in the past bookings
     [Tags]    desktop-test-data-set-8    desktop-suite
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
+    Log    User verifies past bookings contain only past dates
     topnav.Navigate To My Bookings
     mybookings.Navigate To Past Bookings
     mybookings.Validate Reservations Are Not For Today Or Later
@@ -233,22 +259,19 @@ User can make free single booking and check info from downloaded calendar file
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
+    Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_FREE_UNIT}
-    app_user.User Selects The Time With Quick Reservation
+    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
     app_user.User Fills The Reservation Info For Always Free Unit
-    app_user.User Checks The Reservation Info Is Right
+    app_user.User Checks The Reservation Info Is Right Before Submit
+    reservation_lownav.Click Submit Button Continue
+    app_user.User Checks The Reservation Info Is Right After Submit
+
+    Log    User downloads and verifies calendar file
     app_user.User Saves File And Formats Booking Time To ICS    ${DOWNLOAD_ICS_FILE}
     app_user.User Checks That Calendar File Matches Booking Time
-    topnav.Navigate To My Bookings
-    app_user.User Can See Upcoming Booking In List And Clicks It
-    ...    ${CURRENT_ALWAYS_FREE_UNIT_WITH_LOCATION}
-    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
-    app_user.User Cancel Booking In Reservations And Checks It Got Cancelled
-    topnav.Navigate To My Bookings
-    app_user.User Checks Cancelled Booking Is Found
-    ...    ${CURRENT_ALWAYS_FREE_UNIT_WITH_LOCATION}
-    ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
 Check emails from reservations
     [Documentation]    Waits for paid booking test to complete, then verifies reservation emails.
@@ -260,6 +283,7 @@ Check emails from reservations
     ...    Test is being skipped because 'User can make paid single booking' test either failed or did not complete successfully.
     ...    Without a successful test, there may not be valid emails to verify.
 
+    Log    Waiting for paid booking test to complete
     # Wait for the paid booking test to complete first
     ${status}=    Wait For Paid Booking Completion    timeout=300
 
@@ -269,6 +293,7 @@ Check emails from reservations
         Skip    Paid booking test did not complete within timeout
     END
 
+    Log    Verifying test data availability
     # Now check if the test succeeded by checking for required data
     ${booking_num}=    Get Test Data Variable    BOOKING_NUM_FOR_MAIL    ${EMPTY}
     ${has_booking_data}=    Run Keyword And Return Status    Should Not Be Empty    ${booking_num}
@@ -279,9 +304,10 @@ Check emails from reservations
     END
 
     # Now acquire the lock (paid booking test has finished successfully)
-    Log    Acquiring lock after paid booking test completion...
+    Log    Acquiring lock after paid booking test completion
     Acquire Lock    PAID_BOOKING_EMAIL_SEQUENCE
 
+    Log    Retrieving test data for email verification
     # Get data for mail test. This is set in the paid booking test.
     ${booking_num_for_mail}=    Get Test Data Variable    BOOKING_NUM_FOR_MAIL
     ${time_for_mail}=    Get Test Data Variable    TIME_FOR_MAIL
@@ -290,6 +316,7 @@ Check emails from reservations
     # Format reservation times for email verification
     mail.Format Reservation Time For Email Texts And Receipts    ${time_for_mail}
 
+    Log    Verifying reservation confirmation and cancellation emails
     # Verify all email types using the new API-based approach
     # Each verification will check if emails exist and contain required terms
     mail.Verify Reservation Confirmation Email    ${booking_num_for_mail}
@@ -316,9 +343,8 @@ User makes recurring reservation
     app_user.User Selects Times For Recurring Application
     app_user.User Fills In The Application User Info Details
     app_user.User Accepts Terms Of Use And Clicks Submit
-    app_user.User Checks The Sent Page
 
-    Log    User checks the reservation info is right
+    Log    User verifies application was sent
     app_user.User Checks The Sent Page
 
     Log    User cancels the recurring reservation

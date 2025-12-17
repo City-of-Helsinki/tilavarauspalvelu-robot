@@ -5,7 +5,7 @@ Documentation       Create robot test data for Harakka via API endpoint.
 Library             RequestsLibrary
 Library             Collections
 Library             OperatingSystem
-Variables           Resources/env_loader.py
+Variables           env_loader.py
 
 
 *** Variables ***
@@ -37,10 +37,7 @@ Create Robot Test Data DISABLED
     ${token}=    Set Variable If    "${token}"==""    ${ROBOT_API_TOKEN}    ${token}
 
     # Create headers with token
-    ${headers}=    Create Dictionary
-    ...    Authorization=${token}
-    ...    Content-Type=application/json
-    ...    X-Robot-API-Secret=${token}
+    VAR    &{headers}    Authorization=${token}    Content-Type=application/json    X-Robot-API-Secret=${token}
 
     # Restore original log level after all sensitive operations
     Set Log Level    ${original_log_level}

@@ -85,9 +85,7 @@ Start HAR Recording For Context
     Set Test Variable    ${CURRENT_HAR_PATH}    ${har_path}
 
     # Create HAR configuration
-    ${har_config}=    Create Dictionary
-    ...    path=${har_path}
-    ...    omitContent=${FALSE}
+    VAR    &{har_config}    path=${har_path}    omitContent=${FALSE}
 
     # Add HAR recording to context configuration
     Set To Dictionary    ${context_config}    recordHar=${har_config}
@@ -97,7 +95,7 @@ Start HAR Recording For Context
 Create HAR-Enabled Chromium Context
     [Documentation]    Creates Chromium context with HAR recording enabled
 
-    ${context_config}=    Create Dictionary
+    VAR    &{context_config}
     ...    viewport={'width': 1440, 'height': 900}
     ...    acceptDownloads=True
     ...    locale=${LOCALE}
@@ -113,7 +111,7 @@ Create HAR-Enabled Chromium Context
 Create HAR-Enabled Firefox Context
     [Documentation]    Creates Firefox context with HAR recording enabled
 
-    ${context_config}=    Create Dictionary
+    VAR    &{context_config}
     ...    viewport={'width': 1920, 'height': 1080}
     ...    acceptDownloads=True
     ...    locale=${LOCALE}

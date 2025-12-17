@@ -255,6 +255,8 @@ Use Single User Mode From Parsed Tags
     ...    ${has_user}
     ...    ${permission_test_type}=${NONE}
 
+    Log    Parsed mode flags: has_admin=${has_admin}, has_combined=${has_combined}, has_permissions=${has_permissions}, has_user=${has_user}    level=DEBUG
+
     # Set user variables for user and combined tests
     IF    not ${has_admin} or ${has_combined}
         Log    Using single user mode: ${BASIC_USER_MALE_FULLNAME}
@@ -314,6 +316,7 @@ Use Single Django And Permission Admin Mode
     Set Test Variable    ${DJANGO_ADMIN_FIRST_NAME}    ${BASIC_DJANGO_ADMIN_FIRSTNAME}
     Set Test Variable    ${DJANGO_ADMIN_LAST_NAME}    ${BASIC_DJANGO_ADMIN_LASTNAME}
     Set Test Variable    ${DJANGO_ADMIN_FULLNAME}    ${BASIC_DJANGO_ADMIN_FULLNAME}
+    Set Test Variable    ${DJANGO_ADMIN_DJANGO_USERNAME}    ${BASIC_DJANGO_ADMIN_DJANGO_USERNAME}
 
     # Set permission target admin based on permission test type (parsed from tags)
     IF    '${permission_test_type}' == 'unit-permissions-test'
@@ -393,6 +396,7 @@ Set Django Admin Variables From Value Set
     ${django_last_name}=    Get Value From Set    DJANGO_ADMIN_LAST_NAME
     ${django_hetu}=    Get Value From Set    DJANGO_ADMIN_HETU
     ${django_fullname}=    Get Value From Set    DJANGO_ADMIN_FULLNAME
+    ${django_username}=    Get Value From Set    DJANGO_ADMIN_DJANGO_USERNAME
 
     # Password is already available from ${DJANGO_ADMIN_PASSWORD} (loaded by env_loader.py)
     # Always use DJANGO_ADMIN_PASSWORD for all Django admins
@@ -402,6 +406,7 @@ Set Django Admin Variables From Value Set
     Set Test Variable    ${DJANGO_ADMIN_LAST_NAME}    ${django_last_name}
     Set Test Variable    ${DJANGO_ADMIN_HETU}    ${django_hetu}
     Set Test Variable    ${DJANGO_ADMIN_FULLNAME}    ${django_fullname}
+    Set Test Variable    ${DJANGO_ADMIN_DJANGO_USERNAME}    ${django_username}
 
 Set Permission Target Admin Variables From Value Set
     [Documentation]    Sets permission target admin variables from the PabotLib value set (for permission tests)
@@ -411,12 +416,14 @@ Set Permission Target Admin Variables From Value Set
     ${target_last_name}=    Get Value From Set    PERMISSION_TARGET_ADMIN_LAST_NAME
     ${target_hetu}=    Get Value From Set    PERMISSION_TARGET_ADMIN_HETU
     ${target_fullname}=    Get Value From Set    PERMISSION_TARGET_ADMIN_FULLNAME
+    ${target_username}=    Get Value From Set    PERMISSION_TARGET_DJANGO_USERNAME
 
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_EMAIL}    ${target_email}
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_FIRST_NAME}    ${target_first_name}
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_LAST_NAME}    ${target_last_name}
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_HETU}    ${target_hetu}
     Set Test Variable    ${PERMISSION_TARGET_ADMIN_FULLNAME}    ${target_fullname}
+    Set Test Variable    ${PERMISSION_TARGET_DJANGO_USERNAME}    ${target_username}
 
 # =============================================================================
 # MAIL TEST DATA MANAGEMENT (for cross-test data sharing)

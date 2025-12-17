@@ -25,7 +25,8 @@ User creates and Admin accepts single booking that requires handling
     Log    User creates subvented reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT_SUBVENTED}
-    app_user.User Selects The Time With Quick Reservation
+    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
     app_user.User Fills Subvented Booking Details As Individual    ${JUSTIFICATION_FOR_SUBVENTION}
     app_user.User Checks The Subvented Reservation Info Is Right And Submits
     app_user.User Checks The Subvented Reservation Info Is Right After Submitting
@@ -76,9 +77,12 @@ User creates and Admin declines single booking that requires handling
     Log    User creates reservation that requires handling
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_UNIT_REQUIRES_ALWAYS_HANDLING}
-    app_user.User Selects The Time With Quick Reservation
+    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
     app_user.User Fills Info For Unit That Is Always Handled As Individual
-    app_user.User Checks Unit That Is Always Handled Details Are Right
+    app_user.User Checks Unit That Is Always Handled Details Are Right Before Submit
+    reservation_lownav.Click Submit Button Continue
+    app_user.User Checks Unit That Is Always Handled Details Are Right After Submit
     topnav.Navigate To My Bookings
     app_user.User Can See Upcoming Booking In List And Clicks It
     ...    ${CURRENT_UNIT_REQUIRES_ALWAYS_HANDLING_WITH_LOCATION}
@@ -126,9 +130,12 @@ User can make reservation with access code and admin changes the code
     Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_UNIT_WITH_ACCESS_CODE}
-    app_user.User Selects The Time With Quick Reservation
+    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
     app_user.User Fills Booking Details As Individual For Reservation With Access Code
-    app_user.User Checks The Reservation Info Is Right With Access Code    # TODO add submit here in the middle
+    app_user.User Checks The Reservation Info Is Right Before Submit With Access Code
+    reservation_lownav.Click Submit Button Continue
+    app_user.User Checks The Reservation Info Is Right After Submit With Access Code
 #
     app_common.User Logs Out
 

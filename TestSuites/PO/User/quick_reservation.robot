@@ -10,7 +10,7 @@ Library     XML
 
 
 *** Keywords ***
-Select The Free Slot And Submits
+Select The Free Slot From Quick Reservation
     [Documentation]    This keyword selects a random reservation slot from a list of available slots for quick reservations.
 
     # DEVNOTE
@@ -44,7 +44,9 @@ Select The Free Slot And Submits
     Click    ${all_free_quick_timeslots}[${random_index}]
 
     Store Test Data Variable    TIME_OF_QUICK_RESERVATION_FREE_SLOT    ${time_of_selected_slot}
-    Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}    # Submits selected time
+    Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}
+
+User Clicks Submit Button In Quick Reservation
     Click    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
 Select Duration
@@ -111,7 +113,6 @@ Get Access Code
     Log    Saved access code (with #): ${ACCESS_CODE}
 
 Check Access Code
-    # TODO Change here real selector
     [Arguments]    ${access_code}
     custom_keywords.Check Number From Text Is Equal To
     ...    [data-testid="reservation__reservation-info-card__accessType"]
@@ -132,6 +133,7 @@ Confirms Date Picker Opens From Quick Reservation
     Click    id=quick-reservation >> [data-testid="selectButton"]
 
 Get The Value From Date Input
+    [Documentation]    Gets the current date value from the quick reservation date input field
     ${value}=    Browser.Get Attribute    id=quick-reservation__date    value
     Log    The value of the quick reservation date is: ${value}
     RETURN    ${value}
@@ -170,7 +172,7 @@ Verify Time Slot Not Available
     Set Browser Timeout    3s    scope=Test
 
     # 4 Iterate, swallowing any Get Text failures and skipping blanks
-    ${slot_texts}=    Create List
+    VAR    @{slot_texts}    @{EMPTY}
     FOR    ${el}    IN    @{elements}
         ${ok}=    Run Keyword And Return Status    Get Text    ${el}
         IF    not ${ok}    CONTINUE

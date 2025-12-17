@@ -20,6 +20,7 @@ This repository contains automated test suites for the Varaamo booking system us
 - **User Isolation**: Deterministic user assignment to prevent conflicts in parallel testing
 - **Email Verification**: Support for verifying booking confirmation emails using email cache API provided by the Varaamo test environment
 - **HAR File Recording**: Optional capturing of network traffic for debugging and analysis
+- **GraphQL Cleanup**: Automated cleanup of phantom notifications from failed test runs
 
 ## 🛠️ Tech Stack
 
@@ -501,6 +502,10 @@ This project includes a GitHub Actions workflow that runs tests when manually tr
 │   │   │   # Email verification keywords for Robot Framework
 │   │   ├── serial_users.robot
 │   │   │   # User management for serial (non-pabot) execution
+│   │   ├── create_data.robot
+│   │   │   # Test data creation via API endpoint
+│   │   ├── graphql_commands.robot
+│   │   │   # GraphQL API commands for backend operations
 │   │   └── downloads/
 │   │       # Downloaded ICS calendar files
 │   │

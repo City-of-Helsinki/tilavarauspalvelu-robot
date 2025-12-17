@@ -35,24 +35,45 @@ Make GraphQL Request
     RETURN    ${response}
 
 Get All Banner Notifications
-    [Documentation]    Retrieves all banner notifications with their state
+    [Documentation]    Retrieves all banner notifications regardless of state
+    ...                Returns all notifications (DRAFT, ACTIVE, SCHEDULED, etc.)
 
-    ${query}=    Set Variable    query { bannerNotifications { edges { node { pk name state draft activeFrom activeUntil target level } } } }
+    # Query all notifications without filter
+    # Include message fields for pattern matching
+    ${query}=    Set Variable    query { bannerNotifications { edges { node { pk name state draft activeFrom activeUntil target level messageFi messageEn messageSv } } } }
     ${response}=    Make GraphQL Request    ${query}
     Should Be Equal As Strings    ${response.status_code}    200
     RETURN    ${response}
 
+Get Filtered Banner Notifications
+    [Documentation]    Retrieves banner notifications filtered by state
+    ...                Queries all notifications and filters in Robot Framework code
+    [Arguments]    @{states}
+
+    ${response}=    Get All Banner Notifications
+    ${response_json}=    Set Variable    ${response.json()}
+    ${all_notifications}=    Set Variable    ${response_json}[data][bannerNotifications][edges]
+
+    # Convert states varargs to list for evaluation
+    VAR    @{states_list}    @{states}
+
+    # Filter notifications by state
+    VAR    @{filtered_edges}
+    FOR    ${edge}    IN    @{all_notifications}
+        ${node}=    Set Variable    ${edge}[node]
+        ${state}=    Set Variable    ${node}[state]
+        ${state_matches}=    Evaluate    $state in $states_list
+        IF    ${state_matches}    Append To List    ${filtered_edges}    ${edge}
+    END
+
+    RETURN    ${filtered_edges}
+
 Draft All Banner Notifications
     [Documentation]    Sets ALL banner notifications to DRAFT state
-    ...                This is useful for test data cleanup/reset
     ...                Requires user to be logged in as admin
 
     Log    Drafting all banner notifications...    console=True
-    ${response}=    Get All Banner Notifications
-
-    # Parse the response to get all notification PKs
-    ${response_json}=    Set Variable    ${response.json()}
-    ${notifications}=    Set Variable    ${response_json}[data][bannerNotifications][edges]
+    ${notifications}=    Get Filtered Banner Notifications    DRAFT    ACTIVE    SCHEDULED
     ${notification_count}=    Get Length    ${notifications}
 
     # Counter for drafted notifications
@@ -81,32 +102,40 @@ Draft All Banner Notifications
     Log    ✓ Drafted ${drafted_count} notifications (${notification_count} total)    console=True
 
 Delete Notifications By Name Pattern
-    [Documentation]    Deletes all banner notifications that contain the specified pattern in their name
-    ...                Useful for cleaning up test data created by robots
+    [Documentation]    Deletes all banner notifications that contain the specified pattern in their name or message
+    ...                Checks name, messageFi, messageEn, and messageSv fields
+    ...                Includes both DRAFT and ACTIVE notifications in the deletion
     ...                Requires user to be logged in as admin
     [Arguments]    ${name_pattern}
 
     Log    Deleting notifications with pattern: "${name_pattern}"    console=True
-    ${response}=    Get All Banner Notifications
-
-    # Parse the response to get all notification PKs
-    ${response_json}=    Set Variable    ${response.json()}
-    ${notifications}=    Set Variable    ${response_json}[data][bannerNotifications][edges]
+    ${notifications}=    Get Filtered Banner Notifications    DRAFT    ACTIVE
     ${notification_count}=    Get Length    ${notifications}
 
     # Counter for deleted notifications
     ${deleted_count}=    Set Variable    ${0}
 
-    # Loop through each notification and delete if name matches pattern
+    # Loop through each notification and delete if name or message matches pattern
     FOR    ${edge}    IN    @{notifications}
         ${node}=    Set Variable    ${edge}[node]
         ${pk}=    Set Variable    ${node}[pk]
         ${name}=    Set Variable    ${node}[name]
+        ${message_fi}=    Get From Dictionary    ${node}    messageFi    default=${EMPTY}
+        ${message_en}=    Get From Dictionary    ${node}    messageEn    default=${EMPTY}
+        ${message_sv}=    Get From Dictionary    ${node}    messageSv    default=${EMPTY}
 
-        # Check if name contains the pattern (case-insensitive)
-        ${name_upper}=    Evaluate    """${name}""".upper()
+        # Check if pattern appears in name or any message field (case-insensitive)
         ${pattern_upper}=    Evaluate    """${name_pattern}""".upper()
-        ${contains}=    Evaluate    """${pattern_upper}""" in """${name_upper}"""
+        ${name_upper}=    Evaluate    """${name}""".upper()
+        ${message_fi_upper}=    Evaluate    """${message_fi}""".upper()
+        ${message_en_upper}=    Evaluate    """${message_en}""".upper()
+        ${message_sv_upper}=    Evaluate    """${message_sv}""".upper()
+
+        ${in_name}=    Evaluate    """${pattern_upper}""" in """${name_upper}"""
+        ${in_fi}=    Evaluate    """${pattern_upper}""" in """${message_fi_upper}"""
+        ${in_en}=    Evaluate    """${pattern_upper}""" in """${message_en_upper}"""
+        ${in_sv}=    Evaluate    """${pattern_upper}""" in """${message_sv_upper}"""
+        ${contains}=    Evaluate    ${in_name} or ${in_fi} or ${in_en} or ${in_sv}
 
         IF    ${contains}
             Log    Deleting: ${pk} - "${name}"    level=DEBUG

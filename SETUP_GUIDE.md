@@ -141,7 +141,21 @@ When HAR recording is enabled in the workflow:
 
 ### Common Issues (All Execution Modes)
 
+#### First Steps When Tests Fail
+
+If tests fail, follow this quick verification flow:
+
+1. **Re-run the failed test** - Run the same test again to verify the failure is reproducible
+2. **Check consistency** - Note if the test fails at the same phase with the same error message
+3. **Determine failure type**:
+   - **Consistent failure** (same error, same phase): Could be one of the following → Continue with troubleshooting below
+     - **Application bug** - The actual application has a real bug that the test correctly found
+     - **Configuration issue** - Wrong environment variables, missing secrets, incorrect settings
+     - **Network problem** - Connection issues, timeouts, DNS resolution failures, firewall blocking requests, or backend service unavailable
+   - **Intermittent failure** (passes sometimes): Likely a timing or race condition → Check parallel execution settings and network stability
+
 **Email Tests Failing**:
+
 - Verify the backend email cache endpoint is available at `${TEST_BASE_URL}/v1/robot_email_cache/`
 - Check that `ROBOT_EMAIL_ADDRESSES` is configured in Django settings so that the test environment captures emails for the address used in the robot tests
 

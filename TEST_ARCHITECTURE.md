@@ -122,6 +122,12 @@ Admin notification tests require cleanup to handle **phantom notifications** - l
 - Pattern-based deletion ensures only robot test notifications are removed, not other test data
 - The cleanup pattern "ROBOVIESTI" identifies notifications created by robot tests
 
+**Important Note:**
+- Notification tests **do NOT run data creation** (`Create Robot Test Data`)
+- Data creation is typically already executed by other test suites running in parallel
+- Notification tests only require cleanup of notification-specific data (banner notifications)
+- They do not need reservation units, bookings, or user data cleaning like booking tests do
+
 **Used in:** `Tests_admin_notifications_serial.robot` for admin notification management tests
 
 ## Parallel Execution Coordination Details

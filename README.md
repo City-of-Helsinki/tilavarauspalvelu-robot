@@ -54,6 +54,10 @@ Before running tests, you need to acquire these secrets:
 4. Run: `./docker-test.sh` (Mac/Linux) or `.\docker-test.ps1` (Windows)
 5. View results: Open `output/report.html`
 
+## ⚠️ Troubleshooting
+
+If tests fail, check the [Troubleshooting Guide](SETUP_GUIDE.md#-troubleshooting) for common issues and solutions.
+
 ## 🐳 Docker Setup
 
 ### Docker Configuration

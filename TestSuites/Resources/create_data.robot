@@ -21,11 +21,13 @@ ${DEFAULT_ENDPOINT}     /v1/create_robot_test_data/
 
 
 *** Keywords ***
-Create Robot Test Data
+Create Robot Test Data DISABLED
     Log    Disabled until backend data creation is ready
 
-Create Robot Test Data DISABLED
+Create Robot Test Data
     [Documentation]    Calls the endpoint to Create robot test data.
+    ...    Backend returns 204 immediately and processes data asynchronously.
+    ...    Waits 3 minutes for backend processing to complete.
     [Timeout]    5 minutes
 
     # Temporarily suppress logging
@@ -58,51 +60,37 @@ Create Robot Test Data DISABLED
     # Create session
     Create Session    api    ${BASE_URL}    verify=${True}
 
-    # Try to create the test data with retries
-    FOR    ${attempt}    IN RANGE    1    ${MAX_RETRIES}+1
-        Log    Attempt ${attempt} of ${MAX_RETRIES}
+    # Suppress logging during POST request to avoid logging sensitive headers
+    ${current_log_level}=    Set Log Level    WARN
+    ${status}    ${response}=    Run Keyword And Ignore Error
+    ...    POST On Session    api    ${endpoint}
+    ...    headers=${headers}
+    ...    json=${{{}}}
+    ...    expected_status=any
+    Set Log Level    ${current_log_level}
 
-        # Suppress logging during POST request to avoid logging sensitive headers
-        ${current_log_level}=    Set Log Level    WARN
-        ${status}    ${response}=    Run Keyword And Ignore Error
-        ...    POST On Session    api    ${endpoint}
-        ...    headers=${headers}
-        ...    json=${{{}}}
-        ...    expected_status=any
-        Set Log Level    ${current_log_level}
-
-        # Check if successful
-        IF    "${status}" == "PASS"
-            Log    Response status: ${response.status_code}
-
-            # Success - 204 No Content expected
-            IF    ${response.status_code} == 204
-                Log    SUCCESS: Robot test data created successfully
-                RETURN
-
-                # Handle specific error cases
-            ELSE IF    ${response.status_code} == 400
-                ${body}=    Set Variable    ${response.json()}
-                IF    "ReservationUnitType matching query does not exist" in "${body}"
-                    Fail    PREREQUISITE DATA MISSING: Required objects don't exist in database
-                END
-                Fail    Bad Request: ${body}
-            ELSE IF    ${response.status_code} == 425
-                Log    Test data creation already in progress, waiting...    WARN
-                Sleep    ${RETRY_DELAY}
-            ELSE IF    ${response.status_code} == 429
-                ${retry_after}=    Get From Dictionary    ${response.headers}    Retry-After    default=60
-                Log    Rate limited, waiting ${retry_after} seconds...    WARN
-                Sleep    ${retry_after}
-            ELSE IF    ${response.status_code} == 502
-                Log    Server error (502), waiting before retry...    WARN
-                Sleep    ${RETRY_DELAY}
-            ELSE
-                Fail    Unexpected status ${response.status_code}: ${response.text}
-            END
-        ELSE
-            Fail    Request failed: ${response}
-        END
+    # Check if request was successful
+    IF    "${status}" != "PASS"
+        Fail    Request failed: ${response}
     END
 
-    Fail    Failed to Create robot test data after ${MAX_RETRIES} attempts
+    Log    Response status: ${response.status_code}
+
+    # Handle response
+    IF    ${response.status_code} == 204
+        Log    SUCCESS: Robot test data creation request accepted (204 No Content)
+        Log    Waiting 3 minutes for backend to complete data creation...    WARN
+        Sleep    180s    # 3 minutes for backend processing
+        Log    Backend processing wait completed
+        RETURN
+
+    ELSE IF    ${response.status_code} == 400
+        ${body}=    Set Variable    ${response.json()}
+        IF    "ReservationUnitType matching query does not exist" in "${body}"
+            Fail    PREREQUISITE DATA MISSING: Required objects don't exist in database
+        END
+        Fail    Bad Request: ${body}
+
+    ELSE
+        Fail    Unexpected status ${response.status_code}: ${response.text}
+    END

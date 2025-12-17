@@ -12,7 +12,6 @@ Resource            ${CURDIR}/PO/Common/topnav.robot
 Resource            ${CURDIR}/PO/Admin/admin_notifications.robot
 Resource            ${CURDIR}/PO/Admin/admin_notifications_create_page.robot
 Resource            ${CURDIR}/Resources/graphql_commands.robot
-Suite Setup         Run Only Once    create_data.Create Robot Test Data
 Test Setup          User Opens Desktop Browser To Landing Page
 Test Teardown       Complete Test Teardown
 
@@ -26,7 +25,6 @@ Admin creates normal notifications for both sides
     popups.Close Notification Banner If Visible
     #
     app_common.Admin Goes To Landing Page
-    # Select Suite Specific Admin User
     app_common.Admin Logs In With Suomi Fi
 
     Log    Test cleanup
@@ -37,7 +35,6 @@ Admin creates normal notifications for both sides
     #
     Log    Admin creates normal notification for both sides
     admin_navigation_menu.Admin Navigates To Notifications
-    graphql_commands.Draft All Banner Notifications
     app_admin.Admin Creates Normal Notification For User And Admin Side
     app_common.Reload Page
 
@@ -103,7 +100,6 @@ Admin creates warning notifications for both sides
     popups.Close Notification Banner If Visible
     #
     app_common.Admin Goes To Landing Page
-    # Select Suite Specific Admin User
     app_common.Admin Logs In With Suomi Fi
 
     Log    Test cleanup

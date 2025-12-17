@@ -157,15 +157,12 @@ Check Reservation Access Code
 ###
 
 Navigate To Cancelled Bookings
-    # TODO ask/fix better selectors here
     Click    id=tab-2-button
 
 Navigate To Past Bookings
-    # TODO ask/fix better selectors here
     Click    id=tab-1-button
 
 Navigate To Upcoming Bookings
-    # TODO ask/fix better selectors here
     Click    id=tab-0-button
 
 ###

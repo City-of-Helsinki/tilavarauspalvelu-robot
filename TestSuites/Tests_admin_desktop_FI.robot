@@ -149,7 +149,7 @@ Admin checks unit permissions
     django_admin.Admin Navigates To Unit Role Page
     django_admin.Admin Searches The User By Email    ${PERMISSION_TARGET_ADMIN_EMAIL}
     django_admin.Admin Clicks First User
-    django_admin.Admin checks permission is not present    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
+    django_admin.Admin Checks Permission Is Not Present    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
 
     Log    Django admin changes permissions to viewer
     django_admin.Admin Changes Permissions    ${ADMIN_ROLE_VIEWER}
@@ -234,7 +234,7 @@ Admin checks group unit permissions
     django_admin.Admin Navigates To Unit Role Page
     django_admin.Admin Searches The User By Email    ${PERMISSION_TARGET_ADMIN_EMAIL}
     django_admin.Admin Clicks First User
-    django_admin.Admin checks permission is not present    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
+    django_admin.Admin Checks Permission Is Not Present    ${ADMIN_ROLE_NOTIFICATION_MANAGER}
 
     # Switch to Chromium browser for app admin checks
     Log    Django admin changes permissions to viewer

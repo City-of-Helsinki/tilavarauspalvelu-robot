@@ -34,6 +34,9 @@ Login Suomi Fi
 Login Django Admin
     [Documentation]    The input_password argument is kept for backward compatibility but is not used
     [Arguments]    ${input_username}    ${input_password}=${EMPTY}
+    IF    '${input_password}' != '${EMPTY}'
+        Log    Login Django Admin: input_password argument is ignored (using DJANGO_ADMIN_PASSWORD)    level=DEBUG
+    END
     Wait For Load State    load    timeout=15s
     Wait For Elements State    id=id_username    visible    timeout=10s
     Type Text    id=id_username    ${input_username}

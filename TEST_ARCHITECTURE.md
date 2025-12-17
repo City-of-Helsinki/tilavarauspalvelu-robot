@@ -38,7 +38,7 @@ The test suites use a Page Object Model (POM):
 ┌─────────────────────────────────────────────────────────────────┐
 │                        SUITE SETUP (Once)                       │
 ├─────────────────────────────────────────────────────────────────┤
-│ 1. Create Robot Test Data (create_data.robot)                   │
+│ 1. Create Robot Test Data (Resources/create_data.robot)         │
 │    • API POST to application backend test data endpoint         │
 │    • Token authentication (X-Robot-API-Secret)                  │
 │    • Creates all users, reservation units, reservations, and    │
@@ -100,6 +100,29 @@ The test suites use a Page Object Model (POM):
 │    • Close browser                                              │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+## Test Data Management
+
+### API-Based Data Creation (Resources/create_data.robot)
+
+Test data is created once per suite via API endpoint during Suite Setup:
+- Creates all users, reservation units, and initial reservations
+
+### GraphQL-Based Cleanup (Resources/graphql_commands.robot)
+
+Admin notification tests require cleanup to handle **phantom notifications** - leftover notifications from failed test runs that can interfere with new tests.
+
+**Cleanup Process:**
+1. **Draft all notifications** - Sets all existing banner notifications to DRAFT state
+2. **Delete by pattern** - Removes notifications matching `${NOTIFICATION_BANNER_CLEANUP_PATTERN}` variable (set to "ROBOVIESTI" in `texts_FI.robot`)
+
+**Why it's needed:**
+- If a test fails mid-execution, it may leave active notifications in the system
+- These phantom notifications can cause subsequent test runs to fail
+- Pattern-based deletion ensures only robot test notifications are removed, not other test data
+- The cleanup pattern "ROBOVIESTI" identifies notifications created by robot tests
+
+**Used in:** `Tests_admin_notifications_serial.robot` for admin notification management tests
 
 ## Parallel Execution Coordination Details
 

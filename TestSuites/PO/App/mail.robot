@@ -12,23 +12,22 @@ Resource    ../../Resources/variables.robot
 Verify Reservation Confirmation Email
     [Documentation]    Verify confirmation email contains all required terms
     [Arguments]    ${reservation_number}
-    
+
     Log    Verifying confirmation email for reservation: ${reservation_number}
-    
+
     # Build list of expected terms
-    ${expected_terms}=    Create List
-    ...    ${ALWAYS_PAID_UNIT}
+    VAR    @{expected_terms}    ${ALWAYS_PAID_UNIT}
     ...    ${CONFIRMATION_TEXT_IN_MAIL}
     ...    ${reservation_number}
     ...    ${FORMATTED_STARTTIME_EMAIL}
     ...    ${FORMATTED_ENDTIME_EMAIL}
-    
+
     # Use new API-based verification
     ${result}=    Verify Reservation Email
     ...    ${reservation_number}
     ...    ${expected_terms}
     ...    ${False}    # No attachment expected
-    
+
     IF    not ${result}
         Fail    Some required terms are missing in confirmation email
     END
@@ -36,21 +35,20 @@ Verify Reservation Confirmation Email
 Verify Reservation Cancellation Email
     [Documentation]    Verify cancellation email contains all required terms
     [Arguments]    ${reservation_number}
-    
+
     Log    Verifying cancellation email for reservation: ${reservation_number}
-    
-    ${expected_terms}=    Create List
-    ...    ${ALWAYS_PAID_UNIT}
+
+    VAR    @{expected_terms}    ${ALWAYS_PAID_UNIT}
     ...    ${CANCELLATION_TEXT_IN_MAIL}
     ...    ${reservation_number}
     ...    ${FORMATTED_STARTTIME_EMAIL}
     ...    ${FORMATTED_ENDTIME_EMAIL}
-    
+
     ${result}=    Verify Reservation Email
     ...    ${reservation_number}
     ...    ${expected_terms}
     ...    ${False}    # No attachment expected
-    
+
     IF    not ${result}
         Fail    Some required terms are missing in cancellation email
     END

@@ -13,7 +13,7 @@ Search Units By Name
     Click    [data-testid="searchButton"]
     Sleep    2s    # wait for search results to load
     Wait For Load State    load    timeout=15s
-    # TODO Check if actual results are found
+    # Check if actual results are found
     Wait For Elements State    [data-testid="list-with-pagination__list--container"]    visible
 
 Click Searched Unit

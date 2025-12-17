@@ -11,7 +11,6 @@ Admin Selects Validity Period To Immediately
     Click    css=label[for="v-radio1"]
 
 Admin Selects Notification Active Until
-    # TODO: add date format to data_modification.robot
     [Arguments]    ${date}
     Type Text    id=notification-active-until    ${date}
     Sleep    500ms
@@ -85,7 +84,7 @@ Admin Selects Target Group User
 # Viesti
 
 Admin Clicks Notification Text Fi Container
-    # 
+    #
     Click    [data-testid="Notification__Page--message-fi-input"]
     Sleep    500ms
     Wait For Load State    load    timeout=15s

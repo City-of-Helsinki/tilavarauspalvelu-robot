@@ -669,7 +669,8 @@ toggle_har_recording() {
             echo -e "${RED}❌ Invalid JSON structure: 'robot_variables' section missing${NC}"
             return 1
         fi
-        if ! jq -e '.robot_variables.enable_har_recording' "$config_file" > /dev/null 2>&1; then
+        # Check if property exists (not if it's true/false, but if it exists)
+        if ! jq -e '.robot_variables | has("enable_har_recording")' "$config_file" > /dev/null 2>&1; then
             echo -e "${RED}❌ Invalid JSON structure: 'enable_har_recording' property missing${NC}"
             return 1
         fi

@@ -12,7 +12,7 @@ Admin Changes Permissions
     Select Options By    id=id_role    value    ${role_value}
     Sleep    1s
 
-Admin checks permission is not present
+Admin Checks Permission Is Not Present
     [Arguments]    ${role_value}
     Click    id=id_role
     # Wait for the dropdown to open

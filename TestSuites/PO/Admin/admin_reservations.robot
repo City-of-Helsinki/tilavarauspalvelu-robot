@@ -43,21 +43,19 @@ Admin Checks Reservation Title Tagline
     custom_keywords.Check Elements Text    [data-testid="reservation_title_section__tagline"]    ${reservation_tagline}
 
 Admin Checks Reservation Info Dialog Time Tagline
-    # TODO Not in use for now
+    # DEVNOTE: Not in use for now
     [Arguments]    ${reservation_tagline}
     custom_keywords.Find Text From Elements Or Fail
     ...    [class*="EditTimeModal__TimeInfoBox"] >> b
     ...    ${reservation_tagline}
 
 Admin Checks Reservation User Info
-    # TODO get better ids here
     custom_keywords.Find And Click Element With Text    css=.label    Tilan käyttäjän tiedot
     Sleep    500ms
     custom_keywords.Check Elements Text    [data-testid="reservation__info--Sukunimi"]    ${ADMIN_BEHALF_LASTNAME_FI}
     custom_keywords.Check Elements Text    [data-testid="reservation__info--Etunimi"]    ${ADMIN_BEHALF_FIRSTNAME_FI}
 
 Admin Checks Reservation Maker Info
-    # TODO get better ids here
     custom_keywords.Find And Click Element With Text    css=.label    Varauksen tekijä
     Sleep    500ms
     custom_keywords.Check Elements Text
@@ -317,7 +315,6 @@ Admin Opens Calendar And Changes Reservation Time
     # Changes the reservation time with date and hours and minutes
     Log    This test uses 00 for minutes. So all the changed times will be 10:00–11:00 -> 15:00–17:00 etc
 
-    # TODO Admin enters reservation time and type of reservation could be used here
     # Type Text    id=ReservationDialog.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
     Type Text    id=TimeInput.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
     Sleep    500ms
@@ -340,11 +337,13 @@ Admin Opens Calendar And Changes Reservation Time
     Sleep    1s
     Wait For Load State    load    timeout=15s
 
-Admin Finds Reservation And Clicks It
-    [Arguments]    ${reservation_name}
-    Sleep    3s
-    custom_keywords.Find And Click Element With Exact Text Using JS
-    ...    [role="button"] >> css=.rbc-event-content
-    ...    ${reservation_name}
-    Sleep    500ms
-    Wait For Load State    load    timeout=15s
+# Not currently in use
+# This was used to navigate to reservations through calendar view
+# Admin Finds Reservation And Clicks It
+#     [Arguments]    ${reservation_name}
+#     Sleep    3s
+#     custom_keywords.Find And Click Element With Exact Text Using JS
+#     ...    [role="button"] >> css=.rbc-event-content
+#     ...    ${reservation_name}
+#     Sleep    500ms
+#     Wait For Load State    load    timeout=15s

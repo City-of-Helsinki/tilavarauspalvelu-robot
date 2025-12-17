@@ -25,6 +25,14 @@ Click And Store Free Reservation Time
     Sleep    2s
     Wait For Load State    load    timeout=15s
 
+    # Check if enough time slots are available for the current day
+    ${time_slot_exists}=    Run Keyword And Return Status
+    ...    Browser.Get Element    id=calendar-controls__time-option-2
+    IF    not ${time_slot_exists}
+        ${available_slots}=    Get Element Count    css=[id^="calendar-controls__time-option-"]
+        Fail    Not enough available time slots for the current day. Expected at least 3 slots, but found ${available_slots}. Try selecting a different date or time range.
+    END
+
     ${calendar_control_time_of_third_free_slot}=    Get Text    id=calendar-controls__time-option-2
     Set Suite Variable    ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}    ${calendar_control_time_of_third_free_slot}
     Log    Attempting to select time: ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
@@ -44,6 +52,14 @@ Click And Store Free Reservation Time
     Wait For Load State    domcontentloaded    timeout=15s
 
 Changing Time Again
+    # Check if the 4th time slot is available
+    ${time_slot_exists}=    Run Keyword And Return Status
+    ...    Browser.Get Element    id=calendar-controls__time-option-3
+    IF    not ${time_slot_exists}
+        ${available_slots}=    Get Element Count    css=[id^="calendar-controls__time-option-"]
+        Fail    Not enough available time slots to change time. Expected at least 4 slots, but found ${available_slots}. Try selecting a different date or time range.
+    END
+
     ${calendar_control_time_of_fourth_free_slot}=    Get Text    id=calendar-controls__time-option-3
     Set Suite Variable    ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}    ${calendar_control_time_of_fourth_free_slot}
     Log    Selecting alternative time: ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}

@@ -78,7 +78,7 @@ Apply Global Header To Context Config
         IF    "${waf_secret}" != ""
             # Re-suppress logging
             ${original_log_level}=    Set Log Level    NONE
-            ${headers}=    Create Dictionary    ${WAF_BYPASS_HEADER_NAME}=${waf_secret}
+            VAR    &{headers}    ${WAF_BYPASS_HEADER_NAME}=${waf_secret}
             Set To Dictionary    ${context_config}    extraHTTPHeaders=${headers}
             Set Log Level    ${original_log_level}
 
@@ -134,8 +134,7 @@ Set Up Chromium Desktop Browser And Open Url
 
     Apply Staggered Startup Strategy    CHROMIUM DESKTOP    ${input_URL}    ${DOWNLOAD_DIR}
 
-    @{chrome_args}=    Create List
-    ...    --no-default-browser-check    # Disables default browser check dialog
+    VAR    @{chrome_args}    --no-default-browser-check    # Disables default browser check dialog
     ...    --disable-background-timer-throttling    # Prevents throttling of timer tasks from background pages
     ...    --disable-renderer-backgrounding    # Prevents renderer process backgrounding
     ...    --disable-backgrounding-occluded-windows    # Disables backgrounding renders for occluded windows
@@ -168,7 +167,7 @@ Set Up Chromium Desktop Browser And Open Url
     ...    reuse_existing=False
 
     # Create context with optional HAR recording (controlled by ENABLE_HAR_RECORDING variable)
-    ${context_config}=    Create Dictionary
+    VAR    &{context_config}
     ...    viewport={'width': 1440, 'height': 900}
     ...    acceptDownloads=True
     ...    locale=${LOCALE}
@@ -210,8 +209,7 @@ Set Up Firefox Desktop Browser And Open Url
     Apply Staggered Startup Strategy    FIREFOX DESKTOP    ${input_URL}    ${DOWNLOAD_DIR}
 
     # Firefox arguments
-    @{firefox_args}=    Create List
-    ...    --no-remote    # Prevents Firefox from connecting to a running instance
+    VAR    @{firefox_args}    --no-remote    # Prevents Firefox from connecting to a running instance
 
     Log    🔧 Firefox Arguments: ${firefox_args}
     Log    🌍 Locale: ${LOCALE}
@@ -226,7 +224,7 @@ Set Up Firefox Desktop Browser And Open Url
 
     Log    🔄 Creating independent Firefox context for session isolation...
 
-    ${context_config}=    Create Dictionary
+    VAR    &{context_config}
     ...    viewport={'width': 1440, 'height': 900}
     ...    acceptDownloads=True
     ...    locale=${LOCALE}
@@ -262,7 +260,7 @@ Set Up Iphone 14 And Open Url
     Apply Staggered Startup Strategy    IPHONE 14    ${input_URL}
 
     # WebKit arguments for iPhone simulation
-    @{webkit_args}=    Create List
+    VAR    @{webkit_args}    @{EMPTY}
 
     Log    🔧 WebKit Arguments: ${webkit_args} (empty - WebKit has limited CLI support)
     Log    📱 Device: iPhone 14
@@ -279,12 +277,13 @@ Set Up Iphone 14 And Open Url
     Log    🔄 Creating independent iPhone context for session isolation...
 
     # Create context with optional HAR recording (controlled by ENABLE_HAR_RECORDING variable)
-    ${device_config}=    Create Dictionary
-    ...    &{iphone}
+    VAR    &{device_config}
     ...    isMobile=true
     ...    locale=${LOCALE}
     ...    ignoreHTTPSErrors=true
     ...    deviceScaleFactor=1
+    # Merge iPhone device properties into config
+    Set To Dictionary    ${device_config}    &{iphone}
 
     ${device_config}=    Apply Global Header To Context Config    ${device_config}
     ${contextId}=    Create Context With Optional HAR    ${device_config}    IPHONE_14
@@ -321,8 +320,7 @@ Set Up Android Pixel 5 And Open Url
 
     Apply Staggered Startup Strategy    ANDROID PIXEL 5    ${input_URL}
 
-    @{chrome_args}=    Create List
-    ...    --no-default-browser-check    # Disables default browser check dialog
+    VAR    @{chrome_args}    --no-default-browser-check    # Disables default browser check dialog
     ...    --disable-background-timer-throttling    # Prevents throttling of timer tasks from background pages
     ...    --disable-renderer-backgrounding    # Prevents renderer process backgrounding
     ...    --disable-backgrounding-occluded-windows    # Disables backgrounding renders for occluded windows
@@ -356,10 +354,11 @@ Set Up Android Pixel 5 And Open Url
     Log    🔄 Creating independent Android context for session isolation...
 
     # Create context with optional HAR recording (controlled by ENABLE_HAR_RECORDING variable)
-    ${device_config}=    Create Dictionary
-    ...    &{pixel}
+    VAR    &{device_config}
     ...    isMobile=true
     ...    locale=${LOCALE}
+    # Merge Pixel device properties into config
+    Set To Dictionary    ${device_config}    &{pixel}
 
     ${device_config}=    Apply Global Header To Context Config    ${device_config}
     ${contextId}=    Create Context With Optional HAR    ${device_config}    PIXEL_5

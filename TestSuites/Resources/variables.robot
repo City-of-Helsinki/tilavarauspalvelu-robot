@@ -84,6 +84,8 @@ ${RECURRING_UNIT_KESKUSTA}                              KAUSIVARAUS yksikkö Kes
 
 ${UNIT_LOCATION}                                        Harakka, piilokoju
 
+${UNIT_NAME_FOR_PICTURE_TEST}                           Maksuton Mankeli
+
 ###
 # RECURRING RESERVATIONS
 ###

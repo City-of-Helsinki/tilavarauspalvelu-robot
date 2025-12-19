@@ -48,6 +48,7 @@ Admin creates normal notifications for both sides
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_NORMAL}
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
     #
     Log    Admin changes notification target group to only user
     admin_notifications.Admin Clicks Notification Name
@@ -60,12 +61,14 @@ Admin creates normal notifications for both sides
     app_common.Verify Notification Banner Message Is Not Visible
     #
     Switch Page    ${PAGE_USER_SIDE}
+    Sleep    500ms
     app_common.Reload Page
     app_common.Verify Notification Banner Message
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_NORMAL}
     #
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
     #
     Log    Admin changes notification target group to only admin
     admin_notifications.Admin Clicks Notification Name
@@ -80,10 +83,12 @@ Admin creates normal notifications for both sides
     ...    ${NOTIFICATION_TYPE_NORMAL}
     #
     Switch Page    ${PAGE_USER_SIDE}
+    Sleep    500ms
     app_common.Reload Page
     app_common.Verify Notification Banner Message Is Not Visible
     #
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
     #
     Log    Admin deletes notification
     admin_notifications.Admin Clicks Notification Name
@@ -123,6 +128,7 @@ Admin creates warning notifications for both sides
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_WARNING}
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
     #
     Log    Admin changes warning notification target group to only user
     admin_notifications.Admin Clicks Notification Name
@@ -135,12 +141,14 @@ Admin creates warning notifications for both sides
     app_common.Verify Notification Banner Message Is Not Visible
     #
     Switch Page    ${PAGE_USER_SIDE}
+    Sleep    500ms
     app_common.Reload Page
     app_common.Verify Notification Banner Message
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_WARNING}
     #
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
     #
     Log    Admin changes warning notification target group to only admin
     admin_notifications.Admin Clicks Notification Name
@@ -155,10 +163,12 @@ Admin creates warning notifications for both sides
     ...    ${NOTIFICATION_TYPE_WARNING}
     #
     Switch Page    ${PAGE_USER_SIDE}
+    Sleep    500ms
     app_common.Reload Page
     app_common.Verify Notification Banner Message Is Not Visible
     #
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
     #
     Log    Admin deletes warning notification
     admin_notifications.Admin Clicks Notification Name
@@ -198,6 +208,7 @@ Admin creates error notifications for both sides
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_ERROR}
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
     #
     Log    Admin changes error notification target group to only user
     admin_notifications.Admin Clicks Notification Name
@@ -210,12 +221,14 @@ Admin creates error notifications for both sides
     app_common.Verify Notification Banner Message Is Not Visible
     #
     Switch Page    ${PAGE_USER_SIDE}
+    Sleep    500ms
     app_common.Reload Page
     app_common.Verify Notification Banner Message
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_ERROR}
     #
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
     #
     Log    Admin changes error notification target group to only admin
     admin_notifications.Admin Clicks Notification Name
@@ -230,10 +243,12 @@ Admin creates error notifications for both sides
     ...    ${NOTIFICATION_TYPE_ERROR}
     #
     Switch Page    ${PAGE_USER_SIDE}
+    Sleep    500ms
     app_common.Reload Page
     app_common.Verify Notification Banner Message Is Not Visible
     #
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
     #
     Log    Admin deletes error notification
     admin_notifications.Admin Clicks Notification Name
@@ -283,8 +298,10 @@ Admin creates notification and archive and deletes notification for both sides
 
     app_common.Open New Window From Admin Side To User Side And Saves Both Windows    ${URL_TEST}
     Switch Page    ${PAGE_USER_SIDE}
+    Sleep    500ms
     app_common.Verify Notification Banner Message Is Not Visible
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
 
     Log    Admin checks notification is published from drafted state
     admin_notifications.Admin Clicks Notification Name
@@ -294,12 +311,15 @@ Admin creates notification and archive and deletes notification for both sides
     app_common.Verify Notification Banner Message
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_NORMAL}
+    #
     Switch Page    ${PAGE_USER_SIDE}
+    Sleep    500ms
     app_common.Reload Page
     app_common.Verify Notification Banner Message
     ...    ${NOTIFICATION_BANNER_MESSAGE_TEXT_FI}
     ...    ${NOTIFICATION_TYPE_NORMAL}
     Switch Page    ${PAGE_ADMIN_SIDE}
+    Sleep    500ms
 
     Log    Admin deletes notification
     admin_notifications.Admin Clicks Notification Name

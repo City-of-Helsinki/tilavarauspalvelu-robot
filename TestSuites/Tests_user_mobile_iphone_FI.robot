@@ -33,7 +33,7 @@ User can make free single booking and modifies it
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_FREE_UNIT}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills The Reservation Info For Always Free Unit
+    app_user.User Fills The Reservation Info For Always Free Unit And Submits
     app_user.User Checks The Reservation Info Is Right Before Submit
     reservation_lownav.Click Submit Button Continue
     app_user.User Checks The Reservation Info Is Right After Submit
@@ -67,7 +67,7 @@ User can make paid single booking
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills The Reservation Info For Unit With Payment
+    app_user.User Fills The Reservation Info For Unit With Payment And Submits
     app_user.User Checks The Paid Reservation Info Is Right And Submits
 
     Log    User pays the reservation
@@ -111,7 +111,7 @@ User can make paid single booking with interrupted checkout
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills The Reservation Info For Unit With Payment
+    app_user.User Fills The Reservation Info For Unit With Payment And Submits
     app_user.User Checks The Paid Reservation Info Is Right And Submits
 
     Log    User pays the reservation
@@ -151,7 +151,7 @@ User can make booking that requires handling
     app_user.User Uses Search To Find Right Unit    ${CURRENT_UNIT_REQUIRES_ALWAYS_HANDLING}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills Info For Unit That Is Always Handled As Individual
+    app_user.User Fills Info For Unit That Is Always Handled As Individual And Submits
     app_user.User Checks Unit That Is Always Handled Details Are Right Before Submit
     reservation_lownav.Click Submit Button Continue
     app_user.User Checks Unit That Is Always Handled Details Are Right After Submit
@@ -176,7 +176,7 @@ User can make subvented single booking that requires handling
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT_SUBVENTED}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills Subvented Booking Details As Individual    ${JUSTIFICATION_FOR_SUBVENTION}
+    app_user.User Fills Subvented Booking Details As Individual And Submits    ${JUSTIFICATION_FOR_SUBVENTION}
     app_user.User Checks The Paid Reservation That Requires Handling Info Is Right And Submits
 
     Log    User verifies reservation in my bookings and reservation status

@@ -7,7 +7,7 @@ Library     Browser
 
 
 *** Keywords ***
-Admin Selects Validity Period To Immediately
+Admin Selects Immediate Validity Period
     Click    css=label[for="v-radio1"]
 
 Admin Selects Notification Active Until
@@ -69,9 +69,9 @@ Admin Selects Target Group All
 
 Admin Selects Target Group Admin
     Click    css=[aria-label*="Kohderyhmä."]
-    Sleep    1s
+    Sleep    1.5s
     custom_keywords.Find And Click Element With Text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_ADMIN}
-    Sleep    1s
+    Sleep    1.5s
 
 Admin Selects Target Group User
     Click    css=[aria-label*="Kohderyhmä."]

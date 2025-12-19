@@ -145,10 +145,11 @@ User Checks That Reservation Calendar Does Not Have Reserved Time Slot Available
 
     custom_keywords.Verify Reservation Slot Exists    ${CALENDAR_TIMESLOT}    ${ENGLISH_DAY}
 
-User Fills The Reservation Info For Always Free Unit
+User Fills The Reservation Info For Always Free Unit And Submits
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
+    reservation_unit_reserver_info.Check Application Cannot Be Made Without Info
     reservation_unit_reserver_info.Enter First Name    ${CURRENT_USER_FIRST_NAME}
     reservation_unit_reserver_info.Enter Last Name    ${CURRENT_USER_LAST_NAME}
     reservation_unit_reserver_info.Enter Email    ${CURRENT_USER_EMAIL}
@@ -157,7 +158,7 @@ User Fills The Reservation Info For Always Free Unit
     #
     reservation_lownav.Click Submit Button Continue
 
-User Fills The Reservation Info For Unit With Payment
+User Fills The Reservation Info For Unit With Payment And Submits
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
@@ -175,7 +176,7 @@ User Fills The Reservation Info For Unit With Payment
     #
     reservation_lownav.Click Submit Button Continue
 
-User Fills Subvented Booking Details As Individual
+User Fills Subvented Booking Details As Individual And Submits
     [Arguments]    ${justification_for_not_paying}
 
     # Checks that "jatka" button has been loaded
@@ -198,7 +199,7 @@ User Fills Subvented Booking Details As Individual
     #
     reservation_lownav.Click Submit Button Continue
 
-User Fills Noncancelable Booking Details As Individual
+User Fills Noncancelable Booking Details As Individual And Submits
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
@@ -213,7 +214,7 @@ User Fills Noncancelable Booking Details As Individual
     #
     reservation_lownav.Click Submit Button Continue
 
-User Fills Info For Unit That Is Always Handled As Individual
+User Fills Info For Unit That Is Always Handled As Individual And Submits
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
@@ -230,7 +231,7 @@ User Fills Info For Unit That Is Always Handled As Individual
     #
     reservation_lownav.Click Submit Button Continue
 
-User Fills Booking Details As Individual For Reservation With Access Code
+User Fills Booking Details As Individual For Reservation With Access Code And Submits
     # Checks that "jatka" button has been loaded
     Wait For Elements State    [data-testid="reservation__button--continue"]    visible
     #
@@ -787,3 +788,36 @@ User Checks Cancelled Booking Is Found Mobile
     mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname_mybookings}
     ...    ${time_of_quick_reservation_minusT}
+
+###
+# Misc
+###
+
+User Checks That Reservation Unit Picture Is Loaded
+    [Arguments]    ${unit_name}
+    # Target the image by its alt text - this is the most reliable selector
+    ${img_selector}=    Set Variable    img[alt*="${unit_name}"]
+    
+    # Wait for the image element to be attached
+    Wait For Elements State    ${img_selector} >> nth=0    attached    timeout=5s
+    ...    message=Reservation unit picture for ${unit_name} is not present
+    
+    # Verify the src attribute is present
+    ${src}=    Get Attribute    ${img_selector} >> nth=0    src
+    Should Not Be Empty    ${src}    msg=Image src attribute is empty
+    
+    # Verify the image has actually loaded (not broken)
+    # Check that image.complete is true, naturalWidth > 0, and naturalHeight > 0
+    ${complete}=    Get Property    ${img_selector} >> nth=0    complete
+    Should Be True    ${complete}    msg=Image is not fully loaded (complete property is false)
+    
+    ${natural_width}=    Get Property    ${img_selector} >> nth=0    naturalWidth
+    Should Be True    ${natural_width} > 0    msg=Image naturalWidth is 0 - image failed to load
+    
+    ${natural_height}=    Get Property    ${img_selector} >> nth=0    naturalHeight
+    Should Be True    ${natural_height} > 0    msg=Image naturalHeight is 0 - image failed to load
+    
+    # Get and log the image dimensions for debugging
+    ${width}=    Get Property    ${img_selector} >> nth=0    naturalWidth
+    ${height}=    Get Property    ${img_selector} >> nth=0    naturalHeight
+    Log    Image loaded successfully with dimensions: ${width}x${height}

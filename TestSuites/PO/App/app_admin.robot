@@ -413,7 +413,7 @@ Admin Attempts To Make An Unavailable Reservation
 Admin Creates Normal Notification For User And Admin Side
     admin_notifications.Admin Clicks Create Notification Button
     #
-    admin_notifications_create_page.Admin Selects Validity Period To Immediately
+    admin_notifications_create_page.Admin Selects Immediate Validity Period
     #
     ${date_plus_60_days}=    data_modification.Get Date Plus 60 Days
     Set Suite Variable    ${NOTIFICATION_ACTIVE_UNTIL}    ${date_plus_60_days}
@@ -446,7 +446,7 @@ Admin Creates Normal Notification For User And Admin Side
 Admin Creates Warning Notification For User And Admin Side
     admin_notifications.Admin Clicks Create Notification Button
     #
-    admin_notifications_create_page.Admin Selects Validity Period To Immediately
+    admin_notifications_create_page.Admin Selects Immediate Validity Period
     #
     ${date_plus_60_days}=    data_modification.Get Date Plus 60 Days
     Set Suite Variable    ${NOTIFICATION_ACTIVE_UNTIL}    ${date_plus_60_days}
@@ -478,7 +478,7 @@ Admin Creates Warning Notification For User And Admin Side
 Admin Creates Error Notification For User And Admin Side
     admin_notifications.Admin Clicks Create Notification Button
     #
-    admin_notifications_create_page.Admin Selects Validity Period To Immediately
+    admin_notifications_create_page.Admin Selects Immediate Validity Period
     #
     ${date_plus_60_days}=    data_modification.Get Date Plus 60 Days
     Set Suite Variable    ${NOTIFICATION_ACTIVE_UNTIL}    ${date_plus_60_days}

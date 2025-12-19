@@ -47,6 +47,14 @@ Select The Free Slot From Quick Reservation
     Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}
 
 User Clicks Submit Button In Quick Reservation
+    Sleep    300ms    # Wait for rendering
+    # Verify the button exists inside quick-reservation before clicking
+    ${button_count}=    Browser.Get Element Count    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
+    Should Be Equal As Integers    ${button_count}    1
+    ...    msg=Expected exactly 1 submit button inside quick-reservation, found ${button_count}. Button may have disappeared.
+    
+    Wait For Elements State    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]    visible
+    ...    message=Quick reservation submit button is not visible inside quick-reservation
     Click    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
 Select Duration

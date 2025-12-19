@@ -35,12 +35,17 @@ User can make free single booking and modifies it
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
-    Log    User creates reservation
+    Log    User navigates to reservation unit page
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_FREE_UNIT}
+
+    Log    User checks that reservation unit picture is loaded
+    app_user.User Checks That Reservation Unit Picture Is Loaded    ${UNIT_NAME_FOR_PICTURE_TEST}
+
+    Log    User creates reservation
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills The Reservation Info For Always Free Unit
+    app_user.User Fills The Reservation Info For Always Free Unit And Submits
     app_user.User Checks The Reservation Info Is Right Before Submit
     reservation_lownav.Click Submit Button Continue
     app_user.User Checks The Reservation Info Is Right After Submit
@@ -78,7 +83,7 @@ User can create non-cancelable booking
     app_user.User Uses Search To Find Right Unit    ${CURRENT_FREE_UNIT_NO_CANCEL}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills Noncancelable Booking Details As Individual
+    app_user.User Fills Noncancelable Booking Details As Individual And Submits
     app_user.User Checks The Noncancelable Reservation Info Is Right Before Submit
     reservation_lownav.Click Submit Button Continue
     app_user.User Checks The Noncancelable Reservation Info Is Right After Submit
@@ -100,7 +105,7 @@ User can make paid single booking with interrupted checkout
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills The Reservation Info For Unit With Payment
+    app_user.User Fills The Reservation Info For Unit With Payment And Submits
     app_user.User Checks The Paid Reservation Info Is Right And Submits
 
     Log    User pays the reservation
@@ -149,7 +154,7 @@ User can make paid single booking
         app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT}
         app_user.User Selects The Time With Quick Reservation And Sets Time Variables
         quick_reservation.User Clicks Submit Button In Quick Reservation
-        app_user.User Fills The Reservation Info For Unit With Payment
+        app_user.User Fills The Reservation Info For Unit With Payment And Submits
         app_user.User Checks The Paid Reservation Info Is Right And Submits
 
         Log    User pays the reservation
@@ -210,7 +215,7 @@ User can make subvented single booking that requires handling
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT_SUBVENTED}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills Subvented Booking Details As Individual    ${JUSTIFICATION_FOR_SUBVENTION}
+    app_user.User Fills Subvented Booking Details As Individual And Submits    ${JUSTIFICATION_FOR_SUBVENTION}
     app_user.User Checks The Paid Reservation That Requires Handling Info Is Right And Submits
 
     Log    User verifies reservation requires handling
@@ -233,7 +238,7 @@ User checks that reserved time is not available anymore
     app_user.User Uses Search To Find Right Unit    ${CURRENT_UNAVAILABLE_UNIT}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills The Reservation Info For Always Free Unit
+    app_user.User Fills The Reservation Info For Always Free Unit And Submits
     app_user.User Checks The Reservation Info Is Right Before Submit
     reservation_lownav.Click Submit Button Continue
     app_user.User Checks The Reservation Info Is Right After Submit
@@ -264,7 +269,7 @@ User can make free single booking and check info from downloaded calendar file
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_FREE_UNIT}
     app_user.User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
-    app_user.User Fills The Reservation Info For Always Free Unit
+    app_user.User Fills The Reservation Info For Always Free Unit And Submits
     app_user.User Checks The Reservation Info Is Right Before Submit
     reservation_lownav.Click Submit Button Continue
     app_user.User Checks The Reservation Info Is Right After Submit

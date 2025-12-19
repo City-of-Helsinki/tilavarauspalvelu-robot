@@ -28,3 +28,13 @@ Select Home City
     Sleep    500ms    # Wait for animation
     custom_keywords.Find And Click Element With Text    li    ${homecity}
     Sleep    1.5s    # Wait for animation
+
+Check Application Cannot Be Made Without Info
+    [Documentation]    Checks for the error notification banner that appears when required
+    ...    fields are missing.
+    Wait For Elements State    [data-testid="reservation__button--continue"]    visible
+    Click    [data-testid="reservation__button--continue"]
+    Sleep    1s
+
+    # Check that error notification banner is displayed
+    Wait For Elements State    ${NOTIFICATION_TYPE_ERROR}    visible

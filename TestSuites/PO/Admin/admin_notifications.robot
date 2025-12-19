@@ -16,7 +16,7 @@ Admin Clicks Create Notification Button
 Admin Clicks Notification Name
     [Arguments]    ${notification_name}
     custom_keywords.Find And Click Element With Text    tbody >> a    ${notification_name}
-    Sleep    2s
+    Sleep    3s
     Wait For Load State    load    timeout=15s
 
 Admin Verifies Notification Is Not Found

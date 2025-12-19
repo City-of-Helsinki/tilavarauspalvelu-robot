@@ -23,6 +23,20 @@ This automatically installs Python, Robot Framework, and all dependencies!
 
 📖 **More info:** [Robocorp Quickstart Guide](https://sema4.ai/docs/automation/quickstart-guide)
 
+### Recommended: Install RobotFramework Language Server Extension
+
+For enhanced Robot Framework language support (autocomplete, syntax highlighting, go-to-definition), also install:
+
+1. Search for: **"Robot Framework Language Server"**
+2. Install the extension by **Robocorp**
+
+🔗 **Extension Links:**
+
+- [Cursor Marketplace](https://marketplace.cursorapi.com/items/?itemName=robocorp.robotframework-lsp)
+- [GitHub Repository](https://github.com/robocorp/robotframework-lsp)
+
+This extension provides intelligent code completion, keyword documentation, and debugging support for `.robot` files.
+
 ### Step 2: Open Project in IDE
 
 ```bash

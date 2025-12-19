@@ -145,6 +145,8 @@ When HAR recording is enabled in the workflow:
 
 If tests fail, follow this quick verification flow:
 
+**Example**: First run all tests to identify failures, then re-run only the specific failed suite (e.g., `Tests_user_desktop_FI.robot`) to verify if the failure is reproducible.
+
 1. **Re-run the failed test** - Run the same test again to verify the failure is reproducible
 2. **Check consistency** - Note if the test fails at the same phase with the same error message
 3. **Determine failure type**:

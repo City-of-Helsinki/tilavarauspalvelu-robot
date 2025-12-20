@@ -11,11 +11,12 @@ Admin Searches Reservation With Id Number And Clicks It From Name
     [Documentation]    This keyword types the reservation number and there should be only one match in the list
     [Arguments]    ${booking_number}    ${user_fullname}
     Wait For Elements State    id=search    visible
+    ...    message=Check we are on the page where admin can filter reservations
     Type Text    id=search    ${booking_number}
     Sleep    500ms
     Click    [type="submit"]
     Sleep    500ms
-    custom_keywords.Check Elements Text    [data-testid="pk-0"]    ${booking_number}
+    custom_keywords.Check Elements Text    [data-testid="pk-0"]    ${booking_number}    message=ERROR: Check from screenshot that the search worked and there is only one match in the list.
     custom_keywords.Find And Click Element With Text    [data-testid="reservee_name-0"] >> a    ${user_fullname}
     Sleep    500ms
     Wait For Load State    load    timeout=15s

@@ -63,11 +63,6 @@ User Click Change Time
     Sleep    1s    # Wait for animation
     Wait For Load State    load    timeout=15s
 
-User Click Reservation Calendar Toggle Button
-    Click    [data-testid="calendar-controls__toggle-button"]
-    Sleep    1s    # Wait for animation
-    Wait For Load State    load    timeout=15s
-
 ###
 # Reservations page
 ###

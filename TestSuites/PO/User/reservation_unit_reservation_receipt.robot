@@ -3,7 +3,6 @@ Resource    ../../Resources/serial_users.robot
 Resource    ../../Resources/texts_FI.robot
 Resource    ../../Resources/parallel_test_data.robot
 Library     Browser
-### TODO unify this checks to one single keyword
 
 
 *** Keywords ***

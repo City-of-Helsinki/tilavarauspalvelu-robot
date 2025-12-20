@@ -137,7 +137,33 @@ When HAR recording is enabled in the workflow:
 2. **Post-Test Analysis**: HAR analyzer runs automatically after tests complete
 3. **Results Integration**: Analysis summary appears in the workflow summary page
 
-## 🔧 Troubleshooting
+## Troubleshooting
+
+### Test Failure Screenshots
+
+Test failure screenshots will be captured in the last part of the test inside the teardown section.
+
+![Test Report Example - Failed Test Case](docs/images/test-report-failed-example.png)
+
+![Test Report Example - Screenshot captured in teardown](docs/images/test-report-failed-example-teardown.png)
+
+To get to the failed test details view, open `report.html`, click **All**, then select the **failed test** from the list.
+
+![Test Report Example - All view with failed test selected](docs/images/test-report-failed-all.png)
+
+If you need to see the test user and suite data, it's shown under **Initialize Test Data From Tags** in the test report. This step is executed during setup in `TestSuites/Resources/common_setups_teardowns.robot`:
+
+```robotframework
+# Complete Test Setup From Tags
+Initialize Suite Units From Tags
+Initialize Test Data From Tags
+```
+
+![Test Report Example - Initialize Test Data From Tags (user data)](docs/images/test-report-failed-test-data.png)
+
+If you need to check which device/browser settings were used, look under the test **Test Setup** step (e.g. `TestSuites/Tests_user_desktop_FI.robot` uses `User Opens Desktop Browser To Landing Page`). The device configuration is defined in `TestSuites/Resources/devices.robot`.
+
+![Test Report Example - Device settings in report](docs/images/test-report-failed-device-settings.png)
 
 ### Common Issues (All Execution Modes)
 

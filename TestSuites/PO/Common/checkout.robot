@@ -28,13 +28,11 @@ Click Accept Terms
     Click    css=#acceptTerms
 
 Check User Details In Checkout
-    # TODO - add more checks here
     custom_keywords.Find Text From Elements Or Fail
     ...    css=.customer-details-information >> td
     ...    ${CURRENT_USER_EMAIL}
 
 Check Product List Has All The Info
-    # TODO - add more checks here
     custom_keywords.Check Elements Text    css=.product-summary >> span.cart-total.padded
     ...    ${SINGLEBOOKING_PAID_PRICE_CHECKOUT}
 

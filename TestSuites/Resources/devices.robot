@@ -138,22 +138,15 @@ Set Up Chromium Desktop Browser And Open Url
     ...    --disable-background-timer-throttling    # Prevents throttling of timer tasks from background pages
     ...    --disable-renderer-backgrounding    # Prevents renderer process backgrounding
     ...    --disable-backgrounding-occluded-windows    # Disables backgrounding renders for occluded windows
-    ...    --password-store=basic    # Uses basic password storage backend (kwallet/kwallet5/kwallet6/gnome-libsecret/basic)
-    ...    --use-mock-keychain    # Uses mock keychain for testing
-    ...    --disable-component-extensions-with-background-pages    # Disables default component extensions with background pages
-    ...    --disable-default-apps    # Disables installation of default apps on first run
-    ...    --disable-extensions    # Disables all extensions
-    ...    --no-sandbox    # Disables sandbox for all process types (testing only)
-    ...    --disable-dev-shm-usage    # Workaround for small /dev/shm in VM environments
-    ...    --no-first-run    # Skips First Run tasks and dialogs
-    ...    --disable-sync    # Disables sync functionality
+    ...    --password-store=basic    # Uses basic password storage backend (CI/headless)
+    ...    --use-mock-keychain    # Uses mock keychain (CI/headless)
+    ...    --disable-component-extensions-with-background-pages    # Disables default component extensions
+    ...    --no-sandbox    # Required for Docker/CI environments
+    ...    --disable-dev-shm-usage    # Required for Docker with small /dev/shm
     ...    --disable-translate    # Disables translate functionality
-    ...    --disable-features=TranslateUI    # Disables Translate UI feature
     ...    --disable-popup-blocking    # Disables pop-up blocking
     ...    --disable-prompt-on-repost    # Disables prompt when navigating to POST result pages
     ...    --disable-hang-monitor    # Suppresses hang monitor dialogs in renderer processes
-    ...    --disable-blink-features=AutomationControlled    # Disables AutomationControlled blink feature
-    ...    --disable-web-security    # Disables same-origin policy (testing only)
 
     Log    🔧 Chrome Arguments: ${chrome_args}
     Log    🌍 Locale: ${LOCALE}
@@ -324,20 +317,15 @@ Set Up Android Pixel 5 And Open Url
     ...    --disable-background-timer-throttling    # Prevents throttling of timer tasks from background pages
     ...    --disable-renderer-backgrounding    # Prevents renderer process backgrounding
     ...    --disable-backgrounding-occluded-windows    # Disables backgrounding renders for occluded windows
-    ...    --password-store=basic    # Uses basic password storage backend (kwallet/kwallet5/kwallet6/gnome-libsecret/basic)
-    ...    --use-mock-keychain    # Uses mock keychain for testing
-    ...    --disable-component-extensions-with-background-pages    # Disables default component extensions with background pages
-    ...    --disable-default-apps    # Disables installation of default apps on first run
-    ...    --disable-extensions    # Disables all extensions
-    ...    --no-sandbox    # Disables sandbox for all process types (testing only)
-    ...    --disable-dev-shm-usage    # Workaround for small /dev/shm in VM environments
-    ...    --no-first-run    # Skips First Run tasks and dialogs
-    ...    --disable-sync    # Disables sync functionality
+    ...    --password-store=basic    # Uses basic password storage backend (CI/headless)
+    ...    --use-mock-keychain    # Uses mock keychain (CI/headless)
+    ...    --disable-component-extensions-with-background-pages    # Disables default component extensions
+    ...    --no-sandbox    # Required for Docker/CI environments
+    ...    --disable-dev-shm-usage    # Required for Docker with small /dev/shm
     ...    --disable-translate    # Disables translate functionality
-    ...    --disable-features=TranslateUI    # Disables Translate UI feature
     ...    --disable-popup-blocking    # Disables pop-up blocking
-    ...    --disable-web-security    # Disables same-origin policy (testing only)
-    ...    --disable-blink-features=AutomationControlled    # Disables AutomationControlled blink feature
+    ...    --disable-prompt-on-repost    # Disables prompt when navigating to POST result pages
+    ...    --disable-hang-monitor    # Suppresses hang monitor dialogs in renderer processes
 
     Log    🔧 Chrome Arguments: ${chrome_args}
     Log    📱 Device: Pixel 5
@@ -346,7 +334,7 @@ Set Up Android Pixel 5 And Open Url
 
     Log    🔄 Creating new Chromium browser...
     ${browserId}=    New Browser
-    ...    browser=Chromium
+    ...    browser=${BROWSER}
     ...    headless=true
     ...    args=@{chrome_args}
     ...    reuse_existing=False

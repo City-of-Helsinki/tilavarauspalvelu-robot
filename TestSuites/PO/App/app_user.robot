@@ -147,7 +147,8 @@ User Checks That Reservation Calendar Does Not Have Reserved Time Slot Available
 
 User Fills The Reservation Info For Always Free Unit And Submits
     # Checks that "jatka" button has been loaded
-    Wait For Elements State    [data-testid="reservation__button--continue"]    visible
+    Wait For Elements State    [data-testid="reservation__button--continue"]    visible    timeout=10s
+    ...    message=ERROR: Continue button not found on the booking details page. Check from screenshot that we are on the page where user information should be entered.
     #
     reservation_unit_reserver_info.Check Application Cannot Be Made Without Info
     reservation_unit_reserver_info.Enter First Name    ${CURRENT_USER_FIRST_NAME}
@@ -160,7 +161,9 @@ User Fills The Reservation Info For Always Free Unit And Submits
 
 User Fills The Reservation Info For Unit With Payment And Submits
     # Checks that "jatka" button has been loaded
-    Wait For Elements State    [data-testid="reservation__button--continue"]    visible
+    # Verify we are on the correct booking details page where user info can be given
+    Wait For Elements State    [data-testid="reservation__button--continue"]    visible    timeout=10s
+    ...    message=ERROR: Continue button not found on the booking details page. Check from screenshot that we are on the page where user information should be entered.
     #
     reservation_unit_booking_details.Type The Name Of The Booking    ${SINGLEBOOKING_NAME}
     reservation_unit_booking_details.Select The Purpose Of The Booking    ${PURPOSE_OF_THE_BOOKING}
@@ -180,7 +183,8 @@ User Fills Subvented Booking Details As Individual And Submits
     [Arguments]    ${justification_for_not_paying}
 
     # Checks that "jatka" button has been loaded
-    Wait For Elements State    [data-testid="reservation__button--continue"]    visible
+    Wait For Elements State    [data-testid="reservation__button--continue"]    visible    timeout=10s
+    ...    message=ERROR: Continue button not found on the booking details page. Check from screenshot that we are on the page where user information should be entered.
     #
     reservation_unit_booking_details.Type The Name Of The Booking    ${SINGLEBOOKING_NAME}
     reservation_unit_booking_details.Select The Purpose Of The Booking    ${PURPOSE_OF_THE_BOOKING}
@@ -201,7 +205,8 @@ User Fills Subvented Booking Details As Individual And Submits
 
 User Fills Noncancelable Booking Details As Individual And Submits
     # Checks that "jatka" button has been loaded
-    Wait For Elements State    [data-testid="reservation__button--continue"]    visible
+    Wait For Elements State    [data-testid="reservation__button--continue"]    visible    timeout=10s
+    ...    message=ERROR: Continue button not found on the booking details page. Check from screenshot that we are on the page where user information should be entered.
     #
     reservation_unit_booking_details.Select The Number Of Participants    ${SINGLEBOOKING_NUMBER_OF_PERSONS}
     reservation_unit_booking_details.Type The Description Of The Booking    ${SINGLEBOOKING_DESCRIPTION}
@@ -216,7 +221,8 @@ User Fills Noncancelable Booking Details As Individual And Submits
 
 User Fills Info For Unit That Is Always Handled As Individual And Submits
     # Checks that "jatka" button has been loaded
-    Wait For Elements State    [data-testid="reservation__button--continue"]    visible
+    Wait For Elements State    [data-testid="reservation__button--continue"]    visible    timeout=10s
+    ...    message=ERROR: Continue button not found on the booking details page. Check from screenshot that we are on the page where user information should be entered.
     #
     reservation_unit_booking_details.Type The Name Of The Booking    ${SINGLEBOOKING_NAME}
     reservation_unit_booking_details.Select The Purpose Of The Booking    ${PURPOSE_OF_THE_BOOKING}
@@ -233,7 +239,8 @@ User Fills Info For Unit That Is Always Handled As Individual And Submits
 
 User Fills Booking Details As Individual For Reservation With Access Code And Submits
     # Checks that "jatka" button has been loaded
-    Wait For Elements State    [data-testid="reservation__button--continue"]    visible
+    Wait For Elements State    [data-testid="reservation__button--continue"]    visible    timeout=10s
+    ...    message=ERROR: Continue button not found on the booking details page. Check from screenshot that we are on the page where user information should be entered.
     #
     reservation_unit_booking_details.Type The Name Of The Booking    ${SINGLEBOOKING_NAME}
     reservation_unit_booking_details.Select The Purpose Of The Booking    ${PURPOSE_OF_THE_BOOKING}
@@ -377,8 +384,7 @@ User Cancel Booking In Reservations And Checks It Got Cancelled
 User Modifies Booking And Verifies The Changes
     mybookings.User Click Change Time
     # This opens calendar controls
-    # TODO change this to reservation_calendar
-    mybookings.User Click Reservation Calendar Toggle Button
+    reservation_calendar.User Click Reservation Calendar Toggle Button
 
     reservation_calendar.Select Duration Calendar    ${QUICK_RESERVATION_DURATION}
 
@@ -797,26 +803,26 @@ User Checks That Reservation Unit Picture Is Loaded
     [Arguments]    ${unit_name}
     # Target the image by its alt text - this is the most reliable selector
     ${img_selector}=    Set Variable    img[alt*="${unit_name}"]
-    
+
     # Wait for the image element to be attached
     Wait For Elements State    ${img_selector} >> nth=0    attached    timeout=5s
     ...    message=Reservation unit picture for ${unit_name} is not present
-    
+
     # Verify the src attribute is present
     ${src}=    Get Attribute    ${img_selector} >> nth=0    src
     Should Not Be Empty    ${src}    msg=Image src attribute is empty
-    
+
     # Verify the image has actually loaded (not broken)
     # Check that image.complete is true, naturalWidth > 0, and naturalHeight > 0
     ${complete}=    Get Property    ${img_selector} >> nth=0    complete
     Should Be True    ${complete}    msg=Image is not fully loaded (complete property is false)
-    
+
     ${natural_width}=    Get Property    ${img_selector} >> nth=0    naturalWidth
     Should Be True    ${natural_width} > 0    msg=Image naturalWidth is 0 - image failed to load
-    
+
     ${natural_height}=    Get Property    ${img_selector} >> nth=0    naturalHeight
     Should Be True    ${natural_height} > 0    msg=Image naturalHeight is 0 - image failed to load
-    
+
     # Get and log the image dimensions for debugging
     ${width}=    Get Property    ${img_selector} >> nth=0    naturalWidth
     ${height}=    Get Property    ${img_selector} >> nth=0    naturalHeight

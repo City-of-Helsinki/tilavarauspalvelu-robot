@@ -179,6 +179,10 @@ After running tests, reports are generated in the `output` directory:
 - **To view the reports, open the `report.html` HTML file in your browser after test execution completes.**
 - **When the tests are run in GitHub Actions, the result is marked in the job summary.**
 
+### 🔧 Troubleshooting
+
+If you see failures, follow the troubleshooting guide: **[Troubleshooting](SETUP_GUIDE.md#troubleshooting)**
+
 ## 🔑 Environment File (.env) Location
 
 **⚠️ Important**: The `.env` file **must** be located at `TestSuites/Resources/.env` for proper functionality.

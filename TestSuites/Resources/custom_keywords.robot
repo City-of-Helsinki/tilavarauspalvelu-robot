@@ -549,6 +549,7 @@ Check Elements Text
     ...    ${strip_spaces}=True
     ...    ${ignore_case}=False
     ...    ${return_status}=False
+    ...    ${message}=${NONE}
 
     Sleep    1s
     Log    Element: ${Element}
@@ -560,17 +561,21 @@ Check Elements Text
     # Retrieve the text content of the element
     ${Elements_text}=    Get Text    ${Element}
 
+    # Determine the error message to use
+    ${default_msg}=    Set Variable    Element text does not match. Element: ${Element}
+    ${final_msg}=    Set Variable If    "${message}" != "${NONE}"    ${message}    ${default_msg}
+
     # Return status boolean for loops vs fail test for assertions
     IF    ${return_status}
         ${status}=    Run Keyword And Return Status
         ...    Should Be Equal    ${Elements_text}    ${Expected text}
         ...    strip_spaces=${strip_spaces}    ignore_case=${ignore_case}
-        ...    msg=Element text does not match expected text
+        ...    msg=${final_msg}
         RETURN    ${status}
     ELSE
         Should Be Equal    ${Elements_text}    ${Expected text}
         ...    strip_spaces=${strip_spaces}    ignore_case=${ignore_case}
-        ...    msg=Element text does not match. Element: ${Element}
+        ...    msg=${final_msg}
     END
 
 Check Element Contains Text

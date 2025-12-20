@@ -76,3 +76,8 @@ Get Current Date From Datepicker
 Click Continue Button
     Click    [data-testid="reservation__button--continue"]
     Sleep    1s
+
+User Click Reservation Calendar Toggle Button
+    Click    [data-testid="calendar-controls__toggle-button"]
+    Sleep    1s    # Wait for animation
+    Wait For Load State    load    timeout=15s

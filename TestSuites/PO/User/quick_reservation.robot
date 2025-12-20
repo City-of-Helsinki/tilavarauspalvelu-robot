@@ -52,10 +52,12 @@ User Clicks Submit Button In Quick Reservation
     ${button_count}=    Browser.Get Element Count    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
     Should Be Equal As Integers    ${button_count}    1
     ...    msg=Expected exactly 1 submit button inside quick-reservation, found ${button_count}. Button may have disappeared.
-    
+
     Wait For Elements State    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]    visible
     ...    message=Quick reservation submit button is not visible inside quick-reservation
     Click    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
+    Sleep    2s
+    Wait For Load State    load    timeout=15s
 
 Select Duration
     [Arguments]    ${duration}
@@ -83,10 +85,11 @@ Check The Quick Reservation Time
     Should Be Equal    ${time_of_quick_reservation_slot}    ${reservationtime}
 
 Check The Price Of Quick Reservation
+    [Documentation]    Verifies the price in quick reservation info card.
+    ...                Note: Price may not render immediately, causing mismatches like
+    ...                "40,00 €" vs "0 - 40,00 €". Sleep ensures price is fully rendered.
     [Arguments]    ${price_with_text}
-    # TODO Add more robust way to check the final price is loaded
-    # Otherwise can getHinta: 40,00 € (sis. alv 25,5%) != Hinta: 0 - 40,00 € (sis. alv 25,5%)
-    Sleep    3s    # this sleeps ensures the final price is loaded
+    Sleep    3s    # Wait for price to render - sometimes doesn't render immediately
     Wait For Load State    load    timeout=10s
     ${reservation_price}=    Get Text    [data-testid="reservation__reservation-info-card__price"]
     ${normalized_string}=    custom_keywords.Remove Non-breaking Space    ${reservation_price}

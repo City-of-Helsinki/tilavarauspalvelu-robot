@@ -42,6 +42,7 @@ Select The Free Slot From Quick Reservation
 
     # Click the randomly selected slot
     Click    ${all_free_quick_timeslots}[${random_index}]
+    Sleep    1.5s
 
     Store Test Data Variable    TIME_OF_QUICK_RESERVATION_FREE_SLOT    ${time_of_selected_slot}
     Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}

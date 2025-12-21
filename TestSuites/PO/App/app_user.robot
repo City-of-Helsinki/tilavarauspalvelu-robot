@@ -108,9 +108,6 @@ User Selects The Time With Quick Reservation And Sets Time Variables
     # This sets ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
     quick_reservation.Select The Free Slot From Quick Reservation
 
-    # Wait for load
-    Sleep    1.5s
-    Wait For Load State    load    timeout=50s
     Log    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}
 
     ${formatted_date}    ${formatted_date_minus_t}=    data_modification.Set Info Card Duration Time Info

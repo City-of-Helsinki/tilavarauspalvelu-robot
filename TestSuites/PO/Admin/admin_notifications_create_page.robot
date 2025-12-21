@@ -41,9 +41,9 @@ Admin Fills Notification Name
 Admin Selects Type Of Notification
     [Arguments]    ${notification_type}
     Click    css=[aria-label*="Ilmoituksen tyyppi."]
-    Sleep    500ms
+    Sleep    1.5s
     custom_keywords.Find And Click Element With Text    form >> li >> span    ${notification_type}
-    Sleep    500ms
+    Sleep    1.5s
 
 # Admin selects type of notification warning
     #    Click    css=[aria-label*="Ilmoituksen tyyppi."]
@@ -63,9 +63,9 @@ Admin Selects Type Of Notification
 
 Admin Selects Target Group All
     Click    css=[aria-label*="Kohderyhmä."]
-    Sleep    1s
+    Sleep    1.5s
     custom_keywords.Find And Click Element With Text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_ALL}
-    Sleep    1s
+    Sleep    1.5s
 
 Admin Selects Target Group Admin
     Click    css=[aria-label*="Kohderyhmä."]
@@ -75,9 +75,9 @@ Admin Selects Target Group Admin
 
 Admin Selects Target Group User
     Click    css=[aria-label*="Kohderyhmä."]
-    Sleep    1s
+    Sleep    1.5s
     custom_keywords.Find And Click Element With Text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_USER}
-    Sleep    1s
+    Sleep    1.5s
 
 #
 
@@ -108,6 +108,8 @@ Admin Publishes Notification
     Click    [data-testid="Notification__Page--publish-button"]
     Sleep    3s
     Wait For Load State    load    timeout=15s
+    # Check that publish worked, we should not see this button after clicking it
+    Wait For Elements State    [data-testid="Notification__Page--publish-button"]    hidden    timeout=5s    message=Publish button is still visible after clicking - notification publish may have failed
 
 Admin Drafts Notification
     Click    [data-testid="Notification__Page--save-draft-button"]

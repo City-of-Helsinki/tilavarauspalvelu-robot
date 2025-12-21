@@ -332,9 +332,9 @@ Admin Rejects Reservation And Checks The Status
     Wait For Load State    load    timeout=15s
     admin_reservations.Admin Checks Reservation Status    ${MYBOOKINGS_STATUS_REJECTED}
 
-Admin Makes Reservation For Behalf
+Admin Makes Reservation For Behalf And Clicks Submit
     Log
-    ...    This sets variables for MODIFIED_HOUR_STARTTIME_SUBVEBTED_RESERVATION, MODIFIED_HOUR_ENDTIME_SUBVEBTED_RESERVATION, MODIFIED_DATE_SUBVEBTED_RESERVATION and MODIFIED_STARTTIME_SUBVEBTED_RESERVATION
+    ...    This sets variables for MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION, MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION, MODIFIED_DATE_SUBVENTED_RESERVATION and MODIFIED_STARTTIME_SUBVENTED_RESERVATION
 
     # Call the keyword and capture the returned values
     ${date_plus_x_days}    ${start_hour}    ${end_hour}=    data_modification.Get Modified Date And Time
@@ -351,10 +351,11 @@ Admin Makes Reservation For Behalf
     admin_reservations.Admin Fills Reservation Details Behalf    # this keyword generates the info for checking calendar content
     admin_reservations.Admin Clicks Button In Reservation Page
     ...    [data-testid="CreateReservationModal__accept-reservation"]
-    Sleep    500ms
+    Sleep    1s
     Wait For Load State    load    timeout=15s
+    admin_reservations.Admin Verifies Reservation Modal Is Closed
 
-Admin Makes Reservation For Closed
+Admin Makes Reservation For Closed And Clicks Submit
     # Call the keyword and capture the returned values
     ${date_plus_x_days}    ${start_hour}    ${end_hour}=    data_modification.Get Modified Date And Time
 
@@ -369,10 +370,11 @@ Admin Makes Reservation For Closed
     ...    ${UNAVAILABLE_RESERVATION_DATE}
     admin_reservations.Admin Clicks Button In Reservation Page
     ...    [data-testid="CreateReservationModal__accept-reservation"]
-    Sleep    500ms
+    Sleep    1s
     Wait For Load State    load    timeout=15s
+    admin_reservations.Admin Verifies Reservation Modal Is Closed
 
-Admin Makes Reservation For Staff
+Admin Makes Reservation For Staff And Clicks Submit
     # Call the keyword and capture the returned values
     ${date_plus_x_days}    ${start_hour}    ${end_hour}=    data_modification.Get Modified Date And Time
 
@@ -387,10 +389,11 @@ Admin Makes Reservation For Staff
     ...    ${UNAVAILABLE_RESERVATION_DATE}
     admin_reservations.Admin Clicks Button In Reservation Page
     ...    [data-testid="CreateReservationModal__accept-reservation"]
-    Sleep    500ms
+    Sleep    1s
     Wait For Load State    load    timeout=15s
+    admin_reservations.Admin Verifies Reservation Modal Is Closed
 
-Admin Attempts To Make An Unavailable Reservation
+Admin Attempts To Make An Unavailable Reservation And Clicks Cancel
     admin_reservations.Admin Enters Reservation Time And Type Of Reservation
     ...    [for="BEHALF"]
     ...    ${UNAVAILABLE_RESERVATION_HOUR_STARTTIME}
@@ -403,8 +406,9 @@ Admin Attempts To Make An Unavailable Reservation
     ...    [data-testid="CreateReservationModal__collision-warning"] >> [class*="Notification-module_body__"]
     ...    ${RESERVATION_TIME_NOT_FREE}
     Click    data-testid=CreateReservationModal__cancel-reservation
-    Sleep    500ms
+    Sleep    1s
     Wait For Load State    load    timeout=15s
+    admin_reservations.Admin Verifies Reservation Modal Is Closed
 
 ###
 # Notifications

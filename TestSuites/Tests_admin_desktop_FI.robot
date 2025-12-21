@@ -28,17 +28,17 @@ Admin verifies all reservation types and verifies no unavailable reservations ex
     app_admin.Admin Navigates To Own Units And Selects Unit Group    ${UNIT_LOCATION}
     app_admin.Admin Opens Make Reservation Modal And Selects Unit    ${CURRENT_UNAVAILABLE_UNIT}
 
-    app_admin.Admin Makes Reservation For Behalf
+    app_admin.Admin Makes Reservation For Behalf And Clicks Submit
     app_admin.Admin Opens Make Reservation Modal And Selects Unit    ${CURRENT_UNAVAILABLE_UNIT}
-    app_admin.Admin Attempts To Make An Unavailable Reservation
+    app_admin.Admin Attempts To Make An Unavailable Reservation And Clicks Cancel
     app_admin.Admin Opens Make Reservation Modal And Selects Unit    ${CURRENT_UNAVAILABLE_UNIT}
-    app_admin.Admin Makes Reservation For Closed
+    app_admin.Admin Makes Reservation For Closed And Clicks Submit
     app_admin.Admin Opens Make Reservation Modal And Selects Unit    ${CURRENT_UNAVAILABLE_UNIT}
-    app_admin.Admin Attempts To Make An Unavailable Reservation
+    app_admin.Admin Attempts To Make An Unavailable Reservation And Clicks Cancel
     app_admin.Admin Opens Make Reservation Modal And Selects Unit    ${CURRENT_UNAVAILABLE_UNIT}
-    app_admin.Admin Makes Reservation For Staff
+    app_admin.Admin Makes Reservation For Staff And Clicks Submit
     app_admin.Admin Opens Make Reservation Modal And Selects Unit    ${CURRENT_UNAVAILABLE_UNIT}
-    app_admin.Admin Attempts To Make An Unavailable Reservation
+    app_admin.Admin Attempts To Make An Unavailable Reservation And Clicks Cancel
 
 Admin checks permissions
     [Tags]    admin-test-data-set-2    admin-suite    general-permissions-test

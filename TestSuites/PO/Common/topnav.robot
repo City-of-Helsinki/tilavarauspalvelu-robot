@@ -57,7 +57,7 @@ Navigate To Single Booking Page
 Navigate To My Bookings
     Click    header >> [href="/reservations"]:text-is("${MYBOOKINGS_FI}")
     # wait for load
-    Sleep    2s
+    Sleep    3s
     Wait For Load State    load    timeout=15s
 
     # Confirms page is loaded

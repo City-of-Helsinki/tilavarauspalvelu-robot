@@ -174,6 +174,7 @@ If tests fail, follow this quick verification flow:
 **Example**: First run all tests to identify failures, then re-run only the specific failed suite (e.g., `Tests_user_desktop_FI.robot`) to verify if the failure is reproducible.
 
 1. **Re-run the failed test** - Run the same test again to verify the failure is reproducible
+   - If you see a lot of errors/timeouts in the run, it can help to re-run in **single/sequential mode** (no Pabot / no parallel) to reduce **host performance/resource pressure** (CPU/RAM/IO contention) that can affect timing/stability.
 2. **Check consistency** - Note if the test fails at the same phase with the same error message
 3. **Determine failure type**:
    - **Consistent failure** (same error, same phase): Could be one of the following → Continue with troubleshooting below
@@ -182,8 +183,11 @@ If tests fail, follow this quick verification flow:
      - **Network problem** - Connection issues, timeouts, DNS resolution failures, firewall blocking requests, or backend service unavailable
    - **Intermittent failure** (passes sometimes): Likely a timing or race condition → Check parallel execution settings and network stability
 
-**Email Tests Failing**:
+**Random 503 (Service Unavailable) Errors**:
 
+- If failures include a random **HTTP 503 (Service Unavailable)**, it’s often transient (backend temporarily overloaded/unavailable). Re-run once and check environment/service health before spending time debugging the test itself.
+
+**Email Tests Failing**:
 - Verify the backend email cache endpoint is available at `${TEST_BASE_URL}/v1/robot_email_cache/`
 - Check that `ROBOT_EMAIL_ADDRESSES` is configured in Django settings so that the test environment captures emails for the address used in the robot tests
 

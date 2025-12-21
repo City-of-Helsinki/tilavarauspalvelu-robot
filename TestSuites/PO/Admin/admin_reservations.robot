@@ -13,21 +13,22 @@ Admin Searches Reservation With Id Number And Clicks It From Name
     Wait For Elements State    id=search    visible
     ...    message=Check we are on the page where admin can filter reservations
     Type Text    id=search    ${booking_number}
-    Sleep    500ms
+    Sleep    1s
     Click    [type="submit"]
-    Sleep    500ms
+    Sleep    4s    # wait for the search results to load
     custom_keywords.Check Elements Text    [data-testid="pk-0"]    ${booking_number}    message=ERROR: Check from screenshot that the search worked and there is only one match in the list.
     custom_keywords.Find And Click Element With Text    [data-testid="reservee_name-0"] >> a    ${user_fullname}
-    Sleep    500ms
+    Sleep    2s
     Wait For Load State    load    timeout=15s
 
 Admin Searches Reservation With Id Number And Checks The Status
     [Arguments]    ${booking_number}    ${reservation_status}
-    Type Text    id=search    ${booking_number}
+    Wait For Elements State    id=search    visible
+    ...    message=Check we are on the page where admin can filter reservations
     Sleep    1s
     Click    [type="submit"]
-    Sleep    500ms
-    custom_keywords.Check Elements Text    [data-testid="pk-0"]    ${booking_number}
+    Sleep    4s    # wait for the search results to load
+    custom_keywords.Check Elements Text    [data-testid="pk-0"]    ${booking_number}    message=ERROR: Check from screenshot that the search worked and there is only one match in the list.
     custom_keywords.Check Elements Text    [data-testid="state-0"]    ${reservation_status}
     Sleep    2s
 
@@ -188,7 +189,7 @@ Admin Saves Reservation Number
 Admin Clicks Button In Reservation Page
     [Arguments]    ${button_data_id}
     Click    ${button_data_id}
-    Sleep    500ms
+    Sleep    1s
     Wait For Load State    load    timeout=15s
 
 Admin Selects Reservation Unit
@@ -204,7 +205,7 @@ Admin Selects Reservation Unit
 Admin Open Access Code Modal
     Click    id=reservation__access-type
     # Wait for the modal to open
-    Sleep    500ms
+    Sleep    1s
 
 Admin Changes Access Code
     Click    [data-testid="AccessCodeChangeRepairButton--open-dialog"]
@@ -286,6 +287,14 @@ Admin Closes Dialog Modal
     # waiting for the dialog to close
     Sleep    1s
 
+Admin Verifies Reservation Modal Is Closed
+    [Documentation]    Fails if the reservation modal stays open after submit/cancel.
+    Wait For Elements State
+    ...    id=info-dialog
+    ...    hidden
+    ...    timeout=5s
+    ...    message=Reservation modal did not close correctly: id=info-dialog is still visible
+
 ###
 # Reservation calendar
 ###
@@ -316,16 +325,12 @@ Admin Opens Calendar And Changes Reservation Time
     # Changes the reservation time with date and hours and minutes
     Log    This test uses 00 for minutes. So all the changed times will be 10:00–11:00 -> 15:00–17:00 etc
 
-    # Type Text    id=ReservationDialog.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
     Type Text    id=TimeInput.startTime-hours    ${MODIFIED_HOUR_STARTTIME_SUBVENTED_RESERVATION}
     Sleep    500ms
-    # Type Text    id=ReservationDialog.startTime-minutes    00
     Type Text    id=TimeInput.startTime-minutes    00
     Sleep    500ms
-    # Type Text    id=ReservationDialog.endTime-hours    ${MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION}
     Type Text    id=TimeInput.endTime-hours    ${MODIFIED_HOUR_ENDTIME_SUBVENTED_RESERVATION}
     Sleep    500ms
-    # Type Text    id=ReservationDialog.endTime-minutes    00
     Type Text    id=TimeInput.endTime-minutes    00
     Sleep    500ms
     Type Text    id=controlled-date-input__date    ${MODIFIED_DATE_SUBVENTED_RESERVATION}
@@ -335,7 +340,7 @@ Admin Opens Calendar And Changes Reservation Time
     #
     Focus    button[type="submit"]
     Click    button[type="submit"]
-    Sleep    1s
+    Sleep    2s
     Wait For Load State    load    timeout=15s
 
 # Not currently in use

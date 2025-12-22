@@ -124,7 +124,6 @@ User Selects The Time With Quick Reservation And Sets Time Variables
 
 User Checks That Quick Reservation Does Not Have Reserved Time
     [Arguments]    ${reservationtime}
-    Wait For Load State    load    timeout=15s
     Log    ${reservationtime}
     quick_reservation.Verify Time Slot Not Available    ${reservationtime}
 
@@ -435,7 +434,7 @@ User Can See Upcoming Booking In List And Clicks It
     mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname}
     ...    ${reservationtime}
-    Sleep    1s
+    Sleep    3s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 User Can See Upcoming Noncancelable Booking In List And Clicks It

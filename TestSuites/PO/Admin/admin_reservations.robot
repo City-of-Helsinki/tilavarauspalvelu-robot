@@ -18,7 +18,7 @@ Admin Searches Reservation With Id Number And Clicks It From Name
     Sleep    4s    # wait for the search results to load
     custom_keywords.Check Elements Text    [data-testid="pk-0"]    ${booking_number}    message=ERROR: Check from screenshot that the search worked and there is only one match in the list.
     custom_keywords.Find And Click Element With Text    [data-testid="reservee_name-0"] >> a    ${user_fullname}
-    Sleep    2s
+    Sleep    5s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 Admin Searches Reservation With Id Number And Checks The Status
@@ -196,11 +196,9 @@ Admin Selects Reservation Unit
     [Arguments]    ${by_unit}
     Wait For Elements State    id=reservation-unit-toggle-button    visible
     Click    id=reservation-unit-toggle-button
-    Sleep    1s
-    Wait For Load State    load    timeout=15s
+    Sleep    1.5s
     custom_keywords.Find And Click Element With Text    id=reservation-unit-menu >> li    ${by_unit}
-    Sleep    500ms
-    Wait For Load State    load    timeout=15s
+    Sleep    1s
 
 Admin Open Access Code Modal
     Click    id=reservation__access-type
@@ -276,6 +274,7 @@ Admin Enters Reservation Time And Type Of Reservation
     Sleep    500ms
 
     Click    ${type_of_reservation}
+    Sleep    1s
 
 Admin Clicks Confirm Access Code Button
     Click    [data-testid="AccessCodeChangeRepairButton__ConfirmationDialog--accept"]
@@ -304,14 +303,12 @@ Admin Opens Calendar And Changes Reservation Time
     ...    It uses the keyword 'Admin enters reservation time and type of reservation' to set the new time.
 
     Click    id=reservation__calendar-heading
-    Sleep    500ms
+    Sleep    1s
     custom_keywords.Find And Click Element With Text
     ...    id=reservation__calendar-content >> button
     ...    ${CALENDAR_CHANGE_TIME_FI}
 
-    Sleep    500ms
-    Wait For Load State    load    timeout=15s
-
+    Sleep    1s
     # Call the keyword and capture the returned values
     ${date_plus_x_days}    ${start_hour}    ${end_hour}=    data_modification.Get Modified Date And Time
 
@@ -340,7 +337,7 @@ Admin Opens Calendar And Changes Reservation Time
     #
     Focus    button[type="submit"]
     Click    button[type="submit"]
-    Sleep    2s
+    Sleep    4s
     Wait For Load State    load    timeout=15s
 
 # Not currently in use

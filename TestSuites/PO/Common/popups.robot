@@ -65,5 +65,5 @@ Close Notification Banner If Visible
 
 Reload Page
     Reload
-    Sleep    500ms
+    Sleep    2s    # wait for the page to load
     Wait For Load State    networkidle    timeout=30s

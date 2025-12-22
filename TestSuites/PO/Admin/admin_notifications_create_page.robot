@@ -86,8 +86,7 @@ Admin Selects Target Group User
 Admin Clicks Notification Text Fi Container
     #
     Click    [data-testid="Notification__Page--message-fi-input"]
-    Sleep    500ms
-    Wait For Load State    load    timeout=15s
+    Sleep    1s
 
 Admin Fills Notification Text Fi
     [Arguments]    ${text_fi}

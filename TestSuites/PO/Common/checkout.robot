@@ -82,6 +82,7 @@ Interrupted Checkout
     Allow All Cookies If Visible
     Sleep    1s
     Go To    ${input_URL}
+    Sleep    2s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 Check The Info In Checkout With Auth Validation

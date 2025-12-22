@@ -9,7 +9,7 @@ Admin Searches Own Unit And Clicks It
     Sleep    1s
     Wait For Elements State    id=search    visible
     Type Text    id=search    ${units_location}
-    Sleep    2s    # Wait for the search results to load
+    Sleep    3s    # Wait for the search results to load
     custom_keywords.Find And Click Element With Text    td >> a    ${units_location}
     Sleep    3s    # long wait for spinner
     Wait For Load State    load    timeout=15s

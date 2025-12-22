@@ -16,5 +16,5 @@ User Clicks The Specific Terms Of Use Checkbox
 
 User Clicks The Submit Button
     Click    id=button__application--submit
-    Sleep    1s
+    Sleep    3s    # wait for the page to load
     Wait For Load State    load    timeout=10s

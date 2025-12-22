@@ -140,6 +140,7 @@ Admin Opens Desktop Browser To Landing Page
 
 Admin Goes To Landing Page
     Go To    ${URL_ADMIN}
+    Sleep    2s    # wait for the page to load
     Wait For Load State    load    timeout=15s
     admin_landingpage.Checks The Admin Landing Page H1    ${ADMIN_LANDING_PAGE_H1_TEXT_NOT_LOGGED_IN}
 
@@ -182,6 +183,7 @@ Admin Opens Desktop Browser To Django Admin
 Admin Navigates To Django Admin
     # Default is chrome
     Go To    ${URL_DJANGO_ADMIN}
+    Sleep    2s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 ###
@@ -243,7 +245,7 @@ Open Django Admin In Firefox And App Admin In Chromium
 
 Reload Page
     Reload
-    Sleep    1s
+    Sleep    3s
     Wait For Load State    networkidle    timeout=30s
 
 ###

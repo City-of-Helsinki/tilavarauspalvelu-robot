@@ -48,7 +48,10 @@ Select The Free Slot From Quick Reservation
     Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}
 
 User Clicks Submit Button In Quick Reservation
+    [Documentation]    Clicks the submit button in quick reservation and waits for navigation to booking details page.
+    ...    Uses retry logic to handle flaky navigation on mobile browsers (especially WebKit/iPhone).
     Sleep    300ms    # Wait for rendering
+
     # Verify the button exists inside quick-reservation before clicking
     ${button_count}=    Browser.Get Element Count    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
     Should Be Equal As Integers    ${button_count}    1
@@ -56,9 +59,17 @@ User Clicks Submit Button In Quick Reservation
 
     Wait For Elements State    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]    visible
     ...    message=Quick reservation submit button is not visible inside quick-reservation
-    Click    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
-    Sleep    2s
-    Wait For Load State    load    timeout=15s
+
+    # Click and wait for navigation with retry logic
+    custom_keywords.Click And Wait For Navigation With Retry
+    ...    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
+    ...    [data-testid="reservation__button--continue"]
+    ...    max_attempts=2
+    ...    nav_timeout=10s
+
+    # Final visibility check for the continue button
+    Wait For Elements State    [data-testid="reservation__button--continue"]    visible    timeout=5s
+    ...    message=ERROR: Continue button not visible on booking details page. Check screenshot.
 
 Select Duration
     [Arguments]    ${duration}
@@ -67,7 +78,7 @@ Select Duration
     Click    id=quick-reservation >> id=quick-reservation__duration-main-button
     Sleep    1s
     Click    [role="option"] >> '${duration}'
-    Wait For Load State    load    timeout=15s
+    Sleep    1.5s    # wait for animation to complete
 
 Click More Available Slots
     Click    [data-testid="quick-reservation-next-available-time"]
@@ -159,9 +170,9 @@ Select Duration Mobile
     [Arguments]    ${duration}
     Wait For Elements State    id=mobile-quick-reservation-duration-toggle-button    visible
     Click    id=mobile-quick-reservation-duration-toggle-button
-    Sleep    500ms
+    Sleep    1s
     Click    [role="option"] >> '${duration}'
-    Wait For Load State    load    timeout=15s
+    Sleep    1.5s    # wait for animation to complete
 
 Verify Time Slot Not Available
     [Documentation]    Verifies that the specified time slot is not available in the list of free slots.

@@ -48,7 +48,7 @@ Click And Store Free Reservation Time
     END
 
     # Wait for animation
-    Sleep    1s
+    Sleep    2s
     Wait For Load State    domcontentloaded    timeout=15s
 
 Changing Time Again

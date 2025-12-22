@@ -23,12 +23,14 @@ Click Logout
     Sleep    1s
     Wait For Elements State    css=[aria-label="Kirjaudu ulos"]    stable
     Click    css=[aria-label="Kirjaudu ulos"]
+    Sleep    2s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 Click Logout Admin Side
     Sleep    1s
     Wait For Elements State    css=[aria-label="signout"]    visible
     Click    css=[aria-label="signout"]
+    Sleep    2s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 Click User Menu
@@ -65,12 +67,12 @@ Navigate To My Bookings
 
 Navigate To Recurring Booking Page
     Click    header >> [href="/recurring"]:text-is("${RECURRING_BOOKINGS_FI}")
-    Sleep    200ms
+    Sleep    3s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 Navigate To My Applications
     Click    header >> [href="/applications"]:text-is("${MYAPPLICATIONS_FI}")
-    Sleep    200ms
+    Sleep    3s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 ###
@@ -80,27 +82,28 @@ Navigate To My Applications
 Click Navigation Menu Mobile
     Wait For Elements State    id=Menu    visible
     Click    id=Menu
-    Sleep    1s
+    Sleep    1s    # wait for animation to complete
 
 Click User Menu Mobile
     Click    id=user-menu
-    Sleep    1s
+    Sleep    1s    # wait for animation to complete
 
 Click Login Mobile
     Wait For Elements State    id=login    visible
     Click    id=login
+    Sleep    2s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 Click Logout Mobile
     Wait For Elements State    css=[aria-label="Kirjaudu ulos"]    visible
     Click    css=[aria-label="Kirjaudu ulos"]
+    Sleep    2s    # wait for the page to load
     Wait For Load State    load    timeout=15s
 
 Click Tablist Scroll Button To Right Mobile
     Wait For Elements State    [class*=Tabs-module_scrollButton__]    visible
     Click    [class*=Tabs-module_scrollButton__] >> [aria-label="angle-right"]
-    Wait For Load State    load    timeout=15s
-
+    Sleep    1.5s    # wait for the animation to complete
 # Check menu has user info mobile
     # DEVNOTE - Waiting for fixes for the test environment from another team
     # this step will be enabled when the test environment is fixed

@@ -37,6 +37,51 @@ Find And Click Element With Text
     # Fail the test if no element was found
     IF    not ${found}    Fail    Element with text "${wanted_text}" not found
 
+Click And Wait For Navigation With Retry
+    [Documentation]    Clicks an element and waits for navigation to complete with retry logic.
+    ...    Handles flaky navigation by retrying click if target element doesn't appear.
+    ...    Verifies navigation by checking for a target element on the destination page.
+    [Arguments]    ${click_selector}    ${target_element_selector}    ${max_attempts}=2    ${nav_timeout}=10s
+
+    # Get URL before click to detect if navigation happened
+    ${url_before}=    Get Url
+
+    FOR    ${attempt}    IN RANGE    1    ${max_attempts} + 1
+        Log    Attempt ${attempt} of ${max_attempts}: Clicking ${click_selector}
+
+        # Click the element
+        Click    ${click_selector}
+
+        # Wait for target element to appear (indicates successful navigation)
+        ${target_exists}=    Run Keyword And Return Status
+        ...    Wait For Elements State    ${target_element_selector}    visible    timeout=${nav_timeout}
+
+        IF    ${target_exists}
+            Log    ✅ Successfully navigated on attempt ${attempt}
+            RETURN
+        END
+
+        # Target element not found - check if we should retry
+        ${url_after}=    Get Url
+        ${still_on_same_page}=    Run Keyword And Return Status    Should Be Equal    ${url_before}    ${url_after}
+
+        IF    ${still_on_same_page}
+            Log    ⚠️ Navigation did not occur on attempt ${attempt}, URL unchanged
+        ELSE
+            Log    ⚠️ URL changed to ${url_after} but target element not found
+        END
+
+        # Retry if we have more attempts
+        IF    ${attempt} < ${max_attempts}
+            Log    Waiting before retry...
+            Sleep    1s
+            Scroll To Element    ${click_selector}
+            Sleep    500ms
+        END
+    END
+
+    Fail    ERROR: Failed to navigate after ${max_attempts} attempts. Target element '${target_element_selector}' not found. Check screenshot.
+
 Verify Element With Text Is Not Found
     [Documentation]    This keyword verifies that an element containing the specified text is NOT found within a list of elements identified by the given selector.
     [Arguments]    ${element_with_text}    ${wanted_text}

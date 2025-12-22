@@ -17,7 +17,7 @@ Check My Bookings H1
 User Cancel Booking
     Wait For Elements State    data-testid=reservation-detail__button--cancel    visible
     Click    data-testid=reservation-detail__button--cancel
-    Sleep    1s
+    Sleep    2s
     Wait For Load State    load    timeout=15s
 
 Click Reason For Cancellation

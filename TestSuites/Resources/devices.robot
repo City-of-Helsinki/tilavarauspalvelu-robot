@@ -45,6 +45,7 @@ Gate First Navigation With PabotLib
     IF    "${done2}" != "true"
         Log    🌐 Gated first navigation by this worker
         Go To    ${input_URL}
+        Sleep    1s    # wait for the page to load
         Wait For Load State    networkidle    timeout=45s
         ${post_nav_sleep}=    Evaluate    random.uniform(0.6, 0.9)    random
         Sleep    ${post_nav_sleep}s
@@ -185,6 +186,7 @@ Set Up Chromium Desktop Browser And Open Url
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
         Go To    ${input_URL}
+        Sleep    1s    # wait for the page to load
         Wait For Load State    load    timeout=30s
     END
 
@@ -238,6 +240,7 @@ Set Up Firefox Desktop Browser And Open Url
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
         Go To    ${input_URL}
+        Sleep    1s    # wait for the page to load
         Wait For Load State    load    timeout=30s
     END
     Log    ✅ Page loaded successfully
@@ -291,6 +294,7 @@ Set Up Iphone 14 And Open Url
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
         Go To    ${input_URL}
+        Sleep    1s    # wait for the page to load
         Wait For Load State    load    timeout=30s
     END
 
@@ -361,6 +365,7 @@ Set Up Android Pixel 5 And Open Url
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
         Go To    ${input_URL}
+        Sleep    1s    # wait for the page to load
         Wait For Load State    load    timeout=30s
     END
 

@@ -10,7 +10,7 @@ Library     Browser
 Admin Clicks Create Notification Button
     Sleep    1.5s
     Click    [href="/kasittely/notifications/new"]
-    Sleep    1.5s
+    Sleep    3s
     Wait For Load State    load    timeout=15s
 
 Admin Clicks Notification Name

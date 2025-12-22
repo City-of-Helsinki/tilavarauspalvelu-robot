@@ -50,7 +50,7 @@ Select The Free Slot From Quick Reservation
 User Clicks Submit Button In Quick Reservation
     [Documentation]    Clicks the submit button in quick reservation and waits for navigation to booking details page.
     ...    Uses retry logic to handle flaky navigation on mobile browsers (especially WebKit/iPhone).
-    Sleep    300ms    # Wait for rendering
+    Sleep    1.5s    # Wait for rendering
 
     # Verify the button exists inside quick-reservation before clicking
     ${button_count}=    Browser.Get Element Count    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
@@ -154,6 +154,10 @@ Confirms Date Picker Opens From Quick Reservation
 
     # Confirms the select button exists and closes the datepicker dialog window
     Click    id=quick-reservation >> [data-testid="selectButton"]
+    Sleep    1s
+
+    # Verify the datepicker dialog is closed
+    Wait For Elements State    id=hds-date-picker >> [data-testid="selectButton"]    hidden    timeout=5s
 
 Get The Value From Date Input
     [Documentation]    Gets the current date value from the quick reservation date input field

@@ -54,6 +54,7 @@ Click And Wait For Navigation With Retry
         Wait For Elements State    ${click_selector}    stable    timeout=5s
 
         # Click the element
+        Focus    ${click_selector}
         Click    ${click_selector}
         Sleep    3s    # wait for the page to load
 

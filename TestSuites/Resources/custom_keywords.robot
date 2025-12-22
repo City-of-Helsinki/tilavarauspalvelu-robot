@@ -49,8 +49,13 @@ Click And Wait For Navigation With Retry
     FOR    ${attempt}    IN RANGE    1    ${max_attempts} + 1
         Log    Attempt ${attempt} of ${max_attempts}: Clicking ${click_selector}
 
+        # Ensure element is in view and stable before clicking
+        Scroll To Element    ${click_selector}
+        Wait For Elements State    ${click_selector}    stable    timeout=5s
+
         # Click the element
         Click    ${click_selector}
+        Sleep    3s    # wait for the page to load
 
         # Wait for target element to appear (indicates successful navigation)
         ${target_exists}=    Run Keyword And Return Status
@@ -74,9 +79,7 @@ Click And Wait For Navigation With Retry
         # Retry if we have more attempts
         IF    ${attempt} < ${max_attempts}
             Log    Waiting before retry...
-            Sleep    1s
-            Scroll To Element    ${click_selector}
-            Sleep    500ms
+            Sleep    2s
         END
     END
 

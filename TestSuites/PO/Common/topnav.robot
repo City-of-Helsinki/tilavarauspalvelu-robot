@@ -53,7 +53,7 @@ Check Dropdown Menu Has User Info
 
 Navigate To Single Booking Page
     Click    header >> [href="/search"]:text-is("${SINGLEBOOKING_FI}")
-    Sleep    1s
+    Sleep    3s
     Wait For Load State    load    timeout=15s
 
 Navigate To My Bookings
@@ -123,7 +123,10 @@ Click Tablist Scroll Button To Right Mobile
 
 Navigate To Single Booking Page Mobile
     Click    id=Menu
-    Navigate To Single Booking Page
+    Sleep    1s    # wait for animation to complete
+    Click    header >> [href="/search"]:text-is("${SINGLEBOOKING_FI}")
+    Sleep    3s
+    Wait For Load State    load    timeout=15s
 
 Navigate To My Bookings Mobile
     Click Navigation Menu Mobile

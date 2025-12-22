@@ -39,8 +39,9 @@ Select The Free Slot From Quick Reservation
     # Get the time of the randomly selected slot
     ${time_of_selected_slot}=    Get Text    ${all_free_quick_timeslots}[${random_index}]
     Log    Selected slot time: ${time_of_selected_slot}
-
+    Sleep    1s
     # Click the randomly selected slot
+    Focus    ${all_free_quick_timeslots}[${random_index}]
     Click    ${all_free_quick_timeslots}[${random_index}]
     Sleep    1.5s
 

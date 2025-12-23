@@ -39,7 +39,6 @@ User Navigates To My Bookings
 
 User Navigates To Recurring Booking Page
     topnav.Navigate To Recurring Booking Page
-    Wait For Load State    load    timeout=15s
 
 ###
 
@@ -81,16 +80,14 @@ User Uses Search To Find Right Unit
     singlebooking.Search Units By Name    ${nameoftheunit}
 
     # Waiting results to load
-    Sleep    2s
-    Wait For Load State    load    timeout=10s
+    Sleep    4s
 
     custom_keywords.Find And Click Element With Text
     ...    [data-testid="list-with-pagination__list--container"] >> [data-testid="card__heading"]
     ...    ${nameoftheunit}
 
     # Waiting results to load
-    Sleep    2s
-    Wait For Load State    load    timeout=10s
+    Sleep    4s
 
 User Selects The Time With Quick Reservation And Sets Time Variables
     [Documentation]    here is keyword --> data_modification.Set info card duration time info
@@ -434,8 +431,7 @@ User Can See Upcoming Booking In List And Clicks It
     mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname}
     ...    ${reservationtime}
-    Sleep    3s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    5s    # wait for the page to load
 
 User Can See Upcoming Noncancelable Booking In List And Clicks It
     [Arguments]    ${unitname}    ${reservationtime}

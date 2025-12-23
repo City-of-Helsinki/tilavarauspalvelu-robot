@@ -23,7 +23,6 @@ Admin Checks Permission Is Not Present
 Admin Saves Changes
     Click    input[value="Tallenna ja poistu"]
     Sleep    3s
-    Wait For Load State    load    timeout=15s
 
 Admin Searches The User By Email
     [Arguments]    ${user_email}
@@ -31,13 +30,11 @@ Admin Searches The User By Email
     Sleep    1s
     Click    input[type="submit"]
     Sleep    4s    # wait for the search results to load
-    Wait For Load State    load    timeout=30s
 
 Admin Clicks First User
     [Documentation]    Clicks the role link in the search results. Should be used after searching by email to ensure only one match exists.
     Click    .field-role a
     Sleep    4s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
 
 Admin Navigates To General Role Page
     Go To    https://varaamo.test.hel.ninja/admin/tilavarauspalvelu/generalrole/

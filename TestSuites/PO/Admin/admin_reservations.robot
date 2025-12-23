@@ -189,8 +189,7 @@ Admin Saves Reservation Number
 Admin Clicks Button In Reservation Page
     [Arguments]    ${button_data_id}
     Click    ${button_data_id}
-    Sleep    1s
-    Wait For Load State    load    timeout=15s
+    Sleep    2.5s
 
 Admin Selects Reservation Unit
     [Arguments]    ${by_unit}
@@ -338,7 +337,6 @@ Admin Opens Calendar And Changes Reservation Time
     Focus    button[type="submit"]
     Click    button[type="submit"]
     Sleep    4s
-    Wait For Load State    load    timeout=15s
 
 # Not currently in use
 # This was used to navigate to reservations through calendar view

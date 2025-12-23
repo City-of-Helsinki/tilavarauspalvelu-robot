@@ -56,7 +56,7 @@ Click And Wait For Navigation With Retry
         # Click the element
         Focus    ${click_selector}
         Click    ${click_selector}
-        Sleep    3s    # wait for the page to load
+        Sleep    5s    # wait for the page to load
 
         # Wait for target element to appear (indicates successful navigation)
         ${target_exists}=    Run Keyword And Return Status

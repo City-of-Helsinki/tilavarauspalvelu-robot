@@ -73,6 +73,7 @@ Check Noncancelable Booking Info
 
 Check The Reservation Status Message
     [Arguments]    ${expected_reservation_message}
+    Wait For Elements State    [data-testid="reservation__status-notification"]    visible    timeout=15s
     ${confirmation_text}    Get Text    [data-testid="reservation__status-notification"]
     Should Contain    ${confirmation_text}    ${expected_reservation_message}
     Log    ${expected_reservation_message}

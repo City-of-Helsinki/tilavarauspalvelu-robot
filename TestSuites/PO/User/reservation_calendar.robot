@@ -23,7 +23,6 @@ Click And Store Free Reservation Time
 
     # Wait for animation
     Sleep    2s
-    Wait For Load State    load    timeout=15s
 
     # Check if enough time slots are available for the current day
     ${time_slot_exists}=    Run Keyword And Return Status
@@ -38,7 +37,7 @@ Click And Store Free Reservation Time
     Log    Attempting to select time: ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
     Sleep    500ms
     Click    id=calendar-controls__time-option-2
-    Sleep    1.3s
+    Sleep    2s
 
     ${aria_expanded}=    Get Attribute    css=[aria-controls="calendar-controls__time-list"]    aria-expanded
     IF    '${aria_expanded}'=='true'
@@ -49,7 +48,6 @@ Click And Store Free Reservation Time
 
     # Wait for animation
     Sleep    2s
-    Wait For Load State    domcontentloaded    timeout=15s
 
 Changing Time Again
     # Check if the 4th time slot is available
@@ -65,7 +63,7 @@ Changing Time Again
     Log    Selecting alternative time: ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
     Sleep    500ms
     Click    id=calendar-controls__time-option-3
-    Sleep    1s
+    Sleep    2s
 
 Get Current Date From Datepicker
     # ${value}=    Browser.Get Attribute    id=reservationDialog.date    value
@@ -75,9 +73,8 @@ Get Current Date From Datepicker
 
 Click Continue Button
     Click    [data-testid="reservation__button--continue"]
-    Sleep    1s
+    Sleep    3s
 
 User Click Reservation Calendar Toggle Button
     Click    [data-testid="calendar-controls__toggle-button"]
-    Sleep    1s    # Wait for animation
-    Wait For Load State    load    timeout=15s
+    Sleep    1.5s    # Wait for animation

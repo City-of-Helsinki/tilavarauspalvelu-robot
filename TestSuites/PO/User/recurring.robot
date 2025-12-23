@@ -17,7 +17,7 @@ User Selects A Recurring Booking Round
     ...    a[href*="/recurring/"]:not([href*="/criteria"])
 
     # wait for units to load
-    Sleep    2s
+    Sleep    4s
     Wait For Load State    load    timeout=15s
 
 User Selects The Units For Recurring Reservation
@@ -40,5 +40,5 @@ User Clicks Continue Button
     Click    id=startApplicationButton
 
     # Wait for units to load
-    Sleep    2s
+    Sleep    4s
     Wait For Load State    load    timeout=15s

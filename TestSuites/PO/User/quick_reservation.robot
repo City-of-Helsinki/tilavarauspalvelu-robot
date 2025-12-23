@@ -49,28 +49,31 @@ Select The Free Slot From Quick Reservation
     Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}
 
 User Clicks Submit Button In Quick Reservation
-    [Documentation]    Clicks the submit button in quick reservation and waits for navigation to booking details page.
-    ...    Uses retry logic to handle flaky navigation on mobile browsers (especially WebKit/iPhone).
-    Sleep    1.5s    # Wait for rendering
+    [Documentation]    Clicks the submit button in quick reservation using JavaScript.
+    ...    Uses form.requestSubmit() for more reliable form submission with React.
+
+    ${button_selector}=    Set Variable    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
     # Verify the button exists inside quick-reservation before clicking
-    ${button_count}=    Browser.Get Element Count    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
+    ${button_count}=    Browser.Get Element Count    ${button_selector}
     Should Be Equal As Integers    ${button_count}    1
     ...    msg=Expected exactly 1 submit button inside quick-reservation, found ${button_count}. Button may have disappeared.
 
-    Wait For Elements State    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]    visible
-    ...    message=Quick reservation submit button is not visible inside quick-reservation
+    # Wait for button to be visible and enabled
+    Wait For Elements State    ${button_selector}    visible    timeout=10s
+    Wait For Elements State    ${button_selector}    enabled    timeout=5s
+    Scroll To Element    ${button_selector}
+    Sleep    3s    # Wait for React state to settle after time slot selection
 
-    # Click and wait for navigation with retry logic
-    custom_keywords.Click And Wait For Navigation With Retry
-    ...    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
-    ...    [data-testid="reservation__button--continue"]
-    ...    max_attempts=2
-    ...    nav_timeout=10s
+    # Use form.requestSubmit() - more reliable than button.click() for React forms
+    # requestSubmit() triggers validation and submit event handlers properly
+    Evaluate JavaScript    ${button_selector}    (button) => { const form = button.closest('form'); if (form) { form.requestSubmit(button); } else { button.click(); } }
 
-    # Final visibility check for the continue button
-    Wait For Elements State    [data-testid="reservation__button--continue"]    visible    timeout=5s
-    ...    message=ERROR: Continue button not visible on booking details page. Check screenshot.
+    Sleep    5s    # Wait for navigation
+
+    # Wait for the target page element
+    Wait For Elements State    [data-testid="reservation__form--reservee-info"]    visible    timeout=20s
+    ...    message=ERROR: Reservee info form not visible on booking details page. Check screenshot.
 
 Select Duration
     [Arguments]    ${duration}

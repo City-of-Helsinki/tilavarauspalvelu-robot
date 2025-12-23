@@ -215,5 +215,3 @@ Your New Test
 ## 🐛 Troubleshooting
 
 ### Common Issues
-
-> **⚠️ WIP (Work In Progress)**: Troubleshooting section is being developed.

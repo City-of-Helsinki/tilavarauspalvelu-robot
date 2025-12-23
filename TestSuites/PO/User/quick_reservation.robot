@@ -50,7 +50,7 @@ Select The Free Slot From Quick Reservation
 
 User Clicks Submit Button In Quick Reservation
     [Documentation]    Clicks the submit button in quick reservation using JavaScript.
-    ...    Uses form.requestSubmit() for more reliable form submission with React.
+    ...    Polls for button to be enabled before clicking with dispatchEvent.
 
     ${button_selector}=    Set Variable    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
@@ -59,15 +59,39 @@ User Clicks Submit Button In Quick Reservation
     Should Be Equal As Integers    ${button_count}    1
     ...    msg=Expected exactly 1 submit button inside quick-reservation, found ${button_count}. Button may have disappeared.
 
-    # Wait for button to be visible and enabled
+    # Wait for button to be visible
     Wait For Elements State    ${button_selector}    visible    timeout=10s
-    Wait For Elements State    ${button_selector}    enabled    timeout=5s
     Scroll To Element    ${button_selector}
-    Sleep    3s    # Wait for React state to settle after time slot selection
 
-    # Use form.requestSubmit() - more reliable than button.click() for React forms
-    # requestSubmit() triggers validation and submit event handlers properly
-    Evaluate JavaScript    ${button_selector}    (button) => { const form = button.closest('form'); if (form) { form.requestSubmit(button); } else { button.click(); } }
+    # Alternative: Basic Browser library click (commented out - less reliable with React re-renders)
+    # Wait For Elements State    ${button_selector}    enabled    timeout=10s
+    # Click    ${button_selector}
+
+    # Use JavaScript to wait for button to be enabled and then click with dispatchEvent
+    ${click_result}=    Evaluate JavaScript    ${button_selector}
+    ...    async (button) => {
+    ...        const maxWait = 10000;
+    ...        const pollInterval = 200;
+    ...        let waited = 0;
+    ...        while (button.disabled && waited < maxWait) {
+    ...            await new Promise(r => setTimeout(r, pollInterval));
+    ...            waited += pollInterval;
+    ...        }
+    ...        if (button.disabled) {
+    ...            return { success: false, error: 'Button still disabled after 10s' };
+    ...        }
+    ...        await new Promise(r => setTimeout(r, 300));
+    ...        const mouseDown = new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window });
+    ...        const mouseUp = new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window });
+    ...        const click = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+    ...        button.dispatchEvent(mouseDown);
+    ...        button.dispatchEvent(mouseUp);
+    ...        button.dispatchEvent(click);
+    ...        return { success: true, waited: waited };
+    ...    }
+
+    Log    Click result: ${click_result}
+    Should Be True    ${click_result}[success]    msg=Failed to click button: ${click_result}
 
     Sleep    5s    # Wait for navigation
 

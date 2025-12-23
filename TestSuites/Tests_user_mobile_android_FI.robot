@@ -3,8 +3,6 @@ Documentation       Android chrome tests
 
 Resource            ${CURDIR}/PO/App/app_common.robot
 Resource            ${CURDIR}/PO/App/app_user.robot
-# Resource    ${CURDIR}/PO/Common/popups.robot
-# Resource    ${CURDIR}/Resources/texts_FI.robot
 Resource            ${CURDIR}/Resources/common_setups_teardowns.robot
 Resource            ${CURDIR}/PO/Common/topnav.robot
 

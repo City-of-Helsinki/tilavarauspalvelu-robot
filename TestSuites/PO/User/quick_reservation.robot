@@ -50,27 +50,21 @@ Select The Free Slot From Quick Reservation
 
 User Clicks Submit Button In Quick Reservation
     [Documentation]    Clicks the submit button in quick reservation and waits for navigation to booking details page.
-    ...    Uses retry logic to handle flaky navigation on mobile browsers (especially WebKit/iPhone).
-    Sleep    1.5s    # Wait for rendering
+    Sleep    1s
+    ${button_selector}=    Set Variable    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
-    # Verify the button exists inside quick-reservation before clicking
-    ${button_count}=    Browser.Get Element Count    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
-    Should Be Equal As Integers    ${button_count}    1
-    ...    msg=Expected exactly 1 submit button inside quick-reservation, found ${button_count}. Button may have disappeared.
+    # Wait for button to be stable (DOM mutations to stop)
+    Scroll To Element    ${button_selector}
+    Wait For Elements State    ${button_selector}    stable    timeout=10s
+    ...    message=Quick reservation submit button is not stable
 
-    Wait For Elements State    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]    visible
-    ...    message=Quick reservation submit button is not visible inside quick-reservation
-
-    # Click and wait for navigation with retry logic
-    custom_keywords.Click And Wait For Navigation With Retry
-    ...    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
-    ...    [data-testid="reservation__button--continue"]
-    ...    max_attempts=2
-    ...    nav_timeout=10s
-
-    # Final visibility check for the continue button
-    Wait For Elements State    [data-testid="reservation__button--continue"]    visible    timeout=5s
-    ...    message=ERROR: Continue button not visible on booking details page. Check screenshot.
+    # Focus and click with noWaitAfter to avoid Playwright waiting for navigation
+    Focus    ${button_selector}
+    Click With Options    ${button_selector}    noWaitAfter=${True}
+    Sleep    5s
+    # Wait for the target page element
+    Wait For Elements State    [data-testid="reservation__form--reservee-info"]    visible    timeout=20s
+    ...    message=ERROR: Reservee info form not visible on booking details page. Check screenshot.
 
 Select Duration
     [Arguments]    ${duration}

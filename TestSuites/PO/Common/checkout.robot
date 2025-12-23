@@ -58,22 +58,19 @@ In Order Summary Get Booking Number From Product List
 ####
 
 Check The Info In Checkout
-    Sleep    2s
-    Wait For Load State    load    timeout=20s
+    Sleep    4s
     Allow All Cookies If Visible
-    Sleep    1s
-    Wait For Load State    load    timeout=15s
+    Sleep    2s
     Select Payment Method OP
     Sleep    1s
     Click Submit
-    Sleep    3s
-    Wait For Load State    load    timeout=15s
+    Sleep    4s
     Check Product List Has All The Info
     In Order Summary Get Booking Number From Product List
     Click Accept Terms
     Sleep    1s
     Click Submit
-    Sleep    3s
+    Sleep    5s
     Wait For Load State    networkidle    timeout=50s
 
 Interrupted Checkout
@@ -84,47 +81,3 @@ Interrupted Checkout
     Go To    ${input_URL}
     Sleep    2s    # wait for the page to load
     Wait For Load State    load    timeout=15s
-
-Check The Info In Checkout With Auth Validation
-    [Documentation]    Enhanced checkout with authentication validation and timing
-
-    # Basic session validation
-    Sleep    2s
-    Wait For Load State    load    timeout=20s
-
-    # Validate we're not on a 403 page
-    ${current_url}=    Get Url
-    Should Not Contain    ${current_url}    403
-    Should Not Contain    ${current_url}    forbidden
-
-    Allow All Cookies If Visible
-    Sleep    1s
-    Wait For Load State    load    timeout=15s
-
-    # Double-check session is still valid before proceeding
-    ${cookies}=    Get Cookies
-    ${has_session}=    Set Variable    False
-    FOR    ${cookie}    IN    @{cookies}
-        IF    'sessionid' in '${cookie}[name]' or 'AUTH_SESSION_ID' in '${cookie}[name]'
-            ${has_session}=    Set Variable    True
-            Log    "✅ Active session cookie: ${cookie}[name]"
-            BREAK
-        END
-    END
-
-    Should Be True    ${has_session}
-    ...    msg=No session cookie found before checkout - authentication may have failed
-
-    Select Payment Method OP
-    Sleep    1s
-    Click Submit
-    Sleep    3s
-    Wait For Load State    load    timeout=15s
-    Check User Details In Checkout
-    Check Product List Has All The Info
-    In Order Summary Get Booking Number From Product List
-    Click Accept Terms
-    Sleep    1s
-    Click Submit
-    Sleep    3s
-    Wait For Load State    networkidle    timeout=50s

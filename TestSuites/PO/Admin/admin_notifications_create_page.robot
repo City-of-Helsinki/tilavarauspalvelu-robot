@@ -106,19 +106,18 @@ Admin Fills Notification Text Sv
 Admin Publishes Notification
     Click    [data-testid="Notification__Page--publish-button"]
     Sleep    3s
-    Wait For Load State    load    timeout=15s
     # Check that publish worked, we should not see this button after clicking it
     Wait For Elements State    [data-testid="Notification__Page--publish-button"]    hidden    timeout=5s    message=Publish button is still visible after clicking - notification publish may have failed
 
 Admin Drafts Notification
     Click    [data-testid="Notification__Page--save-draft-button"]
-    Sleep    3s
-    Wait For Load State    load    timeout=15s
+    Sleep    5s
+    Wait For Elements State    [href="/kasittely/notifications/new"]    visible    timeout=15s
 
 Admin Deletes Notification
     custom_keywords.Find And Click Element With Text    button    ${DELETE_NOTIFICATION_BUTTON_TEXT}
-    Sleep    3s
-    Wait For Load State    load    timeout=15s
+    Sleep    5s
+    Wait For Elements State    [href="/kasittely/notifications/new"]    visible    timeout=15s
 
 Admin Verifies Notification Is Not Found
     [Documentation]    Verifies that a notification with the specified name is NOT present in the notifications list

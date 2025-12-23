@@ -7,6 +7,7 @@ Library     Browser
 *** Keywords ***
 Check The User Landing Page H1
     [Arguments]    ${expected_h1_text}
+    Wait For Elements State    css=h1    visible    timeout=15s
     ${landingPageH1}=    Get Text    css=h1
     Should Contain    ${landingPageH1}    ${expected_h1_text}
     Log    ${expected_h1_text}

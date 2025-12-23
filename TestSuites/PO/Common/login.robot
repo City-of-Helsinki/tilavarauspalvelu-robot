@@ -38,10 +38,9 @@ Login Suomi Fi
     ...    max_attempts=2
     ...    nav_timeout=15s
 
-    # Click continue to complete login - wait for page to fully load
+    # Click continue to complete login
     Click    css=#continue-button
-    Sleep    5s    # wait for the page to load
-    Wait For Load State    load    timeout=60s
+    Sleep    5s
 
     # Check for cookies after login
     ${fresh_cookies}=    Get Cookies
@@ -110,4 +109,3 @@ Login Suomi Fi Mobile
     # Click continue to complete login - wait for page to fully load
     Click    css=#continue-button
     Sleep    5s    # wait for the page to load
-    Wait For Load State    load    timeout=60s

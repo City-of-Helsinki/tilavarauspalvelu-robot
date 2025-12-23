@@ -11,8 +11,7 @@ Admin Searches Own Unit And Clicks It
     Type Text    id=search    ${units_location}
     Sleep    3s    # Wait for the search results to load
     custom_keywords.Find And Click Element With Text    td >> a    ${units_location}
-    Sleep    3s    # long wait for spinner
-    Wait For Load State    load    timeout=15s
+    Sleep    4s    # long wait for spinner
 
 Admin Clicks Calendar Open In Own Units
     [Arguments]    ${unit_name}

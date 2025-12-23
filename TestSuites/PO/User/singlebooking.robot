@@ -11,7 +11,7 @@ Search Units By Name
 #
     # Click    button[type="submit"]
     Click    [data-testid="searchButton"]
-    Sleep    2s    # wait for search results to load
+    Sleep    4s    # wait for search results to load
     Wait For Load State    load    timeout=15s
     # Check if actual results are found
     Wait For Elements State    [data-testid="list-with-pagination__list--container"]    visible

@@ -19,14 +19,12 @@ Admin Checks The Info And Sets Reservation Free And Approves It
     ...    ${PURPOSE_OF_THE_BOOKING}    ${SINGLEBOOKING_DESCRIPTION}
     ...    ${SINGLEBOOKING_NUMBER_OF_PERSONS}    ${SINGLEBOOKING_SUBVENTED_ADMIN_SIDE_AGE_GROUP}
     admin_reservations.Admin Clicks Button In Reservation Page    [data-testid="approval-buttons__approve-button"]
-    Sleep    3s
-    Wait For Load State    load    timeout=15s
+    Sleep    4s
     admin_reservations.Admin Checks Reason For Subvention In Dialog
     admin_reservations.Admin Clicks Set Reservation To Free
     admin_reservations.Admin Clicks Button In Reservation Page    [data-testid="approval-dialog__accept-button"]
     # Waiting payment status to be updated
-    Sleep    3s
-    Wait For Load State    load    timeout=15s
+    Sleep    4s
     admin_reservations.Admin Checks Reservation Info After Handling
     ...    ${SINGLEBOOKING_NO_PAYMENT_ADMIN_SIDE}    ${MYBOOKINGS_STATUS_CONFIRMED}
     ...    ${PURPOSE_OF_THE_BOOKING}    ${SINGLEBOOKING_DESCRIPTION}
@@ -323,13 +321,11 @@ Admin Rejects Reservation And Checks The Status
     ${element_count}=    Get Length    ${elements}
     Log    Found ${element_count} reject buttons
     Click    ${elements}[-1]
-    Sleep    3s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    4s    # wait for the page to load
     admin_reservations.Admin Selects Reason For Rejection    ${ADMIN_REASON_REJECTED}
     Sleep    1s    # wait for the page to load
     Click    [data-testid="deny-dialog__deny-button"]
     Sleep    4s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
     admin_reservations.Admin Checks Reservation Status    ${MYBOOKINGS_STATUS_REJECTED}
 
 Admin Makes Reservation For Behalf And Clicks Submit
@@ -351,8 +347,7 @@ Admin Makes Reservation For Behalf And Clicks Submit
     admin_reservations.Admin Fills Reservation Details Behalf    # this keyword generates the info for checking calendar content
     admin_reservations.Admin Clicks Button In Reservation Page
     ...    [data-testid="CreateReservationModal__accept-reservation"]
-    Sleep    3s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    4s    # wait for the page to load
     admin_reservations.Admin Verifies Reservation Modal Is Closed
 
 Admin Makes Reservation For Closed And Clicks Submit
@@ -370,8 +365,7 @@ Admin Makes Reservation For Closed And Clicks Submit
     ...    ${UNAVAILABLE_RESERVATION_DATE}
     admin_reservations.Admin Clicks Button In Reservation Page
     ...    [data-testid="CreateReservationModal__accept-reservation"]
-    Sleep    3s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    4s    # wait for the page to load
     admin_reservations.Admin Verifies Reservation Modal Is Closed
 
 Admin Makes Reservation For Staff And Clicks Submit
@@ -389,8 +383,7 @@ Admin Makes Reservation For Staff And Clicks Submit
     ...    ${UNAVAILABLE_RESERVATION_DATE}
     admin_reservations.Admin Clicks Button In Reservation Page
     ...    [data-testid="CreateReservationModal__accept-reservation"]
-    Sleep    3s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    4s    # wait for the page to load
     admin_reservations.Admin Verifies Reservation Modal Is Closed
 
 Admin Attempts To Make An Unavailable Reservation And Clicks Cancel
@@ -405,8 +398,7 @@ Admin Attempts To Make An Unavailable Reservation And Clicks Cancel
     ...    [data-testid="CreateReservationModal__collision-warning"] >> [class*="Notification-module_body__"]
     ...    ${RESERVATION_TIME_NOT_FREE}
     Click    data-testid=CreateReservationModal__cancel-reservation
-    Sleep    3s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    4s    # wait for the page to load
     admin_reservations.Admin Verifies Reservation Modal Is Closed
 
 ###

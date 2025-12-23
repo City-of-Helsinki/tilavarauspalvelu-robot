@@ -6,8 +6,7 @@ Resource    ../../Resources/custom_keywords.robot
 *** Keywords ***
 Check My Bookings H1
     [Arguments]    ${bookingstatus}
-    # Wait for load
-    Sleep    2s
+    Wait For Elements State    h1    visible    timeout=15s
     custom_keywords.Check Elements Text    h1    ${bookingstatus}
 
 ###
@@ -17,7 +16,7 @@ Check My Bookings H1
 User Cancel Booking
     Wait For Elements State    data-testid=reservation-detail__button--cancel    visible
     Click    data-testid=reservation-detail__button--cancel
-    Sleep    2s
+    Sleep    4s
     Wait For Load State    load    timeout=15s
 
 Click Reason For Cancellation
@@ -38,7 +37,7 @@ Click Cancel Button
     Wait For Elements State    [data-testid="reservation-cancel__button--cancel"]    enabled
     Click    [data-testid="reservation-cancel__button--cancel"]
     # Wait for reservation status to change
-    Sleep    2s
+    Sleep    4s
     Wait For Load State    load    timeout=15s
 
 Check Cancel Button Is Not Found In Reservations
@@ -61,7 +60,6 @@ User Click Change Time
     Wait For Elements State    data-testid=reservation-detail__button--edit    visible
     Click    data-testid=reservation-detail__button--edit
     Sleep    1s    # Wait for animation
-    Wait For Load State    load    timeout=15s
 
 ###
 # Reservations page

@@ -23,15 +23,13 @@ Click Logout
     Sleep    1s
     Wait For Elements State    css=[aria-label="Kirjaudu ulos"]    stable
     Click    css=[aria-label="Kirjaudu ulos"]
-    Sleep    2s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    3s    # wait for the page to load
 
 Click Logout Admin Side
     Sleep    1s
     Wait For Elements State    css=[aria-label="signout"]    visible
     Click    css=[aria-label="signout"]
-    Sleep    2s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    3s    # wait for the page to load
 
 Click User Menu
     Wait For Elements State    id=user-menu    stable
@@ -58,22 +56,18 @@ Navigate To Single Booking Page
 
 Navigate To My Bookings
     Click    header >> [href="/reservations"]:text-is("${MYBOOKINGS_FI}")
-    # wait for load
-    Sleep    3s
-    Wait For Load State    load    timeout=15s
+    Sleep    4s
 
     # Confirms page is loaded
     mybookings.Check My Bookings H1    ${MYBOOKINGS_FI}
 
 Navigate To Recurring Booking Page
     Click    header >> [href="/recurring"]:text-is("${RECURRING_BOOKINGS_FI}")
-    Sleep    3s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    4s
 
 Navigate To My Applications
     Click    header >> [href="/applications"]:text-is("${MYAPPLICATIONS_FI}")
-    Sleep    3s    # wait for the page to load
-    Wait For Load State    load    timeout=15s
+    Sleep    4s
 
 ###
 # MOBILE UI

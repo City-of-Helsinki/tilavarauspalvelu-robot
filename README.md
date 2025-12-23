@@ -1,8 +1,5 @@
 # Varaamo Robot Framework Tests
 
-> **⚠️ WIP (Work In Progress):** This README is currently being updated and may contain incomplete or outdated information.
-> Email authentication system is being refactored. Setup requirements may change in future versions.
-
 ## About Varaamo
 
 **Varaamo** is the space and resource reservation platform for City of Helsinki, where citizens can make reservations for spaces and resources owned by the City of Helsinki.

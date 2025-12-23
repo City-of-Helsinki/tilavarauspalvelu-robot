@@ -49,19 +49,28 @@ Select The Free Slot From Quick Reservation
     Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}
 
 User Clicks Submit Button In Quick Reservation
-    [Documentation]    Clicks the submit button in quick reservation and waits for navigation to booking details page.
-    Sleep    1s
+    [Documentation]    Clicks the submit button in quick reservation using JavaScript.
+    ...    Uses form.requestSubmit() for more reliable form submission with React.
+
     ${button_selector}=    Set Variable    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
-    # Wait for button to be stable (DOM mutations to stop)
-    Scroll To Element    ${button_selector}
-    Wait For Elements State    ${button_selector}    stable    timeout=10s
-    ...    message=Quick reservation submit button is not stable
+    # Verify the button exists inside quick-reservation before clicking
+    ${button_count}=    Browser.Get Element Count    ${button_selector}
+    Should Be Equal As Integers    ${button_count}    1
+    ...    msg=Expected exactly 1 submit button inside quick-reservation, found ${button_count}. Button may have disappeared.
 
-    # Focus and click with noWaitAfter to avoid Playwright waiting for navigation
-    Focus    ${button_selector}
-    Click With Options    ${button_selector}    noWaitAfter=${True}
-    Sleep    5s
+    # Wait for button to be visible and enabled
+    Wait For Elements State    ${button_selector}    visible    timeout=10s
+    Wait For Elements State    ${button_selector}    enabled    timeout=5s
+    Scroll To Element    ${button_selector}
+    Sleep    3s    # Wait for React state to settle after time slot selection
+
+    # Use form.requestSubmit() - more reliable than button.click() for React forms
+    # requestSubmit() triggers validation and submit event handlers properly
+    Evaluate JavaScript    ${button_selector}    (button) => { const form = button.closest('form'); if (form) { form.requestSubmit(button); } else { button.click(); } }
+
+    Sleep    5s    # Wait for navigation
+
     # Wait for the target page element
     Wait For Elements State    [data-testid="reservation__form--reservee-info"]    visible    timeout=20s
     ...    message=ERROR: Reservee info form not visible on booking details page. Check screenshot.

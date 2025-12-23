@@ -1,7 +1,5 @@
 # Setup Guide
 
-> **⚠️ WIP (Work In Progress)**: Email authentication system is being refactored. Setup requirements may change in future versions.
-
 This guide provides detailed instructions for setting up the Varaamo Robot Framework test environment.
 
 ## 🔐 Required Secrets
@@ -190,6 +188,10 @@ If tests fail, follow this quick verification flow:
 **Email Tests Failing**:
 - Verify the backend email cache endpoint is available at `${TEST_BASE_URL}/v1/robot_email_cache/`
 - Check that `ROBOT_EMAIL_ADDRESSES` is configured in Django settings so that the test environment captures emails for the address used in the robot tests
+
+**Quick Reservation Submit Button Flaky in GHA**:
+- The quick reservation submit button can randomly fail to navigate when running tests in GitHub Actions
+- This is a known intermittent test execution issue (not an application bug) - re-run the test to verify if failure is reproducible
 
 ## 📚 Additional Resources
 

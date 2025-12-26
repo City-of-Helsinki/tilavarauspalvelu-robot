@@ -211,7 +211,3 @@ Your New Test
 2. **PabotLib finds match**: Searches `pabot_users.dat` for value set with `tags=desktop-test-data-set-12`
 3. **If both match**: Value set is acquired and user data is loaded ✅
 4. **If either missing**: Falls back to single user mode ⚠️
-
-## 🐛 Troubleshooting
-
-### Common Issues

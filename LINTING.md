@@ -70,9 +70,10 @@ Linting runs automatically in GitHub Actions (PERMISSIVE MODE):
 
 Use menu option 28 to format keywords to Title Case.
 
-## Troubleshooting
+## Optional: Automatic Linting on Commit
 
-**Want to run linting on git commit?** (Optional)
+Want linting to run automatically when you commit? Set up pre-commit hooks:
+
 ```bash
 pip install pre-commit
 pre-commit install

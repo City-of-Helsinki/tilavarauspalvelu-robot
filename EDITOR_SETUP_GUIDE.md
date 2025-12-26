@@ -39,18 +39,12 @@ This extension provides intelligent code completion, keyword documentation, and 
 
 ### Step 2: Open Project in IDE
 
-```bash
-# Clone the project
-git clone [repo-url]
-cd varaamo-robot-tests
+1. Open Cursor or VS Code
+2. Go to **File → Open Folder**
+3. Select the project directory
+4. Wait for **"Environment ready"** notification (~2-3 minutes first time)
 
-# Open in IDE
-code .    # For VS Code
-# or
-cursor .  # For Cursor
-```
-
-When your IDE opens, the Robocorp Code extension will automatically detect the `conda.yaml` file and set up the environment. Wait for the **"Environment ready"** notification (takes ~2-3 minutes first time).
+When your IDE opens, the Robocorp Code extension will automatically detect the `conda.yaml` file and set up the environment.
 
 ### Step 3: Add Your Secrets
 
@@ -87,7 +81,7 @@ Open `TestSuites/Resources/devices.robot` and change `headless=true` to `headles
 
 ## 📊 Viewing Results
 
-After tests run, click **"View Log"** in the notification popup, or open `output/report.html` manually.
+After tests open `output/report.html` manually.
 
 ## 🚨 Quick Troubleshooting
 

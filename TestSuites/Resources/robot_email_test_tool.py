@@ -1,6 +1,6 @@
 """
 Robot Framework Email Testing Tool
-Works with the backend email cache API instead of Gmail API.
+Works with the backend email cache API
 """
 
 import requests

@@ -493,8 +493,6 @@ This project includes a GitHub Actions workflow that runs tests when manually tr
 │   │   │   # Test data initialization and user assignment logic
 │   │   ├── python_keywords.py
 │   │   │   # Python-based custom keywords
-│   │   ├── README_TEST_DATA_SYSTEM.md
-│   │   │   # Comprehensive test data system documentation
 │   │   ├── suite_specific_units.robot
 │   │   │   # Suite-specific unit configurations for parallel isolation
 │   │   ├── suite_unit_selector.robot
@@ -503,8 +501,6 @@ This project includes a GitHub Actions workflow that runs tests when manually tr
 │   │   │   # PabotLib value sets with user data for parallel execution
 │   │   ├── robot_email_test_tool.py
 │   │   │   # Email testing library (backend cache API)
-│   │   ├── email_verification.robot
-│   │   │   # Email verification keywords for Robot Framework
 │   │   ├── serial_users.robot
 │   │   │   # User management for serial (non-pabot) execution
 │   │   ├── create_data.robot

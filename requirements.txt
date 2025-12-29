@@ -23,4 +23,4 @@ robotframework-requests==0.9.7
 robotframework-robocop==6.13.0
 
 # Python linter
-ruff==0.14.7
+ruff==0.14.10

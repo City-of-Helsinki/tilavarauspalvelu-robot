@@ -1,8 +1,8 @@
 # Core Robot Framework testing framework
-robotframework==7.3.2
+robotframework==7.4.1
 
 # Browser automation library for Robot Framework (uses Playwright)
-robotframework-browser==19.12.0
+robotframework-browser==19.12.3
 
 # Parallel execution for Robot Framework
 robotframework-pabot==5.1.0

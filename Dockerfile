@@ -11,7 +11,7 @@
 # - Multi-architecture support (amd64/arm64)
 # 
 # Note: We override base image timezone to Europe/Helsinki
-FROM mcr.microsoft.com/playwright:v1.57.0-noble
+FROM mcr.microsoft.com/playwright:v1.58.1-noble
 
 # =============================================================================
 # Environment Configuration

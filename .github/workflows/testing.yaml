@@ -48,7 +48,7 @@ jobs:
       ALL_SUITES_PROCESSES: 3
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Set up Docker with caching support
       - name: Set up Docker Buildx

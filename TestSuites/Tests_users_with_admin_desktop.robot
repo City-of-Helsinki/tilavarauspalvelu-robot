@@ -14,19 +14,19 @@ Resource            ${CURDIR}/PO/Admin/admin_notifications_create_page.robot
 Suite Setup         Run Only Once    create_data.Create Robot Test Data
 Test Setup          User Opens Desktop Browser To Landing Page
 Test Teardown       Complete Test Teardown
+Test Tags           combined-suite
 
 
 *** Test Cases ***
 User creates and Admin accepts single booking that requires handling
-    [Tags]    combined-test-data-set-0    combined-suite    accept-booking
+    [Tags]    combined-test-data-set-0    accept-booking
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
     Log    User creates subvented reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT_SUBVENTED}
-    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-    quick_reservation.User Clicks Submit Button In Quick Reservation
+    app_user.User Reserves A Free Quick Reservation Slot
     app_user.User Fills Subvented Booking Details As Individual And Submits    ${JUSTIFICATION_FOR_SUBVENTION}
     app_user.User Checks The Subvented Reservation Info Is Right And Submits
     app_user.User Checks The Subvented Reservation Info Is Right After Submitting
@@ -70,15 +70,14 @@ User creates and Admin accepts single booking that requires handling
     app_user.User Verifies Details Of Subvented Reservation After Admin Approval Without Payment
 
 User creates and Admin declines single booking that requires handling
-    [Tags]    combined-test-data-set-1    combined-suite    decline-booking
+    [Tags]    combined-test-data-set-1    decline-booking
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
     Log    User creates reservation that requires handling
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_UNIT_REQUIRES_ALWAYS_HANDLING}
-    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-    quick_reservation.User Clicks Submit Button In Quick Reservation
+    app_user.User Reserves A Free Quick Reservation Slot
     app_user.User Fills Info For Unit That Is Always Handled As Individual And Submits
     app_user.User Checks Unit That Is Always Handled Details Are Right Before Submit
     reservation_lownav.Click Submit Button Continue
@@ -123,15 +122,14 @@ User creates and Admin declines single booking that requires handling
     app_user.User Checks The Rejected Reservation Info Is Right After Admin Handling
 
 User can make reservation with access code and admin changes the code
-    [Tags]    combined-test-data-set-2    combined-suite    access-code
+    [Tags]    combined-test-data-set-2    access-code
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
     Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_UNIT_WITH_ACCESS_CODE}
-    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-    quick_reservation.User Clicks Submit Button In Quick Reservation
+    app_user.User Reserves A Free Quick Reservation Slot
     app_user.User Fills Booking Details As Individual For Reservation With Access Code And Submits
     app_user.User Checks The Reservation Info Is Right Before Submit With Access Code
     reservation_lownav.Click Submit Button Continue

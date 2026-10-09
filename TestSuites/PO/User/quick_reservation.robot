@@ -70,24 +70,24 @@ User Clicks Submit Button In Quick Reservation
     # Use JavaScript to wait for button to be enabled and then click with dispatchEvent
     ${click_result}=    Evaluate JavaScript    ${button_selector}
     ...    async (button) => {
-    ...        const maxWait = 10000;
-    ...        const pollInterval = 200;
-    ...        let waited = 0;
-    ...        while (button.disabled && waited < maxWait) {
-    ...            await new Promise(r => setTimeout(r, pollInterval));
-    ...            waited += pollInterval;
-    ...        }
-    ...        if (button.disabled) {
-    ...            return { success: false, error: 'Button still disabled after 10s' };
-    ...        }
-    ...        await new Promise(r => setTimeout(r, 300));
-    ...        const mouseDown = new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window });
-    ...        const mouseUp = new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window });
-    ...        const click = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
-    ...        button.dispatchEvent(mouseDown);
-    ...        button.dispatchEvent(mouseUp);
-    ...        button.dispatchEvent(click);
-    ...        return { success: true, waited: waited };
+    ...    const maxWait = 10000;
+    ...    const pollInterval = 200;
+    ...    let waited = 0;
+    ...    while (button.disabled && waited < maxWait) {
+    ...    await new Promise(r => setTimeout(r, pollInterval));
+    ...    waited += pollInterval;
+    ...    }
+    ...    if (button.disabled) {
+    ...    return { success: false, error: 'Button still disabled after 10s' };
+    ...    }
+    ...    await new Promise(r => setTimeout(r, 300));
+    ...    const mouseDown = new MouseEvent('mousedown', { bubbles: true, cancelable: true, view: window });
+    ...    const mouseUp = new MouseEvent('mouseup', { bubbles: true, cancelable: true, view: window });
+    ...    const click = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+    ...    button.dispatchEvent(mouseDown);
+    ...    button.dispatchEvent(mouseUp);
+    ...    button.dispatchEvent(click);
+    ...    return { success: true, waited: waited };
     ...    }
 
     Log    Click result: ${click_result}
@@ -98,6 +98,12 @@ User Clicks Submit Button In Quick Reservation
     # Wait for the target page element
     Wait For Elements State    [data-testid="reservation__form--reservee-info"]    visible    timeout=20s
     ...    message=ERROR: Reservee info form not visible on booking details page. Check screenshot.
+
+Get Unit Lock Name
+    [Documentation]    Returns a lock name for the open reservation unit page.
+    ${url}=    Get Url
+    ${unit_page}=    Fetch From Left    ${url}    ?
+    RETURN    QUICK_RESERVATION_${unit_page}
 
 Select Duration
     [Arguments]    ${duration}

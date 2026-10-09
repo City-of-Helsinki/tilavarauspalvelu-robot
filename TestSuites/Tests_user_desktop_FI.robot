@@ -16,11 +16,12 @@ Resource            ${CURDIR}/PO/Common/popups.robot
 Suite Setup         Run Only Once    create_data.Create Robot Test Data
 Test Setup          User Opens Desktop Browser To Landing Page
 Test Teardown       Complete Test Teardown
+Test Tags           desktop-suite
 
 
 *** Test Cases ***
 User logs in and out with suomi_fi
-    [Tags]    desktop-test-data-set-0    desktop-suite    smoke
+    [Tags]    desktop-test-data-set-0    smoke
     common_setups_teardowns.Complete Test Setup From Tags
 
     Log    User logs in with Suomi.fi
@@ -31,7 +32,7 @@ User logs in and out with suomi_fi
     app_common.User Confirms Log Out
 
 User can make free single booking and modifies it
-    [Tags]    desktop-test-data-set-1    desktop-suite
+    [Tags]    desktop-test-data-set-1
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
@@ -43,8 +44,7 @@ User can make free single booking and modifies it
     app_user.User Checks That Reservation Unit Picture Is Loaded    ${UNIT_NAME_FOR_PICTURE_TEST}
 
     Log    User creates reservation
-    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-    quick_reservation.User Clicks Submit Button In Quick Reservation
+    app_user.User Reserves A Free Quick Reservation Slot
     app_user.User Fills The Reservation Info For Always Free Unit And Submits
     app_user.User Checks The Reservation Info Is Right Before Submit
     reservation_lownav.Click Submit Button Continue
@@ -71,7 +71,7 @@ User can make free single booking and modifies it
     ...    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
 
 User can create non-cancelable booking
-    [Tags]    desktop-test-data-set-2    desktop-suite
+    [Tags]    desktop-test-data-set-2
     common_setups_teardowns.Complete Test Setup From Tags
     topnav.Click Login
     login.Login Suomi Fi    ${CURRENT_USER_HETU}
@@ -81,8 +81,7 @@ User can create non-cancelable booking
     Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_FREE_UNIT_NO_CANCEL}
-    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-    quick_reservation.User Clicks Submit Button In Quick Reservation
+    app_user.User Reserves A Free Quick Reservation Slot
     app_user.User Fills Noncancelable Booking Details As Individual And Submits
     app_user.User Checks The Noncancelable Reservation Info Is Right Before Submit
     reservation_lownav.Click Submit Button Continue
@@ -96,15 +95,14 @@ User can create non-cancelable booking
     app_user.User Checks Booking Info In Reservations For Noncancelable Booking
 
 User can make paid single booking with interrupted checkout
-    [Tags]    desktop-test-data-set-3    desktop-suite
+    [Tags]    desktop-test-data-set-3
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
     Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT}
-    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-    quick_reservation.User Clicks Submit Button In Quick Reservation
+    app_user.User Reserves A Free Quick Reservation Slot
     app_user.User Fills The Reservation Info For Unit With Payment And Submits
     app_user.User Checks The Paid Reservation Info Is Right And Submits
 
@@ -139,7 +137,7 @@ User can make paid single booking with interrupted checkout
     ...    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
 
 User can make paid single booking
-    [Tags]    desktop-test-data-set-4    desktop-suite
+    [Tags]    desktop-test-data-set-4
     Mark Paid Booking Test Started
 
     # Acquire lock to ensure email test waits
@@ -152,8 +150,7 @@ User can make paid single booking
         Log    User creates paid reservation
         app_user.User Navigates To Single Booking Page
         app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT}
-        app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-        quick_reservation.User Clicks Submit Button In Quick Reservation
+        app_user.User Reserves A Free Quick Reservation Slot
         app_user.User Fills The Reservation Info For Unit With Payment And Submits
         app_user.User Checks The Paid Reservation Info Is Right And Submits
 
@@ -206,15 +203,14 @@ User can make paid single booking
     END
 
 User can make subvented single booking that requires handling
-    [Tags]    desktop-test-data-set-5    desktop-suite
+    [Tags]    desktop-test-data-set-5
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
     Log    User creates subvented reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_PAID_UNIT_SUBVENTED}
-    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-    quick_reservation.User Clicks Submit Button In Quick Reservation
+    app_user.User Reserves A Free Quick Reservation Slot
     app_user.User Fills Subvented Booking Details As Individual And Submits    ${JUSTIFICATION_FOR_SUBVENTION}
     app_user.User Checks The Paid Reservation That Requires Handling Info Is Right And Submits
 
@@ -229,15 +225,14 @@ User can make subvented single booking that requires handling
     ...    ${TIME_OF_QUICK_RESERVATION}
 
 User checks that reserved time is not available anymore
-    [Tags]    desktop-test-data-set-7    desktop-suite
+    [Tags]    desktop-test-data-set-7
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
     Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_UNAVAILABLE_UNIT}
-    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-    quick_reservation.User Clicks Submit Button In Quick Reservation
+    app_user.User Reserves A Free Quick Reservation Slot
     app_user.User Fills The Reservation Info For Always Free Unit And Submits
     app_user.User Checks The Reservation Info Is Right Before Submit
     reservation_lownav.Click Submit Button Continue
@@ -250,7 +245,7 @@ User checks that reserved time is not available anymore
     app_user.User Checks That Reservation Calendar Does Not Have Reserved Time Slot Available
 
 User checks that there are not current dates in the past bookings
-    [Tags]    desktop-test-data-set-8    desktop-suite
+    [Tags]    desktop-test-data-set-8
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
@@ -260,15 +255,14 @@ User checks that there are not current dates in the past bookings
     mybookings.Validate Reservations Are Not For Today Or Later
 
 User can make free single booking and check info from downloaded calendar file
-    [Tags]    desktop-test-data-set-9    desktop-suite
+    [Tags]    desktop-test-data-set-9
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 
     Log    User creates reservation
     app_user.User Navigates To Single Booking Page
     app_user.User Uses Search To Find Right Unit    ${CURRENT_ALWAYS_FREE_UNIT}
-    app_user.User Selects The Time With Quick Reservation And Sets Time Variables
-    quick_reservation.User Clicks Submit Button In Quick Reservation
+    app_user.User Reserves A Free Quick Reservation Slot
     app_user.User Fills The Reservation Info For Always Free Unit And Submits
     app_user.User Checks The Reservation Info Is Right Before Submit
     reservation_lownav.Click Submit Button Continue
@@ -282,7 +276,7 @@ Check emails from reservations
     [Documentation]    Waits for paid booking test to complete, then verifies reservation emails.
     ...    This test depends on 'User can make paid single booking' completing successfully first.
     ...    Uses synchronization with polling to ensure proper test ordering.
-    [Tags]    desktop-test-data-set-10    desktop-suite
+    [Tags]    desktop-test-data-set-10
 
     ${skip_message}=    Catenate
     ...    Test is being skipped because 'User can make paid single booking' test either failed or did not complete successfully.
@@ -330,7 +324,7 @@ Check emails from reservations
     Release Lock    PAID_BOOKING_EMAIL_SEQUENCE
 
 User makes recurring reservation
-    [Tags]    desktop-test-data-set-11    desktop-suite
+    [Tags]    desktop-test-data-set-11
     common_setups_teardowns.Complete Test Setup From Tags
     app_common.User Logs In With Suomi Fi
 

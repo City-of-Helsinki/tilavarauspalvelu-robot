@@ -24,6 +24,7 @@ Resource    ../User/reservation_lownav.robot
 Resource    ../User/singlebooking.robot
 Resource    ../User/mybookings.robot
 Library     OperatingSystem
+Library     pabot.PabotLib
 
 
 *** Keywords ***
@@ -118,6 +119,22 @@ User Selects The Time With Quick Reservation And Sets Time Variables
 
     Log    ${TIME_OF_QUICK_RESERVATION}
     Log    ${TIME_OF_QUICK_RESERVATION_MINUS_T}
+
+User Reserves A Free Quick Reservation Slot
+    [Documentation]    Selects a free slot in quick reservation and submits it.
+    ...    A unit lock keeps parallel tests from picking overlapping slots.
+    ${lock_name}=    quick_reservation.Get Unit Lock Name
+    Acquire Lock    ${lock_name}
+    TRY
+        Wait Until Keyword Succeeds    3x    2s    User Selects And Submits Quick Reservation On Fresh Page
+    FINALLY
+        Release Lock    ${lock_name}
+    END
+
+User Selects And Submits Quick Reservation On Fresh Page
+    popups.Reload Page
+    User Selects The Time With Quick Reservation And Sets Time Variables
+    quick_reservation.User Clicks Submit Button In Quick Reservation
 
 User Checks That Quick Reservation Does Not Have Reserved Time
     [Arguments]    ${reservationtime}

@@ -168,7 +168,7 @@ ${RESERVATION_CARDNAME}                                 [data-testid="reservatio
 ###
 ${NOTIFICATION_ACTIVE_UNTIL}                            ${EMPTY}    # 12.2.2024
 ${NOTIFICATION_TYPE_NORMAL}                             [class*="Notification-module_notification__"]
-${NOTIFICATION_TYPE_ERROR}                              [class*="Notification-module_error___"]
+${NOTIFICATION_TYPE_ERROR}                              [class*="Notification-module_error__"]
 ${NOTIFICATION_TYPE_WARNING}                            [class*="Notification-module_alert__"]
 #
 ${NOTIFICATION_BANNER_MESSAGE_NAME}                     ${EMPTY}    # Normaali (sininen) + random value h5

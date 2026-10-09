@@ -280,7 +280,11 @@ Click Show Button
     Log    Attempting to click the show button inside the container
     ${button_element}=    Browser.Get Element
     ...    ${container} >> [data-testid="reservation-card__button--goto-reservation"]
-    Click    ${button_element}
+    custom_keywords.Click And Wait For Navigation With Retry
+    ...    ${button_element}
+    ...    [data-testid="reservation__content"]
+    ...    max_attempts=2
+    ...    nav_timeout=20s
     Log    Successfully clicked the show button
 
 Check Unitname And Reservation Time And Verify No Cancel Button

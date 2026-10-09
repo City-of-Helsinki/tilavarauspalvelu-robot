@@ -459,7 +459,7 @@ User Checks The Paid Reservation Info Is Right In Reservations
     ...    ${time_in_quickreservations}
     ...    ${reservation_number}
 
-    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
+    Wait For Elements State    [data-testid="reservation__content"]    visible
     #
     quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
     quick_reservation.Check The Price Of Quick Reservation    ${booking_price}
@@ -477,7 +477,7 @@ User Checks The Paid Reservation Info Is Right In Reservations
 User Checks Booking Info In Reservations With Number Of Participants And Description And Purpose
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}
 
-    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
+    Wait For Elements State    [data-testid="reservation__content"]    visible
     #
     quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
     quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
@@ -512,7 +512,7 @@ User Checks Booking Info In Reservations
 User Checks Booking Info In Reservations With Access Code
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}    ${access_code}
 
-    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
+    Wait For Elements State    [data-testid="reservation__content"]    visible
     #
     quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
     quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
@@ -529,7 +529,7 @@ User Checks Booking Info In Reservations With Access Code
 User Checks Booking Info In Reservations With All Reservation Info
     [Arguments]    ${booking_status}    ${booking_price}    ${time_in_quickreservations}
 
-    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
+    Wait For Elements State    [data-testid="reservation__content"]    visible
     #
     quick_reservation.Check The Quick Reservation Time    ${time_in_quickreservations}
     quick_reservation.Check Booking Number    ${BOOKING_NUM_ONLY}
@@ -548,7 +548,7 @@ User Checks Booking Info In Reservations With All Reservation Info
     mybookings.Check Reservation Age Group    ${AGEGROUP_OF_PERSONS}
 
 User Checks Booking Info In Reservations For Noncancelable Booking
-    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
+    Wait For Elements State    [data-testid="reservation__content"]    visible
 
     mybookings.Check Reservation Number From H1 Text    ${BOOKING_NUM_ONLY}
     mybookings.Check Reservation Status    ${MYBOOKINGS_STATUS_CONFIRMED}
@@ -562,7 +562,7 @@ User Checks Booking Info In Reservations For Noncancelable Booking
     quick_reservation.Check The Price Of Quick Reservation    ${SINGLEBOOKING_NO_PAYMENT}
 
 User Verifies Details Of Subvented Reservation After Admin Approval Without Payment
-    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
+    Wait For Elements State    [data-testid="reservation__content"]    visible
     Log
     ...    If the booking number comparison fails, verify that there are no duplicate times in the upcoming bookings list.
 
@@ -583,7 +583,7 @@ User Verifies Details Of Subvented Reservation After Admin Approval Without Paym
     mybookings.Check Reservation Booker Email    ${CURRENT_USER_EMAIL}
 
 User Checks The Rejected Reservation Info Is Right After Admin Handling
-    Wait For Elements State    [data-testid="reservation__terms-of-use"]    visible
+    Wait For Elements State    [data-testid="reservation__content"]    visible
     Log
     ...    If the booking number comparison fails, verify that there are no duplicate times in the upcoming bookings list.
 

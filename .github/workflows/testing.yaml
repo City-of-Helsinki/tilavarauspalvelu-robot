@@ -52,7 +52,7 @@ jobs:
 
       # Set up Docker with caching support
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       # Build Docker image with GitHub Actions cache for faster builds
       - name: Build and cache Docker image

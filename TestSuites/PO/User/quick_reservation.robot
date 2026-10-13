@@ -93,8 +93,6 @@ User Clicks Submit Button In Quick Reservation
     Log    Click result: ${click_result}
     Should Be True    ${click_result}[success]    msg=Failed to click button: ${click_result}
 
-    Sleep    5s    # Wait for navigation
-
     # Wait for the target page element
     Wait For Elements State    [data-testid="reservation__form--reservee-info"]    visible    timeout=20s
     ...    message=ERROR: Reservee info form not visible on booking details page. Check screenshot.
@@ -133,13 +131,15 @@ Check The Quick Reservation Time
 Check The Price Of Quick Reservation
     [Documentation]    Verifies the price in quick reservation info card.
     ...                Note: Price may not render immediately, causing mismatches like
-    ...                "40,00 €" vs "0 - 40,00 €". Sleep ensures price is fully rendered.
+    ...                "40,00 €" vs "0 - 40,00 €". Retries until the price is fully rendered.
     [Arguments]    ${price_with_text}
-    Sleep    3s    # Wait for price to render - sometimes doesn't render immediately
-    Wait For Load State    load    timeout=10s
+    Log    expected price string ${price_with_text}
+    Wait Until Keyword Succeeds    ${CONTENT_WAIT_TIMEOUT}    250ms    Info Card Price Should Be    ${price_with_text}
+
+Info Card Price Should Be
+    [Arguments]    ${price_with_text}
     ${reservation_price}=    Get Text    [data-testid="reservation__reservation-info-card__price"]
     ${normalized_string}=    custom_keywords.Remove Non-breaking Space    ${reservation_price}
-    Log    expected price string ${price_with_text}
     Should Be Equal    ${normalized_string}    ${price_with_text}
 
 Get Booking Number

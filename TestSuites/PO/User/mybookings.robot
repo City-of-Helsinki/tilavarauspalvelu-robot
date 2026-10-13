@@ -15,9 +15,7 @@ Check My Bookings H1
 
 User Cancel Booking
     Wait For Elements State    data-testid=reservation-detail__button--cancel    visible
-    Click    data-testid=reservation-detail__button--cancel
-    Sleep    4s
-    Wait For Load State    load    timeout=15s
+    custom_keywords.Click And Wait For Page    data-testid=reservation-detail__button--cancel
 
 Click Reason For Cancellation
     # Wait For Elements State    data-testid=reservation-detail__button--cancel    visible
@@ -35,10 +33,7 @@ Select Reason For Cancellation
 Click Cancel Button
     Sleep    1s
     Wait For Elements State    [data-testid="reservation-cancel__button--cancel"]    enabled
-    Click    [data-testid="reservation-cancel__button--cancel"]
-    # Wait for reservation status to change
-    Sleep    4s
-    Wait For Load State    load    timeout=15s
+    custom_keywords.Click And Wait For Page    [data-testid="reservation-cancel__button--cancel"]
 
 Check Cancel Button Is Not Found In Reservations
     Sleep    1s
@@ -215,6 +210,13 @@ Validate Reservations Are Not For Today Or Later
     # Log a success message if no invalid reservations are found
     Log    Validation completed successfully: No reservations found for today or later.
 
+Wait For Reservation Cards
+    [Documentation]    Fails after a short wait if the list has no reservation cards at all.
+    ...    The list is fetched once when the page opens, so a retry has to reload it.
+    Wait For Elements State    [data-testid="reservation-card__container"] >> nth=0    visible
+    ...    timeout=${CONTENT_WAIT_TIMEOUT}
+    ...    message=No reservation cards in the list
+
 Check Unitname And Reservation Time And Click Show
     [Documentation]    This keyword verifies if a reservation card with a specified unit name and reservation time is present in the list,
     ...    and clicks the "Show" button on the matching card if found.
@@ -231,6 +233,7 @@ Check Unitname And Reservation Time And Click Show
     Log    ${reservation_time}
 
     # Retrieve all reservation card containers and log their count
+    Wait For Reservation Cards
     ${containers}=    Browser.Get Elements    [data-testid="reservation-card__container"]
     ${count}=    Get Length    ${containers}
     Log    Found ${count} reservation card containers.
@@ -301,6 +304,7 @@ Check Unitname And Reservation Time And Verify No Cancel Button
     # ${reservation_time}=    Set Variable    Ke 24.7.2024 klo 09:30–09:45
 
     # 1. Source Data Verification
+    Wait For Reservation Cards
     ${containers}=    Browser.Get Elements    [data-testid="reservation-card__container"]
     ${count}=    Get Length    ${containers}
     Log    Found ${count} reservation card containers.

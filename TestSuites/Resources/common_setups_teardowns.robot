@@ -46,8 +46,8 @@ Complete Test Setup From Tags
 
 Complete Test Teardown
     [Documentation]    Complete teardown with session cleanup
-    Sleep    2s
-    # Always take screenshot on failure
+    # Always take screenshot on failure, after giving the page a moment to settle
+    Run Keyword If Test Failed    Sleep    2s
     Run Keyword If Test Failed    Take Screenshot    EMBED
 
     # Cleanup process

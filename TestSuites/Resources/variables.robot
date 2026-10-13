@@ -28,6 +28,8 @@ ${URL_MAIL}                                             https://www.google.com/i
 ${DOWNLOAD_DIR}                                         ${CURDIR}${/}downloads
 ${EMAIL_FILE_PATH}                                      ${CURDIR}${/}downloads${/}cleaned_emails.json
 ${BROWSER_TIMEOUT_GLOBAL}                               40s
+# Upper limit for waiting slowly rendered content, the waits return as soon as the content is there
+${CONTENT_WAIT_TIMEOUT}                                 10s
 
 # Email Testing (New Cache-based API)
 ${ROBOT_EMAIL}                                          django_email_robot@mailiposti.com

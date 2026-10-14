@@ -436,6 +436,7 @@ jobs:
         if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true' && github.event.inputs.execution_mode == 'parallel'
         run: |
           echo "🚀 Phase 4: Combining test results..."
+          set +e  # Rebot exits with the number of failed tests, the exit code is checked below
 
           # Check if both output files exist
           if [ ! -f "Reports/full/parallel-output.xml" ]; then

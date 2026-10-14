@@ -39,13 +39,7 @@ Login Suomi Fi
     ...    nav_timeout=15s
 
     # Click continue to complete login
-    Click    css=#continue-button
-    Sleep    5s
-
-    # Check for cookies after login
-    ${fresh_cookies}=    Get Cookies
-    ${fresh_cookie_count}=    Get Length    ${fresh_cookies}
-    Log    "🔍 Login cookies after Tunnistamo: ${fresh_cookie_count}"
+    custom_keywords.Click And Wait For Page    css=#continue-button    timeout=15s
 
 Login Django Admin
     [Documentation]    The input_password argument is kept for backward compatibility but is not used
@@ -106,6 +100,5 @@ Login Suomi Fi Mobile
     ...    max_attempts=3
     ...    nav_timeout=15s
 
-    # Click continue to complete login - wait for page to fully load
-    Click    css=#continue-button
-    Sleep    5s    # wait for the page to load
+    # Click continue to complete login
+    custom_keywords.Click And Wait For Page    css=#continue-button    timeout=15s

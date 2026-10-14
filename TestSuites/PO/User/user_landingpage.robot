@@ -7,10 +7,14 @@ Library     Browser
 *** Keywords ***
 Check The User Landing Page H1
     [Arguments]    ${expected_h1_text}
+    Wait Until Keyword Succeeds    ${BROWSER_TIMEOUT_GLOBAL}    250ms    Landing Page H1 Should Contain    ${expected_h1_text}
+    Log    ${expected_h1_text}
+
+Landing Page H1 Should Contain
+    [Arguments]    ${expected_h1_text}
     Wait For Elements State    css=h1    visible    timeout=15s
     ${landingPageH1}=    Get Text    css=h1
     Should Contain    ${landingPageH1}    ${expected_h1_text}
-    Log    ${expected_h1_text}
 
 Check The Name In The Login Button
     Log    ${BASIC_USER_MALE_FULLNAME}

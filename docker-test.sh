@@ -492,6 +492,7 @@ run_all_suites() {
     local docker_cmd="docker run --rm $docker_args \"$IMAGE_NAME:latest\""
 
     docker_cmd="$docker_cmd pabot \
+        --testlevelsplit \
         --processes $ALL_SUITES_PROCESSES \
         --pabotlib \
         --exclude serialonly \

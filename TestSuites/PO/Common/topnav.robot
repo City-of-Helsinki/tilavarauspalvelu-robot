@@ -50,9 +50,7 @@ Check Dropdown Menu Has User Info
     Should Be Equal    ${Topnav_Login_Button_Text}    ${name}
 
 Navigate To Single Booking Page
-    Click    header >> [href="/search"]:text-is("${SINGLEBOOKING_FI}")
-    Sleep    3s
-    Wait For Load State    load    timeout=15s
+    custom_keywords.Click And Wait For Page    header >> [href="/search"]:text-is("${SINGLEBOOKING_FI}")    /search
 
 Navigate To My Bookings
     Click    header >> [href="/reservations"]:text-is("${MYBOOKINGS_FI}")

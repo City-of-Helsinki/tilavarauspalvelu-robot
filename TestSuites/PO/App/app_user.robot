@@ -80,15 +80,20 @@ User Uses Search To Find Right Unit
     singlebooking.Click Advanced Search If Search Not Visible
     singlebooking.Search Units By Name    ${nameoftheunit}
 
-    # Waiting results to load
-    Sleep    4s
+    # A click is lost if the result list is re-rendered at that moment, so click again until the unit page opens
+    Wait Until Keyword Succeeds    3x    1s    Open Unit From Search Results    ${nameoftheunit}
+
+Open Unit From Search Results
+    [Arguments]    ${nameoftheunit}
+
+    ${url}=    Get Url
+    ${unit_page_open}=    Run Keyword And Return Status    Should Contain    ${url}    /reservation-unit/
+    IF    ${unit_page_open}    RETURN
 
     custom_keywords.Find And Click Element With Text
     ...    [data-testid="list-with-pagination__list--container"] >> [data-testid="card__heading"]
     ...    ${nameoftheunit}
-
-    # Waiting results to load
-    Sleep    4s
+    custom_keywords.Wait For Url To Contain    /reservation-unit/    timeout=8s
 
 User Selects The Time With Quick Reservation And Sets Time Variables
     [Documentation]    here is keyword --> data_modification.Set info card duration time info
@@ -445,10 +450,12 @@ User Can See Upcoming Booking In List And Clicks It
     Sleep    1s
     Log    ${unitname}
     Log    ${reservationtime}
-    mybookings.Check Unitname And Reservation Time And Click Show
+    # The list is fetched once when the page opens, so reload it if the booking is not in it
+    custom_keywords.Retry With Recovery
+    ...    mybookings.Check Unitname And Reservation Time And Click Show
+    ...    Reload
     ...    ${unitname}
     ...    ${reservationtime}
-    Sleep    5s    # wait for the page to load
 
 User Can See Upcoming Noncancelable Booking In List And Clicks It
     [Arguments]    ${unitname}    ${reservationtime}
@@ -456,7 +463,11 @@ User Can See Upcoming Noncancelable Booking In List And Clicks It
     Log    ${unitname}
     Log    ${reservationtime}
     mybookings.Check My Bookings H1    ${MYBOOKINGS_FI}
-    mybookings.Check Unitname And Reservation Time And Verify No Cancel Button    ${unitname}    ${reservationtime}
+    custom_keywords.Retry With Recovery
+    ...    mybookings.Check Unitname And Reservation Time And Verify No Cancel Button
+    ...    Reload
+    ...    ${unitname}
+    ...    ${reservationtime}
     mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname}
     ...    ${reservationtime}

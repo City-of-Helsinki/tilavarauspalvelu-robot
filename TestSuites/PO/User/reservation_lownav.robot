@@ -1,11 +1,10 @@
 *** Settings ***
 Library     Browser
+Resource    ../../Resources/custom_keywords.robot
 
 
 *** Keywords ***
 Click Submit Button Continue
     Sleep    500ms
     Wait For Elements State    [data-testid="reservation__button--continue"]    enabled
-    Click    [data-testid="reservation__button--continue"]
-    Sleep    4s
-    Wait For Load State    load    timeout=50s
+    custom_keywords.Click And Wait For Page    [data-testid="reservation__button--continue"]

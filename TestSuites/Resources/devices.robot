@@ -107,8 +107,14 @@ Apply Staggered Startup Strategy
     IF    $download_dir    Log    📂 Download Dir: ${download_dir}
 
     # Staggered startup strategy for parallel execution
+    # Only the first test of each worker needs the long stagger, later tests start at different times anyway
     ${pool_id}=    Get Variable Value    ${PABOTEXECUTIONPOOLID}    ${NONE}
+    ${is_first_on_worker}=    Set Variable    ${FALSE}
     IF    '${pool_id}' != '${NONE}'
+        ${worker_started}=    Get Parallel Value For Key    WORKER_STARTED_${pool_id}
+        ${is_first_on_worker}=    Evaluate    not $worker_started
+    END
+    IF    ${is_first_on_worker}
         # Progressive delay: 0s, 8s, 16s, 24s, 32s, 40s, etc.
         ${base_delay}=    Evaluate    int(${pool_id}) * 8
         # Add small random component to prevent perfect synchronization
@@ -119,9 +125,10 @@ Apply Staggered Startup Strategy
         Log    "⏱️ Worker ${pool_id}: Staggering ${browser_type} startup by ${formatted_delay} seconds"
         Log    "📊 Delay breakdown: Base=${base_delay}s + Random=${random_offset_fmt}s = Total=${formatted_delay}s"
         Sleep    ${total_delay}s
+        Set Parallel Value For Key    WORKER_STARTED_${pool_id}    ${TRUE}
         Log    "✅ Stagger delay completed for Worker ${pool_id}"
     ELSE
-        # Single execution - small random delay to avoid system resource conflicts
+        # Single execution or a later test on the worker - small random delay to avoid system resource conflicts
         ${random_delay}=    Evaluate    random.uniform(0.5, 1.5)    random
         ${random_delay_fmt}=    Evaluate    f"{${random_delay}:.1f}"
         Log    "⏱️ Single execution: Adding ${random_delay_fmt}s random delay"
@@ -388,7 +395,6 @@ Log Current Time
     Log    Current local time: ${current_time}
 
 Log Current Cookies
-    Sleep    4s
     ${fresh_cookies}=    Get Cookies    return_type=string
     Log    "🔍 cookies: ${fresh_cookies}"
 

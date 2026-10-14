@@ -13,29 +13,16 @@ Library             Collections
 
 *** Keywords ***
 Find And Click Element With Text
-    [Documentation]    This keyword searches for an element containing the specified text within a list of elements identified by the given selector.
+    [Documentation]    This keyword clicks the first element with exactly the specified text among the elements identified by the given selector.
+    ...    It waits for such an element to appear, so slowly rendered lists are waited for.
+    ...    The text has to be inside one element, text split over several child elements is not matched.
     [Arguments]    ${element_with_text}    ${wanted_text}
 
-    Log    Searching for ${element_with_text} with text: ${wanted_text}
-    ${elements_with_text}=    Browser.Get Elements    ${element_with_text}
-    ${found}=    Set Variable    False    # Initialize a flag to track if the element is found
-
-    FOR    ${element}    IN    @{elements_with_text}
-        ${el_text}=    Get Text    ${element}
-        ${el_text}=    Strip String    ${el_text}    # Remove leading and trailing whitespaces for webkit
-        Log    element is: ${element}
-        Log    Text found in element: ${el_text}
-
-        IF    $el_text == $wanted_text
-            Click    ${element}
-            Log    Element with text "${wanted_text}" clicked.
-            ${found}=    Set Variable    True    # Set the flag to True since the element is found and clicked
-            BREAK
-        END
-    END
-
-    # Fail the test if no element was found
-    IF    not ${found}    Fail    Element with text "${wanted_text}" not found
+    ${target}=    Set Variable    ${element_with_text} >> text="${wanted_text}" >> nth=0
+    Wait For Elements State    ${target}    visible    timeout=${CONTENT_WAIT_TIMEOUT}
+    ...    message=Element with text "${wanted_text}" not found
+    Click    ${target}
+    Log    Element with text "${wanted_text}" clicked.
 
 Click And Wait For Navigation With Retry
     [Documentation]    Clicks an element and waits for navigation to complete with retry logic.
@@ -56,7 +43,6 @@ Click And Wait For Navigation With Retry
         # Click the element
         Focus    ${click_selector}
         Click    ${click_selector}
-        Sleep    5s    # wait for the page to load
 
         # Wait for target element to appear (indicates successful navigation)
         ${target_exists}=    Run Keyword And Return Status
@@ -85,6 +71,48 @@ Click And Wait For Navigation With Retry
     END
 
     Fail    ERROR: Failed to navigate after ${max_attempts} attempts. Target element '${target_element_selector}' not found. Check screenshot.
+
+Click And Wait For Page
+    [Documentation]    Clicks an element and waits until the URL has changed, or contains ${url_part} when given.
+    ...    Content of the new page is waited for by the keywords that use it.
+    [Arguments]    ${click_selector}    ${url_part}=${EMPTY}    ${timeout}=${BROWSER_TIMEOUT_GLOBAL}
+
+    ${url_before}=    Get Url
+    Click    ${click_selector}
+    Wait Until Keyword Succeeds    ${timeout}    250ms    Url Should Have Changed    ${url_before}    ${url_part}
+    # Returns at once after client side navigation, waits for the document after a full page navigation
+    Wait For Load State    load    timeout=50s
+
+Wait For Url To Contain
+    [Arguments]    ${url_part}    ${timeout}=20s
+
+    Wait Until Keyword Succeeds    ${timeout}    250ms    Url Should Have Changed    ${EMPTY}    ${url_part}
+
+Url Should Have Changed
+    [Arguments]    ${url_before}    ${url_part}
+
+    ${url}=    Get Url
+    IF    $url_part != ''
+        Should Contain    ${url}    ${url_part}
+    ELSE
+        Should Not Be Equal    ${url}    ${url_before}
+    END
+
+Retry With Recovery
+    [Documentation]    Runs a keyword and, between failed attempts, a recovery keyword (for example Reload).
+    ...    Fails with the error of the last attempt. Use only for steps that are safe to repeat.
+    [Arguments]    ${keyword}    ${recovery}    @{args}    ${attempts}=3
+
+    FOR    ${attempt}    IN RANGE    1    ${attempts} + 1
+        TRY
+            Run Keyword    ${keyword}    @{args}
+            RETURN
+        EXCEPT    AS    ${error}
+            Log    Attempt ${attempt}/${attempts} of ${keyword} failed: ${error}    level=WARN
+            IF    ${attempt} == ${attempts}    Fail    ${error}
+            Run Keyword    ${recovery}
+        END
+    END
 
 Verify Element With Text Is Not Found
     [Documentation]    This keyword verifies that an element containing the specified text is NOT found within a list of elements identified by the given selector.
@@ -591,7 +619,9 @@ Check Text Of Element With Normalization And Logging To File
     Fail    Texts still do not match after normalization. Differences logged to debug_${TEST NAME}.txt.
 
 Check Elements Text
-    [Documentation]    Checks element text with automatic space stripping and flexible comparison options
+    [Documentation]    Checks element text with automatic space stripping and flexible comparison options.
+    ...    Retries until the text matches, so slowly rendered text is waited for.
+    ...    With return_status=True the text is checked once and True or False is returned.
     [Arguments]
     ...    ${Element}
     ...    ${Expected text}
@@ -600,15 +630,11 @@ Check Elements Text
     ...    ${return_status}=False
     ...    ${message}=${NONE}
 
-    Sleep    1s
     Log    Element: ${Element}
     Log    Expected text: ${Expected text}
 
     # Wait until the element is visible on the page
     Wait For Elements State    ${Element}    visible    timeout=10s
-
-    # Retrieve the text content of the element
-    ${Elements_text}=    Get Text    ${Element}
 
     # Determine the error message to use
     ${default_msg}=    Set Variable    Element text does not match. Element: ${Element}
@@ -617,15 +643,21 @@ Check Elements Text
     # Return status boolean for loops vs fail test for assertions
     IF    ${return_status}
         ${status}=    Run Keyword And Return Status
-        ...    Should Be Equal    ${Elements_text}    ${Expected text}
-        ...    strip_spaces=${strip_spaces}    ignore_case=${ignore_case}
-        ...    msg=${final_msg}
+        ...    Element Text Should Be
+        ...    ${Element}    ${Expected text}    ${strip_spaces}    ${ignore_case}    ${final_msg}
         RETURN    ${status}
     ELSE
-        Should Be Equal    ${Elements_text}    ${Expected text}
-        ...    strip_spaces=${strip_spaces}    ignore_case=${ignore_case}
-        ...    msg=${final_msg}
+        Wait Until Keyword Succeeds    ${CONTENT_WAIT_TIMEOUT}    250ms
+        ...    Element Text Should Be
+        ...    ${Element}    ${Expected text}    ${strip_spaces}    ${ignore_case}    ${final_msg}
     END
+
+Element Text Should Be
+    [Arguments]    ${element}    ${expected_text}    ${strip_spaces}    ${ignore_case}    ${message}
+
+    ${text}=    Get Text    ${element}
+    Should Be Equal    ${text}    ${expected_text}
+    ...    strip_spaces=${strip_spaces}    ignore_case=${ignore_case}    msg=${message}
 
 Check Element Contains Text
     [Documentation]    Checks if element text contains expected text using Should Contain

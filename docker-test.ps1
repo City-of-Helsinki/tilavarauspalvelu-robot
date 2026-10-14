@@ -457,6 +457,7 @@ function Start-AllSuites {
             "-v", "${OUTPUT_DIR}:/opt/robotframework/output",
             "${IMAGE_NAME}:latest",
             "pabot",
+            "--testlevelsplit",
             "--processes", $ALL_SUITES_PROCESSES,
             "--pabotlib",
             "--exclude", "serialonly",

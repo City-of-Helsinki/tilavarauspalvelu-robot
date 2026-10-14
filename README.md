@@ -162,6 +162,19 @@ Each test case is tagged (e.g., `[Tags] desktop-test-data-set-0 desktop-suite`),
 
 📖 **For detailed information on tags, data sets, flow diagrams, and adding new tests, see [PARALLEL_DATA_SETUP_GUIDE.md](PARALLEL_DATA_SETUP_GUIDE.md)**
 
+### 🔁 Rerunning Failed Tests
+
+At the end of a run, failed and skipped tests are rerun once with the same options, and the results are merged into the final report, which shows both the first and the rerun result (rerun tests get the `rerun` tag). Skipped tests also fail the run, because a test is skipped when a test it needs has failed (e.g. `Check emails from reservations` is skipped when `User can make paid single booking` fails). Rerun is enabled by default in `docker-test.sh`, `docker-test.ps1` and GitHub Actions (the `rerun_failed_tests` input).
+
+To disable rerun locally, set `rerun_failed_tests` to `false` in `docker-config.json`:
+```json
+{
+  "execution": {
+    "rerun_failed_tests": false
+  }
+}
+```
+
 ## 📈 Test Reports
 
 After running tests, reports are generated in the `output` directory:

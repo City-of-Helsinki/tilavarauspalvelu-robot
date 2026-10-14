@@ -30,6 +30,11 @@ on:
         required: false
         default: false
         type: boolean
+      rerun_failed_tests:
+        description: "Rerun failed tests once at the end of the run and merge the results"
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   test:
@@ -87,14 +92,17 @@ jobs:
             echo "base_flags=--variable FORCE_SINGLE_USER:True $HAR_VARIABLE" >> $GITHUB_OUTPUT
           fi
 
+          # Test files are kept separate from the options so that the rerun of failed tests
+          # can override the output options (the last value of an option wins)
           case "${{ github.event.inputs.test_suite }}" in
             Smoke)
               # Run only smoke tests from specific files
               if [ "$EXECUTION_MODE" = "parallel" ]; then
-                echo "suite_args=--processes 2 --outputdir /opt/robotframework/reports --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--processes 2 --outputdir /opt/robotframework/reports --include smoke --nostatusrc --name \"Smoke Tests\"" >> $GITHUB_OUTPUT
               else
-                echo "suite_args=--outputdir /opt/robotframework/reports --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--outputdir /opt/robotframework/reports --include smoke --nostatusrc --name \"Smoke Tests\"" >> $GITHUB_OUTPUT
               fi
+              echo "suite_files=/opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
               echo "run_type=smoke_only" >> $GITHUB_OUTPUT
               ;;
             "All Tests")
@@ -102,63 +110,74 @@ jobs:
               if [ "$EXECUTION_MODE" = "parallel" ]; then
                 echo "smoke_args=--processes 2 --outputdir /opt/robotframework/reports/smoke --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
                 # For parallel mode: run parallel-safe suites (excluding notifications)
-                echo "parallel_args=--processes $ALL_SUITES_PROCESSES --outputdir /opt/robotframework/reports/full --output parallel-output.xml --log parallel-log.html --report parallel-report.html --nostatusrc --name \"Parallel Suites\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot /opt/robotframework/tests/Tests_users_with_admin_desktop.robot /opt/robotframework/tests/Tests_user_mobile_android_FI.robot /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+                echo "parallel_args=--processes $ALL_SUITES_PROCESSES --outputdir /opt/robotframework/reports/full --output parallel-output.xml --log parallel-log.html --report parallel-report.html --nostatusrc --name \"Parallel Suites\"" >> $GITHUB_OUTPUT
+                echo "parallel_files=/opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot /opt/robotframework/tests/Tests_users_with_admin_desktop.robot /opt/robotframework/tests/Tests_user_mobile_android_FI.robot /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+                # Notifications run sequentially after the parallel suites
+                echo "notifications_args=--variable FORCE_SINGLE_USER:True $HAR_VARIABLE --outputdir /opt/robotframework/reports/full --output notifications-output.xml --log notifications-log.html --report notifications-report.html --nostatusrc" >> $GITHUB_OUTPUT
+                echo "notifications_files=/opt/robotframework/tests/Tests_admin_notifications_serial.robot" >> $GITHUB_OUTPUT
               else
                 echo "smoke_args=--outputdir /opt/robotframework/reports/smoke --include smoke --name \"Smoke Tests\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
-                echo "full_args=--outputdir /opt/robotframework/reports/full --nostatusrc --name \"All Test Suites\" /opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot /opt/robotframework/tests/Tests_admin_notifications_serial.robot /opt/robotframework/tests/Tests_users_with_admin_desktop.robot /opt/robotframework/tests/Tests_user_mobile_android_FI.robot /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+                echo "full_args=--outputdir /opt/robotframework/reports/full --nostatusrc --name \"All Test Suites\"" >> $GITHUB_OUTPUT
+                echo "full_files=/opt/robotframework/tests/Tests_user_desktop_FI.robot /opt/robotframework/tests/Tests_admin_desktop_FI.robot /opt/robotframework/tests/Tests_admin_notifications_serial.robot /opt/robotframework/tests/Tests_users_with_admin_desktop.robot /opt/robotframework/tests/Tests_user_mobile_android_FI.robot /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
               fi
               echo "run_type=smoke_first" >> $GITHUB_OUTPUT
               ;;
             Tests_user_desktop_FI)
               # Run specific desktop user tests
               if [ "$EXECUTION_MODE" = "parallel" ]; then
-                echo "suite_args=--processes $DESKTOP_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_desktop_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--processes $DESKTOP_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               else
-                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_desktop_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               fi
+              echo "suite_files=/opt/robotframework/tests/Tests_user_desktop_FI.robot" >> $GITHUB_OUTPUT
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
             Tests_user_mobile_iphone_FI)
               # Run iPhone mobile tests
               if [ "$EXECUTION_MODE" = "parallel" ]; then
-                echo "suite_args=--processes $MOBILE_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--processes $MOBILE_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               else
-                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               fi
+              echo "suite_files=/opt/robotframework/tests/Tests_user_mobile_iphone_FI.robot" >> $GITHUB_OUTPUT
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
             Tests_user_mobile_android_FI)
               # Run Android mobile tests
               if [ "$EXECUTION_MODE" = "parallel" ]; then
-                echo "suite_args=--processes $MOBILE_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_android_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--processes $MOBILE_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               else
-                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_user_mobile_android_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               fi
+              echo "suite_files=/opt/robotframework/tests/Tests_user_mobile_android_FI.robot" >> $GITHUB_OUTPUT
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
             Tests_users_with_admin_desktop)
               # Run admin user tests
               if [ "$EXECUTION_MODE" = "parallel" ]; then
-                echo "suite_args=--processes $ADMIN_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_users_with_admin_desktop.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--processes $ADMIN_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               else
-                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_users_with_admin_desktop.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               fi
+              echo "suite_files=/opt/robotframework/tests/Tests_users_with_admin_desktop.robot" >> $GITHUB_OUTPUT
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
             Tests_admin_desktop_FI)
               # Run admin desktop tests
               if [ "$EXECUTION_MODE" = "parallel" ]; then
-                echo "suite_args=--processes $ADMIN_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--processes $ADMIN_PROCESSES --outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               else
-                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
+                echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
               fi
+              echo "suite_files=/opt/robotframework/tests/Tests_admin_desktop_FI.robot" >> $GITHUB_OUTPUT
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
             Tests_admin_notifications_serial)
               # Admin notifications always run sequentially (marked as serialonly)
               echo "execution_tool=robot" >> $GITHUB_OUTPUT
               echo "base_flags=--variable FORCE_SINGLE_USER:True $HAR_VARIABLE" >> $GITHUB_OUTPUT
-              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc /opt/robotframework/tests/Tests_admin_notifications_serial.robot" >> $GITHUB_OUTPUT
+              echo "suite_args=--outputdir /opt/robotframework/reports --nostatusrc" >> $GITHUB_OUTPUT
+              echo "suite_files=/opt/robotframework/tests/Tests_admin_notifications_serial.robot" >> $GITHUB_OUTPUT
               echo "run_type=single_suite" >> $GITHUB_OUTPUT
               ;;
           esac
@@ -227,7 +246,8 @@ jobs:
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
             robotframework-tests:latest pabot \
             ${{ steps.config.outputs.base_flags }} \
-            ${{ steps.config.outputs.parallel_args }}
+            ${{ steps.config.outputs.parallel_args }} \
+            ${{ steps.config.outputs.parallel_files }}
 
           PARALLEL_EXIT_CODE=$?
           echo "PARALLEL_EXIT_CODE=$PARALLEL_EXIT_CODE" >> $GITHUB_ENV
@@ -239,74 +259,18 @@ jobs:
         run: |
           echo "🚀 Phase 2: Running sequential notification tests..."
           set +e  # Don't exit on error to ensure we can collect results
-
-          # Determine HAR variable for robot command (not pabot)
-          if [ "${{ github.event.inputs.enable_har_recording }}" = "true" ]; then
-            HAR_VAR="--variable ENABLE_HAR_RECORDING:True"
-          else
-            HAR_VAR="--variable ENABLE_HAR_RECORDING:False"
-          fi
-
           docker run --rm \
             -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
             -v "${{ github.workspace }}/TestSuites:/opt/robotframework/tests" \
             -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
             robotframework-tests:latest robot \
-            --variable FORCE_SINGLE_USER:True \
-            $HAR_VAR \
-            --outputdir /opt/robotframework/reports/full \
-            --output notifications-output.xml \
-            --log notifications-log.html \
-            --report notifications-report.html \
-            --nostatusrc \
-            /opt/robotframework/tests/Tests_admin_notifications_serial.robot
+            ${{ steps.config.outputs.notifications_args }} \
+            ${{ steps.config.outputs.notifications_files }}
 
           NOTIFICATIONS_EXIT_CODE=$?
           echo "NOTIFICATIONS_EXIT_CODE=$NOTIFICATIONS_EXIT_CODE" >> $GITHUB_ENV
           echo "✅ Notifications suite completed with exit code: $NOTIFICATIONS_EXIT_CODE"
-
-      # For parallel mode: Phase 3 - Combine results with rebot
-      - name: Combine Test Results (Phase 3)
-        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true' && github.event.inputs.execution_mode == 'parallel'
-        run: |
-          echo "🚀 Phase 3: Combining test results..."
-
-          # Check if both output files exist
-          if [ ! -f "Reports/full/parallel-output.xml" ]; then
-            echo "::warning title=Missing Results::Parallel output file not found, skipping result combination"
-            exit 0
-          fi
-
-          if [ ! -f "Reports/full/notifications-output.xml" ]; then
-            echo "::warning title=Missing Results::Notifications output file not found, skipping result combination"
-            exit 0
-          fi
-
-          # Combine results using rebot
-          docker run --rm \
-            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
-            robotframework-tests:latest rebot \
-            --outputdir /opt/robotframework/reports/full \
-            --output output.xml \
-            --log log.html \
-            --report report.html \
-            --name "All Test Suites" \
-            /opt/robotframework/reports/full/parallel-output.xml \
-            /opt/robotframework/reports/full/notifications-output.xml
-
-          REBOT_EXIT_CODE=$?
-
-          # Rebot returns exit codes 0-250 where the code indicates number of failed tests
-          if [ $REBOT_EXIT_CODE -le 250 ]; then
-            if [ $REBOT_EXIT_CODE -eq 0 ]; then
-              echo "✅ Results combined successfully (all tests passed)"
-            else
-              echo "✅ Results combined successfully ($REBOT_EXIT_CODE test(s) failed - see combined report)"
-            fi
-          else
-            echo "::error title=Rebot Failed::Result combination failed with exit code: $REBOT_EXIT_CODE"
-          fi
 
       # For sequential mode: Run all suites together
       - name: Run Full Test Suite (Sequential)
@@ -321,7 +285,8 @@ jobs:
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
             robotframework-tests:latest robot \
             ${{ steps.config.outputs.base_flags }} \
-            ${{ steps.config.outputs.full_args }}
+            ${{ steps.config.outputs.full_args }} \
+            ${{ steps.config.outputs.full_files }}
 
           ROBOT_EXIT_CODE=$?
           echo "✅ Full test suite completed with exit code: $ROBOT_EXIT_CODE"
@@ -338,7 +303,185 @@ jobs:
             -v "${{ github.workspace }}/output:/opt/robotframework/output" \
             robotframework-tests:latest ${{ steps.config.outputs.execution_tool }} \
             ${{ steps.config.outputs.base_flags }} \
-            ${{ steps.config.outputs.suite_args }}
+            ${{ steps.config.outputs.suite_args }} \
+            ${{ steps.config.outputs.suite_files }}
+
+      # Rerun failed and skipped tests once and merge the results with the first run (Phase 3 in parallel "All Tests" mode)
+      # Skipped tests are handled like failed tests: they are rerun and they fail the run.
+      # A test is skipped when a test it needs has failed, e.g. "Check emails from reservations"
+      # is skipped when "User can make paid single booking" fails.
+      # The first run is kept as is (single runs: first-run-*.xml/html), rerun results go to rerun/
+      # and the merged result is written to output.xml/log.html/report.html (single runs) or <prefix>merged-output.xml
+      - name: Rerun Failed Tests
+        if: ${{ !cancelled() && github.event.inputs.rerun_failed_tests == 'true' && env.SMOKE_EXECUTION_FAILED != 'true' }}
+        run: |
+          set +e  # Don't exit on error to ensure we can collect results
+          REPORTS=/opt/robotframework/reports
+
+          # Count failed and skipped tests in an output file (path relative to Reports/)
+          count_failed_or_skipped() {
+            docker run --rm \
+              -v "${{ github.workspace }}/Reports:$REPORTS" \
+              robotframework-tests:latest \
+              python3 -c "import sys; from robot.api import ExecutionResult; s = ExecutionResult(sys.argv[1]).statistics.total; print(s.failed + s.skipped)" \
+              "$REPORTS/$1"
+          }
+
+          # Build --test options for the failed and skipped tests in an output file (path relative to Reports/)
+          rerun_test_options() {
+            docker run --rm \
+              -v "${{ github.workspace }}/Reports:$REPORTS" \
+              robotframework-tests:latest \
+              python3 -c "import re, shlex, sys; from robot.api import ExecutionResult; print(' '.join('--test ' + shlex.quote(re.sub(r'([\[*?])', r'[\1]', t.full_name)) for t in ExecutionResult(sys.argv[1]).suite.all_tests if not t.passed))" \
+              "$REPORTS/$1"
+          }
+
+          # Rerun the failed and skipped tests of one run and merge the results with the first run
+          # Arguments: tool, run options, test files, reports subdirectory ("." or "full"), output prefix ("" for single runs)
+          rerun_failed() {
+            local tool=$1 options=$2 files=$3 dir=$4 prefix=$5
+            local original="$dir/${prefix}output.xml"
+            local merged_output="${prefix}merged-output.xml" merged_log=NONE merged_report=NONE
+
+            if [ ! -f "Reports/$original" ]; then
+              echo "::warning title=Rerun Skipped::$original not found"
+              return
+            fi
+
+            local failed
+            failed=$(count_failed_or_skipped "$original")
+            if ! [[ "$failed" =~ ^[0-9]+$ ]]; then
+              echo "::warning title=Rerun Skipped::Could not count failed and skipped tests in $original"
+              return
+            fi
+            if [ "$failed" -eq 0 ]; then
+              echo "✅ No failed or skipped tests in $original, nothing to rerun"
+              return
+            fi
+
+            local test_options
+            test_options=$(rerun_test_options "$original")
+            if [ -z "$test_options" ]; then
+              echo "::warning title=Rerun Skipped::Could not read the failed and skipped tests from $original"
+              return
+            fi
+
+            if [ -z "$prefix" ]; then
+              # Keep the first run as first-run-* files, the merged result replaces output.xml/log.html/report.html
+              if ! docker run --rm \
+                -v "${{ github.workspace }}/Reports:$REPORTS" \
+                robotframework-tests:latest rebot \
+                --nostatusrc \
+                --outputdir "$REPORTS/$dir" \
+                --output first-run-output.xml \
+                --log first-run-log.html \
+                --report first-run-report.html \
+                "$REPORTS/$original"; then
+                echo "::warning title=Rerun Skipped::Saving the first run results of $original failed"
+                return
+              fi
+              original="$dir/first-run-output.xml"
+              merged_output=output.xml merged_log=log.html merged_report=report.html
+            fi
+
+            echo "🔁 Rerunning $failed failed or skipped test(s) from $original..."
+            # eval keeps the quoting of options such as --name "Parallel Suites" and the test names
+            eval "docker run --rm \
+              -e WAF_BYPASS_SECRET -e ROBOT_API_TOKEN -e DJANGO_ADMIN_PASSWORD -e TZ=Europe/Helsinki \
+              -v \"${{ github.workspace }}/TestSuites:/opt/robotframework/tests\" \
+              -v \"${{ github.workspace }}/Reports:$REPORTS\" \
+              -v \"${{ github.workspace }}/output:/opt/robotframework/output\" \
+              robotframework-tests:latest $tool \
+              $options \
+              $test_options \
+              --settag rerun \
+              --outputdir $REPORTS/$dir/rerun \
+              --output ${prefix}rerun-output.xml \
+              --log ${prefix}rerun-log.html \
+              --report ${prefix}rerun-report.html \
+              $files"
+
+            docker run --rm \
+              -v "${{ github.workspace }}/Reports:$REPORTS" \
+              robotframework-tests:latest rebot \
+              --nostatusrc \
+              --merge \
+              --outputdir "$REPORTS/$dir" \
+              --output "$merged_output" \
+              --log "$merged_log" \
+              --report "$merged_report" \
+              "$REPORTS/$original" \
+              "$REPORTS/$dir/rerun/${prefix}rerun-output.xml" \
+              || echo "::error title=Merge Failed::Merging rerun results into $dir/$merged_output failed"
+          }
+
+          case "${{ steps.config.outputs.run_type }}" in
+            smoke_first)
+              if [ "${{ github.event.inputs.execution_mode }}" = "parallel" ]; then
+                echo "🚀 Phase 3: Rerunning failed and skipped tests..."
+                rerun_failed pabot '${{ steps.config.outputs.base_flags }} ${{ steps.config.outputs.parallel_args }}' '${{ steps.config.outputs.parallel_files }}' full parallel-
+                rerun_failed robot '${{ steps.config.outputs.notifications_args }}' '${{ steps.config.outputs.notifications_files }}' full notifications-
+              else
+                rerun_failed robot '${{ steps.config.outputs.base_flags }} ${{ steps.config.outputs.full_args }}' '${{ steps.config.outputs.full_files }}' full ""
+              fi
+              ;;
+            *)
+              rerun_failed ${{ steps.config.outputs.execution_tool }} '${{ steps.config.outputs.base_flags }} ${{ steps.config.outputs.suite_args }}' '${{ steps.config.outputs.suite_files }}' . ""
+              ;;
+          esac
+          exit 0
+
+      # For parallel mode: Phase 4 - Combine results with rebot
+      - name: Combine Test Results (Phase 4)
+        if: steps.config.outputs.run_type == 'smoke_first' && env.SMOKE_EXECUTION_FAILED != 'true' && github.event.inputs.execution_mode == 'parallel'
+        run: |
+          echo "🚀 Phase 4: Combining test results..."
+
+          # Check if both output files exist
+          if [ ! -f "Reports/full/parallel-output.xml" ]; then
+            echo "::warning title=Missing Results::Parallel output file not found, skipping result combination"
+            exit 0
+          fi
+
+          if [ ! -f "Reports/full/notifications-output.xml" ]; then
+            echo "::warning title=Missing Results::Notifications output file not found, skipping result combination"
+            exit 0
+          fi
+
+          # Use the merged results where failed tests were rerun
+          PARALLEL_RESULT=parallel-output.xml
+          NOTIFICATIONS_RESULT=notifications-output.xml
+          if [ -f "Reports/full/parallel-merged-output.xml" ]; then
+            PARALLEL_RESULT=parallel-merged-output.xml
+          fi
+          if [ -f "Reports/full/notifications-merged-output.xml" ]; then
+            NOTIFICATIONS_RESULT=notifications-merged-output.xml
+          fi
+
+          # Combine results using rebot
+          docker run --rm \
+            -v "${{ github.workspace }}/Reports:/opt/robotframework/reports" \
+            robotframework-tests:latest rebot \
+            --outputdir /opt/robotframework/reports/full \
+            --output output.xml \
+            --log log.html \
+            --report report.html \
+            --name "All Test Suites" \
+            /opt/robotframework/reports/full/$PARALLEL_RESULT \
+            /opt/robotframework/reports/full/$NOTIFICATIONS_RESULT
+
+          REBOT_EXIT_CODE=$?
+
+          # Rebot returns exit codes 0-250 where the code indicates number of failed tests
+          if [ $REBOT_EXIT_CODE -le 250 ]; then
+            if [ $REBOT_EXIT_CODE -eq 0 ]; then
+              echo "✅ Results combined successfully (no failed tests)"
+            else
+              echo "✅ Results combined successfully ($REBOT_EXIT_CODE test(s) failed - see combined report)"
+            fi
+          else
+            echo "::error title=Rebot Failed::Result combination failed with exit code: $REBOT_EXIT_CODE"
+          fi
 
       # Parse Robot Framework XML results and create GitHub summary
       - name: Parse Test Results
@@ -348,6 +491,21 @@ jobs:
           import xml.etree.ElementTree as ET
           import os
           import glob
+          import html
+          import re
+
+          # Rebot --merge marks rerun tests with this message (it includes the new and the old status)
+          MERGE_MARKER = 'has been re-executed and results merged'
+
+          def clean_message(message):
+              # Show only the latest message of a rerun test instead of the whole HTML merge message
+              if MERGE_MARKER in message:
+                  # A test that skipped again on rerun has no "New message", show its whole merge message as text
+                  match = re.search(r'New message:</span>(.*?)<br>', message, re.DOTALL)
+                  new_message = match.group(1) if match else message.removeprefix('*HTML*')
+                  message = html.unescape(re.sub(r'<[^>]+>', ' ', new_message))
+              # Keep multi-line messages (e.g. Playwright call logs) on one line in the summary list
+              return ' '.join(message.split()) or 'No error message'
 
           def parse_robot_results():
               # Find Robot Framework output.xml files, excluding pabot worker files
@@ -394,8 +552,10 @@ jobs:
 
               total_passed = 0
               total_failed = 0
+              total_skipped = 0  # Skipped tests also fail the run (a test they need has failed)
               failed_tests = []
               passed_tests = []
+              flaky_tests = []  # Failed on the first run but passed on rerun
 
               # Check if we're in smoke-first mode and determine execution status
               test_suite = "${{ github.event.inputs.test_suite }}"
@@ -433,13 +593,22 @@ jobs:
                           status = test.find('status')
 
                           if status is not None:
+                              message = status.text or ''
+                              rerun = MERGE_MARKER in message
                               if status.get('status') == 'PASS':
                                   total_passed += 1
                                   passed_tests.append(test_name)
+                                  if rerun:
+                                      flaky_tests.append(test_name)
                               else:
-                                  total_failed += 1
-                                  error_msg = status.text or 'No error message'
-                                  failed_tests.append(f"{test_name}: {error_msg}")
+                                  error_msg = clean_message(message)
+                                  if status.get('status') == 'SKIP':
+                                      total_skipped += 1
+                                      note = ' (skipped again on rerun)' if rerun else ' (skipped)'
+                                  else:
+                                      total_failed += 1
+                                      note = ' (failed again on rerun)' if rerun else ''
+                                  failed_tests.append(f"{test_name}{note}: {error_msg}")
 
                   except Exception as e:
                       print(f"::warning title=Parse Error::Could not parse {output_file}: {e}")
@@ -454,12 +623,16 @@ jobs:
                       summary += "📋 **Next Steps**: Fix the failing smoke tests and re-run the workflow\n\n"
                   else:
                       summary += "✅ **FULL TEST SUITE EXECUTED** - All smoke tests passed, full suite completed\n\n"
-                      if total_failed > 0:
-                          summary += f"⚠️ Note: {total_failed} test cases failed in the full suite\n\n"
+                      if total_failed + total_skipped > 0:
+                          summary += f"⚠️ Note: {total_failed + total_skipped} test cases failed or were skipped in the full suite\n\n"
 
               summary += f"- ✅ **Passed**: {total_passed}\n"
               summary += f"- ❌ **Failed**: {total_failed}\n"
-              summary += f"- 📊 **Total**: {total_passed + total_failed}\n\n"
+              if total_skipped:
+                  summary += f"- ⏭️ **Skipped**: {total_skipped} (skipped because a test they need failed, this fails the run)\n"
+              if flaky_tests:
+                  summary += f"- 🔁 **Passed on rerun**: {len(flaky_tests)} (included in Passed)\n"
+              summary += f"- 📊 **Total**: {total_passed + total_failed + total_skipped}\n\n"
 
               # Show failed tests (limit to 10 for readability)
               if failed_tests:
@@ -473,6 +646,14 @@ jobs:
                       summary += f"{i}. `{test}`\n"
                   if len(failed_tests) > 10:
                       summary += f"... and {len(failed_tests) - 10} more\n"
+                  summary += "\n"
+
+              # Show tests that failed on the first run but passed on rerun
+              if flaky_tests:
+                  summary += "### 🔁 Passed on Rerun (flaky)\n"
+                  summary += "These tests failed on the first run. See the first run logs in the report artifacts.\n"
+                  for i, test in enumerate(flaky_tests, 1):
+                      summary += f"{i}. `{test}`\n"
                   summary += "\n"
 
               # Show some passed tests (limit to 5)
@@ -493,9 +674,10 @@ jobs:
               # Skip creating annotations here - let the final step handle all messaging
               # The summary will still show detailed results
 
-              # Export the failure count for use in final step
+              # Export the failure count for use in final step (skipped tests also fail the run)
               with open(os.environ['GITHUB_ENV'], 'a') as f:
-                  f.write(f"TEST_FAILURE_COUNT={total_failed}\n")
+                  f.write(f"TEST_FAILURE_COUNT={total_failed + total_skipped}\n")
+                  f.write(f"TEST_FLAKY_COUNT={len(flaky_tests)}\n")
 
           parse_robot_results()
           EOF
@@ -549,6 +731,7 @@ jobs:
           echo "- **Test Suite**: ${{ github.event.inputs.test_suite }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Execution Mode**: ${{ github.event.inputs.execution_mode }}" >> $GITHUB_STEP_SUMMARY
           echo "- **HAR Recording**: ${{ github.event.inputs.enable_har_recording }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Rerun Failed Tests**: ${{ github.event.inputs.rerun_failed_tests }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Tool Used**: ${{ steps.config.outputs.execution_tool }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Execution Time**: $(date)" >> $GITHUB_STEP_SUMMARY
           echo "- **Runner**: ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
@@ -605,11 +788,16 @@ jobs:
             exit 1
           fi
 
-          # 2) If any tests failed, report with count and exit
+          # 2) Tests that passed only on rerun don't fail the workflow, but flag them
+          if [ "${TEST_FLAKY_COUNT:-0}" -gt 0 ]; then
+            echo "::warning title=Flaky Tests::${TEST_FLAKY_COUNT} test(s) failed on the first run but passed on rerun - see the job summary"
+          fi
+
+          # 3) If any tests failed, report with count and exit
           if [ "${TEST_FAILURE_COUNT:-0}" -gt 0 ]; then
-            echo "::error title=Test Failures::${TEST_FAILURE_COUNT} test(s) failed"
+            echo "::error title=Test Failures::${TEST_FAILURE_COUNT} test(s) failed or were skipped"
             exit 1
           fi
 
-          # 3) All tests passed
+          # 4) All tests passed
           echo "::notice title=All Tests Passed::All tests passed!"

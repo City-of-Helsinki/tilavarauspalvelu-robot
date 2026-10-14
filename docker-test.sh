@@ -32,6 +32,7 @@ if ! command -v jq &> /dev/null; then
             | sed 's/\.docker\.image_name/["docker"]["image_name"]/g' \
             | sed 's/\.docker\.env_file/["docker"]["env_file"]/g' \
             | sed 's/\.robot_variables\.enable_har_recording/["robot_variables"]["enable_har_recording"]/g' \
+            | sed 's/\.execution\.rerun_failed_tests/["execution"]["rerun_failed_tests"]/g' \
             | sed 's/\.suites\.user_desktop/["suites"]["user_desktop"]/g' \
             | sed 's/\.suites\.admin_desktop/["suites"]["admin_desktop"]/g' \
             | sed 's/\.suites\.admin_notifications/["suites"]["admin_notifications"]/g' \
@@ -75,6 +76,13 @@ if [ -f "docker-config.json" ]; then
     else
         export ENABLE_HAR_RECORDING="False"
     fi
+
+    # Rerun failed tests at the end of a run (enabled unless explicitly set to false)
+    RERUN_FAILED_TESTS_JSON=$(read_json '.execution.rerun_failed_tests' 2> /dev/null)
+    case "$RERUN_FAILED_TESTS_JSON" in
+    false | False) export RERUN_FAILED_TESTS="False" ;;
+    *) export RERUN_FAILED_TESTS="True" ;;
+    esac
 else
     echo "Warning: docker-config.json not found, using default values"
     # Fallback to default values
@@ -85,6 +93,7 @@ else
     export IMAGE_NAME="robotframework-tests"
     export DOCKER_ENV_FILE="TestSuites/Resources/.env"
     export ENABLE_HAR_RECORDING="False"
+    export RERUN_FAILED_TESTS="True"
 fi
 
 # Set paths
@@ -116,6 +125,7 @@ echo "  Desktop processes: $DESKTOP_PROCESSES"
 echo "  Admin processes: $ADMIN_PROCESSES"
 echo "  Mobile processes: $MOBILE_PROCESSES"
 echo "  All suites processes: $ALL_SUITES_PROCESSES"
+echo "  Rerun failed tests: $RERUN_FAILED_TESTS"
 
 # Function to test if Docker image exists
 test_docker_image() {
@@ -360,6 +370,152 @@ build_docker() {
     fi
 }
 
+# Function to remove results of a previous run, so that a run that fails before writing its output
+# is not mistaken for the previous run (or its failed tests rerun)
+clean_previous_results() {
+    rm -rf "$OUTPUT_DIR/rerun" "$OUTPUT_DIR"/first-run-* "$OUTPUT_DIR"/*merged-output.xml \
+        "$OUTPUT_DIR/output.xml" "$OUTPUT_DIR/parallel-output.xml" "$OUTPUT_DIR/notifications-output.xml" || true
+}
+
+# Skipped tests are handled like failed tests: they are rerun and they fail the run.
+# A test is skipped when a test it needs has failed, e.g. "Check emails from reservations"
+# is skipped when "User can make paid single booking" fails.
+
+# Function to count failed and skipped tests in an output file (path relative to the output directory)
+count_failed_or_skipped_tests() {
+    local output_file=$1
+    docker run --rm \
+        -v "$OUTPUT_DIR:/opt/robotframework/reports" \
+        "$IMAGE_NAME:latest" \
+        python3 -c "import sys; from robot.api import ExecutionResult; s = ExecutionResult(sys.argv[1]).statistics.total; print(s.failed + s.skipped)" \
+        "/opt/robotframework/reports/$output_file"
+}
+
+# Function to check that an output file has no failed or skipped tests (path relative to the output directory)
+all_tests_passed() {
+    [ "$(count_failed_or_skipped_tests "$1")" = "0" ]
+}
+
+# Function to build --test options for the failed and skipped tests in an output file (path relative to the output directory)
+rerun_test_options() {
+    local output_file=$1
+    docker run --rm \
+        -v "$OUTPUT_DIR:/opt/robotframework/reports" \
+        "$IMAGE_NAME:latest" \
+        python3 -c "import re, shlex, sys; from robot.api import ExecutionResult; print(' '.join('--test ' + shlex.quote(re.sub(r'([\[*?])', r'[\1]', t.full_name)) for t in ExecutionResult(sys.argv[1]).suite.all_tests if not t.passed))" \
+        "/opt/robotframework/reports/$output_file"
+}
+
+# Function to rerun failed and skipped tests once and merge the results with the first run
+# Arguments: tool (pabot/robot), run options, test files, output prefix ("" for single runs)
+# The first run is kept as is (single runs: first-run-*.xml/html), rerun results go to rerun/
+# and the merged result is written to output.xml/log.html/report.html (single runs) or <prefix>merged-output.xml
+# Returns 0 when all rerun tests passed
+rerun_failed_tests() {
+    local tool=$1
+    local run_options=$2
+    local test_files=$3
+    local prefix=$4
+    local reports="/opt/robotframework/reports"
+    local original="${prefix}output.xml"
+
+    if [ ! -f "$OUTPUT_DIR/$original" ]; then
+        echo -e "${YELLOW}⚠️  $original not found, skipping rerun${NC}"
+        return 1
+    fi
+
+    local failed_count
+    failed_count=$(count_failed_or_skipped_tests "$original")
+    if ! [[ "$failed_count" =~ ^[0-9]+$ ]] || [ "$failed_count" -eq 0 ]; then
+        echo -e "${YELLOW}⚠️  No failed or skipped tests found in $original, skipping rerun${NC}"
+        return 1
+    fi
+
+    local test_options
+    test_options=$(rerun_test_options "$original")
+    if [ -z "$test_options" ]; then
+        echo -e "${YELLOW}⚠️  Could not read the failed and skipped tests from $original, skipping rerun${NC}"
+        return 1
+    fi
+
+    local docker_cmd
+    local merged_output="${prefix}merged-output.xml"
+    local merged_log="NONE"
+    local merged_report="NONE"
+    if [ -z "$prefix" ]; then
+        # Keep the first run as first-run-* files, the merged result replaces output.xml/log.html/report.html
+        docker_cmd="docker run --rm \
+            -v \"$OUTPUT_DIR:$reports\" \
+            \"$IMAGE_NAME:latest\" \
+            rebot \
+            --nostatusrc \
+            --outputdir $reports \
+            --output first-run-output.xml \
+            --log first-run-log.html \
+            --report first-run-report.html \
+            $reports/$original"
+        if ! eval "$docker_cmd"; then
+            echo -e "${RED}❌ Saving the first run results failed, skipping rerun${NC}"
+            return 1
+        fi
+        original="first-run-output.xml"
+        merged_output="output.xml"
+        merged_log="log.html"
+        merged_report="report.html"
+    fi
+
+    echo -e "${BLUE}🔁 Rerunning $failed_count failed or skipped test(s) from $original...${NC}"
+    local docker_args
+    docker_args=$(get_docker_run_args)
+    docker_cmd="docker run --rm $docker_args \"$IMAGE_NAME:latest\" $tool \
+        $run_options \
+        $test_options \
+        --settag rerun \
+        --outputdir $reports/rerun \
+        --output ${prefix}rerun-output.xml \
+        --log ${prefix}rerun-log.html \
+        --report ${prefix}rerun-report.html \
+        $test_files"
+
+    echo -e "${BLUE}Executing Docker command:${NC}"
+    # shellcheck disable=SC2001  # sed is appropriate for newline insertion in display formatting
+    echo "$docker_cmd" | sed 's/ -/\n  -/g'
+    echo ""
+
+    eval "$docker_cmd"
+
+    docker_cmd="docker run --rm \
+        -v \"$OUTPUT_DIR:$reports\" \
+        \"$IMAGE_NAME:latest\" \
+        rebot \
+        --nostatusrc \
+        --merge \
+        --outputdir $reports \
+        --output $merged_output \
+        --log $merged_log \
+        --report $merged_report \
+        $reports/$original \
+        $reports/rerun/${prefix}rerun-output.xml"
+
+    echo -e "${BLUE}Merging rerun results:${NC}"
+    # shellcheck disable=SC2001  # sed is appropriate for newline insertion in display formatting
+    echo "$docker_cmd" | sed 's/ -/\n  -/g'
+    echo ""
+
+    if ! eval "$docker_cmd"; then
+        echo -e "${RED}❌ Merging rerun results failed${NC}"
+        return 1
+    fi
+
+    # A test that skips again keeps its skipped status in the merged result, so check the merged result
+    if all_tests_passed "$merged_output"; then
+        echo -e "${GREEN}✅ All $failed_count failed or skipped test(s) passed on rerun${NC}"
+        return 0
+    fi
+    echo -e "${RED}❌ Some tests failed or were skipped again on rerun${NC}"
+    return 1
+}
+
 # Function to run pabot tests
 run_pabot() {
     local processes=$1
@@ -382,6 +538,7 @@ run_pabot() {
 
     # Ensure output directory exists
     ensure_output_directory
+    clean_previous_results
 
     # Get Docker run arguments with proper .env handling
     local docker_args
@@ -390,16 +547,20 @@ run_pabot() {
     # Build the complete Docker command
     local docker_cmd="docker run --rm $docker_args \"$IMAGE_NAME:latest\""
 
-    # Add pabot command
-    docker_cmd="$docker_cmd pabot \
-        --testlevelsplit \
+    # Options and test files are shared by the first run and the rerun of failed tests
+    local run_options="--testlevelsplit \
         --processes $processes \
         --pabotlib \
         --exclude serialonly \
         --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat \
-        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING \
+        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING"
+    local test_files="/opt/robotframework/tests/$test_file"
+
+    # Add pabot command
+    docker_cmd="$docker_cmd pabot \
+        $run_options \
         --outputdir /opt/robotframework/reports \
-        /opt/robotframework/tests/$test_file"
+        $test_files"
 
     # Show the command being executed (for debugging)
     echo -e "${BLUE}Executing Docker command:${NC}"
@@ -407,8 +568,10 @@ run_pabot() {
     echo "$docker_cmd" | sed 's/ -/\n  -/g'
     echo ""
 
-    if eval "$docker_cmd"; then
+    if eval "$docker_cmd" && all_tests_passed output.xml; then
         echo -e "${GREEN}✅ $task_name completed successfully${NC}"
+    elif [ "$RERUN_FAILED_TESTS" = "True" ] && rerun_failed_tests pabot "$run_options" "$test_files" ""; then
+        echo -e "${GREEN}✅ $task_name completed successfully after rerunning failed tests${NC}"
     else
         echo -e "${RED}❌ $task_name failed${NC}"
         return 1
@@ -436,6 +599,7 @@ run_robot() {
 
     # Ensure output directory exists
     ensure_output_directory
+    clean_previous_results
 
     # Get Docker run arguments with proper .env handling
     local docker_args
@@ -444,12 +608,16 @@ run_robot() {
     # Build the complete Docker command
     local docker_cmd="docker run --rm $docker_args \"$IMAGE_NAME:latest\""
 
+    # Options and test files are shared by the first run and the rerun of failed tests
+    local run_options="--variable FORCE_SINGLE_USER:True \
+        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING"
+    local test_files="/opt/robotframework/tests/$test_file"
+
     # Add robot command
     docker_cmd="$docker_cmd robot \
-        --variable FORCE_SINGLE_USER:True \
-        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING \
+        $run_options \
         --outputdir /opt/robotframework/reports \
-        /opt/robotframework/tests/$test_file"
+        $test_files"
 
     # Show the command being executed (for debugging)
     echo -e "${BLUE}Executing Docker command:${NC}"
@@ -457,8 +625,10 @@ run_robot() {
     echo "$docker_cmd" | sed 's/ -/\n  -/g'
     echo ""
 
-    if eval "$docker_cmd"; then
+    if eval "$docker_cmd" && all_tests_passed output.xml; then
         echo -e "${GREEN}✅ $task_name completed successfully${NC}"
+    elif [ "$RERUN_FAILED_TESTS" = "True" ] && rerun_failed_tests robot "$run_options" "$test_files" ""; then
+        echo -e "${GREEN}✅ $task_name completed successfully after rerunning failed tests${NC}"
     else
         echo -e "${RED}❌ $task_name failed${NC}"
         return 1
@@ -482,42 +652,50 @@ run_all_suites() {
     fi
 
     ensure_output_directory
+    clean_previous_results
 
     # Get Docker run arguments
     local docker_args
     docker_args=$(get_docker_run_args)
+
+    # Options and test files are shared by the first run and the rerun of failed tests
+    local parallel_options="--testlevelsplit \
+        --processes $ALL_SUITES_PROCESSES \
+        --pabotlib \
+        --exclude serialonly \
+        --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat \
+        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING"
+    local parallel_files="/opt/robotframework/tests/$SUITE_USER_DESKTOP \
+        /opt/robotframework/tests/$SUITE_ADMIN_DESKTOP \
+        /opt/robotframework/tests/$SUITE_USERS_WITH_ADMIN \
+        /opt/robotframework/tests/$SUITE_MOBILE_ANDROID \
+        /opt/robotframework/tests/$SUITE_MOBILE_IPHONE"
+    local notifications_options="--variable FORCE_SINGLE_USER:True \
+        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING"
+    local notifications_files="/opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS"
 
     # Phase 1: Run parallel suites (excluding notifications)
     echo -e "${BLUE}Phase 1: Running parallel test suites...${NC}"
     local docker_cmd="docker run --rm $docker_args \"$IMAGE_NAME:latest\""
 
     docker_cmd="$docker_cmd pabot \
-        --testlevelsplit \
-        --processes $ALL_SUITES_PROCESSES \
-        --pabotlib \
-        --exclude serialonly \
-        --resourcefile /opt/robotframework/tests/Resources/pabot_users.dat \
-        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING \
+        $parallel_options \
         --outputdir /opt/robotframework/reports \
         --output parallel-output.xml \
         --log parallel-log.html \
         --report parallel-report.html \
-        /opt/robotframework/tests/$SUITE_USER_DESKTOP \
-        /opt/robotframework/tests/$SUITE_ADMIN_DESKTOP \
-        /opt/robotframework/tests/$SUITE_USERS_WITH_ADMIN \
-        /opt/robotframework/tests/$SUITE_MOBILE_ANDROID \
-        /opt/robotframework/tests/$SUITE_MOBILE_IPHONE"
+        $parallel_files"
 
     echo -e "${BLUE}Executing Docker command:${NC}"
     # shellcheck disable=SC2001  # sed is appropriate for newline insertion in display formatting
     echo "$docker_cmd" | sed 's/ -/\n  -/g'
     echo ""
 
-    if eval "$docker_cmd"; then
+    if eval "$docker_cmd" && all_tests_passed parallel-output.xml; then
         echo -e "${GREEN}✅ Parallel suites completed successfully${NC}"
         local parallel_exit_code=0
     else
-        echo -e "${RED}❌ Parallel suites failed${NC}"
+        echo -e "${RED}❌ Parallel suites failed or had skipped tests${NC}"
         local parallel_exit_code=1
     fi
 
@@ -527,30 +705,53 @@ run_all_suites() {
     docker_cmd="docker run --rm $docker_args \"$IMAGE_NAME:latest\""
 
     docker_cmd="$docker_cmd robot \
-        --variable FORCE_SINGLE_USER:True \
-        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING \
+        $notifications_options \
         --outputdir /opt/robotframework/reports \
         --output notifications-output.xml \
         --log notifications-log.html \
         --report notifications-report.html \
-        /opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS"
+        $notifications_files"
 
     echo -e "${BLUE}Executing Docker command:${NC}"
     # shellcheck disable=SC2001  # sed is appropriate for newline insertion in display formatting
     echo "$docker_cmd" | sed 's/ -/\n  -/g'
     echo ""
 
-    if eval "$docker_cmd"; then
+    if eval "$docker_cmd" && all_tests_passed notifications-output.xml; then
         echo -e "${GREEN}✅ Notifications suite completed successfully${NC}"
         local notifications_exit_code=0
     else
-        echo -e "${RED}❌ Notifications suite failed${NC}"
+        echo -e "${RED}❌ Notifications suite failed or had skipped tests${NC}"
         local notifications_exit_code=1
     fi
 
-    # Phase 3: Combine the results using rebot
+    # Phase 3: Rerun failed and skipped tests once and merge the results with the first run
+    if [ "$RERUN_FAILED_TESTS" = "True" ] && { [ $parallel_exit_code -ne 0 ] || [ $notifications_exit_code -ne 0 ]; }; then
+        echo ""
+        echo -e "${BLUE}Phase 3: Rerunning failed and skipped tests...${NC}"
+        if [ $parallel_exit_code -ne 0 ] \
+            && rerun_failed_tests pabot "$parallel_options" "$parallel_files" "parallel-"; then
+            parallel_exit_code=0
+        fi
+        if [ $notifications_exit_code -ne 0 ] \
+            && rerun_failed_tests robot "$notifications_options" "$notifications_files" "notifications-"; then
+            notifications_exit_code=0
+        fi
+    fi
+
+    # Use the merged results where failed tests were rerun
+    local parallel_result="parallel-output.xml"
+    local notifications_result="notifications-output.xml"
+    if [ -f "$OUTPUT_DIR/parallel-merged-output.xml" ]; then
+        parallel_result="parallel-merged-output.xml"
+    fi
+    if [ -f "$OUTPUT_DIR/notifications-merged-output.xml" ]; then
+        notifications_result="notifications-merged-output.xml"
+    fi
+
+    # Phase 4: Combine the results using rebot
     echo ""
-    echo -e "${BLUE}Phase 3: Combining test results...${NC}"
+    echo -e "${BLUE}Phase 4: Combining test results...${NC}"
 
     # Check if output files exist before combining
     if [ ! -f "$OUTPUT_DIR/parallel-output.xml" ]; then
@@ -567,29 +768,26 @@ run_all_suites() {
             --log log.html \
             --report report.html \
             --name \"All Suites\" \
-            /opt/robotframework/reports/parallel-output.xml \
-            /opt/robotframework/reports/notifications-output.xml"
+            /opt/robotframework/reports/$parallel_result \
+            /opt/robotframework/reports/$notifications_result"
 
         echo -e "${BLUE}Executing rebot command:${NC}"
         # shellcheck disable=SC2001  # sed is appropriate for newline insertion in display formatting
         echo "$docker_cmd" | sed 's/ -/\n  -/g'
         echo ""
 
-        if eval "$docker_cmd"; then
-            local rebot_exit_code=$?
-            # Rebot returns exit codes 0-250 where the code indicates number of failed tests
-            # Exit codes > 250 indicate actual rebot errors
-            if [ $rebot_exit_code -le 250 ]; then
-                if [ $rebot_exit_code -eq 0 ]; then
-                    echo -e "${GREEN}✅ Results combined successfully (all tests passed)${NC}"
-                else
-                    echo -e "${GREEN}✅ Results combined successfully ($rebot_exit_code test(s) failed - see combined report)${NC}"
-                fi
+        local rebot_exit_code=0
+        eval "$docker_cmd" || rebot_exit_code=$?
+        # Rebot returns exit codes 0-250 where the code indicates number of failed tests
+        # Exit codes > 250 indicate actual rebot errors
+        if [ $rebot_exit_code -le 250 ]; then
+            if [ $rebot_exit_code -eq 0 ]; then
+                echo -e "${GREEN}✅ Results combined successfully (no failed tests)${NC}"
             else
-                echo -e "${RED}❌ Result combination failed with exit code: $rebot_exit_code${NC}"
+                echo -e "${GREEN}✅ Results combined successfully ($rebot_exit_code test(s) failed - see combined report)${NC}"
             fi
         else
-            echo -e "${RED}❌ Result combination failed${NC}"
+            echo -e "${RED}❌ Result combination failed with exit code: $rebot_exit_code${NC}"
         fi
     fi
 
@@ -621,6 +819,7 @@ run_all_suites_sequential() {
     fi
 
     ensure_output_directory
+    clean_previous_results
 
     # Get Docker run arguments
     local docker_args
@@ -629,24 +828,30 @@ run_all_suites_sequential() {
     # Build the complete Docker command
     local docker_cmd="docker run --rm $docker_args \"$IMAGE_NAME:latest\""
 
-    docker_cmd="$docker_cmd robot \
-        --variable FORCE_SINGLE_USER:True \
-        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING \
-        --outputdir /opt/robotframework/reports \
-        /opt/robotframework/tests/$SUITE_USER_DESKTOP \
+    # Options and test files are shared by the first run and the rerun of failed tests
+    local run_options="--variable FORCE_SINGLE_USER:True \
+        --variable ENABLE_HAR_RECORDING:$ENABLE_HAR_RECORDING"
+    local test_files="/opt/robotframework/tests/$SUITE_USER_DESKTOP \
         /opt/robotframework/tests/$SUITE_ADMIN_DESKTOP \
         /opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS \
         /opt/robotframework/tests/$SUITE_USERS_WITH_ADMIN \
         /opt/robotframework/tests/$SUITE_MOBILE_ANDROID \
         /opt/robotframework/tests/$SUITE_MOBILE_IPHONE"
 
+    docker_cmd="$docker_cmd robot \
+        $run_options \
+        --outputdir /opt/robotframework/reports \
+        $test_files"
+
     echo -e "${BLUE}Executing Docker command:${NC}"
     # shellcheck disable=SC2001  # sed is appropriate for newline insertion in display formatting
     echo "$docker_cmd" | sed 's/ -/\n  -/g'
     echo ""
 
-    if eval "$docker_cmd"; then
+    if eval "$docker_cmd" && all_tests_passed output.xml; then
         echo -e "${GREEN}✅ All suites completed sequentially${NC}"
+    elif [ "$RERUN_FAILED_TESTS" = "True" ] && rerun_failed_tests robot "$run_options" "$test_files" ""; then
+        echo -e "${GREEN}✅ All suites completed sequentially after rerunning failed tests${NC}"
     else
         echo -e "${RED}❌ Some suites failed${NC}"
         return 1
@@ -1013,6 +1218,13 @@ show_menu() {
         har_color="${YELLOW}"
     fi
     echo -e "HAR Recording: ${har_color}$har_status${NC}"
+
+    # Show rerun failed tests status
+    if [ "$RERUN_FAILED_TESTS" = "True" ]; then
+        echo -e "Rerun Failed Tests: ${GREEN}[ENABLED]${NC} (docker-config.json)"
+    else
+        echo -e "Rerun Failed Tests: ${YELLOW}[DISABLED]${NC} (docker-config.json)"
+    fi
 
     echo "=================================================="
     echo "1. Clean Output"

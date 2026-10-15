@@ -119,6 +119,7 @@ function Get-DockerConfig {
             IMAGE_NAME = "robotframework-tests"
             DOCKER_ENV_FILE = "TestSuites/Resources/.env"
             ENABLE_HAR_RECORDING = "`${FALSE}"
+            RERUN_FAILED_TESTS = $true
             SUITE_USER_DESKTOP = "Tests_user_desktop_FI.robot"
             SUITE_ADMIN_DESKTOP = "Tests_admin_desktop_FI.robot"
             SUITE_ADMIN_NOTIFICATIONS = "Tests_admin_notifications_serial.robot"
@@ -140,6 +141,8 @@ function Get-DockerConfig {
         IMAGE_NAME = $json.docker.image_name
         DOCKER_ENV_FILE = $json.docker.env_file
         ENABLE_HAR_RECORDING = if($json.robot_variables.enable_har_recording) { "`${TRUE}" } else { "`${FALSE}" }
+        # Rerun failed tests at the end of a run (enabled unless explicitly set to false)
+        RERUN_FAILED_TESTS = ($json.execution.rerun_failed_tests -ne $false)
         SUITE_USER_DESKTOP = $json.suites.user_desktop
         SUITE_ADMIN_DESKTOP = $json.suites.admin_desktop
         SUITE_ADMIN_NOTIFICATIONS = $json.suites.admin_notifications
@@ -221,6 +224,7 @@ $SUITE_ADMIN_NOTIFICATIONS = $config["SUITE_ADMIN_NOTIFICATIONS"]
 $SUITE_USERS_WITH_ADMIN = $config["SUITE_USERS_WITH_ADMIN"]
 $SUITE_MOBILE_ANDROID = $config["SUITE_MOBILE_ANDROID"]
 $SUITE_MOBILE_IPHONE = $config["SUITE_MOBILE_IPHONE"]
+$RERUN_FAILED_TESTS = $config["RERUN_FAILED_TESTS"]
 
 # Function to ensure output directory exists
 function Ensure-OutputDirectory {
@@ -275,6 +279,7 @@ Write-Info "  Desktop processes: $DESKTOP_PROCESSES"
 Write-Info "  Admin processes: $ADMIN_PROCESSES"
 Write-Info "  Mobile processes: $MOBILE_PROCESSES"
 Write-Info "  All suites processes: $ALL_SUITES_PROCESSES"
+Write-Info "  Rerun failed tests: $RERUN_FAILED_TESTS"
 
 # Function to clean output
 function Clear-Output {
@@ -340,6 +345,174 @@ function Build-DockerImage {
     return $true
 }
 
+# Function to remove results of a previous run, so that a run that fails before writing its output
+# is not mistaken for the previous run (or its failed tests rerun)
+function Clear-PreviousResults {
+    @("output\rerun", "output\first-run-*", "output\*merged-output.xml",
+        "output\output.xml", "output\parallel-output.xml", "output\notifications-output.xml") | ForEach-Object {
+        Remove-Item -Path $_ -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
+# Skipped tests are handled like failed tests: they are rerun and they fail the run.
+# A test is skipped when a test it needs has failed, e.g. "Check emails from reservations"
+# is skipped when "User can make paid single booking" fails.
+
+# Function to count failed and skipped tests in an output file (path relative to the output directory)
+# Returns -1 if the file could not be read
+function Get-FailedOrSkippedTestCount {
+    param([string]$OutputFile)
+    
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
+        "${IMAGE_NAME}:latest",
+        "python3", "-c",
+        "import sys; from robot.api import ExecutionResult; s = ExecutionResult(sys.argv[1]).statistics.total; print(s.failed + s.skipped)",
+        "/opt/robotframework/reports/$OutputFile"
+    )
+    
+    $count = & docker @dockerArgs
+    $failedCount = 0
+    if ($LASTEXITCODE -ne 0 -or -not [int]::TryParse("$count".Trim(), [ref]$failedCount)) {
+        return -1
+    }
+    return $failedCount
+}
+
+# Function to build --test options for the failed and skipped tests in an output file (path relative to the output directory)
+function Get-RerunTestOptions {
+    param([string]$OutputFile)
+    
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
+        "${IMAGE_NAME}:latest",
+        "python3", "-c",
+        "import re, sys; from robot.api import ExecutionResult; print('\n'.join(re.sub(r'([\[*?])', r'[\1]', t.full_name) for t in ExecutionResult(sys.argv[1]).suite.all_tests if not t.passed))",
+        "/opt/robotframework/reports/$OutputFile"
+    )
+    
+    $testOptions = @()
+    foreach ($name in @(& docker @dockerArgs)) {
+        if ("$name".Trim()) {
+            $testOptions += @("--test", "$name".Trim())
+        }
+    }
+    return ,$testOptions
+}
+
+# Function to rerun failed and skipped tests once and merge the results with the first run
+# The first run is kept as is (single runs: first-run-*.xml/html), rerun results go to rerun/
+# and the merged result is written to output.xml/log.html/report.html (single runs) or <Prefix>merged-output.xml
+# Returns $true when all rerun tests passed
+function Invoke-FailedTestRerun {
+    param(
+        [string]$Tool,
+        [array]$RunOptions,
+        [array]$TestFiles,
+        [string]$Prefix = ""
+    )
+    
+    $reports = "/opt/robotframework/reports"
+    $original = "${Prefix}output.xml"
+    
+    if (-not (Test-Path "output\$original")) {
+        Write-Warning "[WARNING] $original not found, skipping rerun"
+        return $false
+    }
+    
+    $failedCount = Get-FailedOrSkippedTestCount -OutputFile $original
+    if ($failedCount -le 0) {
+        Write-Warning "[WARNING] No failed or skipped tests found in $original, skipping rerun"
+        return $false
+    }
+    
+    $testOptions = Get-RerunTestOptions -OutputFile $original
+    if ($testOptions.Count -eq 0) {
+        Write-Warning "[WARNING] Could not read the failed and skipped tests from $original, skipping rerun"
+        return $false
+    }
+    
+    $mergedOutput = "${Prefix}merged-output.xml"
+    $mergedLog = "NONE"
+    $mergedReport = "NONE"
+    if (-not $Prefix) {
+        # Keep the first run as first-run-* files, the merged result replaces output.xml/log.html/report.html
+        $dockerArgs = @(
+            "run", "--rm",
+            "-v", "${OUTPUT_DIR}:$reports",
+            "${IMAGE_NAME}:latest",
+            "rebot",
+            "--nostatusrc",
+            "--outputdir", $reports,
+            "--output", "first-run-output.xml",
+            "--log", "first-run-log.html",
+            "--report", "first-run-report.html",
+            "$reports/$original"
+        )
+        
+        & docker @dockerArgs | Out-Host
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "[FAILED] Saving the first run results failed, skipping rerun"
+            return $false
+        }
+        $original = "first-run-output.xml"
+        $mergedOutput = "output.xml"
+        $mergedLog = "log.html"
+        $mergedReport = "report.html"
+    }
+    
+    Write-Info "Rerunning $failedCount failed or skipped test(s) from $original..."
+    $dockerArgs = @(
+        "run", "--rm",
+        "--env-file", $DOCKER_ENV_FILE,
+        "-v", "${TEST_DIR}:/opt/robotframework/tests",
+        "-v", "${OUTPUT_DIR}:$reports",
+        "-v", "${OUTPUT_DIR}:/opt/robotframework/output",
+        "${IMAGE_NAME}:latest",
+        $Tool
+    ) + $RunOptions + $testOptions + @(
+        "--settag", "rerun",
+        "--outputdir", "$reports/rerun",
+        "--output", "${Prefix}rerun-output.xml",
+        "--log", "${Prefix}rerun-log.html",
+        "--report", "${Prefix}rerun-report.html"
+    ) + $TestFiles
+    
+    & docker @dockerArgs | Out-Host
+    
+    Write-Info "Merging rerun results..."
+    $dockerArgs = @(
+        "run", "--rm",
+        "-v", "${OUTPUT_DIR}:$reports",
+        "${IMAGE_NAME}:latest",
+        "rebot",
+        "--nostatusrc",
+        "--merge",
+        "--outputdir", $reports,
+        "--output", $mergedOutput,
+        "--log", $mergedLog,
+        "--report", $mergedReport,
+        "$reports/$original",
+        "$reports/rerun/${Prefix}rerun-output.xml"
+    )
+    
+    & docker @dockerArgs | Out-Host
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "[FAILED] Merging rerun results failed"
+        return $false
+    }
+    
+    # A test that skips again keeps its skipped status in the merged result, so check the merged result
+    if ((Get-FailedOrSkippedTestCount -OutputFile $mergedOutput) -eq 0) {
+        Write-Success "[SUCCESS] All $failedCount failed or skipped test(s) passed on rerun"
+        return $true
+    }
+    Write-Error "[FAILED] Some tests failed or were skipped again on rerun"
+    return $false
+}
+
 # Function to run tests (unified for both pabot and robot)
 function Start-Test {
     param(
@@ -366,6 +539,7 @@ function Start-Test {
     
     # Ensure output directory exists
     Ensure-OutputDirectory
+    Clear-PreviousResults
     
     # Build Docker arguments
     $dockerArgs = @(
@@ -377,35 +551,38 @@ function Start-Test {
         "${IMAGE_NAME}:latest"
     )
     
+    # Options and test files are shared by the first run and the rerun of failed tests
     if ($Parallel -and $Processes -gt 0) {
         # Pabot parallel execution
-        $dockerArgs += @(
-            "pabot",
+        $tool = "pabot"
+        $runOptions = @(
             "--testlevelsplit",
             "--processes", $Processes,
             "--pabotlib",
             "--exclude", "serialonly",
             "--resourcefile", "/opt/robotframework/tests/Resources/pabot_users.dat",
-            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
-            "--outputdir", "/opt/robotframework/reports",
-            "/opt/robotframework/tests/$TestFile"
+            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])"
         )
     } else {
         # Robot sequential execution
-        $dockerArgs += @(
-            "robot",
+        $tool = "robot"
+        $runOptions = @(
             "--variable", "FORCE_SINGLE_USER:True",
-            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
-            "--outputdir", "/opt/robotframework/reports",
-            "/opt/robotframework/tests/$TestFile"
+            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])"
         )
     }
+    $testFiles = @("/opt/robotframework/tests/$TestFile")
+    $dockerArgs += @($tool) + $runOptions + @("--outputdir", "/opt/robotframework/reports") + $testFiles
     
     & docker @dockerArgs
-    if ($LASTEXITCODE -eq 0) {
+    $exitCode = $LASTEXITCODE
+    # Robot's exit code counts only failed tests, so also check for skipped tests
+    if ($exitCode -eq 0 -and (Get-FailedOrSkippedTestCount -OutputFile "output.xml") -eq 0) {
         Write-Success "[SUCCESS] $TaskName completed successfully"
+    } elseif ($RERUN_FAILED_TESTS -and (Invoke-FailedTestRerun -Tool $tool -RunOptions $runOptions -TestFiles $testFiles)) {
+        Write-Success "[SUCCESS] $TaskName completed successfully after rerunning failed tests"
     } else {
-        Write-Error "[FAILED] $TaskName failed with exit code: $LASTEXITCODE"
+        Write-Error "[FAILED] $TaskName failed or had skipped tests (exit code: $exitCode)"
         Write-Warning "Check the output above for detailed error information"
         return $false
     }
@@ -432,6 +609,7 @@ function Start-AllSuites {
     }
     
     Ensure-OutputDirectory
+    Clear-PreviousResults
     
     # Define suites that can run in parallel
     $parallelSuites = @(
@@ -445,6 +623,21 @@ function Start-AllSuites {
     # All suites including notifications
     $allSuites = $parallelSuites + @("/opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS")
     
+    # Options are shared by the first run and the rerun of failed tests
+    $parallelOptions = @(
+        "--testlevelsplit",
+        "--processes", $ALL_SUITES_PROCESSES,
+        "--pabotlib",
+        "--exclude", "serialonly",
+        "--resourcefile", "/opt/robotframework/tests/Resources/pabot_users.dat",
+        "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])"
+    )
+    $sequentialOptions = @(
+        "--variable", "FORCE_SINGLE_USER:True",
+        "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])"
+    )
+    $notificationsSuites = @("/opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS")
+    
     if ($Parallel) {
         # First, run parallel suites with pabot
         Write-Info "Phase 1: Running parallel test suites..."
@@ -456,13 +649,8 @@ function Start-AllSuites {
             "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
             "-v", "${OUTPUT_DIR}:/opt/robotframework/output",
             "${IMAGE_NAME}:latest",
-            "pabot",
-            "--testlevelsplit",
-            "--processes", $ALL_SUITES_PROCESSES,
-            "--pabotlib",
-            "--exclude", "serialonly",
-            "--resourcefile", "/opt/robotframework/tests/Resources/pabot_users.dat",
-            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
+            "pabot"
+        ) + $parallelOptions + @(
             "--outputdir", "/opt/robotframework/reports",
             "--output", "parallel-output.xml",
             "--log", "parallel-log.html",
@@ -472,10 +660,12 @@ function Start-AllSuites {
         & docker @dockerArgs
         $parallelExitCode = $LASTEXITCODE
         
-        if ($parallelExitCode -eq 0) {
+        # Robot's exit code counts only failed tests, so also check for skipped tests
+        if ($parallelExitCode -eq 0 -and (Get-FailedOrSkippedTestCount -OutputFile "parallel-output.xml") -eq 0) {
             Write-Success "[SUCCESS] Parallel suites completed successfully"
         } else {
-            Write-Error "[FAILED] Parallel suites execution failed with exit code: $parallelExitCode"
+            Write-Error "[FAILED] Parallel suites failed or had skipped tests (exit code: $parallelExitCode)"
+            $parallelExitCode = 1
         }
         
         # Second, run notifications test sequentially
@@ -488,27 +678,42 @@ function Start-AllSuites {
             "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
             "-v", "${OUTPUT_DIR}:/opt/robotframework/output",
             "${IMAGE_NAME}:latest",
-            "robot",
-            "--variable", "FORCE_SINGLE_USER:True",
-            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
+            "robot"
+        ) + $sequentialOptions + @(
             "--outputdir", "/opt/robotframework/reports",
             "--output", "notifications-output.xml",
             "--log", "notifications-log.html",
-            "--report", "notifications-report.html",
-            "/opt/robotframework/tests/$SUITE_ADMIN_NOTIFICATIONS"
-        )
+            "--report", "notifications-report.html"
+        ) + $notificationsSuites
         
         & docker @dockerArgs
         $notificationsExitCode = $LASTEXITCODE
         
-        if ($notificationsExitCode -eq 0) {
+        # Robot's exit code counts only failed tests, so also check for skipped tests
+        if ($notificationsExitCode -eq 0 -and (Get-FailedOrSkippedTestCount -OutputFile "notifications-output.xml") -eq 0) {
             Write-Success "[SUCCESS] Notifications suite completed successfully"
         } else {
-            Write-Error "[FAILED] Notifications suite execution failed with exit code: $notificationsExitCode"
+            Write-Error "[FAILED] Notifications suite failed or had skipped tests (exit code: $notificationsExitCode)"
+            $notificationsExitCode = 1
         }
         
+        # Rerun failed tests once and merge the results with the first run
+        if ($RERUN_FAILED_TESTS -and ($parallelExitCode -ne 0 -or $notificationsExitCode -ne 0)) {
+            Write-Info "Phase 3: Rerunning failed and skipped tests..."
+            if ($parallelExitCode -ne 0 -and (Invoke-FailedTestRerun -Tool "pabot" -RunOptions $parallelOptions -TestFiles $parallelSuites -Prefix "parallel-")) {
+                $parallelExitCode = 0
+            }
+            if ($notificationsExitCode -ne 0 -and (Invoke-FailedTestRerun -Tool "robot" -RunOptions $sequentialOptions -TestFiles $notificationsSuites -Prefix "notifications-")) {
+                $notificationsExitCode = 0
+            }
+        }
+        
+        # Use the merged results where failed tests were rerun
+        $parallelResult = if (Test-Path "output\parallel-merged-output.xml") { "parallel-merged-output.xml" } else { "parallel-output.xml" }
+        $notificationsResult = if (Test-Path "output\notifications-merged-output.xml") { "notifications-merged-output.xml" } else { "notifications-output.xml" }
+        
         # Combine the results using rebot
-        Write-Info "Phase 3: Combining test results..."
+        Write-Info "Phase 4: Combining test results..."
         
         # Check if output files exist before combining (use relative path for PowerShell)
         $parallelOutputExists = Test-Path "output\parallel-output.xml"
@@ -529,8 +734,8 @@ function Start-AllSuites {
                 "--log", "log.html",
                 "--report", "report.html",
                 "--name", "All Suites",
-                "/opt/robotframework/reports/parallel-output.xml",
-                "/opt/robotframework/reports/notifications-output.xml"
+                "/opt/robotframework/reports/$parallelResult",
+                "/opt/robotframework/reports/$notificationsResult"
             )
             
             & docker @dockerArgs
@@ -540,7 +745,7 @@ function Start-AllSuites {
             # Exit codes > 250 indicate actual rebot errors
             if ($rebotExitCode -le 250) {
                 if ($rebotExitCode -eq 0) {
-                    Write-Success "[SUCCESS] Results combined successfully (all tests passed)"
+                    Write-Success "[SUCCESS] Results combined successfully (no failed tests)"
                 } else {
                     Write-Success "[SUCCESS] Results combined successfully ($rebotExitCode test(s) failed - see combined report)"
                 }
@@ -568,18 +773,22 @@ function Start-AllSuites {
             "-v", "${OUTPUT_DIR}:/opt/robotframework/reports",
             "-v", "${OUTPUT_DIR}:/opt/robotframework/output",
             "${IMAGE_NAME}:latest",
-            "robot",
-            "--variable", "FORCE_SINGLE_USER:True",
-            "--variable", "ENABLE_HAR_RECORDING:$($config["ENABLE_HAR_RECORDING"])",
+            "robot"
+        ) + $sequentialOptions + @(
             "--outputdir", "/opt/robotframework/reports"
         ) + $allSuites
         
         & docker @dockerArgs
-        if ($LASTEXITCODE -eq 0) {
+        $exitCode = $LASTEXITCODE
+        # Robot's exit code counts only failed tests, so also check for skipped tests
+        if ($exitCode -eq 0 -and (Get-FailedOrSkippedTestCount -OutputFile "output.xml") -eq 0) {
             Write-Success "[SUCCESS] All suites completed successfully"
             return $true
+        } elseif ($RERUN_FAILED_TESTS -and (Invoke-FailedTestRerun -Tool "robot" -RunOptions $sequentialOptions -TestFiles $allSuites)) {
+            Write-Success "[SUCCESS] All suites completed successfully after rerunning failed tests"
+            return $true
         } else {
-            Write-Error "[FAILED] All suites execution failed with exit code: $LASTEXITCODE"
+            Write-Error "[FAILED] All suites failed or had skipped tests (exit code: $exitCode)"
             Write-Warning "Check the output above for detailed error information"
             return $false
         }
@@ -1024,6 +1233,13 @@ if ($Choice) {
         $harColor = if ($config["ENABLE_HAR_RECORDING"] -eq "`${TRUE}") { "Green" } else { "Yellow" }
         Write-Host "HAR Recording: " -NoNewline
         Write-Host $harStatus -ForegroundColor $harColor
+        
+        # Show rerun failed tests status
+        $rerunStatus = if ($RERUN_FAILED_TESTS) { "[ENABLED]" } else { "[DISABLED]" }
+        $rerunColor = if ($RERUN_FAILED_TESTS) { "Green" } else { "Yellow" }
+        Write-Host "Rerun Failed Tests: " -NoNewline
+        Write-Host $rerunStatus -ForegroundColor $rerunColor -NoNewline
+        Write-Host " (docker-config.json)"
         
         Write-Host "=================================================="
         Write-Host "1. Clean Output"

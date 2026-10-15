@@ -12,6 +12,9 @@
   "robot_variables": {
     "enable_har_recording": false
   },
+  "execution": {
+    "rerun_failed_tests": true
+  },
   "suites": {
     "user_desktop": "Tests_user_desktop_FI.robot",
     "admin_desktop": "Tests_admin_desktop_FI.robot",

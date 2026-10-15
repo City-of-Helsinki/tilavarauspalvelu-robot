@@ -31,7 +31,7 @@ Create Context With Optional HAR
 
     IF    $har_enabled
         Log    📹 HAR recording enabled - creating HAR-enabled context
-        ${context_config}=    Start HAR Recording For Context    ${browser_type}    ${context_config}
+        Start HAR Recording For Context    ${browser_type}    ${context_config}
         # Temporarily suppress logging to prevent sensitive headers from being logged
         ${original_log_level}=    Set Log Level    NONE
         ${contextId}=    New Context    &{context_config}

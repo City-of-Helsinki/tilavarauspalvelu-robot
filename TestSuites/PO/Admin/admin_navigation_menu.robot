@@ -29,4 +29,5 @@ Admin Navigates To My Units
 
 Admin Navigates To Notifications
     Click    [href="/kasittely/notifications"]
-    Sleep    4s
+    # The create link is only on the notifications list page
+    Wait For Elements State    [href="/kasittely/notifications/new"]    visible    timeout=15s

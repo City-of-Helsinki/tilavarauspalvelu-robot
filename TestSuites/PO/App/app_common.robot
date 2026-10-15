@@ -212,6 +212,8 @@ Open New Window From Admin Side To User Side And Saves Both Windows
     # Open the user side page in a brand new tab
     ${user_handle}=    New Page    ${url}
     Wait For Load State    load    timeout=15s
+    # Finish loading the user side first, switching back too early logged the admin out
+    Reload Page And Wait For Banner Notifications
 
     # Save the new page
     Set Suite Variable    ${PAGE_USER_SIDE}    ${user_handle}
@@ -247,6 +249,17 @@ Reload Page
     Reload
     Sleep    3s
     Wait For Load State    networkidle    timeout=30s
+
+Reload Page And Wait For Banner Notifications
+    [Documentation]    Reloads and waits until banners are loaded, so "not visible" checks can be trusted.
+    ...    Waits for ShowNotificationsList (customer side) or BannerNotificationsList (admin notifications list page).
+    ${banners_loaded}=    Promise To    Wait For Response
+    ...    matcher=response => response.url().includes('/graphql') && /ShowNotificationsList|BannerNotificationsList/.test(response.request().postData() || '')
+    ...    timeout=20s
+    Reload
+    Wait For    ${banners_loaded}
+    # The response event comes with the headers, let the page render the data
+    Sleep    300ms
 
 ###
 # END OF SWITCH PAGE

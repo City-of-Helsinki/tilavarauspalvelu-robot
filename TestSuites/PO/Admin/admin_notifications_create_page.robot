@@ -41,9 +41,10 @@ Admin Fills Notification Name
 Admin Selects Type Of Notification
     [Arguments]    ${notification_type}
     Click    css=[aria-label*="Ilmoituksen tyyppi."]
-    Sleep    1.5s
     custom_keywords.Find And Click Element With Text    form >> li >> span    ${notification_type}
-    Sleep    1.5s
+    # The button shows the picked option, the list can stay open
+    Wait For Elements State
+    ...    css=[aria-label*="Ilmoituksen tyyppi."] >> text="${notification_type}" >> nth=0    visible    timeout=5s
 
 # Admin selects type of notification warning
     #    Click    css=[aria-label*="Ilmoituksen tyyppi."]
@@ -63,21 +64,21 @@ Admin Selects Type Of Notification
 
 Admin Selects Target Group All
     Click    css=[aria-label*="Kohderyhmä."]
-    Sleep    1.5s
     custom_keywords.Find And Click Element With Text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_ALL}
-    Sleep    1.5s
+    Wait For Elements State
+    ...    css=[aria-label*="Kohderyhmä."] >> text="${NOTIFICATION_BANNER_TARGET_GROUP_ALL}" >> nth=0    visible    timeout=5s
 
 Admin Selects Target Group Admin
     Click    css=[aria-label*="Kohderyhmä."]
-    Sleep    1.5s
     custom_keywords.Find And Click Element With Text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_ADMIN}
-    Sleep    1.5s
+    Wait For Elements State
+    ...    css=[aria-label*="Kohderyhmä."] >> text="${NOTIFICATION_BANNER_TARGET_GROUP_ADMIN}" >> nth=0    visible    timeout=5s
 
 Admin Selects Target Group User
     Click    css=[aria-label*="Kohderyhmä."]
-    Sleep    1.5s
     custom_keywords.Find And Click Element With Text    form >> li >> span    ${NOTIFICATION_BANNER_TARGET_GROUP_USER}
-    Sleep    1.5s
+    Wait For Elements State
+    ...    css=[aria-label*="Kohderyhmä."] >> text="${NOTIFICATION_BANNER_TARGET_GROUP_USER}" >> nth=0    visible    timeout=5s
 
 #
 
@@ -105,18 +106,18 @@ Admin Fills Notification Text Sv
 
 Admin Publishes Notification
     Click    [data-testid="Notification__Page--publish-button"]
-    Sleep    3s
-    # Check that publish worked, we should not see this button after clicking it
-    Wait For Elements State    [data-testid="Notification__Page--publish-button"]    hidden    timeout=5s    message=Publish button is still visible after clicking - notification publish may have failed
+    # Publishing returns to the list page, which has the create link
+    Wait For Elements State    [href="/kasittely/notifications/new"]    visible    timeout=15s
+    ...    message=Notifications list did not open after publishing - notification publish may have failed
 
 Admin Drafts Notification
     Click    [data-testid="Notification__Page--save-draft-button"]
-    Sleep    5s
+    # Saving returns to the list page, which has the create link
     Wait For Elements State    [href="/kasittely/notifications/new"]    visible    timeout=15s
 
 Admin Deletes Notification
     custom_keywords.Find And Click Element With Text    button    ${DELETE_NOTIFICATION_BUTTON_TEXT}
-    Sleep    5s
+    # Deleting returns to the list page, which has the create link
     Wait For Elements State    [href="/kasittely/notifications/new"]    visible    timeout=15s
 
 Admin Verifies Notification Is Not Found

@@ -91,8 +91,6 @@ Apply Global Header To Context Config
         END
     END
 
-    RETURN    ${context_config}
-
 Apply Staggered Startup Strategy
     [Documentation]    Staggers browser startup to prevent resource conflicts in parallel execution
     [Arguments]    ${browser_type}    ${input_URL}    ${download_dir}=${EMPTY}
@@ -176,7 +174,7 @@ Set Up Chromium Desktop Browser And Open Url
     ...    ignoreHTTPSErrors=true
     ...    deviceScaleFactor=1
 
-    ${context_config}=    Apply Global Header To Context Config    ${context_config}
+    Apply Global Header To Context Config    ${context_config}
     ${contextId}=    Create Context With Optional HAR    ${context_config}    CHROMIUM
 
     ${pageDetails}=    New Page
@@ -233,7 +231,7 @@ Set Up Firefox Desktop Browser And Open Url
     ...    timezoneId=Europe/Helsinki
     ...    ignoreHTTPSErrors=true
 
-    ${context_config}=    Apply Global Header To Context Config    ${context_config}
+    Apply Global Header To Context Config    ${context_config}
     ${contextId}=    Create Context With Optional HAR    ${context_config}    FIREFOX
 
     Log    🔄 Creating new Firefox page...
@@ -288,7 +286,7 @@ Set Up Iphone 14 And Open Url
     # Merge iPhone device properties into config
     Set To Dictionary    ${device_config}    &{iphone}
 
-    ${device_config}=    Apply Global Header To Context Config    ${device_config}
+    Apply Global Header To Context Config    ${device_config}
     ${contextId}=    Create Context With Optional HAR    ${device_config}    IPHONE_14
 
     Log    🔄 Creating new iPhone page...
@@ -359,7 +357,7 @@ Set Up Android Pixel 5 And Open Url
     # Merge Pixel device properties into config
     Set To Dictionary    ${device_config}    &{pixel}
 
-    ${device_config}=    Apply Global Header To Context Config    ${device_config}
+    Apply Global Header To Context Config    ${device_config}
     ${contextId}=    Create Context With Optional HAR    ${device_config}    PIXEL_5
 
     Log    🔄 Creating new Android page...

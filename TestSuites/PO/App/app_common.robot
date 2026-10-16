@@ -89,7 +89,11 @@ Verify Notification Banner Message
     ...    ${notification_banner_message}
 
 Verify Notification Banner Message Is Not Visible
-    Wait For Elements State    [data-testid="BannerNotificationList__Notification"]    hidden    timeout=2s
+    [Documentation]    Fails if a notification banner is shown. Use after the banners have loaded.
+    # Give a banner a second to render. A failing wait here would take a screenshot in passing tests.
+    Sleep    1s
+    ${banner_count}=    Get Element Count    [data-testid="BannerNotificationList__Notification"]
+    Should Be Equal As Integers    ${banner_count}    0    msg=A notification banner is visible but should not be
 
 ###
 # Mobile
@@ -212,6 +216,8 @@ Open New Window From Admin Side To User Side And Saves Both Windows
     # Open the user side page in a brand new tab
     ${user_handle}=    New Page    ${url}
     Wait For Load State    load    timeout=15s
+    # Finish loading the user side first, switching back too early logged the admin out
+    Reload Page And Wait For Banner Notifications
 
     # Save the new page
     Set Suite Variable    ${PAGE_USER_SIDE}    ${user_handle}
@@ -247,6 +253,20 @@ Reload Page
     Reload
     Sleep    3s
     Wait For Load State    networkidle    timeout=30s
+
+Reload Page And Wait For Banner Notifications
+    [Documentation]    Reloads and waits until banners are loaded, so "not visible" checks can be trusted.
+    ...    Waits for ShowNotificationsList (customer side) or BannerNotificationsList (admin notifications list page).
+    # Only requests started after the reload count, the previous page's request must not end the wait
+    ${reload_started}=    Evaluate    int(time.time() * 1000)    modules=time
+    ${banners_loaded}=    Promise To    Wait For Response
+    ...    matcher=response => response.request().timing().startTime >= ${reload_started} && response.url().includes('/graphql') && /ShowNotificationsList|BannerNotificationsList/.test(response.request().postData() || '')
+    ...    timeout=20s
+    Reload
+    ${response}=    Wait For    ${banners_loaded}
+    # A failed query shows no banners, which would let "not visible" checks pass for the wrong reason
+    Should Be True    $response.get('ok')    msg=Banner query failed: HTTP ${response}[status]
+    Should Be True    'errors' not in ($response.get('body') or {})    msg=Banner query returned errors
 
 ###
 # END OF SWITCH PAGE

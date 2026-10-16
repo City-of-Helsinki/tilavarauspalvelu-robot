@@ -8,15 +8,14 @@ Library     Browser
 
 *** Keywords ***
 Admin Clicks Create Notification Button
-    Sleep    1.5s
+    Wait For Elements State    [href="/kasittely/notifications/new"]    visible    timeout=15s
     Click    [href="/kasittely/notifications/new"]
-    Sleep    3s
     Wait For Elements State    [data-testid="Notification__Page--publish-button"]    visible    timeout=15s
 
 Admin Clicks Notification Name
     [Arguments]    ${notification_name}
     custom_keywords.Find And Click Element With Text    tbody >> a    ${notification_name}
-    Sleep    3s
+    # The form renders only after the notification has loaded
     Wait For Elements State    [data-testid="Notification__Page--publish-button"]    visible    timeout=15s
 
 Admin Verifies Notification Is Not Found

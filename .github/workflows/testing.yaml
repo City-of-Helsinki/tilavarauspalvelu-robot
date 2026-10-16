@@ -743,7 +743,9 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: test-reports-${{ github.run_number }} # Unique name per run
-          path: Reports/
+          path: |
+            Reports/
+            !Reports/**/playwright-log*.txt
           retention-days: 30 # Keep reports for 30 days
 
       # Upload HAR files and analysis results if HAR recording was enabled

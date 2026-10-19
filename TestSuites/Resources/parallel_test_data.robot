@@ -600,12 +600,5 @@ Wait For Paid Booking Completion
             RETURN    FAILED
         END
 
-        # Progressive polling intervals
-        IF    ${elapsed} < 180    # First 3 minutes
-            Sleep    5s    # Check every 5 seconds
-        ELSE IF    ${elapsed} < 240    # 3-4 minutes
-            Sleep    2s    # Check every 2 seconds (getting close)
-        ELSE    # After 4 minutes
-            Sleep    1s    # Check every second (should complete soon)
-        END
+        Sleep    1s    # Check every second
     END

@@ -19,7 +19,7 @@ User Accepts Cookies If Dialog Is Visible
         Log    Dialog is visible. Checking for the button with text "${cookie_text}".
         Click    .hds-cc__buttons >> button:has-text("${cookie_text}")
         Log    Clicked the "${cookie_text}" button.
-        Sleep    1.5s    # wait for the animation to close
+        Wait For Elements State    .hds-cc__buttons    hidden    timeout=5s
     ELSE
         Log    Dialog is not visible. Continuing the test.
     END

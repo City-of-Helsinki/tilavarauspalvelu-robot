@@ -65,7 +65,6 @@ User Checks Info In Paid Checkout And Confirms Booking
 User Interrupts Paid Checkout
     [Arguments]    ${input_URL}
     checkout.Interrupted Checkout    ${input_URL}
-    Sleep    1s
     user_landingpage.Check The User Landing Page H1    ${USER_LANDING_PAGE_H1_TEXT}
 ###
 
@@ -99,7 +98,6 @@ User Selects The Time With Quick Reservation And Sets Time Variables
     [Documentation]    here is keyword --> data_modification.Set info card duration time info
     ...    that sets $TIME_OF_QUICK_RESERVATION and $TIME_OF_QUICK_RESERVATION_MINUS_T
 
-    Sleep    1s
     Wait For Elements State    id=quick-reservation    visible
     quick_reservation.Select Duration    ${QUICK_RESERVATION_DURATION}
 
@@ -137,7 +135,7 @@ User Reserves A Free Quick Reservation Slot
     END
 
 User Selects And Submits Quick Reservation On Fresh Page
-    popups.Reload Page
+    quick_reservation.Reload Reservation Unit Page And Wait For Reservations
     User Selects The Time With Quick Reservation And Sets Time Variables
     quick_reservation.User Clicks Submit Button In Quick Reservation
 
@@ -381,8 +379,8 @@ User Checks The Modified Reservation Info Is Right And Clicks Continue
     quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
     # TODO: Separate the submit and the next page check into their own keywords
     reservation_lownav.Click Submit Button Continue
-    # Wait for page to load
-    Sleep    2s
+    # The edit page has the same time card, wait for the reservation page itself
+    Wait For Elements State    [data-testid="reservation__content"]    visible    timeout=15s
 
     Log    This check is done in reservations page
     quick_reservation.Check The Quick Reservation Time    ${TIME_OF_QUICK_RESERVATION_MODIFIED}
@@ -423,7 +421,7 @@ User Modifies Booking And Verifies The Changes
     Log    ${TIME_OF_QUICK_RESERVATION_MINUS_T_MODIFIED}
 
     Log    If the continue button is not enabled, verify that the reservation time was actually modified
-    Wait For Elements State    [data-testid="reservation__button--continue"]    enabled    timeout=3s
+    Wait For Elements State    [data-testid="reservation__button--continue"]    enabled    timeout=10s
     reservation_calendar.Click Continue Button
 
 User Checks Cancelled Booking Is Found
@@ -435,12 +433,8 @@ User Checks Cancelled Booking Is Found
     ...    ${unitname_mybookings}
     ...    ${time_of_quick_reservation_minusT}
 
-    # Wait for load
-    Sleep    3s
     mybookings.Navigate To Cancelled Bookings
 
-    # Wait for load
-    Sleep    2s
     mybookings.Check Unitname And Reservation Time And Click Show
     ...    ${unitname_mybookings}
     ...    ${time_of_quick_reservation_minusT}

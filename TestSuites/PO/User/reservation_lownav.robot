@@ -5,6 +5,5 @@ Resource    ../../Resources/custom_keywords.robot
 
 *** Keywords ***
 Click Submit Button Continue
-    Sleep    500ms
     Wait For Elements State    [data-testid="reservation__button--continue"]    enabled
     custom_keywords.Click And Wait For Page    [data-testid="reservation__button--continue"]

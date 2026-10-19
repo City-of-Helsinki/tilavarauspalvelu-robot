@@ -98,6 +98,22 @@ Url Should Have Changed
         Should Not Be Equal    ${url}    ${url_before}
     END
 
+Close Select List If Open
+    [Documentation]    An HDS Select ignores a close within 200 ms of opening, so its list can stay open after the pick.
+    [Arguments]    ${main_button}
+
+    Wait Until Keyword Succeeds    5s    300ms    Select List Should Be Closed    ${main_button}
+
+Select List Should Be Closed
+    [Arguments]    ${main_button}
+
+    ${expanded}=    Get Attribute    ${main_button}    aria-expanded
+    IF    $expanded == 'true'
+        Click    ${main_button}
+        ${expanded}=    Get Attribute    ${main_button}    aria-expanded
+    END
+    Should Not Be Equal    ${expanded}    true    msg=The select list did not close
+
 Retry With Recovery
     [Documentation]    Runs a keyword and, between failed attempts, a recovery keyword (for example Reload).
     ...    Fails with the error of the last attempt. Use only for steps that are safe to repeat.

@@ -12,7 +12,6 @@ Resource            ../User/mybookings.robot
 Click Login
     Wait For Elements State    id=login    stable
     Click    id=login
-    Sleep    500ms
 
 Click Login Admin Side
     Wait For Elements State    h1    visible
@@ -54,10 +53,10 @@ Navigate To Single Booking Page
 
 Navigate To My Bookings
     Click    header >> [href="/reservations"]:text-is("${MYBOOKINGS_FI}")
-    Sleep    4s
 
     # Confirms page is loaded
     mybookings.Check My Bookings H1    ${MYBOOKINGS_FI}
+    mybookings.Wait For Upcoming Bookings To Load
 
 Navigate To Recurring Booking Page
     Click    header >> [href="/recurring"]:text-is("${RECURRING_BOOKINGS_FI}")

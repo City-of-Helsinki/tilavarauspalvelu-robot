@@ -5,9 +5,9 @@ Library     Browser
 *** Keywords ***
 Search Units By Name
     [Arguments]    ${search_text}
-    Sleep    1s
     Type Text    input#search    ${search_text}
-    Sleep    1s
+    # The search reads the typed text from the input
+    Get Property    input#search    value    ==    ${search_text}
 #
     # Click    button[type="submit"]
     Click    [data-testid="searchButton"]

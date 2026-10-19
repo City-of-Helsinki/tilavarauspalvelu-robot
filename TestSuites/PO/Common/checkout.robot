@@ -7,13 +7,24 @@ Library     Browser
 
 *** Keywords ***
 Allow All Cookies If Visible
+    # The banner is not shown again once the consent is saved
+    ${consent_saved}=    Evaluate JavaScript    ${None}    () => document.cookie.includes('helfi-cookie-consents=')
+    IF    ${consent_saved}
+        Log    Cookie consent already saved, the banner is not shown
+        RETURN
+    END
     TRY
         Wait For Elements State    css=button[data-approved="required"]    visible    timeout=5s
-        Click    css=button[data-approved="required"]
-        Log    Cookie consent button found and clicked
-    EXCEPT
+    EXCEPT    TimeoutError*    type=glob
         Log    Cookie consent button not found, continuing without clicking
+        RETURN
     END
+    # A keyboard press, in the Android emulation the other cookie button blocks a mouse click
+    Focus    css=button[data-approved="required"]
+    Keyboard Key    press    Enter
+    Wait For Elements State    css=button[data-approved="required"]    hidden    timeout=5s
+    ...    message=The cookie banner did not close
+    Log    Cookie consent button found and clicked
 
 Select Payment Method OP
     Wait For Elements State    css=#OP    visible
@@ -58,26 +69,30 @@ In Order Summary Get Booking Number From Product List
 ####
 
 Check The Info In Checkout
-    Sleep    4s
+    # The checkout opens on its payment method step
+    Wait For Elements State    css=#OP    visible    timeout=30s
     Allow All Cookies If Visible
-    Sleep    2s
     Select Payment Method OP
-    Sleep    1s
     Click Submit
-    Sleep    4s
+    # Submitting the payment method opens the summary step
+    custom_keywords.Wait For Url To Contain    /summary    timeout=20s
     Check Product List Has All The Info
     In Order Summary Get Booking Number From Product List
     Click Accept Terms
-    Sleep    1s
     Click Submit
-    Sleep    5s
-    Wait For Load State    networkidle    timeout=50s
+    # Submitting the summary goes through the payment back to Varaamo
+    Wait Until Keyword Succeeds    50s    500ms    Url Should Start With    ${URL_TEST}
+    Wait For Load State    load    timeout=50s
+
+Url Should Start With
+    [Arguments]    ${prefix}
+    ${url}=    Get Url
+    Should Start With    ${url}    ${prefix}
 
 Interrupted Checkout
     [Arguments]    ${input_URL}
-    Sleep    5s
+    # The checkout opens on its payment method step
+    Wait For Elements State    css=#OP    visible    timeout=30s
     Allow All Cookies If Visible
-    Sleep    1s
     Go To    ${input_URL}
-    Sleep    2s    # wait for the page to load
     Wait For Load State    load    timeout=15s

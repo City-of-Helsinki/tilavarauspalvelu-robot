@@ -17,7 +17,12 @@ Select The Free Slot From Quick Reservation
     # This keyword/test cannot be run over midnight
     # Example -> Su 1.10.2023 klo 23:45-0:45, 1 t != La 30.9.2023 klo 23:45-su 1.10.20230:45, 1 t
 
-    Sleep    2s
+    # The carousel can move when its slots change, wait until it shows slots and has stopped
+    Wait For Elements State
+    ...    [class*="slide-visible"] >> [data-testid="quick-reservation__slot"] >> nth=0    visible    timeout=10s
+    ...    message=No free available slots in quick reservation slots
+    Wait For Elements State
+    ...    [class*="slide-visible"] >> [data-testid="quick-reservation__slot"] >> nth=0    stable    timeout=5s
 
     # Get all available slots
     ${all_free_quick_timeslots}=    Browser.Get Elements
@@ -39,11 +44,11 @@ Select The Free Slot From Quick Reservation
     # Get the time of the randomly selected slot
     ${time_of_selected_slot}=    Get Text    ${all_free_quick_timeslots}[${random_index}]
     Log    Selected slot time: ${time_of_selected_slot}
-    Sleep    1s
     # Click the randomly selected slot
     Focus    ${all_free_quick_timeslots}[${random_index}]
     Click    ${all_free_quick_timeslots}[${random_index}]
-    Sleep    1.5s
+    Get Attribute    ${all_free_quick_timeslots}[${random_index}]    aria-pressed    ==    true
+    ...    message=The clicked slot was not selected
 
     Store Test Data Variable    TIME_OF_QUICK_RESERVATION_FREE_SLOT    ${time_of_selected_slot}
     Set Test Variable    ${TIME_OF_QUICK_RESERVATION_FREE_SLOT}    ${time_of_selected_slot}
@@ -54,13 +59,13 @@ User Clicks Submit Button In Quick Reservation
 
     ${button_selector}=    Set Variable    id=quick-reservation >> [data-testid="quick-reservation__button--submit"]
 
+    # Wait for button to be visible
+    Wait For Elements State    ${button_selector}    visible    timeout=10s
+
     # Verify the button exists inside quick-reservation before clicking
     ${button_count}=    Browser.Get Element Count    ${button_selector}
     Should Be Equal As Integers    ${button_count}    1
     ...    msg=Expected exactly 1 submit button inside quick-reservation, found ${button_count}. Button may have disappeared.
-
-    # Wait for button to be visible
-    Wait For Elements State    ${button_selector}    visible    timeout=10s
     Scroll To Element    ${button_selector}
 
     # Alternative: Basic Browser library click (commented out - less reliable with React re-renders)
@@ -103,14 +108,40 @@ Get Unit Lock Name
     ${unit_page}=    Fetch From Left    ${url}    ?
     RETURN    QUICK_RESERVATION_${unit_page}
 
+Reload Reservation Unit Page And Wait For Reservations
+    [Documentation]    Reloads and waits for the unit's existing reservations (AffectingReservations query),
+    ...    so that the free slots shown are up to date.
+    ${reservations_loaded}=    Start Waiting For Reservations Query
+    Reload
+    Wait For Reservations Query    ${reservations_loaded}
+
+Start Waiting For Reservations Query
+    [Documentation]    Starts waiting for the next AffectingReservations response. Call it before the action that opens the page.
+    ${started}=    Evaluate    int(time.time() * 1000)    modules=time
+    ${reservations_loaded}=    Promise To    Wait For Response
+    ...    matcher=response => response.request().timing().startTime >= ${started} && response.url().includes('/graphql') && (response.request().postData() || '').includes('AffectingReservations')
+    ...    timeout=20s
+    RETURN    ${reservations_loaded}
+
+Wait For Reservations Query
+    [Arguments]    ${reservations_loaded}
+    ${response}=    Wait For    ${reservations_loaded}
+    Should Be True    $response.get('ok')    msg=Reservations query failed: HTTP ${response}[status]
+    Should Be True    'errors' not in ($response.get('body') or {})    msg=Reservations query returned errors
+
 Select Duration
     [Arguments]    ${duration}
     Log    ${duration}
     # Click    id=quick-reservation >> css=.Select-module_selectAndListContainer__vSJEv
-    Click    id=quick-reservation >> id=quick-reservation__duration-main-button
-    Sleep    1s
-    Click    [role="option"] >> '${duration}'
-    Sleep    1.5s    # wait for animation to complete
+    ${main_button}=    Set Variable    id=quick-reservation__duration-main-button
+    # Clicking the selected duration would unselect it
+    ${already_selected}=    Get Element Count    ${main_button} >> text="${duration}"
+    IF    ${already_selected} == 0
+        Click    id=quick-reservation >> ${main_button}
+        Click    [role="option"] >> '${duration}'
+    END
+    Wait For Elements State    ${main_button} >> text="${duration}" >> nth=0    visible    timeout=5s
+    custom_keywords.Close Select List If Open    ${main_button}
 
 Click More Available Slots
     Click    [data-testid="quick-reservation-next-available-time"]
@@ -143,8 +174,9 @@ Info Card Price Should Be
     Should Be Equal    ${normalized_string}    ${price_with_text}
 
 Get Booking Number
-    Sleep    1s
+    # The number is shown once the reservation has loaded
     ${reservation_number}=    Get Text    [data-testid="reservation__reservation-info-card__reservationNumber"]
+    ...    matches    ^\\d+$
     ${BOOKING_NUM_ONLY}=    Set Variable    ${reservation_number}
     Store Test Data Variable    BOOKING_NUM_ONLY    ${BOOKING_NUM_ONLY}
     Set Test Variable    ${BOOKING_NUM_ONLY}    ${BOOKING_NUM_ONLY}
@@ -179,16 +211,11 @@ Confirms Date Picker Opens From Quick Reservation
     Wait For Elements State    id=quick-reservation__date    visible
     Click    id=quick-reservation >> [aria-label="Valitse päivämäärä"]
 
-    # Waiting for the animation
-    Sleep    1s
-
     # Ensures cancel button is visible
-    ${Closing_button}=    Browser.Get Element    button >> span:text-is("Sulje")
-    Wait For Elements State    ${Closing_button}    visible
+    Wait For Elements State    button >> span:text-is("Sulje")    visible
 
     # Confirms the select button exists and closes the datepicker dialog window
     Click    id=quick-reservation >> [data-testid="selectButton"]
-    Sleep    1s
 
     # Verify the datepicker dialog is closed
     Wait For Elements State    id=hds-date-picker >> [data-testid="selectButton"]    hidden    timeout=5s

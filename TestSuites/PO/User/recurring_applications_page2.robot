@@ -29,6 +29,4 @@ User Selects The Times For Recurring Application
 
 User Clicks Continue Button
     Log    this is the same in the page 3
-    Click    id=button__application--next
-    Sleep    3s    # wait for the page to load
-    Wait For Load State    load    timeout=10s
+    custom_keywords.Click And Wait For Page    id=button__application--next

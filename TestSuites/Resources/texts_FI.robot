@@ -131,6 +131,7 @@ ${ACCESS_CODE_TXT_BY_CODE}                                          Pääsy tila
 ###
 
 ${MYBOOKINGS_H1}                                                    Omat varaukset
+${MYBOOKINGS_NO_UPCOMING_FI}                                        Ei tulevia varauksia
 ${MYBOOKINGS_STATUS_CONFIRMED}                                      Hyväksytty
 ${MYBOOKINGS_STATUS_REJECTED}                                       Hylätty
 ${MYBOOKINGS_STATUS_REFUNDED}                                       Maksu palautettu

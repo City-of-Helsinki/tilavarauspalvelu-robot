@@ -53,7 +53,10 @@ Check Cancel Button Is Not Found In Reservations
 
 User Click Change Time
     Wait For Elements State    data-testid=reservation-detail__button--edit    visible
+    # The free times on the edit page depend on the unit's existing reservations
+    ${reservations_loaded}=    quick_reservation.Start Waiting For Reservations Query
     Click    data-testid=reservation-detail__button--edit
+    quick_reservation.Wait For Reservations Query    ${reservations_loaded}
     Sleep    1s    # Wait for animation
 
 ###
@@ -216,6 +219,26 @@ Wait For Reservation Cards
     Wait For Elements State    [data-testid="reservation-card__container"] >> nth=0    visible
     ...    timeout=${CONTENT_WAIT_TIMEOUT}
     ...    message=No reservation cards in the list
+
+Wait For Upcoming Bookings To Load
+    [Documentation]    Waits until the upcoming bookings list has loaded: it shows booking cards or the empty message.
+    Wait For Elements State
+    ...    css=[data-testid="reservation-card__container"], div:text-is("${MYBOOKINGS_NO_UPCOMING_FI}") >> nth=0
+    ...    visible    timeout=15s
+    # The selector matches either one, so log which one the list shows
+    ${card_count}=    Get Element Count    [data-testid="reservation-card__container"]
+    Log    The upcoming bookings list shows ${card_count} booking cards
+
+Wait For Payment Status
+    [Documentation]    Reloads the reservation page until it shows the payment status, which the backend updates afterwards.
+    [Arguments]    ${payment_status}
+    Wait Until Keyword Succeeds    60s    2s    Reload And Check Payment Status    ${payment_status}
+
+Reload And Check Payment Status
+    [Arguments]    ${payment_status}
+    Reload
+    ${status_text}=    Get Text    [data-testid="reservation__payment-status"]
+    Should Be Equal    ${status_text}    ${payment_status}    strip_spaces=True
 
 Check Unitname And Reservation Time And Click Show
     [Documentation]    This keyword verifies if a reservation card with a specified unit name and reservation time is present in the list,

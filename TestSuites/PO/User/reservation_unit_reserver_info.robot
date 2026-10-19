@@ -24,10 +24,15 @@ Enter Phone Number
 
 Select Home City
     [Arguments]    ${homecity}
-    Click    id=reservation-form-field__municipality-main-button
-    Sleep    500ms    # Wait for animation
-    custom_keywords.Find And Click Element With Text    li    ${homecity}
-    Sleep    1.5s    # Wait for animation
+    ${main_button}=    Set Variable    id=reservation-form-field__municipality-main-button
+    # Clicking the selected city would unselect it
+    ${already_selected}=    Get Element Count    ${main_button} >> text="${homecity}"
+    IF    ${already_selected} == 0
+        Click    ${main_button}
+        custom_keywords.Find And Click Element With Text    li    ${homecity}
+    END
+    Wait For Elements State    ${main_button} >> text="${homecity}" >> nth=0    visible    timeout=5s
+    custom_keywords.Close Select List If Open    ${main_button}
 
 Check Application Cannot Be Made Without Info
     [Documentation]    Checks for the error notification banner that appears when required

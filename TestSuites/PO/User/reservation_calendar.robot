@@ -20,9 +20,9 @@ Select Duration Calendar
 
 Click And Store Free Reservation Time
     Click    id=calendar-controls__time-main-button
-
-    # Wait for animation
-    Sleep    2s
+    # The list is open when its options are shown
+    Wait For Elements State    id=calendar-controls__time-option-0    visible    timeout=5s
+    ...    message=The time selection list did not open
 
     # Check if enough time slots are available for the current day
     ${time_slot_exists}=    Run Keyword And Return Status
@@ -34,20 +34,20 @@ Click And Store Free Reservation Time
 
     ${calendar_control_time_of_third_free_slot}=    Get Text    id=calendar-controls__time-option-2
     Set Suite Variable    ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}    ${calendar_control_time_of_third_free_slot}
-    Log    Attempting to select time: ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
-    Sleep    500ms
-    Click    id=calendar-controls__time-option-2
-    Sleep    2s
-
-    ${aria_expanded}=    Get Attribute    css=[aria-controls="calendar-controls__time-list"]    aria-expanded
-    IF    '${aria_expanded}'=='true'
-        Log    Time selection dropdown is still expanded, which means the selected time was already the current time
-        Log    Changing to a different time to ensure the continue button will be enabled
+    # Clicking the current time would unselect it and keep the continue button disabled
+    ${is_current_time}=    Get Element Count
+    ...    id=calendar-controls__time-main-button >> text="${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}"
+    IF    ${is_current_time} > 0
+        Log    ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT} is the current time, changing to a different time
         Changing Time Again
+    ELSE
+        Log    Attempting to select time: ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
+        Click    id=calendar-controls__time-option-2
     END
-
-    # Wait for animation
-    Sleep    2s
+    Wait For Elements State
+    ...    id=calendar-controls__time-main-button >> text="${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}" >> nth=0
+    ...    visible    timeout=5s
+    custom_keywords.Close Select List If Open    id=calendar-controls__time-main-button
 
 Changing Time Again
     # Check if the 4th time slot is available
@@ -61,9 +61,7 @@ Changing Time Again
     ${calendar_control_time_of_fourth_free_slot}=    Get Text    id=calendar-controls__time-option-3
     Set Suite Variable    ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}    ${calendar_control_time_of_fourth_free_slot}
     Log    Selecting alternative time: ${CALENDAR_CONTROL_TIME_OF_FREE_SLOT}
-    Sleep    500ms
     Click    id=calendar-controls__time-option-3
-    Sleep    2s
 
 Get Current Date From Datepicker
     # ${value}=    Browser.Get Attribute    id=reservationDialog.date    value
@@ -73,7 +71,8 @@ Get Current Date From Datepicker
 
 Click Continue Button
     Click    [data-testid="reservation__button--continue"]
-    Sleep    3s
+    # Continuing opens the terms step of the edit
+    Wait For Elements State    [for="cancellation-and-payment-terms-terms-accepted"]    visible    timeout=15s
 
 User Click Reservation Calendar Toggle Button
     Click    [data-testid="calendar-controls__toggle-button"]

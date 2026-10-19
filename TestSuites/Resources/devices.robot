@@ -45,7 +45,6 @@ Gate First Navigation With PabotLib
     IF    "${done2}" != "true"
         Log    🌐 Gated first navigation by this worker
         Go To    ${input_URL}
-        Sleep    1s    # wait for the page to load
         Wait For Load State    networkidle    timeout=45s
         ${post_nav_sleep}=    Evaluate    random.uniform(0.6, 0.9)    random
         Sleep    ${post_nav_sleep}s
@@ -113,10 +112,10 @@ Apply Staggered Startup Strategy
         ${is_first_on_worker}=    Evaluate    not $worker_started
     END
     IF    ${is_first_on_worker}
-        # Progressive delay: 0s, 8s, 16s, 24s, 32s, 40s, etc.
-        ${base_delay}=    Evaluate    int(${pool_id}) * 8
+        # Progressive delay: 0s, 3s, 6s, 9s, 12s, 15s, etc.
+        ${base_delay}=    Evaluate    int(${pool_id}) * 3
         # Add small random component to prevent perfect synchronization
-        ${random_offset}=    Evaluate    random.uniform(2.0, 4.0)    random
+        ${random_offset}=    Evaluate    random.uniform(1.0, 2.0)    random
         ${total_delay}=    Evaluate    ${base_delay} + ${random_offset}
         ${formatted_delay}=    Evaluate    f"{${total_delay}:.1f}"
         ${random_offset_fmt}=    Evaluate    f"{${random_offset}:.1f}"
@@ -191,7 +190,6 @@ Set Up Chromium Desktop Browser And Open Url
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
         Go To    ${input_URL}
-        Sleep    1s    # wait for the page to load
         Wait For Load State    load    timeout=30s
     END
 
@@ -245,7 +243,6 @@ Set Up Firefox Desktop Browser And Open Url
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
         Go To    ${input_URL}
-        Sleep    1s    # wait for the page to load
         Wait For Load State    load    timeout=30s
     END
     Log    ✅ Page loaded successfully
@@ -299,7 +296,6 @@ Set Up Iphone 14 And Open Url
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
         Go To    ${input_URL}
-        Sleep    1s    # wait for the page to load
         Wait For Load State    load    timeout=30s
     END
 
@@ -370,7 +366,6 @@ Set Up Android Pixel 5 And Open Url
     ${did_nav}=    Gate First Navigation With PabotLib    ${input_URL}
     IF    not ${did_nav}
         Go To    ${input_URL}
-        Sleep    1s    # wait for the page to load
         Wait For Load State    load    timeout=30s
     END
 

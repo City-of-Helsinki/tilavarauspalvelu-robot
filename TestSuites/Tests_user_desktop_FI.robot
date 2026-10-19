@@ -127,9 +127,6 @@ User can make paid single booking with interrupted checkout
     Log    User cancel booking
     app_user.User Cancel Booking In Reservations And Checks It Got Cancelled
 
-    Log    Waiting for the status payment to change
-    Sleep    10s
-
     Log    User verifies cancelled booking is found
     topnav.Navigate To My Bookings
     app_user.User Checks Cancelled Booking Is Found
@@ -172,7 +169,7 @@ User can make paid single booking
 
         Log    User cancels paid booking
         app_user.User Cancel Booking In Reservations And Checks It Got Cancelled
-        Sleep    10s    # Waiting for the status payment to change
+        mybookings.Wait For Payment Status    ${MYBOOKINGS_STATUS_REFUNDED}
 
         Log    User verifies cancellation and refund status
         topnav.Navigate To My Bookings

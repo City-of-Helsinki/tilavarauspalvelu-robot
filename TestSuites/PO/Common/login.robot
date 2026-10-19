@@ -29,7 +29,6 @@ Login Suomi Fi
 
     # Enter HETU and submit
     Type Text    css=#hetu_input    ${input_hetu}
-    Sleep    500ms
 
     # Click authenticate and wait for continue button
     custom_keywords.Click And Wait For Navigation With Retry
@@ -91,7 +90,6 @@ Login Suomi Fi Mobile
 
     # Enter HETU and submit
     Type Text    css=#hetu_input    ${input_hetu}
-    Sleep    500ms
 
     # Click authenticate and wait for continue button
     custom_keywords.Click And Wait For Navigation With Retry

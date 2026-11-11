@@ -92,11 +92,11 @@ ${UNIT_NAME_FOR_PICTURE_TEST}                           Maksuton Mankeli
 # RECURRING RESERVATIONS
 ###
 
-# Recurring reservation time slot selectors
-${RECURRING_THU_22_23_OTHER}                            css=[aria-label="Ei varattavissa: To 22 - 23"]
-${RECURRING_THU_23_24_OTHER}                            css=[aria-label="Ei varattavissa: To 23 - 24"]
-${RECURRING_THU_09_10_PREFERRED}                        css=[aria-label="Varattavissa: To 9 - 10"]
-${RECURRING_THU_10_11_PREFERRED}                        css=[aria-label="Varattavissa: To 10 - 11"]
+# Recurring reservation times: the weekday as the calendar's cells have it (data-weekday), and the start and
+# end of the times painted in the calendar. The calendar paints only inside the seasonal units' opening hours,
+# 09:00-21:00 in the test data.
+@{RECURRING_THU_19_21_PRIMARY}                          THURSDAY    19:00    21:00
+@{RECURRING_THU_09_11_SECONDARY}                        THURSDAY    09:00    11:00
 
 ###
 #

@@ -729,9 +729,7 @@ User Selects Times For Recurring Application
     ...    ${RECURRING_BOOKING_UNIT_NAME_KESKUSTA}
     #
     recurring_applications_page2.User Selects The Times For Recurring Application
-    ...    ${RECURRING_THU_22_23_OTHER}
-    recurring_applications_page2.User Selects The Times For Recurring Application
-    ...    ${RECURRING_THU_23_24_OTHER}
+    ...    @{RECURRING_THU_19_21_PRIMARY}
     #
     recurring_applications_page2.User Clicks Available Seasonal Booking Times For
     ...    ${RECURRING_BOOKING_UNIT_NAME_MALMI}
@@ -740,9 +738,7 @@ User Selects Times For Recurring Application
     ...    ${RECURRING_BOOKING_TYPE_OF_BOOKING_REQUEST_SECONDARY}
     #
     recurring_applications_page2.User Selects The Times For Recurring Application
-    ...    ${RECURRING_THU_09_10_PREFERRED}
-    recurring_applications_page2.User Selects The Times For Recurring Application
-    ...    ${RECURRING_THU_10_11_PREFERRED}
+    ...    @{RECURRING_THU_09_11_SECONDARY}
     #
     recurring_applications_page2.User Clicks Continue Button
 

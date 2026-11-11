@@ -20,7 +20,7 @@ robotframework-requests==0.9.7
 # Code Quality and Linting Tools
 # =============================================================================
 # Robot Framework linter and formatter
-robotframework-robocop==6.13.0
+robotframework-robocop==8.2.5
 
 # Python linter
 ruff==0.14.10
